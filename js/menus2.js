@@ -101,10 +101,11 @@ function* bagScreen(o = {}) {
         yield* uiMessage('It can\'t be used in battle.'); continue;
       }
       // field menu
-      const opts = []; if (isMedicine(key) || key === 'POKEGEAR') opts.push('USE'); opts.push('TOSS', 'CANCEL');
+      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD') opts.push('USE'); opts.push('TOSS', 'CANCEL');
       const c = yield* choiceWindow(opts, { y: SH - 96 - opts.length * 32 - 32, x: SW - 150 });
       const choice = c < 0 ? 'CANCEL' : opts[c];
       if (choice === 'USE') {
+        if (key === 'OLDROD') { G.fishReq = 'OldRod'; return null; }
         if (isMedicine(key)) {
           const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i) => useItemOn(key, p) });
           S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
@@ -157,8 +158,8 @@ function* optionsScreen() {
       const dl = rep('left') ? -1 : rep('right') ? 1 : 0;
       if (dl) {
         const k = items[S.idx][1];
-        if (k === 'music') { SET.music = Math.max(0, Math.min(1, Math.round((SET.music + dl * 0.1) * 10) / 10)); applyVolumes(); }
-        else if (k === 'sfx') { SET.sfx = Math.max(0, Math.min(1, Math.round((SET.sfx + dl * 0.1) * 10) / 10)); sfx('cursor'); }
+        if (k === 'music') { SET.music = Math.max(0, Math.min(1, Math.round((SET.music + dl * 0.05) * 20) / 20)); applyVolumes(); }
+        else if (k === 'sfx') { SET.sfx = Math.max(0, Math.min(1, Math.round((SET.sfx + dl * 0.05) * 20) / 20)); sfx('cursor'); }
         else if (k === 'speed') { let i = SPEEDS.indexOf(SET.speed); i = Math.max(0, Math.min(SPEEDS.length - 1, i + dl)); SET.speed = SPEEDS[i]; sfx('cursor'); }
         else if (k === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
       }
@@ -175,7 +176,7 @@ function readSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)); }
 function writeSave() {
   const p = G.player;
   const data = {
-    v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, money: G.money, trainerId: G.trainerId,
+    v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
     runningShoes: !!G.runningShoes, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, pcItems: G.pcItems || null, owned: G.owned || {}, map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
   };
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); return true; } catch (e) { return false; }
@@ -188,7 +189,7 @@ function migrateSyms(d) {   // saves made before species were renamed to their c
 }
 function loadSave(d) {
   migrateSyms(d);
-  G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; G.name = d.name; G.money = d.money; G.trainerId = d.trainerId;
+  G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; G.name = d.name; G.starterName = d.starterName; G.money = d.money; G.trainerId = d.trainerId;
   G.runningShoes = d.runningShoes; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.pcItems = d.pcItems || null; G.owned = d.owned || {};
   enterMap(d.map, d.x, d.y, d.dir); if (d.bgm) playBGM(d.bgm);
 }
@@ -315,7 +316,7 @@ function* pauseMenu() {
       }
       if (act === 'dex') yield* pokedexScreen();
       else if (act === 'party') yield* partyScreen({ mode: 'menu' });
-      else if (act === 'bag') yield* bagScreen({ mode: 'field' });
+      else if (act === 'bag') { yield* bagScreen({ mode: 'field' }); if (G.fishReq) return; }
       else if (act === 'cheats') yield* cheatsMenu();
       else if (act === 'map') yield* townMapScreen();
       else if (act === 'card') yield* trainerCard();
@@ -324,7 +325,7 @@ function* pauseMenu() {
     }
   })());
 }
-function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; })()); }
+function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; if (G.fishReq) { const rod = G.fishReq; G.fishReq = null; G.main = new Interp([[355, 0, ['pbFish("' + rod + '")']], [0, 0, []]], null); } })()); }
 
 // ------------------------------------------------------------ Title + load screen (Essentials style)
 function* titleScreen() {

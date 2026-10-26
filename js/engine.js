@@ -95,6 +95,7 @@ const KEYMAP = {
 };
 const keys = { held: {}, pressed: {} };
 keys.kb = {};
+function toggleFullscreen() { try { if (document.fullscreenElement) document.exitFullscreen(); else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } catch (err) { } }
 window.addEventListener('keydown', e => {
   const k = KEYMAP[e.key]; if (!k) return;
   if (G.modal) return;
@@ -116,7 +117,8 @@ function pollPad() {
   if (gp) {
     const b = i => !!(gp.buttons[i] && gp.buttons[i].pressed), ax = gp.axes[0] || 0, ay = gp.axes[1] || 0;
     now.up = b(12) || ay < -0.5; now.down = b(13) || ay > 0.5; now.left = b(14) || ax < -0.5; now.right = b(15) || ax > 0.5;
-    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1) || b(3);
+    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1);
+    const yb = b(3); if (yb && !PAD.yDown) toggleFullscreen(); PAD.yDown = yb;
   }
   for (const k of ['up', 'down', 'left', 'right', 'ok', 'back', 'menu', 'run']) {
     const n = !!now[k], p = !!PAD.prev[k];
@@ -373,9 +375,10 @@ function trainerSight() {
     if (e.isPlayer || e.erased || !e.page || e.page.trigger !== 2 || e.moving) continue;
     const mm = /^Trainer\((\d+)\)/i.exec(e.name || ''); if (!mm) continue;
     const dist = +mm[1], [dx, dy] = dirVec[e.dir];
+    const swim = [2, 4, 6, 8].every(d => !e.passableTile(e.x, e.y, d));     // trainer swimming in water: sees the shore tile next to it
     for (let i = 1; i <= dist; i++) {
       const x = e.x + dx * i, y = e.y + dy * i;
-      if (!e.passableTile(x - dx, y - dy, e.dir) || !e.passableTile(x, y, opp[e.dir])) break;     // trees / walls block the view
+      if (!(i === 1 && swim) && (!e.passableTile(x - dx, y - dy, e.dir) || !e.passableTile(x, y, opp[e.dir]))) break;     // trees / walls block the view
       if (p.x === x && p.y === y) { if (startEvent(e)) return true; break; }
       if (G.chars.some(o => o !== e && !o.isPlayer && !o.erased && o.x === x && o.y === y && (o.gname || o.tile))) break;
     }
@@ -399,6 +402,9 @@ function checkAction() {
   if (typeof isCounter === 'function' && isCounter(p.x + dx, p.y + dy))        // counter: talk across it
     for (const e of eventAt(p.x + dx * 2, p.y + dy * 2, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }
   if (typeof wallMapCheck === 'function' && wallMapCheck(p.x + dx, p.y + dy)) return true;
+  if (G.items && G.items.OLDROD && typeof terrainTagAt === 'function' && [5, 6, 7].includes(terrainTagAt(p.x + dx, p.y + dy)) && !G.main) {
+    G.main = new Interp([[355, 0, ['pbFishAsk']], [0, 0, []]], null); return true;
+  }
   return false;
 }
 
@@ -413,6 +419,7 @@ function prepText(s) {
   s = s.replace(/\\b/g, () => { bubble = 'b'; return ''; });
   s = s.replace(/\\r/g, () => { bubble = 'r'; return ''; });
   s = s.replace(/\\PN/g, G.name);
+  s = s.replace(/\\STARTER/g, () => G.starterName || ((G.party || []).find(p => /^(ILLYA|RORY|HIZUNA)/.test(p.sym)) || (G.party || [])[0] || {}).name || 'my Pokémon');
   s = s.replace(/\\v\[(\d+)\]/g, (m, n) => { const v = G.vars[+n]; return v === undefined ? '0' : String(v); });
   s = s.replace(/\\n/g, '\n');
   s = s.replace(/\\\\/g, '\\');
@@ -668,7 +675,7 @@ class Interp {
       if (e) { const dx = e.x - pl.x, dy = e.y - pl.y; pl.turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 4) : (dy > 0 ? 2 : 8)); }
       return;
     }
-    if ((m = s.match(/^pbAddPokemon\(:(\w+),(\d+)\)/))) { G.party.push(makeMon(symOf(m[1]), +m[2])); return; }
+    if ((m = s.match(/^pbAddPokemon\(:(\w+),(\d+)\)/))) { const mon = makeMon(symOf(m[1]), +m[2]); if (!G.party.length && !G.starterName) G.starterName = mon.name; G.party.push(mon); return; }
     if ((m = s.match(/^\$Trainer\.party\[-1\]\.pbLearnMove\(:(\w+)\)/))) {
       const mon = G.party[G.party.length - 1]; if (mon && D.MV[m[1]] && !mon.moves.some(x => x.id === m[1])) { const slot = newMoveSlot(m[1]); if (mon.moves.length < 4) mon.moves.push(slot); else mon.moves[3] = slot; }
       return;
@@ -687,6 +694,7 @@ class Interp {
     if ((m = s.match(/^pbShake\((\d+),(\d+)\)/))) { G.shake = { p: +m[1], left: +m[2] }; return; }
     if ((m = s.match(/^pbFlash\((\d+),(\d+),(\d+),(\d+)\)/))) { G.flash = { c: [+m[1], +m[2], +m[3]], left: +m[4], total: +m[4] }; return; }
     if ((m = s.match(/^pbSE\("([^"]+)"\)/))) { playSE(m[1]); return; }
+    if ((m = s.match(/^\$PokemonBag\.pbDeleteItem\(:(\w+)(?:,\s*(\d+))?\)/))) { G.items[m[1]] = Math.max(0, (G.items[m[1]] || 0) - (m[2] ? +m[2] : 1)); if (!G.items[m[1]]) delete G.items[m[1]]; return; }
     if (s.startsWith('$PokemonBag.pbDeleteItem')) { return; }
     if (s.startsWith('$Trainer.pokedex')) { G.pokedex = true; return; }
     if (s === 'pbTrainerPC') { yield* showMessage('\\PN booted up the PC.\n(Storage is not in this test build.)'); return; }

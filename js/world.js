@@ -221,6 +221,24 @@ function* worldScript(it, s) {
     for (let i = 0; i < 8; i++) yield; return true;
   }
   if (s === 'pbBerryPlant') { yield* berryPlantScript(it); return true; }
+  if (s === 'pbFishAsk') {                   // action button on water with a rod in the bag
+    yield* showMessage('The water is calm.\nWant to fish here?', { noWait: true });
+    const i = yield* showChoices(['Yes', 'No'], 2);
+    if (i === 0) return yield* worldScript(it, 'pbFish("OldRod")');
+    return true;
+  }
+  if ((m = s.match(/^pbFish\("(\w+)"\)/))) {          // field use of a fishing rod: needs water in front of the player
+    const pl = G.player, [fx, fy] = dirVec[pl.dir]; const wx = pl.x + fx, wy = pl.y + fy;
+    if (![5, 6, 7].includes(terrainTagAt(wx, wy))) { yield* showMessage("There's no water to fish in here."); return true; }
+    const e = window.ENCOUNTERS && ENCOUNTERS[G.mapId], tbl = e && ((e[m[1]] && e[m[1]].length ? e[m[1]] : null) || (e.Water && e.Water.length ? e.Water : null));
+    yield* showMessage('\\PN cast the line...'); for (let i = 0; i < 50; i++) yield;
+    if (!tbl || Math.random() < 0.2) { yield* showMessage('Not even a nibble...'); return true; }
+    yield* exclaim(pl); yield* showMessage('Oh! A bite!');
+    const pk = tbl[Math.floor(Math.random() * tbl.length)], lv = pk[1] + Math.floor(Math.random() * (pk[2] - pk[1] + 1));
+    yield* runWildBattle(pk[0], lv);
+    if (G.battleResult === 'lose') yield* blackout(); else if (G.map && G.map.bgm) playBGM(G.map.bgm);
+    return true;
+  }
   if ((m = s.match(/^pbWildBattle\(:(\w+),(\d+)\)/))) {
     yield* runWildBattle(m[1], +m[2]);
     if (G.battleResult === 'lose') yield* blackout();
