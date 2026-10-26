@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JBA Pokémon</title>
+<style>
+  @font-face{font-family:PkmnEms;src:url(assets/fonts/pkmnems.ttf)}
+  @font-face{font-family:PkmnFl;src:url(assets/fonts/pkmnfl.ttf)}
+  @font-face{font-family:PkmnEmn;src:url(assets/fonts/pkmnemn.ttf)}
+  html,body{margin:0;height:100%;background:#000 url(assets/ui/background_bars.png) center/cover no-repeat;overflow:hidden;font-family:sans-serif}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  canvas{image-rendering:pixelated;image-rendering:crisp-edges;background:#000;width:min(100vw,calc(100vh*4/3));height:min(75vw,100vh);outline:none}
+  #nameBox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:5}
+  #nameBox .card{background:#fff;border:4px solid #405070;border-radius:12px;padding:20px 24px;min-width:280px;text-align:center;font:600 20px/1.3 "Trebuchet MS",sans-serif;color:#202830}
+  #nameBox input{margin-top:12px;font:600 22px "Trebuchet MS",sans-serif;padding:6px 10px;border:2px solid #405070;border-radius:6px;width:80%;text-align:center}
+  #nameBox button{margin-top:14px;font:600 18px "Trebuchet MS",sans-serif;padding:6px 22px;border-radius:6px;border:2px solid #405070;background:#e8eef8;cursor:pointer}
+  #hint{position:fixed;left:8px;bottom:6px;color:#9ab;font:12px sans-serif;opacity:.7;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="screen" width="512" height="384" tabindex="0"></canvas></div>
+<div id="nameBox"><div class="card"><div id="nameLabel">Your name?</div><input id="nameInput" maxlength="10" autocomplete="off"><br><button id="nameOk">OK</button></div></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Always fetch fresh code: every script gets a unique query string on each page load (and the title screen reloads the page).
+(function(){var t=Date.now(),f=["data/tilesets.js", "data/map001.js", "data/map002.js", "data/map003.js", "data/map004.js", "data/map008.js", "data/map005.js", "data/map007.js", "data/map081.js", "data/map084.js", "data/map354.js", "data/map398.js", "data/map043.js", "data/map048.js", "data/map085.js", "data/map086.js", "data/map132.js", "data/map145.js", "data/map087.js", "data/map089.js", "data/map092.js", "data/map093.js", "data/map094.js", "data/map355.js", "data/map079.js", "data/map095.js", "data/map096.js", "data/map356.js", "data/map097.js", "data/map098.js", "data/map099.js", "data/map110.js", "data/map100.js", "data/map101.js", "data/map102.js", "data/map103.js", "data/map104.js", "data/map105.js", "data/map106.js", "data/map107.js", "data/map108.js", "data/map113.js", "data/map357.js", "data/map109.js", "data/map111.js", "data/map112.js", "js/manifest.js", "js/data.js", "data/pokemon.js", "js/pokejson.js", "data/pbs.js", "data/mapnames.js", "js/engine.js", "js/pokemon.js", "js/ui.js", "js/menus.js", "js/menus2.js", "js/story.js", "data/anims.js", "js/anim.js", "js/pokedex.js", "js/berries.js", "js/battle.js", "js/world.js", "js/main.js"];for(var i=0;i<f.length;i++)document.write('<script src="'+f[i]+'?v='+t+'"><\/script>');})();
+</script>
+</body>
+</html>
