@@ -8,7 +8,8 @@
 const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [5, 'E', 120, 311, 'W', 0], [32, 'S', 59, 5, 'N', 0], [32, 'E', 0, 7, 'W', 6], [43, 'S', 2, 7, 'N', 0], [43, 'N', 0, 87, 'S', 2], [2, 'S', 0, 310, 'N', 0], [311, 'W', 0, 2, 'E', 80],
   [87, 'E', 15, 79, 'W', 0], [79, 'N', 0, 95, 'S', 0], [79, 'E', 0, 110, 'W', 30], [95, 'E', 0, 110, 'W', 6], [100, 'W', 0, 110, 'E', 0],
-  [109, 'S', 4, 100, 'N', 0], [100, 'N', 36, 111, 'S', 0], [109, 'E', 0, 111, 'W', 1], [111, 'S', 0, 110, 'N', 121]];  // the rest lead to areas not built yet
+  [109, 'S', 4, 100, 'N', 0], [100, 'N', 36, 111, 'S', 0], [109, 'E', 0, 111, 'W', 1], [111, 'S', 0, 110, 'N', 121],
+  [114, 'N', 0, 100, 'S', 0], [114, 'W', 0, 110, 'E', 40]];  // the rest lead to areas not built yet
 function findConnection(mapId, dir, p) {
   const edge = { 8: 'N', 2: 'S', 4: 'W', 6: 'E' }[dir];
   let first = null;
@@ -166,6 +167,10 @@ function wallMapCheck(x, y) {
 }
 function* worldScript(it, s) {
   let m;
+  if (s === 'pbDayCareMan' || s === 'pbDayCareHeal') {          // the old folk turn to face the player, then back to where they were
+    const ev = it && it.ev, d0 = ev && ev.dir; if (ev) faceEvent(ev, G.player);
+    try { return yield* worldScriptDayCare(s); } finally { if (ev) ev.dir = d0; }
+  }
   if (s === 'pbWallTownMap') { playSE('GUI_sel_decision'); yield* showMessage('It\'s a map of the region.'); G.uiGen = townMapScreen(); yield; return true; }
   if (s.startsWith('Kernel.pbExclaim')) {
     const mm = s.match(/events\[(\d+)\]/), te = mm ? G.events[+mm[1]] : null;
@@ -377,4 +382,56 @@ function drawLocation() {
   else { if (L.y < 0) L.y = Math.min(0, L.y + 4); L.frames++; }
   skinBox('skin_choice_1', 0, L.y, w, h);
   txt(L.name, 28, L.y + 14, { size: 26 });
+}
+
+// ---- Day Care: the Day Care Man trains one deposited Pokémon with play time, the Day Care Lady heals the party
+const DC_FRAMES_PER_EXP = 8;                                   // 1 exp every 8 frames of play time (7.5 exp / second)
+function dcGain() { const d = G.daycare; return d ? Math.floor((G.playFrames - d.t0) / DC_FRAMES_PER_EXP) : 0; }
+function dcLevelsAfter(d) {                                     // dry run: how many levels would the deposited mon gain?
+  const c = JSON.parse(JSON.stringify(d.mon)); const n = c.lvl; gainExp(c, dcGain()); return c.lvl - n;
+}
+function* worldScriptDayCare(s) {
+  if (s === 'pbDayCareHeal') {
+    yield* showMessage('Oh my, your Pokémon look tired. Let granny take a look at them, dear.');
+    const n = Math.max(1, G.party.length);
+    for (let i = 1; i <= n; i++) { playSE('ballshake'); for (let k = 0; k < 16; k++) yield; }
+    G.party.forEach(healMon); playME('Pkmn healing');
+    yield* showMessage('There, all better! Your Pokémon are in perfect health.'); return true;
+  }
+  if (s !== 'pbDayCareMan') return false;
+  const d = G.daycare;
+  if (!d) {
+    yield* showMessage("I'm the Day Care Man. I can raise a Pokémon for you while you're out adventuring.");
+    yield* showMessage('Would you like me to raise one of your Pokémon?', { noWait: true });
+    if ((yield* showChoices(['Yes', 'No'], 2)) !== 0) { yield* showMessage('Fine, fine. Come back if you change your mind.'); return true; }
+    if (G.party.length < 2) { yield* showMessage("Hmm... you only have one Pokémon with you. If I take it, you'll have nobody to travel with!"); return true; }
+    yield* showMessage('Which Pokémon should I raise?');
+    G.temp.dcPick = -1;
+    G.uiGen = (function* () { G.temp.dcPick = yield* partyScreen({ mode: 'choose', text: 'Which Pokémon should I raise?' }); })(); yield;
+    const i = G.temp.dcPick;
+    if (i == null || i < 0) { yield* showMessage('Fine, fine. Come back if you change your mind.'); return true; }
+    const mon = G.party[i];
+    if (G.party.filter((q, j) => j !== i && q.hp > 0).length === 0) { yield* showMessage("If I take " + pokeName(mon) + ", you'd have no Pokémon able to battle!"); return true; }
+    G.party.splice(i, 1); G.daycare = { mon, t0: G.playFrames };
+    yield* showMessage("All right, I'll raise " + pokeName(mon) + '. The longer you leave it with me, the stronger it will get!');
+    yield* showMessage('Come back whenever you want it back.'); return true;
+  }
+  const mon = d.mon, lv = d.mon.lvl, gain = dcLevelsAfter(d);
+  yield* showMessage('Ah, ' + G.name + '! Your ' + pokeName(mon) + ' is doing great.');
+  yield* showMessage(gain > 0 ? 'It has grown by ' + gain + ' level' + (gain > 1 ? 's' : '') + ' since you left it with me!' : "It hasn't grown much yet. Give it a little more time.");
+  yield* showMessage('Do you want to take ' + pokeName(mon) + ' back?', { noWait: true });
+  if ((yield* showChoices(['Take it back', 'Leave it'], 2)) !== 0) { yield* showMessage("All right, I'll keep looking after it."); return true; }
+  if (G.party.length >= 6) { yield* showMessage('Your party is full! Make some room first.'); return true; }
+  const res = gainExp(mon, dcGain()); const learn = [];
+  for (const r of res) for (const mv of r.learn) learn.push(mv);
+  for (const id of learn) {                                    // the day care keeps the four newest moves
+    if (!D.MV[id] || mon.moves.some(x => x.id === id)) continue;
+    if (mon.moves.length >= 4) mon.moves.shift();
+    mon.moves.push(newMoveSlot(id));
+  }
+  mon.evoCheck = false; mon.hp = Math.min(mon.maxhp, Math.max(1, mon.hp));
+  G.daycare = null; G.party.push(mon);
+  playME('Item_get');
+  yield* showMessage(G.name + ' took back ' + pokeName(mon) + (mon.lvl > lv ? ', now Lv. ' + mon.lvl + '!' : '.'));
+  return true;
 }

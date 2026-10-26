@@ -140,7 +140,7 @@ function getSwitch(id, ev) {
   return !!G.switches[id];
 }
 function setSwitch(id, v) { G.switches[id] = v; G.refresh = true; }
-function badgeCount() { return [260, 261].filter(k => getSwitch(k)).length; }   // 260 Pewter prize, 261 Cerulean prize
+function badgeCount() { return [260, 261, 262].filter(k => getSwitch(k)).length; }   // 260 Pewter prize, 261 Cerulean prize, 262 Saffron prize
 function getVar(id) { return G.vars[id] || 0; }
 function setVar(id, v) { G.vars[id] = v; G.refresh = true; }
 function selfKey(mapId, evId, ch) { return mapId + '_' + evId + '_' + ch; }
@@ -508,7 +508,7 @@ function* promptName(label, def, max) {
 
 // ------------------------------------------------------------ interpreter
 class Interp {
-  constructor(list, ev) { this.list = list; this.ev = ev; this.gen = this.run(); this.done = false; }
+  constructor(list, ev) { this.list = list; this.ev = ev; this.gen = this.run(); this.done = false; if (G.player) { G.player.speed = 3; G.player.sheetOverride = null; } }   // cutscenes always start at walking pace (not mid-run)
   update() { if (this.done) return; const r = this.gen.next(); if (r.done) this.done = true; }
   evChr(id) {
     if (id === -1) return G.player;
@@ -675,12 +675,12 @@ class Interp {
       if (e) { const dx = e.x - pl.x, dy = e.y - pl.y; pl.turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 4) : (dy > 0 ? 2 : 8)); }
       return;
     }
-    if ((m = s.match(/^pbAddPokemon\(:(\w+),(\d+)\)/))) { const mon = makeMon(symOf(m[1]), +m[2]); if (!G.party.length && !G.starterName) G.starterName = mon.name; G.party.push(mon); return; }
+    if ((m = s.match(/^pbAddPokemon\(:(\w+),(\d+)\)/))) { const mon = makeMon(symOf(m[1]), +m[2]); if (!G.party.length && !G.starterName) G.starterName = mon.name; if (G.party.length >= 6) { pcAdd(mon); G.owned = G.owned || {}; G.owned[mon.sym] = true; yield* showMessage(pokeName(mon) + ' was sent to the PC because your party is full.'); return; } G.party.push(mon); return; }
     if ((m = s.match(/^\$Trainer\.party\[-1\]\.pbLearnMove\(:(\w+)\)/))) {
       const mon = G.party[G.party.length - 1]; if (mon && D.MV[m[1]] && !mon.moves.some(x => x.id === m[1])) { const slot = newMoveSlot(m[1]); if (mon.moves.length < 4) mon.moves.push(slot); else mon.moves[3] = slot; }
       return;
     }
-    if (/^pb(RemoveDependency2|DeregisterPartner|CaveExit)/.test(s)) return;
+    if (/^pb(RemoveDependency2|DeregisterPartner|CaveExit|CaveEntrance)/.test(s)) return;
     if (s === 'pbHealAll') { G.party.forEach(healMon); return; }
     if (s === '$PokemonGlobal.runningShoes=true') { G.runningShoes = true; return; }
     if ((m = s.match(/^pbMEPlay\("([^"]+)"/))) { playME(m[1]); return; }
