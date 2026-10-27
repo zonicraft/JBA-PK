@@ -9,7 +9,7 @@ const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [5, 'E', 120, 311, 'W', 0], [32, 'S', 59, 5, 'N', 0], [32, 'E', 0, 7, 'W', 6], [43, 'S', 2, 7, 'N', 0], [43, 'N', 0, 87, 'S', 2], [2, 'S', 0, 310, 'N', 0], [311, 'W', 0, 2, 'E', 80],
   [87, 'E', 15, 79, 'W', 0], [79, 'N', 0, 95, 'S', 0], [79, 'E', 0, 110, 'W', 30], [95, 'E', 0, 110, 'W', 6], [100, 'W', 0, 110, 'E', 0],
   [109, 'S', 4, 100, 'N', 0], [100, 'N', 36, 111, 'S', 0], [109, 'E', 0, 111, 'W', 1], [111, 'S', 0, 110, 'N', 121],
-  [114, 'N', 0, 100, 'S', 0], [114, 'W', 0, 110, 'E', 40]];  // the rest lead to areas not built yet
+  [114, 'N', 0, 100, 'S', 0], [114, 'W', 0, 110, 'E', 40], [120, 'S', 0, 122, 'N', 2], [129, 'W', 0, 122, 'E', 6]];  // the rest lead to areas not built yet
 function findConnection(mapId, dir, p) {
   const edge = { 8: 'N', 2: 'S', 4: 'W', 6: 'E' }[dir];
   let first = null;
@@ -106,7 +106,7 @@ function* cutTreeCheck() {
   yield* showMessage('Would you like to cut it?', { noWait: true });
   const i = yield* showChoices(['Yes', 'No'], 2);
   if (i !== 0) return false;
-  yield* showMessage('\\PN used the Manyullyn Katana!', { noWait: true }); playSE('Cut'); for (let k = 0; k < 40; k++) yield;
+  yield* showMessage('\\PN used the Manyullyn Katana!', { noWait: true }); playSE('Cut'); for (let k = 0; k < 40; k++) yield; G.msg = null;
   return true;
 }
 
@@ -162,7 +162,7 @@ function pcAll() { const l = (G.box || []).slice(); if (G.pc) for (const b of G.
 
 // ---- the region map on the wall of the Poké Center / Mart building
 function wallMapCheck(x, y) {
-  if (![354, 355, 356, 357].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
+  if (![354, 355, 356, 357, 358].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
   G.main = new Interp([[355, 0, ['pbWallTownMap']], [0, 0, []]], null); return true;
 }
 function* worldScript(it, s) {

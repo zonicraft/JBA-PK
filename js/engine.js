@@ -91,7 +91,7 @@ function cry(id) { try { const a = new Audio('assets/cries/' + String(id).padSta
 // ------------------------------------------------------------ input
 const KEYMAP = {
   ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right',
-  z: 'ok', Z: 'ok', Enter: 'ok', ' ': 'ok', c: 'ok', C: 'ok', x: 'back', X: 'back', Escape: 'menu', m: 'menu', M: 'menu', Tab: 'menu', Shift: 'run'
+  z: 'ok', Z: 'ok', Enter: 'ok', ' ': 'ok', c: 'ok', C: 'ok', x: 'back', X: 'back', Escape: 'menu', m: 'menu', M: 'menu', Tab: 'menu', Shift: 'run', b: 'bike', B: 'bike'
 };
 const keys = { held: {}, pressed: {} };
 keys.kb = {};
@@ -117,10 +117,10 @@ function pollPad() {
   if (gp) {
     const b = i => !!(gp.buttons[i] && gp.buttons[i].pressed), ax = gp.axes[0] || 0, ay = gp.axes[1] || 0;
     now.up = b(12) || ay < -0.5; now.down = b(13) || ay > 0.5; now.left = b(14) || ax < -0.5; now.right = b(15) || ax > 0.5;
-    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1);
+    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1); now.bike = b(4) || b(5);   // LB / RB: Skateboard
     const yb = b(3); if (yb && !PAD.yDown) toggleFullscreen(); PAD.yDown = yb;
   }
-  for (const k of ['up', 'down', 'left', 'right', 'ok', 'back', 'menu', 'run']) {
+  for (const k of ['up', 'down', 'left', 'right', 'ok', 'back', 'menu', 'run', 'bike']) {
     const n = !!now[k], p = !!PAD.prev[k];
     if (n && !p) { if (!keys.held[k] && k !== 'run') keys.pressed[k] = true; keys.held[k] = true; if (k === 'back') keys.held.run = true; }
     else if (!n && p) { if (!keys.kb[k]) keys.held[k] = false; if (k === 'back' && !keys.kb.back) keys.held.run = false; if (k === 'run' && !keys.kb.back && !now.back) keys.held.run = false; }
@@ -140,7 +140,14 @@ function getSwitch(id, ev) {
   return !!G.switches[id];
 }
 function setSwitch(id, v) { G.switches[id] = v; G.refresh = true; }
-function badgeCount() { return [260, 261, 262].filter(k => getSwitch(k)).length; }   // 260 Pewter prize, 261 Cerulean prize, 262 Saffron prize
+// Skateboard (the Bike): can be used everywhere
+function bikeAllowed() { return true; }
+function toggleBike() {   // B key / LB / RB
+  if (!(G.items.BICYCLE > 0)) return;
+  if (G.biking) { G.biking = false; return; }
+  if (bikeAllowed()) G.biking = true; else G.bikeMsg = 'You can\'t use the Skateboard here.';
+}
+function badgeCount() { return [260, 261, 262, 263].filter(k => getSwitch(k)).length; }   // 260 Pewter, 261 Cerulean, 262 Saffron, 263 Vermilion (Wuant mixtape)
 function getVar(id) { return G.vars[id] || 0; }
 function setVar(id, v) { G.vars[id] = v; G.refresh = true; }
 function selfKey(mapId, evId, ch) { return mapId + '_' + evId + '_' + ch; }
@@ -312,6 +319,10 @@ class EventChr extends Chr {
       const ds = this.page.route.list.filter(c => c[0] >= 16 && c[0] <= 19).map(c => ({ 16: 2, 17: 4, 18: 6, 19: 8 })[c[0]]);
       if (ds.length) { if (this.lookWait === undefined || this.lookPage !== this.page) { this.lookPage = this.page; this.lookIdx = 0; this.lookWait = 60; }
         if (--this.lookWait <= 0) { this.lookIdx = (this.lookIdx + 1) % ds.length; this.turn(ds[this.lookIdx]); this.lookWait = 60; } }
+    }
+    if (this.page && this.page.moveType === 5 && this.page.route && !G.main && !G.msg && !G.battle && !this.moving && !this.forcing) {   // patrol: walk the page's move route in a loop
+      const rl = this.page.route.list.filter(c => c[0] >= 1 && c[0] <= 4);
+      if (rl.length) { this.patI = (this.patI || 0) % rl.length; if (this.moveDir({ 1: 2, 2: 4, 3: 6, 4: 8 }[rl[this.patI][0]])) this.patI++; }
     }
     if (this.page && this.page.moveType === 1 && !this.moving && !this.forcing && !G.main && !G.msg) {
       if (--this.randWait <= 0) { this.moveDir([2, 4, 6, 8][Math.floor(Math.random() * 4)]); this.randWait = 20 + Math.floor(Math.random() * 40); }
@@ -738,6 +749,8 @@ function update() {
     if (c.parallel) { c.parallel.update(); if (c.parallel.done && c.page) c.parallel = new Interp(c.page.list, c); }
   }
   if (G.refresh) { G.refresh = false; G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
+  if (G.biking && !bikeAllowed()) G.biking = false;
+  if (G.bikeMsg && !G.main && !G.msg && !G.main) { const m = G.bikeMsg; G.bikeMsg = null; G.main = new Interp([[101, 0, [m]], [0, 0, []]], null); }
   // autorun
   if (!G.main && !G.msg && !G.battle && !G.trans && !G.frozen) {
     for (const c of G.chars) { if (c.page && !c.erased && c.page.trigger === 3) { startEvent(c); break; } }
@@ -761,6 +774,7 @@ function update() {
   if (!busy && !p.moving) {
     if (trainerSight()) { keys.pressed = {}; return; }
     if (pressed('menu')) { openPause(); keys.pressed = {}; return; }
+    if (pressed('bike')) { toggleBike(); keys.pressed = {}; return; }
     const run = held('run') && G.runningShoes;
     let moved = false, anyDir = false;
     for (const [k, d] of [['down', 2], ['left', 4], ['right', 6], ['up', 8]]) {
@@ -768,7 +782,7 @@ function update() {
         anyDir = true;
         if (p.dir !== d) { p.dir = d; p.turnWait = 7; p.bumped = false; break; }      // tap = just turn
         if (p.turnWait > 0) { p.turnWait--; break; }                                  // keep holding to walk
-        p.speed = run ? 4 : 3; p.sheetOverride = run ? 'boy_run' : null;
+        p.speed = G.biking ? 5 : run ? 4 : 3; p.sheetOverride = G.biking ? 'boy_bike' : run ? 'boy_run' : null;
         if (d !== 8 && typeof ledgeJump === 'function' && ledgeJump(p, d)) { moved = true; p.bumped = false; }
         else if (p.moveDir(d)) { moved = true; p.bumped = false; }
         else if (!p.bumped) { p.bumped = true; if (!checkBump(d)) sfx('bump'); }
@@ -778,7 +792,9 @@ function update() {
     if (!anyDir) { p.turnWait = 0; p.bumped = false; }
     if (!moved && pressed('ok') && !(G.lock && G.lock.ok)) checkAction();
   }
-  if (!p.moving && !p.forcing && !keys.held.run) p.sheetOverride = null;
+  if (G.biking) p.sheetOverride = 'boy_bike';
+  else if (!p.moving && !p.forcing && !keys.held.run) p.sheetOverride = null;
+  else if (p.sheetOverride === 'boy_bike') p.sheetOverride = null;
   keys.pressed = {};
 }
 
@@ -841,7 +857,7 @@ function drawChr(c, cx, cy) {
   const name = c.gname; if (!name) return;
   const im = img('characters', name); if (!im) return;
   const fw = im.width / 4, fh = im.height / 4;
-  const row = { 2: 0, 4: 1, 6: 2, 8: 3 }[c.dir];
+  const row = (name === 'boy_bike' ? { 2: 0, 4: 2, 6: 2, 8: 3 } : { 2: 0, 4: 1, 6: 2, 8: 3 })[c.dir];
   const px = Math.round(c.rx + 16 - fw / 2 - cx), py = Math.round(c.ry + 32 - fh - cy);
   ctx.globalAlpha = c.opacity / 255;
   let yo = 0;

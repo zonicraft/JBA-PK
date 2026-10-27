@@ -153,6 +153,9 @@ function* useMove(us, mi) {
   if (user.status === 'PAR' && rnd(4) === 0) { yield* bmsg(mname(us) + ' is fully paralyzed! It can\'t move!'); return; }
   if (slot) slot.pp = Math.max(0, slot.pp - 1);
   yield* bmsg(mname(us) + ' used ' + md.name + '!', { hold: 12 });
+  if (B.scripted && us === 1) {   // scripted loss: every attack the foe makes knocks out the target in one hit
+    yield* attackAnim(us, md); tgt.hp = 0; sfx('hitsuper'); sprOf(ts).shk = 18; yield* animHp(ts, 0); return;
+  }
   if (md.fn === '0AA') {
     if (rnd(Math.pow(3, S.protectN)) === 0) { yield* attackAnim(us, md, true); S.protect = true; S.protectN++; yield* bmsg(mname(us) + ' protected itself!'); } else { S.protectN = 0; yield* bmsg('But it failed!'); }
     return;
@@ -173,7 +176,7 @@ function* useMove(us, mi) {
       yield* attackAnim(us, md);
       if (r.eff === 0) { yield* bmsg('It doesn\'t affect ' + mname(ts) + '...'); return; }
       eff1 = r.eff; hits++;
-      tgt.hp = Math.max(0, tgt.hp - r.dmg);
+      tgt.hp = B.scripted ? Math.max(1, tgt.hp - r.dmg) : Math.max(0, tgt.hp - r.dmg);
       sfx(r.eff > 1 ? 'hitsuper' : r.eff < 1 ? 'hitweak' : 'hit'); sprOf(ts).shk = 18;
       yield* animHp(ts, tgt.hp);
       if (crit) yield* bmsg('A critical hit!', { hold: 12 });
@@ -213,6 +216,7 @@ function* endOfTurn() {
     }
   }
   B.S.forEach(s => { s.protect = false; s.flinch = false; });
+  if (B.scripted && B.foe.hp < 1) B.foe.hp = 1;
 }
 function* faint(s) {
   const B = B_(); const sp = sprOf(s);
@@ -486,7 +490,7 @@ function* handleFaint(s) {
     }
     yield* bmsg(B.trainer.name + ' sent out ' + pokeName(next) + '!', { hold: 6 }); yield* sendOut(1);
   } else {
-    if (!hasUsable(B.meParty)) { B.result = 'lose'; return; }
+    if (!hasUsable(B.meParty)) { B.result = B.scripted ? 'scripted' : 'lose'; return; }
     B.msg = null;
     const r = yield* partyScreen({ mode: 'battle', text: 'Use which Pokémon next?', noCancel: true, activeIdx: -1 });
     B.me = B.meParty[r]; yield* bmsg('Go! ' + pokeName(B.me) + '!', { hold: 6 }); yield* sendOut(0);
@@ -553,6 +557,8 @@ function* battleMain(B) {
     if (B.endText) yield* bmsg(B.trainer.name + ': ' + B.endText, { pause: true });
     const money = B.trainer.money * Math.max(...B.foeParty.map(p => p.lvl));
     G.money += money; yield* bmsg(G.name + ' got $' + money + ' for winning!', { pause: true });
+  } else if (B.result === 'scripted') {
+    yield* bmsg(G.name + ' is out of usable Pokémon!', { pause: true });
   } else if (B.result === 'lose') {
     yield* bmsg(G.name + ' is out of usable Pokémon!', { pause: true });
     if (trainer) { const lost = Math.min(G.money, B.trainer.money * Math.max(...B.foeParty.map(p => p.lvl))); G.money -= lost; yield* bmsg(G.name + ' paid $' + lost + ' to the winner...', { pause: true }); }
@@ -568,7 +574,7 @@ function* runBattle(B) {
   playBGM(B.bgm || 'frlg_trainerbattle', 0.6);
   B.gen = battleMain(B);
   while (G.battle) yield;
-  G.battleResult = (B.result === 'win' || B.result === 'caught') ? 'win' : B.result === 'ran' ? 'ran' : 'lose';
+  G.battleResult = (B.result === 'win' || B.result === 'caught') ? 'win' : B.result === 'ran' ? 'ran' : B.result === 'scripted' ? 'scripted' : 'lose';
   stopME(); stopBGM(); if (G.map && G.map.bgm) playBGM(G.map.bgm);
   G.keepDir = true;   // keep walking if a direction is still held when the battle ends
   if (G.battleResult !== 'lose') { const q = G.party.filter(p => p.evoCheck && p.hp >= 0 && evoTarget(p)); G.party.forEach(p => { p.evoCheck = false; }); if (q.length) { G.uiGen = evolveScene(q); yield; } }
@@ -620,6 +626,7 @@ function* runTrainerBattle(script) {
   if (tr) foeParty = tr.p.map(([sym, lvl, , mv]) => mkPoke(sym, lvl, { moves: mv.filter(x => D.MV[x]).length ? mv.filter(x => D.MV[x]) : undefined, ot: rival }));
   else { const sp = { 1: 'RORY', 2: 'HIZUNA', 3: 'ILLYA' }[G.vars[202] || 1]; foeParty = [mkPoke(sp, 5, { moves: ['TACKLE', 'GROWL'], ot: rival })]; }
   const B = mkBattle({ kind: 'trainer', foeParty, trainer: { name: rival, money: tt.money, sprite: 'trainer' + String(tt.id).padStart(3, '0') }, bg: bgFor(G.mapId), endText });
+  if (tr && tr.scripted) B.scripted = true;
   yield* runBattle(B);
 }
 function* runWildBattle(sym, lvl) {
