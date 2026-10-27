@@ -4,8 +4,8 @@
 some places are not using the correct fight backgrounds
 can you add more trainer variety? grab assets from the essential project and change some of the already placed npcs
 the script for the kid after jorge leaves pewter gym is kinda weird
+when geso tries to stop jorge from leaving pewter from the right, geso doesnt look at jorge when he stops walking
 
 to check in a new run:
 bag of potatos doesnt have icon, create a placeholder
-does geso take his parcel on the story?
 
