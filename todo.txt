@@ -1,11 +1,17 @@
-
+the tips on the starting room are not correct and the pc doesnt work
+on the git sites deployment the game has trouble loading the assets
+feature to download the save
+the basic repel should be available on the mart with 0 badges
+the cheats should have a way to give the player pokemon
+some items dont have icons
+bike icon instead of skateboard
+animations of moves the cover the screen, example: psychic and draining kiss, look weird because the image that covers the screen moves
 
 
 some places are not using the correct fight backgrounds
 can you add more trainer variety? grab assets from the essential project and change some of the already placed npcs
-the script for the kid after jorge leaves pewter gym is kinda weird
-when geso tries to stop jorge from leaving pewter from the right, geso doesnt look at jorge when he stops walking
+
 
 to check in a new run:
 bag of potatos doesnt have icon, create a placeholder
-
+is the paysafe from vski an item
