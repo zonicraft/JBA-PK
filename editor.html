@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JBA PK Editor</title>
+<style>
+  :root{--bg:#14171c;--panel:#1b2027;--panel2:#242c37;--line:#323e4d;--txt:#e6ecf4;--dim:#93a1b4;--acc:#5aa0ff;--ok:#4cc38a;--warn:#e5a93d;--bad:#ef6b6b}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:15px/1.45 system-ui,Segoe UI,sans-serif}
+  button,input,select,textarea{font:inherit;color:inherit;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 9px}
+  button{cursor:pointer}button:hover{border-color:var(--acc)}
+  button.primary{background:#23446e;border-color:var(--acc)}
+  button:disabled{opacity:.4;cursor:default}
+  input.bad{border-color:var(--bad);background:#3a1c1c}
+  #app{display:grid;grid-template-rows:auto 1fr auto;height:100%}
+  header{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+  header .sp{flex:1}
+  header label{color:var(--dim);display:flex;gap:4px;align-items:center}
+  header input.w{width:220px}header input.s{width:100px}
+  main{display:grid;grid-template-columns:220px minmax(300px,1fr) 580px;min-height:0}
+  .col{overflow:auto;min-height:0;border-right:1px solid var(--line)}
+  .col:last-child{border-right:0}
+  #maps .row{padding:6px 10px;cursor:pointer;display:flex;gap:6px;border-bottom:1px solid #20262e}
+  #maps .row:hover{background:var(--panel2)}
+  #maps .row.sel{background:#1f3350}
+  #maps .id{color:var(--dim);width:34px;flex:none;text-align:right}
+  #maps .dot{color:var(--warn);margin-left:auto}
+  .search{padding:8px;position:sticky;top:0;background:var(--bg);z-index:2;display:grid;gap:6px}
+  .search input{width:100%}
+  #hits{padding:0 8px 8px}
+  #hits .hit{padding:4px 6px;border-radius:4px;cursor:pointer;color:var(--dim);font-size:13px}
+  #hits .hit:hover{background:var(--panel2);color:var(--txt)}
+  #hits b{color:var(--txt)}
+  #mapwrap{padding:12px}
+  #mapinfo{color:var(--dim);margin-bottom:8px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  #mapinfo b{color:var(--txt)}
+  #mapinfo label{display:flex;gap:4px;align-items:center;cursor:pointer}
+  #mapinfo select{padding:2px 6px}
+  canvas{background:#0d0f12;border:1px solid var(--line);display:block;cursor:crosshair}
+  #evpanel{padding:12px}
+  .field{display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap}
+  .field label{color:var(--dim)}
+  input.mini,select.mini{padding:2px 6px;width:62px;background:#1a2028}
+  select.mini{width:auto}
+  input.wide{flex:1;min-width:140px}
+  .tabs{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0}
+  .tabs button.on{background:#1f3350;border-color:var(--acc)}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:8px 0}
+  .box .t{color:var(--dim);margin-bottom:4px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+  .summary{color:var(--dim);font-size:13px;margin:4px 0 8px}
+  /* commands */
+  .cmd{display:flex;align-items:flex-start;gap:8px;padding:6px 8px;margin:3px 0;border-left:4px solid var(--c,#555);background:var(--panel);border-radius:0 6px 6px 0}
+  .cmd.sel{outline:2px solid var(--acc)}
+  .cmd .body{flex:1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0}
+  .cmd .body textarea{flex:1 1 100%;min-height:34px;resize:vertical;line-height:1.35}
+  .cmd textarea.speech{background:#eef2f7;color:#1a2230;border-color:#b9c4d4;font-size:15px}
+  .cmd textarea.code{font:13px ui-monospace,Consolas,monospace;background:#12161b}
+  .cmd .ctl{display:flex;gap:2px;flex:none;opacity:.3}
+  .cmd:hover .ctl{opacity:1}
+  .cmd .ctl button{padding:0 6px;line-height:22px;font-size:12px}
+  .cmd .raw{flex:1 1 100%;font:12px ui-monospace,Consolas,monospace}
+  .cmd.dim{background:transparent;color:var(--dim);padding:1px 8px;font-size:12px}
+  .k-text{--c:#6fb3ff}.k-flow{--c:#e5a93d}.k-var{--c:#b69cff}.k-move{--c:#6fd6a8}.k-misc{--c:#667}.k-sys{--c:#ff9d9d}
+  .tag{background:#12161b;border:1px solid var(--line);border-radius:10px;padding:0 8px;font-size:13px;color:var(--dim)}
+  .pill{border-radius:10px;padding:0 8px;font-size:12px;font-weight:600;color:#10141a}
+  .chips{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
+  .chip{background:#12161b;border:1px solid var(--line);border-radius:5px;padding:0 6px;font-size:13px}
+  .routebox{flex:1 1 100%;background:#12161b;border:1px solid var(--line);border-radius:8px;padding:8px}
+  .routebox .chip{cursor:pointer}.routebox .chip:hover{border-color:var(--bad)}
+  .routebox button{padding:1px 9px}
+  #status{padding:6px 12px;border-top:1px solid var(--line);background:var(--panel);color:var(--dim);min-height:32px}
+  #status.err{color:var(--bad)}#status.ok{color:var(--ok)}
+  #welcome{padding:30px;max-width:640px;color:var(--dim)}
+  #welcome h2{color:var(--txt);margin-top:0}
+  kbd{background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:0 4px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <button id="btnOpen" class="primary">Open game folder…</button>
+    <button id="btnReopen" style="display:none"></button>
+    <button id="btnSave" disabled>Save map (Ctrl+S)</button>
+    <button id="btnRevert" disabled>Revert map</button>
+    <span class="sp"></span>
+    <label>Game page <input id="gameUrl" class="w" value="../JBA Pokemon HTML/index.html" title="Path or URL of the game's index.html, relative to this editor"></label>
+    <label>Variables <input id="tVars" class="s" placeholder="201:5,3:2" title="Set before testing: id:value, comma separated"></label>
+    <label>Switches ON <input id="tSw" class="s" placeholder="12,14" title="Switch ids turned ON before testing"></label>
+    <button id="btnTest" class="primary" disabled>▶ Test here</button>
+  </header>
+  <main>
+    <div class="col" id="maps">
+      <div class="search"><input id="mapSearch" placeholder="Filter maps (id or name)…"><input id="textSearch" placeholder="Search all dialogue/scripts, Enter…"></div>
+      <div id="hits"></div>
+      <div id="maplist"></div>
+    </div>
+    <div class="col" id="mapwrap">
+      <div id="welcome">
+        <h2>JBA PK Editor</h2>
+        Click <b>Open game folder…</b> and choose your <code>JBA Pokemon HTML</code> folder, then allow editing when the browser asks.
+        <p>Pick a map on the left. You'll see the real tiles and character sprites. Click an event to edit it; its movement paths are drawn on the map. Click an empty tile and use <b>Add event here</b> to make a new one. Press <kbd>Ctrl</kbd>+<kbd>S</kbd> to save. A backup of each map is stored in <code>_editor_backups</code> the first time you save it each day.</p>
+        <p>Works in Chrome and Edge.</p>
+      </div>
+      <div id="mapinfo"></div>
+      <canvas id="cv" style="display:none"></canvas>
+    </div>
+    <div class="col" id="evpanel"></div>
+  </main>
+  <div id="status">Ready.</div>
+</div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const TS = 32; // pixel size of a tile (same as the game)
+const pad3 = n => String(n).padStart(3, '0');
+const el = (tag, props = {}, kids = []) => { const n = Object.assign(document.createElement(tag), props); (Array.isArray(kids) ? kids : [kids]).forEach(k => k != null && n.append(k)); return n; };
+
+// ------------------------------------------------------------------ state
+const S = { dir: null, data: null, ids: [], names: {}, tilesets: {}, maps: {}, cur: null, ev: null, page: 0, cell: null, cmdSel: -1,
+  backedUp: {}, open: new Set(), zoom: 1, paths: true, allPaths: false, grid: true };
+const curMap = () => S.maps[S.cur];
+function status(msg, cls) { const e = $('#status'); e.textContent = msg; e.className = cls || ''; }
+
+// ------------------------------------------------------------------ remembered folder (IndexedDB) + settings
+const idb = {
+  open() { return new Promise((res, rej) => { const r = indexedDB.open('jba-pk-editor', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); },
+  async get(k) { try { const db = await this.open(); return await new Promise(res => { const r = db.transaction('kv').objectStore('kv').get(k); r.onsuccess = () => res(r.result); r.onerror = () => res(null); }); } catch (e) { return null; } },
+  async set(k, v) { try { const db = await this.open(); await new Promise(res => { const t = db.transaction('kv', 'readwrite'); t.objectStore('kv').put(v, k); t.oncomplete = () => res(); t.onerror = () => res(); }); } catch (e) { } },
+};
+const lsGet = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } };
+
+// ------------------------------------------------------------------ game assets (read straight from the game folder)
+let imgCache = {}, imgSync = {}, repaintTimer = 0;
+function loadImg(dir, name) {
+  const key = dir + '/' + name;
+  if (imgCache[key]) return imgCache[key];
+  return imgCache[key] = (async () => {
+    try {
+      let d = await (await S.dir.getDirectoryHandle('assets')).getDirectoryHandle(dir);
+      const parts = name.split('/'); for (let i = 0; i < parts.length - 1; i++) d = await d.getDirectoryHandle(parts[i]);
+      const file = await (await d.getFileHandle(parts[parts.length - 1] + '.png')).getFile();
+      const url = URL.createObjectURL(file);
+      const im = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = url; });
+      if (im) imgSync[key] = im; return im;
+    } catch (e) { return null; }
+  })();
+}
+function imgNow(dir, name) {   // returns the image if loaded, otherwise starts loading and repaints the map when it arrives
+  const key = dir + '/' + name; if (imgSync[key]) return imgSync[key];
+  if (!imgCache[key]) loadImg(dir, name).then(() => { clearTimeout(repaintTimer); repaintTimer = setTimeout(renderMap, 30); });
+  return null;
+}
+
+// ---- tile drawing (copied from the game so the maps look the same)
+const AUTOTILES = [
+  [[27, 28, 33, 34], [5, 28, 33, 34], [27, 6, 33, 34], [5, 6, 33, 34], [27, 28, 33, 12], [5, 28, 33, 12], [27, 6, 33, 12], [5, 6, 33, 12]],
+  [[27, 28, 11, 34], [5, 28, 11, 34], [27, 6, 11, 34], [5, 6, 11, 34], [27, 28, 11, 12], [5, 28, 11, 12], [27, 6, 11, 12], [5, 6, 11, 12]],
+  [[25, 26, 31, 32], [25, 6, 31, 32], [25, 26, 31, 12], [25, 6, 31, 12], [15, 16, 21, 22], [15, 16, 21, 12], [15, 16, 11, 22], [15, 16, 11, 12]],
+  [[29, 30, 35, 36], [29, 30, 11, 36], [5, 30, 35, 36], [5, 30, 11, 36], [39, 40, 45, 46], [5, 40, 45, 46], [39, 6, 45, 46], [5, 6, 45, 46]],
+  [[25, 30, 31, 36], [15, 16, 45, 46], [13, 14, 19, 20], [13, 14, 19, 12], [17, 18, 23, 24], [17, 18, 11, 24], [41, 42, 47, 48], [5, 42, 47, 48]],
+  [[37, 38, 43, 44], [37, 6, 43, 44], [13, 18, 19, 24], [13, 14, 43, 44], [37, 42, 43, 48], [17, 18, 47, 48], [13, 18, 43, 48], [1, 2, 7, 8]],
+];
+function drawTile(g, tsImg, ats, tid, dx, dy) {
+  if (tid < 48) return;
+  if (tid < 384) {
+    const at = Math.floor(tid / 48) - 1, pat = tid % 48, im = ats[at]; if (!im) return;
+    if (im.height <= 32) { g.drawImage(im, 0, 0, 32, 32, dx, dy, 32, 32); return; }
+    const q = AUTOTILES[Math.floor(pat / 8)][pat % 8];
+    for (let k = 0; k < 4; k++) { const num = q[k] - 1; g.drawImage(im, (num % 6) * 16, Math.floor(num / 6) * 16, 16, 16, dx + (k % 2) * 16, dy + Math.floor(k / 2) * 16, 16, 16); }
+  } else if (tsImg) { const id = tid - 384; g.drawImage(tsImg, (id % 8) * 32, Math.floor(id / 8) * 32, 32, 32, dx, dy, 32, 32); }
+}
+async function buildBase(rec) {
+  const { w, h, data, tileset } = rec.obj, ts = S.tilesets[tileset];
+  const cv = document.createElement('canvas'); cv.width = w * TS; cv.height = h * TS; const g = cv.getContext('2d');
+  rec.base = cv; rec.tsImg = null; rec.ats = [];
+  if (!ts) { rec.note = 'tileset ' + tileset + ' not found in data/tilesets.js'; return; }
+  rec.tsImg = await loadImg('tilesets', ts.tileset);
+  rec.ats = await Promise.all((ts.autotiles || []).map(n => n ? loadImg('autotiles', n) : null));
+  if (!rec.tsImg) rec.note = 'tileset picture "' + ts.tileset + '" not found in assets/tilesets';
+  for (let z = 0; z < 3; z++) for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) drawTile(g, rec.tsImg, rec.ats, data[x + y * w + z * w * h] || 0, x * TS, y * TS);
+}
+
+// ------------------------------------------------------------------ command names / colours
+const CMD = {
+  0: ['End', 'k-misc'], 101: ['Text', 'k-text'], 401: ['Text (cont.)', 'k-text'], 102: ['Show choices', 'k-text'], 402: ['When choice', 'k-text'], 403: ['When cancel', 'k-text'], 404: ['End choices', 'k-text'],
+  103: ['Input number', 'k-text'], 104: ['Text options', 'k-text'], 105: ['Wait for button', 'k-text'], 106: ['Wait', 'k-flow'], 108: ['Comment', 'k-misc'], 408: ['Comment (cont.)', 'k-misc'],
+  111: ['If…', 'k-flow'], 411: ['Else', 'k-flow'], 412: ['End if', 'k-flow'], 112: ['Loop', 'k-flow'], 413: ['Repeat above', 'k-flow'], 113: ['Break loop', 'k-flow'],
+  115: ['Exit event', 'k-flow'], 116: ['Erase event', 'k-flow'], 117: ['Call common event', 'k-flow'], 118: ['Label', 'k-flow'], 119: ['Jump to label', 'k-flow'],
+  121: ['Set switch', 'k-var'], 122: ['Set variable', 'k-var'], 123: ['Self switch', 'k-var'], 124: ['Timer', 'k-var'], 125: ['Gold', 'k-var'], 126: ['Items', 'k-var'], 129: ['Party', 'k-var'],
+  201: ['Transfer player', 'k-move'], 202: ['Set event location', 'k-move'], 203: ['Scroll map', 'k-move'], 208: ['Player visibility', 'k-move'], 209: ['Move route', 'k-move'], 210: ['Wait for moves', 'k-move'], 509: ['Route step', 'k-move'],
+  221: ['Freeze screen', 'k-sys'], 222: ['Transition', 'k-sys'], 223: ['Screen tone', 'k-sys'], 224: ['Screen flash', 'k-sys'], 225: ['Screen shake', 'k-sys'],
+  231: ['Show picture', 'k-sys'], 232: ['Move picture', 'k-sys'], 235: ['Erase picture', 'k-sys'], 236: ['Weather', 'k-sys'],
+  241: ['Play BGM', 'k-sys'], 242: ['Fade BGM', 'k-sys'], 249: ['Play ME', 'k-sys'], 250: ['Play SE', 'k-sys'], 230: ['Wait (screen)', 'k-flow'],
+  301: ['Battle', 'k-move'], 302: ['Shop', 'k-move'], 303: ['Name input', 'k-move'], 314: ['Heal party', 'k-move'], 351: ['Call menu', 'k-sys'], 352: ['Save', 'k-sys'], 353: ['Game over', 'k-sys'],
+  355: ['Script', 'k-sys'], 655: ['Script (cont.)', 'k-sys'],
+};
+const TEMPLATES = [
+  ['💬 Dialogue', () => [101, ['']]], ['⏱ Wait', () => [106, [20]]], ['Turn switch on/off', () => [121, [1, 1, 0]]], ['Set variable', () => [122, [1, 1, 0, 0, 1]]],
+  ['Self switch', () => [123, ['A', 0]]], ['If / Otherwise', 'branch'], ['🚪 Teleport player', () => [201, [0, 1, 0, 0, 2, 0]]],
+  ['🚶 Move route', 'route'], ['Wait until moves finish', () => [210, []]], ['⚙ Script line', () => [355, ['']]], ['# Comment', () => [108, ['']]], ['Stop (exit event)', () => [115, []]], ['Other code…', 'custom'],
+];
+const NEW_PAGE = () => ({ cond: { sw1: null, sw2: null, var: null, self: null }, gfx: { name: '', dir: 2, pat: 0, tile: 0, opacity: 255 }, moveType: 0, speed: 3, freq: 3, route: { mr: 1, repeat: true, skip: false, list: [[0, []]] }, walk: true, step: false, dirfix: false, through: false, top: false, trigger: 0, list: [[0, 0, []]] });
+const DIRN = { 0: 'unchanged', 2: 'down ↓', 4: 'left ←', 6: 'right →', 8: 'up ↑' };
+const PALETTE = ['#ff6b6b', '#4cc38a', '#5aa0ff', '#e5a93d', '#b69cff', '#ff8ad8', '#5ee0e0', '#c0e05a'];
+
+// ------------------------------------------------------------------ opening a folder
+async function openFolder() {
+  try { await attach(await window.showDirectoryPicker({ mode: 'readwrite' })); }
+  catch (e) { if (e.name !== 'AbortError') status('Could not open folder: ' + e.message, 'err'); }
+}
+async function attach(h) {
+  try { S.data = await h.getDirectoryHandle('data'); }
+  catch (e) { status('That folder has no "data" subfolder. Pick the game folder (the one with index.html).', 'err'); return; }
+  S.dir = h; S.maps = {}; S.cur = null; S.ev = null; S.backedUp = {}; imgCache = {}; imgSync = {};
+  await idb.set('dir', h);
+  // reads the first {...} object assigned to window.<key> in a data file (the files can contain several assignments)
+  const readJs = async (name, key) => {
+    try {
+      const t = await (await (await S.data.getFileHandle(name)).getFile()).text(); let i = t.indexOf('window.' + key); i = t.indexOf('{', i);
+      let d = 0, str = false;
+      for (let j = i; j < t.length; j++) { const c = t[j]; if (str) { if (c === '\\') j++; else if (c === '"') str = false; } else if (c === '"') str = true; else if (c === '{') d++; else if (c === '}' && --d === 0) return JSON.parse(t.slice(i, j + 1)); }
+    } catch (e) { } return {};
+  };
+  S.names = await readJs('mapnames.js', 'MAPNAME'); S.tilesets = await readJs('tilesets.js', 'TILESETS');
+  S.ids = [];
+  for await (const [name, handle] of S.data.entries()) { const m = /^map(\d+)\.js$/.exec(name); if (m && handle.kind === 'file') S.ids.push(+m[1]); }
+  S.ids.sort((a, b) => a - b);
+  $('#welcome').style.display = 'none'; $('#btnReopen').style.display = 'none';
+  renderList(); renderAll();
+  status(`Loaded ${S.ids.length} maps from "${h.name}".`, 'ok');
+}
+
+// ------------------------------------------------------------------ map files
+async function loadMap(id) {
+  if (S.maps[id]) return S.maps[id];
+  const fh = await S.data.getFileHandle('map' + pad3(id) + '.js');
+  const text = await (await fh.getFile()).text();
+  const m = /^\s*\(\s*window\.MAPS\s*=\s*window\.MAPS\s*\|\|\s*\{\}\s*\)\s*\[\s*\d+\s*\]\s*=\s*/.exec(text);
+  if (!m) throw new Error('map' + pad3(id) + '.js is not in the expected format');
+  const body = text.slice(m[0].length).replace(/;\s*$/, '');
+  const obj = JSON.parse(body);
+  const rec = { id, fh, obj, dirty: false, reformat: JSON.stringify(obj) !== body };
+  if (!obj.events) obj.events = {};
+  S.maps[id] = rec; return rec;
+}
+async function selectMap(id, keepSel) {
+  try { await loadMap(id); } catch (e) { status('Could not load map ' + id + ': ' + e.message, 'err'); return; }
+  S.cur = id; if (!keepSel) { S.ev = null; S.page = 0; S.cell = null; } S.cmdSel = -1; S.open.clear();
+  const m = curMap(); if (!m.base) await buildBase(m);
+  renderList(); renderAll();
+  status(`Map ${id} loaded.` + (m.note ? ' (' + m.note + ')' : '') + (m.reformat ? ' Saving will change the file\'s formatting slightly (data stays identical).' : ''));
+}
+function normalise(obj) {
+  for (const ev of Object.values(obj.events || {})) for (const pg of ev.pages || []) {
+    if (!Array.isArray(pg.list)) pg.list = [];
+    const last = pg.list[pg.list.length - 1]; if (!last || last[0] !== 0) pg.list.push([0, 0, []]);
+    if (pg.route && Array.isArray(pg.route.list)) { const l = pg.route.list[pg.route.list.length - 1]; if (!l || l[0] !== 0) pg.route.list.push([0, []]); }
+  }
+}
+async function saveMap() {
+  const m = curMap(); if (!m || !m.dirty) return;
+  try {
+    normalise(m.obj);
+    const day = new Date().toISOString().slice(0, 10), key = m.id + day;
+    if (!S.backedUp[key]) {
+      const bdir = await S.dir.getDirectoryHandle('_editor_backups', { create: true });
+      const bname = `map${pad3(m.id)}_${day}.js`;
+      let exists = true; try { await bdir.getFileHandle(bname); } catch (e) { exists = false; }
+      if (!exists) { const orig = await (await m.fh.getFile()).text(); const w = await (await bdir.getFileHandle(bname, { create: true })).createWritable(); await w.write(orig); await w.close(); }
+      S.backedUp[key] = true;
+    }
+    const w = await m.fh.createWritable();
+    await w.write(`(window.MAPS=window.MAPS||{})[${m.id}]=${JSON.stringify(m.obj)};`); await w.close();
+    m.dirty = false; m.reformat = false; renderList(); updateButtons();
+    status(`Saved map ${m.id} (${new Date().toLocaleTimeString()}).`, 'ok');
+  } catch (e) { status('Save failed: ' + e.message, 'err'); }
+}
+async function revertMap() {
+  const m = curMap(); if (!m) return;
+  if (m.dirty && !confirm('Discard unsaved changes to this map?')) return;
+  const keepEv = S.ev, keepPg = S.page, base = m.base, tsImg = m.tsImg, ats = m.ats;
+  delete S.maps[m.id]; await loadMap(m.id); Object.assign(S.maps[m.id], { base, tsImg, ats });
+  S.cur = m.id; S.ev = curMap().obj.events[keepEv] ? keepEv : null; S.page = keepPg; renderList(); renderAll(); status('Map reloaded from disk.');
+}
+function touch() { const m = curMap(); if (!m) return; m.dirty = true; updateButtons(); renderList(); }
+function updateButtons() {
+  const m = curMap();
+  $('#btnSave').disabled = !(m && m.dirty); $('#btnRevert').disabled = !m; $('#btnTest').disabled = !m;
+  document.title = (m && m.dirty ? '● ' : '') + 'JBA PK Editor';
+}
+
+// ------------------------------------------------------------------ left column
+function renderList() {
+  const f = $('#mapSearch').value.trim().toLowerCase(), box = $('#maplist'); box.innerHTML = '';
+  for (const id of S.ids) {
+    const name = S.names[id] || '';
+    if (f && !(String(id).includes(f) || name.toLowerCase().includes(f))) continue;
+    const r = el('div', { className: 'row' + (id === S.cur ? ' sel' : '') });
+    r.innerHTML = `<span class="id">${id}</span><span>${esc(name || '(unnamed)')}</span>${S.maps[id] && S.maps[id].dirty ? '<span class="dot">●</span>' : ''}`;
+    r.onclick = () => selectMap(id); box.appendChild(r);
+  }
+}
+async function searchAll(q) {
+  const box = $('#hits'); q = q.trim().toLowerCase();
+  if (!q) { box.innerHTML = ''; return; }
+  box.innerHTML = '<div class="hit">Searching…</div>';
+  const hits = [];
+  for (const id of S.ids) {
+    let m; try { m = await loadMap(id); } catch (e) { continue; }
+    for (const ev of Object.values(m.obj.events)) (ev.pages || []).forEach((pg, pi) => (pg.list || []).forEach(c => {
+      if ([101, 401, 108, 408, 355, 655].includes(c[0]) && typeof c[2][0] === 'string' && c[2][0].toLowerCase().includes(q)) hits.push({ id, ev: ev.id, pi, text: c[2][0] });
+    }));
+    if (hits.length > 150) break;
+  }
+  box.innerHTML = `<div class="hit"><b>${hits.length}${hits.length > 150 ? '+' : ''}</b> match(es)</div>`;
+  hits.slice(0, 150).forEach(h => {
+    const d = el('div', { className: 'hit' });
+    d.innerHTML = `<b>${h.id}</b> ${esc(S.names[h.id] || '')} · event ${h.ev}<br>${esc(h.text.slice(0, 70))}`;
+    d.onclick = async () => { await selectMap(h.id); const ev = curMap().obj.events[h.ev]; S.ev = h.ev; S.page = h.pi; S.cell = { x: ev.x, y: ev.y }; renderAll(); };
+    box.appendChild(d);
+  });
+}
+
+// ------------------------------------------------------------------ movement paths
+const MOVE = { 1: [0, 1], 2: [-1, 0], 3: [1, 0], 4: [0, -1], 5: [-1, 1], 6: [1, 1], 7: [-1, -1], 8: [1, -1] };
+const TURN = { 16: 2, 17: 4, 18: 6, 19: 8 }, OPP = { 2: 8, 8: 2, 4: 6, 6: 4 };
+const DIRVEC = { 2: [0, 1], 4: [-1, 0], 6: [1, 0], 8: [0, -1] };
+function walk(list, x, y, dir) {
+  const pts = [[x, y]];
+  for (const [code, p] of list) {
+    let nx = x, ny = y;
+    if (MOVE[code]) { nx += MOVE[code][0]; ny += MOVE[code][1]; if (code <= 4) dir = { 1: 2, 2: 4, 3: 6, 4: 8 }[code]; }
+    else if (code === 12) { nx += DIRVEC[dir][0]; ny += DIRVEC[dir][1]; }
+    else if (code === 13) { nx -= DIRVEC[dir][0]; ny -= DIRVEC[dir][1]; }
+    else if (code === 14) { nx += p[0]; ny += p[1]; }
+    else if (TURN[code]) dir = TURN[code];
+    else if (code === 20) dir = { 2: 4, 4: 8, 8: 6, 6: 2 }[dir]; else if (code === 21) dir = { 2: 6, 6: 8, 8: 4, 4: 2 }[dir]; else if (code === 22) dir = OPP[dir];
+    if (nx !== x || ny !== y) { x = nx; y = ny; pts.push([x, y]); }
+  }
+  return { pts, end: [x, y], dir };
+}
+function routeIndex(list, i) { let k = 0; for (let j = 0; j < i; j++) if (list[j][0] === 209) k++; return k; }
+function collectPaths() {
+  const m = curMap(), out = []; if (!m || !S.paths) return out;
+  const ev = m.obj.events[S.ev];
+  if (S.allPaths) for (const e of Object.values(m.obj.events)) {
+    if (ev && e.id === ev.id) continue; const pg = (e.pages || []).find(p => p.moveType === 3); if (pg) out.push({ pts: walk(pg.route.list, e.x, e.y, pg.gfx.dir || 2).pts, color: '#7d8da3', dashed: true, label: '#' + e.id, faint: true });
+  }
+  if (!ev) return out;
+  const pg = ev.pages[Math.min(S.page, ev.pages.length - 1)]; if (!pg) return out;
+  if (pg.moveType === 3) out.push({ pts: walk(pg.route.list, ev.x, ev.y, pg.gfx.dir || 2).pts, color: PALETTE[1], dashed: !!pg.route.repeat, label: 'patrol' + (pg.route.repeat ? ' ↻' : '') });
+  const pos = {}; const get = t => { const k = t <= 0 ? (t === 0 ? 'self' : 'player') : t; if (!pos[k]) { const e = t > 0 && m.obj.events[t] ? m.obj.events[t] : ev; pos[k] = [e.x, e.y, 2]; } return pos[k]; };
+  let n = 0;
+  (pg.list || []).forEach(c => {
+    if (c[0] === 202 && c[2][1] === 0) { const t = c[2][0]; get(t); const k = t <= 0 ? (t === 0 ? 'self' : 'player') : t; pos[k] = [c[2][2], c[2][3], c[2][4] || pos[k][2]]; }
+    if (c[0] !== 209) return;
+    const t = c[2][0], p = get(t), r = walk(c[2][1].list, p[0], p[1], p[2]), k = t <= 0 ? (t === 0 ? 'self' : 'player') : t;
+    pos[k] = [r.end[0], r.end[1], r.dir];
+    if (r.pts.length > 1) out.push({ pts: r.pts, color: PALETTE[(n) % PALETTE.length], label: 'R' + (n + 1) + ' · ' + (t === -1 ? 'player' : t === 0 ? 'this' : '#' + t) });
+    n++;
+  });
+  return out;
+}
+function drawPath(g, P, off) {
+  const pts = P.pts.map(p => [p[0] * TS + 16 + off, p[1] * TS + 16 + off]);
+  g.save(); g.globalAlpha = P.faint ? .55 : .95; g.strokeStyle = P.color; g.fillStyle = P.color; g.lineWidth = P.faint ? 2 : 3; g.lineJoin = 'round';
+  g.setLineDash(P.dashed ? [7, 5] : []);
+  g.beginPath(); pts.forEach((q, i) => i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1])); g.stroke(); g.setLineDash([]);
+  for (let i = 1; i < pts.length; i++) {      // arrow heads
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], a = Math.atan2(y1 - y0, x1 - x0), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+    g.beginPath(); g.moveTo(mx + Math.cos(a) * 6, my + Math.sin(a) * 6); g.lineTo(mx + Math.cos(a + 2.5) * 7, my + Math.sin(a + 2.5) * 7); g.lineTo(mx + Math.cos(a - 2.5) * 7, my + Math.sin(a - 2.5) * 7); g.closePath(); g.fill();
+  }
+  g.beginPath(); g.arc(pts[0][0], pts[0][1], 5, 0, 7); g.fill();
+  const e = pts[pts.length - 1]; g.fillRect(e[0] - 5, e[1] - 5, 10, 10);
+  g.setLineDash([]); g.font = 'bold 12px system-ui,sans-serif'; const tw = g.measureText(P.label).width;
+  const lx = e[0] + 8, ly = e[1] - 22; g.globalAlpha = .95; g.fillRect(lx - 3, ly - 1, tw + 8, 17); g.fillStyle = '#10141a'; g.textBaseline = 'top'; g.fillText(P.label, lx + 1, ly + 1);
+  g.restore();
+}
+
+// ------------------------------------------------------------------ centre: map view
+function evColor(ev) { let h = 0; for (const c of 'e' + ev.id) h = (h * 31 + c.charCodeAt(0)) % 360; return `hsl(${h} 70% 55%)`; }
+function renderMap() {
+  const m = curMap(), cv = $('#cv'), info = $('#mapinfo');
+  if (!m) { cv.style.display = 'none'; info.textContent = ''; return; }
+  const { w, h } = m.obj; cv.style.display = 'block';
+  if (cv.width !== w * TS) cv.width = w * TS; if (cv.height !== h * TS) cv.height = h * TS;
+  cv.style.width = w * TS * S.zoom + 'px'; cv.style.height = h * TS * S.zoom + 'px';
+  const g = cv.getContext('2d'); g.clearRect(0, 0, cv.width, cv.height); g.fillStyle = '#0d0f12'; g.fillRect(0, 0, cv.width, cv.height);
+  if (m.base) g.drawImage(m.base, 0, 0);
+  if (S.grid) { g.strokeStyle = 'rgba(255,255,255,.10)'; g.lineWidth = 1; g.beginPath(); for (let x = 0; x <= w; x++) { g.moveTo(x * TS + .5, 0); g.lineTo(x * TS + .5, h * TS); } for (let y = 0; y <= h; y++) { g.moveTo(0, y * TS + .5); g.lineTo(w * TS, y * TS + .5); } g.stroke(); }
+  if (S.cell) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.setLineDash([4, 3]); g.strokeRect(S.cell.x * TS + 2, S.cell.y * TS + 2, TS - 4, TS - 4); g.setLineDash([]); }
+  const evs = Object.values(m.obj.events).sort((a, b) => a.y - b.y);
+  for (const ev of evs) drawEvent(g, m, ev);
+  collectPaths().forEach((P, i) => drawPath(g, P, (i % 3) * 3 - 3));
+  const sel = m.obj.events[S.ev]; if (sel) { g.strokeStyle = '#fff'; g.lineWidth = 2; g.strokeRect(sel.x * TS + 1, sel.y * TS + 1, TS - 2, TS - 2); g.strokeStyle = '#5aa0ff'; g.strokeRect(sel.x * TS - 1, sel.y * TS - 1, TS + 2, TS + 2); }
+  // header
+  info.innerHTML = '';
+  info.append(el('span', { innerHTML: `<b>Map ${m.id}</b> ${esc(S.names[m.id] || '')} · ${w}×${h}` }));
+  const zs = el('select', { onchange: () => { S.zoom = +zs.value; renderMap(); } }, [0.5, 0.75, 1, 1.5, 2].map(z => el('option', { value: z, textContent: Math.round(z * 100) + '%', selected: z === S.zoom })));
+  const chk = (label, key) => { const c = el('input', { type: 'checkbox', checked: S[key], onchange: () => { S[key] = c.checked; renderMap(); } }); return el('label', {}, [c, label]); };
+  const evSel = el('select', { onchange: () => { if (!evSel.value) return; const e = m.obj.events[evSel.value]; S.ev = e.id; S.page = 0; S.cell = { x: e.x, y: e.y }; S.cmdSel = -1; renderAll(); } },
+    [el('option', { value: '', textContent: `Events (${evs.length})…` })].concat(Object.values(m.obj.events).map(e => el('option', { value: e.id, textContent: `#${e.id} ${e.name || ''} (${e.x},${e.y})`, selected: String(e.id) === String(S.ev) }))));
+  info.append(el('span', {}, ['Zoom ', zs]), chk('Paths', 'paths'), chk('All patrols', 'allPaths'), chk('Grid', 'grid'), evSel, el('span', { id: 'hover' }));
+}
+function drawEvent(g, m, ev) {
+  const pg = ev.pages[String(ev.id) === String(S.ev) ? Math.min(S.page, ev.pages.length - 1) : 0], gf = (pg && pg.gfx) || {}; let drawn = false;
+  const px = ev.x * TS, py = ev.y * TS;
+  if (gf.name) {
+    const im = imgNow('characters', gf.name);
+    if (im) { const fw = im.width / 4, fh = im.height / 4, row = { 2: 0, 4: 1, 6: 2, 8: 3 }[gf.dir || 2] || 0; g.globalAlpha = (gf.opacity ?? 255) / 255; g.drawImage(im, (gf.pat || 0) * fw, row * fh, fw, fh, Math.round(px + 16 - fw / 2), Math.round(py + 32 - fh), fw, fh); g.globalAlpha = 1; drawn = true; }
+  } else if (gf.tile > 0) { drawTile(g, m.tsImg, m.ats, gf.tile, px, py); drawn = true; }
+  if (!drawn) { g.fillStyle = evColor(ev); g.globalAlpha = .35; g.fillRect(px + 2, py + 2, TS - 4, TS - 4); g.globalAlpha = 1; g.strokeStyle = evColor(ev); g.lineWidth = 2; g.setLineDash([4, 3]); g.strokeRect(px + 2, py + 2, TS - 4, TS - 4); g.setLineDash([]); }
+  g.font = 'bold 11px system-ui,sans-serif'; g.textBaseline = 'top'; const t = String(ev.id), tw = g.measureText(t).width;
+  g.fillStyle = 'rgba(10,14,20,.8)'; g.fillRect(px, py, tw + 5, 14); g.fillStyle = '#fff'; g.fillText(t, px + 2, py + 1);
+}
+function cellAt(e) { const cv = $('#cv'), r = cv.getBoundingClientRect(), s = cv.width / r.width; return { x: Math.floor((e.clientX - r.left) * s / TS), y: Math.floor((e.clientY - r.top) * s / TS) }; }
+function evAt(x, y) { return Object.values(curMap().obj.events).find(ev => ev.x === x && ev.y === y); }
+$('#cv').addEventListener('click', e => {
+  const m = curMap(); if (!m) return; const c = cellAt(e); if (c.x < 0 || c.y < 0 || c.x >= m.obj.w || c.y >= m.obj.h) return;
+  S.cell = { x: c.x, y: c.y }; const ev = evAt(c.x, c.y);
+  if (ev) { S.ev = ev.id; S.page = 0; S.cmdSel = -1; S.open.clear(); } else S.ev = null;
+  renderAll();
+});
+$('#cv').addEventListener('mousemove', e => {
+  const m = curMap(); if (!m) return; const c = cellAt(e), h = $('#hover'); if (!h) return;
+  const ev = evAt(c.x, c.y); h.textContent = `(${c.x}, ${c.y})` + (ev ? ` · ${ev.name || 'event'} #${ev.id}` : '');
+});
+
+// ------------------------------------------------------------------ plain-English commands
+const evLabel = id => id === -1 ? 'the player' : id === 0 ? 'this event' : (() => { const e = curMap().obj.events[id]; return e ? `#${id} ${e.name || ''}`.trim() : `event #${id}?`; })();
+function num(c, i, w) { const n = el('input', { type: 'number', className: 'mini', value: c[2][i] ?? 0, onchange: () => { c[2][i] = +n.value; touch(); } }); if (w) n.style.width = w + 'px'; return n; }
+function txt(c, i, w) { const n = el('input', { className: 'mini', value: c[2][i] ?? '', oninput: () => { c[2][i] = n.value; touch(); } }); n.style.width = (w || 110) + 'px'; return n; }
+function sel(c, i, opts, str) { const s = el('select', { className: 'mini', onchange: () => { c[2][i] = str ? s.value : +s.value; touch(); } }, opts.map(([v, l]) => el('option', { value: v, textContent: l, selected: c[2][i] === v }))); return s; }
+function area(c, i, cls) { const t = el('textarea', { className: cls, rows: 1, value: typeof c[2][i] === 'string' ? c[2][i] : '', oninput: () => { c[2][i] = t.value; autosize(t); touch(); } }); return t; }
+function audio(c) { const a = c[2][0] || (c[2][0] = { name: '', vol: 100, pitch: 100 }); const n = el('input', { className: 'mini', value: a.name || '', style: 'width:150px', oninput: () => { a.name = n.value; touch(); } }), v = el('input', { type: 'number', className: 'mini', value: a.vol ?? 100, onchange: () => { a.vol = +v.value; touch(); } }); return [n, ' volume ', v]; }
+const autosize = t => { t.style.height = 'auto'; t.style.height = Math.max(34, t.scrollHeight + 2) + 'px'; };
+const ONOFF = [[0, 'ON'], [1, 'OFF']];
+function stepLabel([code, p]) {
+  const A = { 1: '↓', 2: '←', 3: '→', 4: '↑', 5: '↙', 6: '↘', 7: '↖', 8: '↗', 9: 'random', 10: 'toward player', 11: 'away from player', 12: 'forward', 13: 'backward', 16: 'face ↓', 17: 'face ←', 18: 'face →', 19: 'face ↑', 20: 'turn left', 21: 'turn right', 22: 'turn around', 23: 'face random', 25: 'face player', 26: 'face away' };
+  if (A[code]) return A[code]; if (code === 15) return 'wait ' + p[0]; if (code === 14) return `jump ${p[0]},${p[1]}`; if (code === 29) return 'speed ' + p[0];
+  if (code === 44) return 'sound ' + ((p[0] && p[0].name) || ''); if (code === 27) return 'switch ' + p[0] + ' ON'; if (code === 28) return 'switch ' + p[0] + ' OFF'; return 'step ' + code;
+}
+function routeBox(route, key, onChange) {
+  const box = el('div', { className: 'routebox' });
+  const real = () => route.list.map((s, i) => [s, i]).filter(([s]) => s[0] !== 0);
+  const chips = el('div', { className: 'chips' });
+  real().forEach(([s, i]) => chips.append(el('span', { className: 'chip', textContent: stepLabel(s), title: 'Click to remove this step', onclick: () => { route.list.splice(i, 1); onChange(); } })));
+  if (!real().length) chips.append(el('span', { style: 'color:var(--dim)', textContent: '(no steps yet)' }));
+  const add = (code, p) => () => { const at = route.list.findIndex(s => s[0] === 0); route.list.splice(at < 0 ? route.list.length : at, 0, [code, p || []]); onChange(); };
+  const row = (items) => el('div', { className: 'field' }, items.map(([lab, code]) => el('button', { textContent: lab, onclick: add(code), title: stepLabel([code, [0]]) })));
+  const wn = el('input', { type: 'number', className: 'mini', value: 10 });
+  box.append(el('div', { className: 't', style: 'color:var(--dim);font-size:12px', textContent: 'Steps (click a step to remove it)' }), chips,
+    row([['↑ walk', 4], ['↓ walk', 1], ['← walk', 2], ['→ walk', 3], ['random', 9], ['toward player', 10]]),
+    row([['face ↑', 19], ['face ↓', 16], ['face ←', 17], ['face →', 18], ['face player', 25]]),
+    el('div', { className: 'field' }, [el('button', { textContent: '+ wait', onclick: () => add(15, [+wn.value || 1])() }), wn, ' frames',
+      el('button', { textContent: 'undo last', onclick: () => { const r = real(); if (r.length) { route.list.splice(r[r.length - 1][1], 1); onChange(); } } }),
+      el('button', { textContent: 'clear', onclick: () => { route.list = [[0, []]]; onChange(); } })]));
+  return box;
+}
+function rebuild509(list, i) {
+  let j = i + 1; while (j < list.length && list[j][0] === 509) j++;
+  const steps = list[i][2][1].list.filter(s => s[0] !== 0).map(s => [509, list[i][1], [s]]);
+  list.splice(i + 1, j - i - 1, ...steps);
+}
+function describe(c, X) {
+  const p = c[2], { list, i } = X;
+  const choiceOf = () => { for (let j = i - 1; j >= 0; j--) if (list[j][0] === 102 && list[j][1] === c[1]) return (list[j][2][0] || [])[p[0]]; return null; };
+  switch (c[0]) {
+    case 101: return ['💬', area(c, 0, 'speech')];
+    case 401: return ['↳ continues', area(c, 0, 'speech')];
+    case 102: { const n = el('input', { className: 'wide', value: (p[0] || []).join(' | '), oninput: () => { p[0] = n.value.split('|').map(s => s.trim()); touch(); } }); return ['❓ Player chooses:', n, ' (cancel = choice ', num(c, 1, 50), ')']; }
+    case 402: return ['If player chose', `"${choiceOf() ?? '#' + p[0]}"`];
+    case 403: return ['If player cancels'];
+    case 106: { const s = el('span', { className: 'tag', textContent: (p[0] / 20).toFixed(2) + ' s' }); const n = el('input', { type: 'number', className: 'mini', value: p[0], onchange: () => { p[0] = +n.value; s.textContent = (p[0] / 20).toFixed(2) + ' s'; touch(); } }); return ['⏱ Wait', n, 'frames', s]; }
+    case 111: {
+      if (p[0] === 0) return ['If switch', num(c, 1), 'is', sel(c, 2, ONOFF)];
+      if (p[0] === 1) return ['If variable', num(c, 1), sel(c, 4, [[0, '='], [1, '≥'], [2, '≤'], [3, '>'], [4, '<'], [5, '≠']]), p[2] === 0 ? num(c, 3) : ['variable ', num(c, 3)]].flat();
+      if (p[0] === 2) return ['If self switch', txt(c, 1, 36), 'is', sel(c, 2, ONOFF)];
+      if (p[0] === 12) { const n = el('input', { className: 'wide', value: p[1] || '', oninput: () => { p[1] = n.value; touch(); } }); return ['If script', n]; }
+      return ['If condition (type ' + p[0] + ')'];
+    }
+    case 411: return ['Otherwise'];
+    case 412: return ['end if'];
+    case 404: return ['end of choices'];
+    case 112: return ['Repeat…']; case 413: return ['end repeat']; case 113: return ['Stop repeating'];
+    case 115: return ['⏹ Stop here (end of event)']; case 116: return ['Erase this event'];
+    case 118: return ['🏷 Label', txt(c, 0, 140)]; case 119: return ['↪ Jump to label', txt(c, 0, 140)];
+    case 121: return ['Turn switch', num(c, 0), 'to', num(c, 1), sel(c, 2, ONOFF)];
+    case 122: if (p[3] === 0) return ['Variable', num(c, 0), sel(c, 2, [[0, '='], [1, '+='], [2, '−='], [3, '×='], [4, '÷='], [5, 'mod']]), num(c, 4)]; return ['Variable', num(c, 0), 'changes (advanced, use { })'];
+    case 123: return ['Self switch', sel(c, 0, ['A', 'B', 'C', 'D'].map(v => [v, v]), true), 'to', sel(c, 1, ONOFF)];
+    case 201: return ['🚪 Teleport player to map', num(c, 1, 64), el('span', { className: 'tag', textContent: S.names[p[1]] || '?' }), 'at', num(c, 2, 50), num(c, 3, 50), 'facing', sel(c, 4, Object.entries(DIRN).map(([k, v]) => [+k, v])),
+      el('button', { textContent: '↗ open', title: 'Open that map', onclick: async () => { if (!S.ids.includes(p[1])) return; await selectMap(p[1]); S.cell = { x: p[2], y: p[3] }; const e = evAt(p[2], p[3]); S.ev = e ? e.id : null; renderAll(); } })];
+    case 202: return ['Place', el('span', { className: 'tag', textContent: evLabel(p[0]) }), 'at', num(c, 2, 50), num(c, 3, 50), 'facing', sel(c, 4, Object.entries(DIRN).map(([k, v]) => [+k, v]))];
+    case 208: return ['Player is', sel(c, 0, [[0, 'invisible'], [1, 'visible']])];
+    case 209: {
+      const k = routeIndex(list, i), key = X.key + ':' + i, r = p[1];
+      const chips = el('span', { className: 'chips' }); const steps = r.list.filter(s => s[0] !== 0);
+      steps.slice(0, 14).forEach(s => chips.append(el('span', { className: 'chip', textContent: stepLabel(s) }))); if (steps.length > 14) chips.append(el('span', { className: 'chip', textContent: '… +' + (steps.length - 14) }));
+      const out = ['🚶', el('span', { className: 'pill', style: 'background:' + PALETTE[k % PALETTE.length], textContent: 'R' + (k + 1) }), num(c, 0, 50), el('span', { className: 'tag', textContent: evLabel(p[0]) }), 'moves', chips,
+        el('button', { textContent: S.open.has(key) ? 'done' : '✎ edit path', onclick: () => { S.open.has(key) ? S.open.delete(key) : S.open.add(key); renderEvent(); } })];
+      if (S.open.has(key)) out.push(routeBox(r, key, () => { rebuild509(list, i); touch(); renderEvent(); renderMap(); }));
+      return out;
+    }
+    case 210: return ['⏳ Wait until moving characters finish'];
+    case 221: return ['Freeze the screen']; case 222: return ['Unfreeze the screen (transition)'];
+    case 223: { const t = (p[0].tone = p[0].tone || [0, 0, 0, 0]); return ['🎨 Screen tint', ...[0, 1, 2, 3].map(k => { const n = el('input', { type: 'number', className: 'mini', value: t[k], title: ['red', 'green', 'blue', 'gray'][k], style: 'width:58px', onchange: () => { t[k] = +n.value; touch(); } }); return n; }), 'over', num(c, 1, 50), 'frames']; }
+    case 231: return ['🖼 Show picture', num(c, 0, 44), txt(c, 1, 120), 'at', num(c, 4, 56), num(c, 5, 56)];
+    case 232: return ['Move picture', num(c, 0, 44), 'to', num(c, 4, 56), num(c, 5, 56), 'over', num(c, 1, 50), 'frames'];
+    case 235: return ['Remove picture', num(c, 0, 44)];
+    case 241: return ['🎵 Play music', ...audio(c)]; case 249: return ['🎺 Play jingle', ...audio(c)]; case 250: return ['🔊 Play sound', ...audio(c)];
+    case 242: return ['Fade out music over', num(c, 0, 50), 'seconds'];
+    case 314: return ['❤ Heal the whole party'];
+    case 355: return ['⚙ Script', area(c, 0, 'code')];
+    case 655: return ['↳ script continues', area(c, 0, 'code')];
+    case 108: case 408: { const n = el('input', { className: 'wide', value: p[0] || '', oninput: () => { p[0] = n.value; touch(); } }); return ['#', n]; }
+    case 0: return null;
+    default: { const lab = (CMD[c[0]] || ['Command ' + c[0]])[0]; return [lab + ' ' + JSON.stringify(p).slice(0, 80)]; }
+  }
+}
+function cmdRow(pg, list, c, i, X) {
+  const isEnd = c[0] === 0 && i === list.length - 1;
+  if (c[0] === 509) return null;
+  const cls = (CMD[c[0]] || [0, 'k-misc'])[1], dimmed = [0, 412, 404, 413].includes(c[0]);
+  const row = el('div', { className: 'cmd ' + cls + (dimmed ? ' dim' : '') + (S.cmdSel === i ? ' sel' : '') });
+  row.style.marginLeft = (c[1] || 0) * 22 + 'px';
+  row.onclick = e => { if (['INPUT', 'BUTTON', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return; S.cmdSel = S.cmdSel === i ? -1 : i; renderEvent(); };
+  if (isEnd) { row.append(el('span', { textContent: '— end of event —' })); row.style.marginLeft = 0; return row; }
+  const rawKey = X.key + ':raw:' + i;
+  let parts = describe(c, { ...X, list, i }); parts = parts === null ? [] : parts;
+  const body = el('div', { className: 'body' });
+  parts.flat().forEach(pt => body.append(typeof pt === 'string' ? el('span', { textContent: pt }) : pt));
+  if (S.open.has(rawKey)) {
+    const raw = el('input', { className: 'raw', value: JSON.stringify(c[2]), onchange: () => { try { const v = JSON.parse(raw.value); if (!Array.isArray(v)) throw 0; c[2] = v; raw.classList.remove('bad'); touch(); renderEvent(); renderMap(); } catch (e) { raw.classList.add('bad'); } } });
+    const code = el('input', { type: 'number', className: 'mini', value: c[0], title: 'command code', onchange: () => { c[0] = +code.value || 0; touch(); renderEvent(); } });
+    body.append(el('span', { className: 'tag', textContent: 'code' }), code, raw);
+  }
+  if (dimmed) return Object.assign(row, {}), row.append(body), row;
+  const ctl = el('div', { className: 'ctl' });
+  const mv = d => () => { const j = i + d; if (j < 0 || j >= list.length - 1) return; [list[i], list[j]] = [list[j], list[i]]; touch(); renderEvent(); };
+  ctl.append(el('button', { textContent: '▲', onclick: mv(-1), title: 'Move up' }), el('button', { textContent: '▼', onclick: mv(1), title: 'Move down' }),
+    el('button', { textContent: '⇤', title: 'Outdent', onclick: () => { c[1] = Math.max(0, (c[1] || 0) - 1); touch(); renderEvent(); } }),
+    el('button', { textContent: '⇥', title: 'Indent', onclick: () => { c[1] = (c[1] || 0) + 1; touch(); renderEvent(); } }),
+    el('button', { textContent: '{ }', title: 'Show raw data', onclick: () => { S.open.has(rawKey) ? S.open.delete(rawKey) : S.open.add(rawKey); renderEvent(); } }),
+    el('button', { textContent: '✕', title: 'Delete this line', onclick: () => { list.splice(i, 1); S.cmdSel = -1; touch(); renderEvent(); renderMap(); } }));
+  row.append(body, ctl); return row;
+}
+function addCommand(list, ti) {
+  const t = TEMPLATES[ti][1]; const at = S.cmdSel >= 0 && S.cmdSel < list.length - 1 ? S.cmdSel + 1 : list.length - 1;
+  const ind = S.cmdSel >= 0 && list[S.cmdSel] ? (list[S.cmdSel][1] || 0) : 0; let rows;
+  if (t === 'branch') rows = [[111, ind, [0, 1, 0]], [0, ind + 1, []], [411, ind, []], [0, ind + 1, []], [412, ind, []]];
+  else if (t === 'route') rows = [[209, ind, [-1, { mr: 1, repeat: false, skip: true, list: [[0, []]] }]]];
+  else if (t === 'custom') { const n = parseInt(prompt('Command code number (RPG Maker code):'), 10); if (isNaN(n)) return; rows = [[n, ind, []]]; }
+  else { const [code, params] = t(); rows = [[code, ind, params]]; }
+  list.splice(at, 0, ...rows); S.cmdSel = at + rows.length - 1; touch(); renderEvent(); renderMap();
+}
+
+// ------------------------------------------------------------------ right: event editor
+function numOrNull(v) { v = String(v).trim(); return v === '' ? null : (isNaN(+v) ? null : +v); }
+function condSummary(pg) {
+  const c = pg.cond || {}, a = [];
+  if (c.sw1 != null) a.push('switch ' + c.sw1 + ' is ON'); if (c.sw2 != null) a.push('switch ' + c.sw2 + ' is ON'); if (c.var) a.push('variable condition'); if (c.self) a.push('self switch ' + c.self + ' is ON');
+  return a.length ? 'Appears when ' + a.join(' and ') : 'Always appears (no conditions)';
+}
+function renderEvent() {
+  const box = $('#evpanel'), keepScroll = box.scrollTop; box.innerHTML = ''; const m = curMap();
+  if (!m) return;
+  const ev = m.obj.events[S.ev];
+  if (!ev) {
+    box.append(el('div', { style: 'color:var(--dim)', textContent: S.cell ? `Tile (${S.cell.x}, ${S.cell.y}) is empty.` : 'Click an event on the map to edit it.' }));
+    if (S.cell && !evAt(S.cell.x, S.cell.y)) box.append(el('div', { className: 'field' }, [el('button', { className: 'primary', textContent: '＋ Add event here', onclick: addEvent })]));
+    return;
+  }
+  const top = el('div', { className: 'field' }); top.append(el('b', { textContent: '#' + ev.id }));
+  const nm = el('input', { value: ev.name || '', style: 'flex:1;min-width:120px;font-weight:600', oninput: () => { ev.name = nm.value; touch(); } }); top.append(nm); box.append(top);
+  const pos = el('div', { className: 'field' });
+  const ix = el('input', { type: 'number', className: 'mini', value: ev.x, onchange: () => { ev.x = +ix.value; S.cell = { x: ev.x, y: ev.y }; touch(); renderMap(); } });
+  const iy = el('input', { type: 'number', className: 'mini', value: ev.y, onchange: () => { ev.y = +iy.value; S.cell = { x: ev.x, y: ev.y }; touch(); renderMap(); } });
+  pos.append(el('label', { textContent: 'x' }), ix, el('label', { textContent: 'y' }), iy, el('span', { style: 'flex:1' }),
+    el('button', { textContent: 'Duplicate', onclick: () => dupEvent(ev) }),
+    el('button', { textContent: 'Delete event', onclick: () => { if (confirm(`Delete event #${ev.id} "${ev.name}"?`)) { delete m.obj.events[ev.id]; S.ev = null; touch(); renderAll(); } } }));
+  box.append(pos);
+  if (!ev.pages.length) ev.pages.push(NEW_PAGE());
+  if (S.page >= ev.pages.length) S.page = ev.pages.length - 1;
+  const tabs = el('div', { className: 'tabs' });
+  ev.pages.forEach((_, i) => tabs.append(el('button', { textContent: 'Page ' + (i + 1), className: i === S.page ? 'on' : '', onclick: () => { S.page = i; S.cmdSel = -1; S.open.clear(); renderAll(); } })));
+  tabs.append(el('button', { textContent: '＋', title: 'Add page', onclick: () => { ev.pages.push(NEW_PAGE()); S.page = ev.pages.length - 1; touch(); renderAll(); } }));
+  tabs.append(el('button', { textContent: 'Copy page', onclick: () => { ev.pages.push(JSON.parse(JSON.stringify(ev.pages[S.page]))); S.page = ev.pages.length - 1; touch(); renderAll(); } }));
+  if (ev.pages.length > 1) tabs.append(el('button', { textContent: 'Delete page', onclick: () => { if (confirm('Delete this page?')) { ev.pages.splice(S.page, 1); S.page = 0; touch(); renderAll(); } } }));
+  box.append(tabs);
+  const pg = ev.pages[S.page]; pg.cond = pg.cond || {}; pg.gfx = pg.gfx || {};
+  box.append(el('div', { className: 'summary', textContent: condSummary(pg) }));
+
+  // page settings
+  const cb = el('div', { className: 'box' }); cb.append(el('div', { className: 't', textContent: 'When does this page run?' }));
+  const r1 = el('div', { className: 'field' });
+  const s1 = el('input', { type: 'number', className: 'mini', value: pg.cond.sw1 ?? '', placeholder: '—', onchange: () => { pg.cond.sw1 = numOrNull(s1.value); touch(); renderEvent(); } });
+  const s2 = el('input', { type: 'number', className: 'mini', value: pg.cond.sw2 ?? '', placeholder: '—', onchange: () => { pg.cond.sw2 = numOrNull(s2.value); touch(); renderEvent(); } });
+  const sf = el('select', { className: 'mini', onchange: () => { pg.cond.self = sf.value || null; touch(); renderEvent(); } }, ['', 'A', 'B', 'C', 'D'].map(v => el('option', { value: v, textContent: v || '—', selected: (pg.cond.self || '') === v })));
+  r1.append(el('label', { textContent: 'Switch ON:' }), s1, s2, el('label', { textContent: 'Self switch ON:' }), sf);
+  const vr = el('input', { className: 'wide', value: pg.cond.var == null ? '' : JSON.stringify(pg.cond.var), placeholder: 'variable condition (advanced, blank = none)',
+    onchange: () => { const t = vr.value.trim(); if (!t) { pg.cond.var = null; vr.classList.remove('bad'); touch(); return; } try { pg.cond.var = JSON.parse(t); vr.classList.remove('bad'); touch(); renderEvent(); } catch (e) { vr.classList.add('bad'); } } });
+  const r2 = el('div', { className: 'field' });
+  const tr = el('select', { onchange: () => { pg.trigger = +tr.value; touch(); } }, ['Player presses action button', 'Player touches it', 'Event touches player', 'Runs automatically (Autorun)', 'Runs in background (Parallel)'].map((t, i) => el('option', { value: i, textContent: t, selected: pg.trigger === i })));
+  r2.append(el('label', { textContent: 'Starts when:' }), tr);
+  const r3 = el('div', { className: 'field' });
+  const gn = el('input', { className: 'wide', value: pg.gfx.name || '', placeholder: 'sprite file (assets/characters)', onchange: () => { pg.gfx.name = gn.value; touch(); renderMap(); } });
+  const gd = el('select', { className: 'mini', onchange: () => { pg.gfx.dir = +gd.value; touch(); renderMap(); } }, [[2, '↓'], [4, '←'], [6, '→'], [8, '↑']].map(([v, l]) => el('option', { value: v, textContent: l, selected: (pg.gfx.dir || 2) === v })));
+  const th = el('input', { type: 'checkbox', checked: !!pg.through, onchange: () => { pg.through = th.checked; touch(); } });
+  r3.append(el('label', { textContent: 'Sprite:' }), gn, gd, el('label', {}, [th, ' walk through']));
+  const r4 = el('div', { className: 'field' });
+  const mt = el('select', { onchange: () => { pg.moveType = +mt.value; touch(); renderAll(); } }, ['Stands still', 'Wanders randomly', 'Approaches player', 'Follows a set path'].map((t, i) => el('option', { value: i, textContent: t, selected: pg.moveType === i })));
+  const sp = el('select', { className: 'mini', onchange: () => { pg.speed = +sp.value; touch(); } }, [1, 2, 3, 4, 5, 6].map(v => el('option', { value: v, textContent: v, selected: pg.speed === v })));
+  r4.append(el('label', { textContent: 'Movement:' }), mt, el('label', { textContent: 'speed' }), sp);
+  cb.append(r1, vr, r2, r3, r4);
+  if (pg.moveType === 3) {
+    pg.route = pg.route || { mr: 1, repeat: true, skip: false, list: [[0, []]] };
+    const rp = el('input', { type: 'checkbox', checked: !!pg.route.repeat, onchange: () => { pg.route.repeat = rp.checked; touch(); renderMap(); } });
+    cb.append(el('div', { className: 'field' }, [el('label', {}, [rp, ' repeat forever'])]), routeBox(pg.route, 'page', () => { touch(); renderEvent(); renderMap(); }));
+  }
+  box.append(cb);
+
+  // commands
+  const cmdBox = el('div', { className: 'box' }); cmdBox.append(el('div', { className: 't', textContent: 'What happens (top to bottom) — click a line, then Add, to insert after it' }));
+  const list = pg.list; if (!list.length || list[list.length - 1][0] !== 0) list.push([0, 0, []]);
+  const X = { ev, pg, key: ev.id + ':' + S.page };
+  list.forEach((c, i) => { const r = cmdRow(pg, list, c, i, X); if (r) cmdBox.append(r); });
+  const add = el('div', { className: 'field', style: 'margin-top:8px' });
+  const sl = el('select', {}, TEMPLATES.map((t, i) => el('option', { value: i, textContent: t[0] })));
+  add.append(sl, el('button', { className: 'primary', textContent: '＋ Add', onclick: () => addCommand(list, +sl.value) }));
+  cmdBox.append(add); box.append(cmdBox);
+  box.querySelectorAll('textarea').forEach(autosize); box.scrollTop = keepScroll;
+}
+function addEvent() {
+  const m = curMap(); if (!m || !S.cell) return;
+  const id = Math.max(0, ...Object.keys(m.obj.events).map(Number)) + 1;
+  m.obj.events[id] = { id, name: 'EV' + String(id).padStart(3, '0'), x: S.cell.x, y: S.cell.y, pages: [NEW_PAGE()] };
+  S.ev = id; S.page = 0; touch(); renderAll();
+}
+function dupEvent(ev) {
+  const m = curMap(), id = Math.max(0, ...Object.keys(m.obj.events).map(Number)) + 1;
+  const c = JSON.parse(JSON.stringify(ev)); c.id = id; c.name = ev.name + ' copy';
+  const free = (() => { for (let d = 1; d < 4; d++) for (const [dx, dy] of [[1, 0], [0, 1], [-1, 0], [0, -1]]) { const x = ev.x + dx * d, y = ev.y + dy * d; if (x >= 0 && y >= 0 && x < m.obj.w && y < m.obj.h && !evAt(x, y)) return [x, y]; } return [ev.x, ev.y]; })();
+  [c.x, c.y] = free; m.obj.events[id] = c; S.ev = id; S.cell = { x: c.x, y: c.y }; touch(); renderAll();
+}
+
+// ------------------------------------------------------------------ test button
+async function testHere() {
+  const m = curMap(); if (!m) return;
+  if (m.dirty) await saveMap();
+  let x = 0, y = 0; if (S.cell) ({ x, y } = S.cell); else if (m.obj.events[S.ev]) ({ x, y } = m.obj.events[S.ev]);
+  const base = $('#gameUrl').value.trim() || '../JBA Pokemon HTML/index.html';
+  const qs = new URLSearchParams({ map: m.id, x, y, dir: 2 });
+  if ($('#tVars').value.trim()) qs.set('vars', $('#tVars').value.trim());
+  if ($('#tSw').value.trim()) qs.set('sw', $('#tSw').value.trim());
+  lsSet('gameUrl', base); lsSet('tVars', $('#tVars').value); lsSet('tSw', $('#tSw').value);
+  window.open(base + (base.includes('?') ? '&' : '?') + qs.toString(), 'jba-game');
+  status(`Testing map ${m.id} at (${x}, ${y}).`);
+}
+
+// ------------------------------------------------------------------ wiring
+function renderAll() { renderMap(); renderEvent(); updateButtons(); }
+$('#btnOpen').onclick = openFolder; $('#btnSave').onclick = saveMap; $('#btnRevert').onclick = revertMap; $('#btnTest').onclick = testHere;
+$('#mapSearch').oninput = renderList;
+$('#textSearch').onkeydown = e => { if (e.key === 'Enter') searchAll(e.target.value); };
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); saveMap(); } });
+window.addEventListener('beforeunload', e => { if (Object.values(S.maps).some(m => m.dirty)) { e.preventDefault(); e.returnValue = ''; } });
+$('#gameUrl').value = lsGet('gameUrl', $('#gameUrl').value); $('#tVars').value = lsGet('tVars', ''); $('#tSw').value = lsGet('tSw', '');
+(async () => {
+  if (!window.showDirectoryPicker) { status('This browser can\'t edit folders. Open the editor in Chrome or Edge.', 'err'); $('#btnOpen').disabled = true; return; }
+  const h = await idb.get('dir');
+  if (h) { const b = $('#btnReopen'); b.style.display = ''; b.textContent = `Reopen "${h.name}"`;
+    b.onclick = async () => { try { if ((await h.requestPermission({ mode: 'readwrite' })) === 'granted') await attach(h); else status('Permission was not granted.', 'err'); } catch (e) { status('Could not reopen: ' + e.message, 'err'); } }; }
+})();
+</script>
+</body>
+</html>

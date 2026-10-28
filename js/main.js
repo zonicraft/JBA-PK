@@ -11,6 +11,13 @@
   G.started = false;
   requestAnimationFrame(loop);
   if (q.has('autostart')) { G.started = true; enterMap(START.map, START.x, START.y, START.dir); keys.pressed = {}; return; }
+  // Editor test hook: ?map=ID&x=X&y=Y&dir=2&vars=201:5,3:2&sw=12,14 jumps straight into a map.
+  if (q.has('map')) {
+    G.started = true; G.name = G.name || 'Jorge';
+    (q.get('vars') || '').split(',').forEach(p => { const [k, v] = p.split(':'); if (k && v !== undefined && !isNaN(+k)) G.vars[+k] = +v; });
+    (q.get('sw') || '').split(',').forEach(k => { if (k && !isNaN(+k)) G.switches[+k] = true; });
+    enterMap(+q.get('map'), +q.get('x') || 0, +q.get('y') || 0, +q.get('dir') || 2); keys.pressed = {}; return;
+  }
   startUI(titleScreen());
 })();
 // ---- test helpers (used by the automated playtests)
