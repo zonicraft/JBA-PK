@@ -328,6 +328,69 @@ function* pauseMenu() {
 }
 function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; if (G.fishReq) { const rod = G.fishReq; G.fishReq = null; G.main = new Interp([[355, 0, ['pbFish("' + rod + '")']], [0, 0, []]], null); } })()); }
 
+// ------------------------------------------------------------ Export / import save files (title screen)
+// Export: downloads the current save as a .json file.  Import: reads such a file back into this browser's save slot.
+const SAVE_FILE_FORMAT = 'jba-pokemon-save';
+function exportSaveFile() {
+  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { }
+  if (!raw) return null;
+  let d; try { d = JSON.parse(raw); } catch (e) { return false; }
+  const pack = { format: SAVE_FILE_FORMAT, version: 1, exported: new Date().toISOString(), save: d };
+  const nm = String(d.name || 'save').replace(/[^\w-]+/g, '') || 'save', day = new Date().toISOString().slice(0, 10);
+  const name = 'JBA-Pokemon-' + nm + '-' + day + '.json';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(pack)], { type: 'application/json' })); a.download = name;
+  a.style.display = 'none'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  return name;
+}
+function validSaveData(d) {
+  return !!d && typeof d === 'object' && !!d.switches && typeof d.switches === 'object' && !!d.vars && typeof d.vars === 'object' && Array.isArray(d.party) && !!d.items && typeof d.items === 'object'
+    && typeof d.name === 'string' && typeof d.map === 'number' && typeof d.x === 'number' && typeof d.y === 'number';
+}
+// opens the browser's file picker; resolves with the file's text, or null if cancelled / unreadable
+function pickSaveFile() {
+  return new Promise(res => {
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json'; inp.style.display = 'none';
+    let fin = false; const end = v => { if (fin) return; fin = true; window.removeEventListener('focus', onFocus); inp.remove(); res(v); };
+    const onFocus = () => setTimeout(() => { if (!inp.files.length) end(null); }, 1500);   // picker closed without a choice (older browsers have no "cancel" event)
+    inp.onchange = () => { const f = inp.files[0]; if (!f) return end(null); const r = new FileReader(); r.onload = () => end(String(r.result)); r.onerror = () => end(null); r.readAsText(f); };
+    inp.addEventListener('cancel', () => end(null));
+    document.body.appendChild(inp); inp.click(); setTimeout(() => window.addEventListener('focus', onFocus), 500);
+  });
+}
+// popup on the title screen. Returns true when a save was imported.
+function* saveFileMenu(drawBase) {
+  const d = () => { drawBase(); drawPopup(); drawUiMsg(); };
+  return yield* withDraw(d, (function* () {
+    let imported = false;
+    while (true) {
+      const i = yield* choiceWindow(['EXPORT SAVE', 'IMPORT SAVE', 'CANCEL'], { x: 112, y: 108, w: 288 });
+      if (i < 0 || i === 2) return imported;
+      if (i === 0) {
+        const r = exportSaveFile();
+        if (r === null) yield* uiMessage('There is no saved game to export yet.');
+        else if (r === false) yield* uiMessage('The saved game is damaged and could not be exported.');
+        else yield* uiMessage('Save exported! Look for ' + r + ' in your Downloads folder.');
+        continue;
+      }
+      yield* uiMessage('Choose a save file (.json) to import...', { noWait: true });
+      let text, fin = false; pickSaveFile().then(t => { text = t; fin = true; }); while (!fin) yield;
+      G.uiMsg = null;
+      if (text === null) continue;
+      let data = null; try { const j = JSON.parse(text); data = j && j.save ? j.save : j; } catch (e) { }
+      if (!validSaveData(data)) { sfx('buzzer'); yield* uiMessage("That file isn't a valid JBA Pokémon save."); continue; }
+      if (hasSave()) {
+        const badges = [260, 261, 262, 263].filter(k => data.switches[k]).length;
+        yield* uiMessage('Import ' + data.name + "'s save (" + badges + ' badges, ' + fmtTime(data.playFrames || 0) + ')? This replaces the save in this browser.', { noWait: true });
+        const yes = yield* yesNo(); G.uiMsg = null; if (!yes) continue;
+      }
+      try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch (e) { yield* uiMessage('The save could not be stored in this browser.'); continue; }
+      sfx('save'); imported = true;
+      yield* uiMessage('Save imported! Choose CONTINUE to play it.');
+      return true;
+    }
+  })());
+}
+
 // ------------------------------------------------------------ Title + load screen (Essentials style)
 function* titleScreen() {
   stopME(); stopBGM();
@@ -336,7 +399,9 @@ function* titleScreen() {
       (function* () { while (!G.gesture) { yield; const gps = navigator.getGamepads ? navigator.getGamepads() : []; for (const g of gps) if (g && g.buttons.some(b => b.pressed)) G.gesture = true; } })());
     yield; keys.pressed = {};
   }
-  const save = hasSave() ? readSave() : null; if (save) migrateSyms(save);
+  let save = null, opts = [];
+  const refresh = () => { save = hasSave() ? readSave() : null; if (save) migrateSyms(save); opts = save ? ['continue', 'new', 'transfer', 'options'] : ['new', 'transfer', 'options']; };
+  refresh();
   // splash: "press start"
   const splash = () => {
     pic('title_splash', 0, 0);
@@ -344,14 +409,13 @@ function* titleScreen() {
   };
   yield* withDraw(splash, (function* () { stopME(); playBGM('frlg_title', 0.6); while (true) { yield; if (ok() || pressed('menu')) { sfx('ok'); return; } } })());
   yield* fadeTo(1, 10);
-  const opts = save ? ['continue', 'new', 'options'] : ['new', 'options'];
   let idx = 0;
-  const label = { continue: 'CONTINUE', new: 'NEW GAME', options: 'OPTIONS' };
+  const label = { continue: 'CONTINUE', new: 'NEW GAME', transfer: 'EXPORT / IMPORT', options: 'OPTIONS' };
   const draw = () => {
     pic('loadbg', 0, 0);
     // panel positions: continue (big), others (small)
     const lp = UI('loadPanels');
-    let y = 24;
+    let y = save ? 8 : 24;   // with a save the big CONTINUE panel needs the extra room
     opts.forEach((o, i) => {
       const sel = i === idx;
       if (o === 'continue') {
@@ -362,11 +426,11 @@ function* titleScreen() {
         txt('Time', 70, y + 102, { col: COL.light, shadow: '#383838', size: 22 }); txt(fmtTime(save.playFrames), 440, y + 102, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
         txt(mapNameOf(save.map), 70, y + 128, { col: COL.light, shadow: '#383838', size: 22 });
         save.party.slice(0, 6).forEach((p, j) => drawIcon(p, 62 + j * 62, y + 160, false, 0.9));
-        y += 232;
+        y += 226;
       } else {
         ctx.drawImage(lp, 0, sel ? 490 : 444, 408, 46, 52, y, 408, 46);
         txt(label[o], 76, y + 15, { col: COL.light, shadow: '#383838', size: 24 });
-        y += 56;
+        y += save ? 49 : 56;
       }
     });
     if (G.fade) { ctx.fillStyle = 'rgba(0,0,0,' + G.fade + ')'; }
@@ -382,6 +446,7 @@ function* titleScreen() {
       }
     })());
     if (choice === 'options') { yield* optionsScreen(); continue; }
+    if (choice === 'transfer') { const imported = yield* saveFileMenu(draw); if (imported) { refresh(); idx = 0; } continue; }
     stopBGM(); G.fade = 0;
     if (choice === 'continue') { loadSave(save); G.started = true; return; }
     enterMap(START.map, START.x, START.y, START.dir); G.started = true; return;
