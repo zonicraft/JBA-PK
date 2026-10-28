@@ -56,7 +56,17 @@ const img = (dir, name) => {
 // ------------------------------------------------------------ audio
 const SET = { music: 0.7, sfx: 0.7, speed: 1, bars: 1 };
 try { const o = JSON.parse(localStorage.getItem('jba_settings') || '{}'); for (const k in SET) if (typeof o[k] === 'number') SET[k] = o[k]; } catch (e) { }
-function applyBars() { try { document.body.style.backgroundImage = SET.bars ? 'url(assets/ui/background_bars.jpg)' : 'none'; } catch (err) { } }
+// The backdrop is applied from an Image() so its URL is resolved exactly like every other asset (a CSS url() set from script was requested
+// from the site root on GitHub Pages, which 404'd and left the background black).
+let BARS_URL = null;
+function applyBars() {
+  try {
+    if (!SET.bars) { document.body.style.backgroundImage = 'none'; return; }
+    const show = () => { if (SET.bars) document.body.style.backgroundImage = 'url("' + BARS_URL + '")'; };
+    if (BARS_URL) return show();
+    const im = new Image(); im.onload = () => { BARS_URL = im.src; show(); }; im.src = 'assets/ui/background_bars.jpg';
+  } catch (err) { }
+}
 applyBars();
 function saveSettings() { try { localStorage.setItem('jba_settings', JSON.stringify(SET)); } catch (e) { } }
 const AUD = {};
