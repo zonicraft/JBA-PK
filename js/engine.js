@@ -333,7 +333,7 @@ class EventChr extends Chr {
 const INDOOR_MAPS = [1, 3, 4, 8, 81, 84, 354, 398];
 class PlayerChr extends Chr {
   constructor() { super(); this.isPlayer = true; this.name = 'Player'; this.gfx = 'trchar000'; this.speed = 3; this.running = false; this.walkSheet = 'trchar000'; }
-  onArrive() { if (typeof grassAnim === 'function') grassAnim(this.x, this.y); if (!G.main) checkTouch(this.x, this.y); if (!G.main && !G.battle && typeof checkWild === 'function') checkWild(this.x, this.y); }
+  onArrive() { if (typeof grassAnim === 'function') grassAnim(this.x, this.y); if (!G.main) checkTouch(this.x, this.y); if (!G.main && !G.battle && typeof checkWild === 'function') checkWild(this.x, this.y); if (typeof repelStep === 'function') repelStep(); }
 }
 
 // ------------------------------------------------------------ maps
@@ -750,6 +750,7 @@ function update() {
   }
   if (G.refresh) { G.refresh = false; G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
   if (G.biking && !bikeAllowed()) G.biking = false;
+  if (G.repelEnd && !G.main && !G.msg && !G.battle && !G.trans && !G.frozen && !G.uiGen) { G.repelEnd = false; G.main = new Interp([[355, 0, ['pbRepelEnd']], [0, 0, []]], null); }
   if (G.bikeMsg && !G.main && !G.msg && !G.main) { const m = G.bikeMsg; G.bikeMsg = null; G.main = new Interp([[101, 0, [m]], [0, 0, []]], null); }
   // autorun
   if (!G.main && !G.msg && !G.battle && !G.trans && !G.frozen) {

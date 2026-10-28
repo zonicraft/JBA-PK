@@ -6,6 +6,7 @@ the cheats should have a way to give the player pokemon
 some items dont have icons
 bike icon instead of skateboard
 animations of moves the cover the screen, example: psychic and draining kiss, look weird because the image that covers the screen moves
+on miss mushrooms the player still mentions the 1st pokemon in the party instead of the starter choosen
 
 
 some places are not using the correct fight backgrounds

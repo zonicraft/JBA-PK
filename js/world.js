@@ -74,8 +74,17 @@ function checkWild(x, y) {
   const tot = enc.land.reduce((a, e) => a + e[3], 0); let r = Math.random() * tot, pick = enc.land[0];
   for (const e of enc.land) { if ((r -= e[3]) < 0) { pick = e; break; } }
   const lvl = pick[1] + Math.floor(Math.random() * (pick[2] - pick[1] + 1));
+  const lead = G.party.find(m => m.hp > 0);
+  if (G.repel > 0 && lead && lvl < lead.lvl) return;   // Repel: weaker wild Pokémon than the lead Pokémon stay away
   G.wildSteps = 0;
   G.main = new Interp([[355, 0, ['pbWildBattle(:' + pick[0] + ',' + lvl + ')']], [0, 0, []]], null);
+}
+
+// ---- Repel (100 / 200 / 250 steps; blocks wild Pokémon whose level is below the first healthy party member's)
+const REPEL_STEPS = { REPEL: 100, SUPERREPEL: 200, MAXREPEL: 250 };
+function repelStep() {
+  if (!(G.repel > 0) || !G.started || G.battle) return;
+  if (--G.repel <= 0) { G.repel = 0; G.repelEnd = true; }
 }
 
 // ---- emote balloon
@@ -248,6 +257,16 @@ function* worldScript(it, s) {
     yield* runWildBattle(m[1], +m[2]);
     if (G.battleResult === 'lose') yield* blackout();
     else if (G.map && G.map.bgm) playBGM(G.map.bgm);
+    return true;
+  }
+  if (s === 'pbRepelEnd') {
+    yield* showMessage("Repel's effect wore off...");
+    const k = G.repelItem; const nm = k && itemInfo(k).name;
+    if (k && (G.items[k] || 0) > 0) {
+      yield* showMessage('Do you want to use another ' + nm + '?', { noWait: true });
+      const i = yield* showChoices(['Yes', 'No'], 2);
+      if (i === 0) { consume(k); G.repel = REPEL_STEPS[k]; G.repelItem = k; playSE('GUI_sel_decision'); yield* showMessage('\\PN used the ' + nm + '!'); }
+    }
     return true;
   }
   if (s.startsWith('pbPokemonMart(')) {

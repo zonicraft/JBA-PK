@@ -101,10 +101,19 @@ function* bagScreen(o = {}) {
         yield* uiMessage('It can\'t be used in battle.'); continue;
       }
       // field menu
-      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'BICYCLE') opts.push('USE'); opts.push('TOSS', 'CANCEL');
+      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'BICYCLE' || key in REPEL_STEPS) opts.push('USE'); opts.push('TOSS', 'CANCEL');
       const c = yield* choiceWindow(opts, { y: SH - 96 - opts.length * 32 - 32, x: SW - 150 });
       const choice = c < 0 ? 'CANCEL' : opts[c];
       if (choice === 'USE') {
+        if (key in REPEL_STEPS) {
+          if (G.repel > 0) yield* uiMessage('But the effects of a Repel lingered from earlier.');
+          else {
+            G.repel = REPEL_STEPS[key]; G.repelItem = key; consume(key); sfx('item');
+            yield* uiMessage(G.name + ' used the ' + it.name + '!');
+            S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
+          }
+          continue;
+        }
         if (key === 'OLDROD') { G.fishReq = 'OldRod'; return null; }
         if (key === 'BICYCLE') { if (G.biking) { G.biking = false; G.bikeMsg = G.name + ' got off the Skateboard.'; } else if (bikeAllowed()) { G.biking = true; G.bikeMsg = G.name + ' got on the Skateboard.'; } else G.bikeMsg = 'You can\'t use the Skateboard here.'; return null; }
         if (isMedicine(key)) {
@@ -178,7 +187,7 @@ function writeSave() {
   const p = G.player;
   const data = {
     v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
-    runningShoes: !!G.runningShoes, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
+    runningShoes: !!G.runningShoes, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
   };
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); return true; } catch (e) { return false; }
 }
@@ -191,7 +200,7 @@ function migrateSyms(d) {   // saves made before species were renamed to their c
 function loadSave(d) {
   migrateSyms(d);
   G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; G.name = d.name; G.starterName = d.starterName; G.money = d.money; G.trainerId = d.trainerId;
-  G.runningShoes = d.runningShoes; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.pcItems = d.pcItems || null; G.owned = d.owned || {};
+  G.runningShoes = d.runningShoes; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {};
   enterMap(d.map, d.x, d.y, d.dir); if (d.bgm) playBGM(d.bgm);
 }
 const MAPNAMES = { 1: "Jorge's House 2F", 2: 'Pallet Town', 3: 'Pallet Town', 4: "Jorge's House", 8: "Geso's Lab", 5: 'Route 1', 7: 'Viridian City', 81: 'Viridian City', 84: 'Viridian City', 398: 'Viridian City', 354: 'Pokémon Center', 43: 'Route 2', 48: 'Viridian Forest', 85: 'Route 2', 86: 'Route 2', 132: 'Route 2', 145: 'Route 2', 87: 'Pewter City', 89: 'Pewter City', 92: 'Pewter City', 93: 'Pewter City', 94: 'Pewter City', 355: 'Pewter City', 79: 'Route 3', 95: 'Route 4', 96: 'Route 4', 110: 'Route 4', 356: 'Route 4', 97: 'Mt. Moon', 98: 'Mt. Moon', 99: 'Mt. Moon', 100: 'Cerulean City', 101: 'Cerulean City', 102: 'Cerulean City', 103: 'Cerulean City', 104: 'Cerulean City', 105: 'Cerulean City', 106: 'Cerulean City', 107: 'Cerulean City', 108: 'Cerulean City', 113: 'Cerulean City', 357: 'Cerulean City', 109: 'Route 24', 111: 'Route 25', 112: "Nuno's House" };
