@@ -9,13 +9,14 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="theme-color" content="#000000">
+<link rel="preload" as="image" href="assets/ui/background_bars.jpg">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <style>
   @font-face{font-family:PkmnEms;src:url(assets/fonts/pkmnems.ttf)}
   @font-face{font-family:PkmnFl;src:url(assets/fonts/pkmnfl.ttf)}
   @font-face{font-family:PkmnEmn;src:url(assets/fonts/pkmnemn.ttf)}
-  html,body{margin:0;height:100%;background:#000 url(assets/ui/background_bars.png) center/cover no-repeat;overflow:hidden;font-family:sans-serif}
+  html,body{margin:0;height:100%;background:#000 url(assets/ui/background_bars.jpg) center/cover no-repeat;overflow:hidden;font-family:sans-serif}
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
   canvas{image-rendering:pixelated;image-rendering:crisp-edges;background:#000;width:min(100vw,calc(100vh*4/3));height:min(75vw,100vh);outline:none}
   #nameBox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:5}

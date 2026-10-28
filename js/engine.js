@@ -22,27 +22,41 @@ const opp = { 2: 8, 8: 2, 4: 6, 6: 4 };
 const TPS = { 1: 1.5, 2: 2.5, 3: 4, 4: 7.5, 5: 10, 6: 16 };
 
 // ------------------------------------------------------------ assets
-function loadAssets() {
-  return Promise.all(window.ASSETS.filter(f => f.endsWith('.png')).map(f => new Promise(res => {
-    const im = new Image();
-    im.onload = () => { IMGS[f] = im; res(); };
-    im.onerror = () => { console.warn('missing image', f); res(); };
-    im.src = f;
-  })));
+// GitHub Pages is case-sensitive and can drop requests when hundreds fire at once, so images load through a small pool,
+// are retried when they fail, and fall back to an upper-case ".PNG" extension (a few files were committed that way).
+const IMG_PENDING = {};
+function loadImage(f) {
+  IMG_PENDING[f] = 1;
+  return new Promise(res => {
+    const tries = [f, f + '?r=1', f.replace(/\.png$/, '.PNG') + '?r=2', f + '?r=3'];
+    let i = 0;
+    const next = () => {
+      if (i >= tries.length) { console.warn('missing image', f); return res(); }
+      const n = i++, im = new Image();
+      im.onload = () => { IMGS[f] = im; res(); };
+      im.onerror = () => setTimeout(next, n * 300);
+      im.src = tries[n];
+    };
+    next();
+  });
+}
+async function loadAssets() {
+  const list = window.ASSETS.filter(f => f.endsWith('.png')); let k = 0;
+  const worker = async () => { while (k < list.length) await loadImage(list[k++]); };
+  await Promise.all(Array.from({ length: 24 }, worker));
 }
 const symOf = s => (window.D && D.SP[s]) ? s : ((window.PH && window.PH[s]) || s);   // PBS placeholder species names -> current character keys
-const IMG_PENDING = {};
 const img = (dir, name) => {
   const f = 'assets/' + dir + '/' + name + '.png';
   if (IMGS[f]) return IMGS[f];
-  if ((dir === 'battlers' || dir === 'icons') && !IMG_PENDING[f]) { IMG_PENDING[f] = 1; const im = new Image(); im.onload = () => { IMGS[f] = im; }; im.src = f; }   // lazy-load sprites missing from the manifest
+  if (!IMG_PENDING[f]) loadImage(f);   // anything missing from the manifest, or that failed to load earlier, is fetched on demand (with retries)
   return undefined;
 };
 
 // ------------------------------------------------------------ audio
 const SET = { music: 0.7, sfx: 0.7, speed: 1, bars: 1 };
 try { const o = JSON.parse(localStorage.getItem('jba_settings') || '{}'); for (const k in SET) if (typeof o[k] === 'number') SET[k] = o[k]; } catch (e) { }
-function applyBars() { try { document.body.style.backgroundImage = SET.bars ? 'url(assets/ui/background_bars.png)' : 'none'; } catch (err) { } }
+function applyBars() { try { document.body.style.backgroundImage = SET.bars ? 'url(assets/ui/background_bars.jpg)' : 'none'; } catch (err) { } }
 applyBars();
 function saveSettings() { try { localStorage.setItem('jba_settings', JSON.stringify(SET)); } catch (e) { } }
 const AUD = {};
