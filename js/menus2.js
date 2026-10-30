@@ -146,25 +146,26 @@ function* trainerCard() { return yield* withDraw(drawTrainerCard, (function* () 
 // ------------------------------------------------------------ Options
 function* optionsScreen() {
   const S = { idx: 0 };
-  const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Side Bars', 'bars'], ['Close', null]];
+  const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Side Bars', 'bars'], ['On-Screen Controls', 'touch'], ['Close', null]];
   const draw = () => {
     pic('loadbg', 0, 0); skinBox('skin_choice_1', 24, 24, SW - 48, 300);
     txt('OPTIONS', 52, 38, { size: 28 });
     items.forEach(([l, k], i) => {
-      const y = 84 + i * 44; txt(l, 70, y, { size: 26 }); if (i === S.idx) pic('selarrow', 46, y - 2);
+      const y = 80 + i * 36; txt(l, 70, y, { size: 26 }); if (i === S.idx) pic('selarrow', 46, y - 2);
       if (k === 'music' || k === 'sfx') {
         ctx.fillStyle = '#b8c0c8'; ctx.fillRect(280, y + 6, 130, 14); ctx.fillStyle = '#3a78d8'; ctx.fillRect(280, y + 6, 130 * SET[k], 14);
         ctx.strokeStyle = '#485058'; ctx.strokeRect(280.5, y + 6.5, 129, 13); txt(Math.round(SET[k] * 100) + '%', 420, y, { size: 22 });
       } else if (k === 'speed') txt('◀ ' + SET.speed + 'x ▶', 280, y, { size: 26 });
       else if (k === 'bars') txt('◀ ' + (SET.bars ? 'Image' : 'Black') + ' ▶', 280, y, { size: 26 });
+      else if (k === 'touch') txt('◀ ' + (SET.touch ? 'On' : 'Off') + ' ▶', 280, y, { size: 26 });
     });
-    txt('Left/Right: change   X: back', 52, 292, { size: 20, col: COL.dark });
+    txt('Left/Right: change   X: back', 52, 294, { size: 20, col: COL.dark });
   };
   return yield* withDraw(draw, (function* () {
     while (true) {
       yield;
-      if (rep('up')) { S.idx = (S.idx + 4) % 5; sfx('cursor'); }
-      if (rep('down')) { S.idx = (S.idx + 1) % 5; sfx('cursor'); }
+      if (rep('up')) { S.idx = (S.idx + items.length - 1) % items.length; sfx('cursor'); }
+      if (rep('down')) { S.idx = (S.idx + 1) % items.length; sfx('cursor'); }
       const dl = rep('left') ? -1 : rep('right') ? 1 : 0;
       if (dl) {
         const k = items[S.idx][1];
@@ -172,9 +173,11 @@ function* optionsScreen() {
         else if (k === 'sfx') { SET.sfx = Math.max(0, Math.min(1, Math.round((SET.sfx + dl * 0.05) * 20) / 20)); sfx('cursor'); }
         else if (k === 'speed') { let i = SPEEDS.indexOf(SET.speed); i = Math.max(0, Math.min(SPEEDS.length - 1, i + dl)); SET.speed = SPEEDS[i]; sfx('cursor'); }
         else if (k === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
+        else if (k === 'touch') { SET.touch = SET.touch ? 0 : 1; applyTouch(); sfx('cursor'); }
       }
       if (ok() && items[S.idx][1] === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
-      if (back() || (ok() && S.idx === 4)) { sfx('back'); saveSettings(); return; }
+      if (ok() && items[S.idx][1] === 'touch') { SET.touch = SET.touch ? 0 : 1; applyTouch(); sfx('cursor'); }
+      if (back() || (ok() && S.idx === items.length - 1)) { sfx('back'); saveSettings(); return; }
     }
   })());
 }

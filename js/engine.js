@@ -54,7 +54,7 @@ const img = (dir, name) => {
 };
 
 // ------------------------------------------------------------ audio
-const SET = { music: 0.7, sfx: 0.7, speed: 1, bars: 1 };
+const SET = { music: 0.7, sfx: 0.7, speed: 1, bars: 1, touch: (('ontouchstart' in window) || navigator.maxTouchPoints > 0) ? 1 : 0 };
 try { const o = JSON.parse(localStorage.getItem('jba_settings') || '{}'); for (const k in SET) if (typeof o[k] === 'number') SET[k] = o[k]; } catch (e) { }
 // The backdrop is applied from an Image() so its URL is resolved exactly like every other asset (a CSS url() set from script was requested
 // from the site root on GitHub Pages, which 404'd and left the background black).
@@ -119,7 +119,7 @@ const KEYMAP = {
 };
 const keys = { held: {}, pressed: {} };
 keys.kb = {};
-function toggleFullscreen() { try { if (window.matchMedia && (matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches || navigator.standalone)) return; if (document.fullscreenElement) document.exitFullscreen(); else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } catch (err) { } }
+function toggleFullscreen() { try { if (document.fullscreenElement) document.exitFullscreen(); else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } catch (err) { } }
 window.addEventListener('keydown', e => {
   const k = KEYMAP[e.key]; if (!k) return;
   if (G.modal) return;
@@ -153,6 +153,51 @@ function pollPad() {
 }
 window.addEventListener('blur', () => { keys.held = {}; });
 const pressed = k => { const p = keys.pressed[k]; return !!p; };
+// ---- on-screen touch controls (toggle in Options). Feeds the same keys.held / keys.pressed flags as keyboard + gamepad.
+keys.tp = {};
+function touchSet(k, on) {
+  if (on) { if (G.modal) return; if (!keys.tp[k]) { if (!keys.held[k]) keys.pressed[k] = true; keys.held[k] = true; if (k === 'back') keys.held.run = true; keys.tp[k] = true; } }
+  else if (keys.tp[k]) { keys.tp[k] = false; if (!keys.kb[k]) keys.held[k] = false; if (k === 'back' && !keys.kb.back) keys.held.run = false; }
+}
+function releaseTouch() { for (const k in keys.tp) touchSet(k, false); }
+function applyTouch() { const el = document.getElementById('touchUI'); if (el) el.style.display = SET.touch ? 'block' : 'none'; if (!SET.touch) releaseTouch(); }
+(function buildTouchUI() {
+  const css = document.createElement('style');
+  css.textContent = '#touchUI{position:fixed;inset:0;z-index:4;pointer-events:none;display:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}' +
+    '#touchUI .tc{position:absolute;pointer-events:auto;touch-action:none;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.35);color:rgba(255,255,255,.8);font:700 20px sans-serif;display:flex;align-items:center;justify-content:center;border-radius:50%}' +
+    '#touchUI .tc.on{background:rgba(255,255,255,.4)}' +
+    '#tDpad{left:max(14px,env(safe-area-inset-left));bottom:max(14px,env(safe-area-inset-bottom));width:clamp(110px,32vmin,180px);height:clamp(110px,32vmin,180px)}' +
+    '#tDpad::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.35) 0 18%,transparent 19%)}' +
+    '.tBtn{width:clamp(48px,15vmin,80px);height:clamp(48px,15vmin,80px)}' +
+    '#tA{right:max(14px,env(safe-area-inset-right));bottom:calc(max(14px,env(safe-area-inset-bottom)) + clamp(30px,10vmin,56px))}' +
+    '#tB{right:calc(max(14px,env(safe-area-inset-right)) + clamp(60px,18vmin,100px));bottom:max(14px,env(safe-area-inset-bottom))}' +
+    '#tMenu{right:max(14px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));width:clamp(40px,11vmin,60px);height:clamp(40px,11vmin,60px);font-size:14px}' +
+    '#tBike{right:calc(max(14px,env(safe-area-inset-right)) + clamp(60px,18vmin,100px));bottom:calc(max(14px,env(safe-area-inset-bottom)) + clamp(70px,22vmin,120px));width:clamp(40px,11vmin,60px);height:clamp(40px,11vmin,60px);font-size:14px}';
+  document.head.appendChild(css);
+  const ui = document.createElement('div'); ui.id = 'touchUI';
+  const mk = (id, cls, label) => { const d = document.createElement('div'); d.id = id; d.className = 'tc ' + cls; d.textContent = label; ui.appendChild(d); return d; };
+  const buzz = () => { try { navigator.vibrate && navigator.vibrate(8); } catch (e) { } };
+  const bind = (el, k) => {
+    const dn = e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (x) { } el.classList.add('on'); touchSet(k, true); buzz(); };
+    const up = e => { e.preventDefault(); el.classList.remove('on'); touchSet(k, false); };
+    el.addEventListener('pointerdown', dn); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); el.addEventListener('lostpointercapture', up);
+  };
+  bind(mk('tA', 'tBtn', 'A'), 'ok'); bind(mk('tB', 'tBtn', 'B'), 'back'); bind(mk('tMenu', '', 'MENU'), 'menu'); bind(mk('tBike', '', 'BIKE'), 'bike');
+  // d-pad: one zone, direction follows the finger (slide to change direction)
+  const dp = mk('tDpad', '', ''); dp.style.borderRadius = '50%';
+  const dir = e => {
+    const r = dp.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), dz = r.width * 0.12;
+    const h = Math.abs(dx) >= Math.abs(dy);
+    const want = { left: h && dx < -dz, right: h && dx > dz, up: !h && dy < -dz, down: !h && dy > dz };
+    for (const k in want) touchSet(k, want[k]);
+  };
+  dp.addEventListener('pointerdown', e => { e.preventDefault(); try { dp.setPointerCapture(e.pointerId); } catch (x) { } dp.classList.add('on'); dir(e); });
+  dp.addEventListener('pointermove', e => { if (dp.classList.contains('on')) dir(e); });
+  const dpUp = e => { e.preventDefault(); dp.classList.remove('on'); for (const k of ['up', 'down', 'left', 'right']) touchSet(k, false); };
+  dp.addEventListener('pointerup', dpUp); dp.addEventListener('pointercancel', dpUp);
+  ui.addEventListener('contextmenu', e => e.preventDefault());
+  document.body.appendChild(ui); applyTouch();
+})();
 
 // ------------------------------------------------------------ switches / variables
 const SW_NAMES = { 21: 'tsOn', 22: 'tsOff' };
