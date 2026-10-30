@@ -119,7 +119,7 @@ const KEYMAP = {
 };
 const keys = { held: {}, pressed: {} };
 keys.kb = {};
-function toggleFullscreen() { try { if (document.fullscreenElement) document.exitFullscreen(); else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } catch (err) { } }
+function toggleFullscreen() { try { if (window.matchMedia && (matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches || navigator.standalone)) return; if (document.fullscreenElement) document.exitFullscreen(); else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } catch (err) { } }
 window.addEventListener('keydown', e => {
   const k = KEYMAP[e.key]; if (!k) return;
   if (G.modal) return;
