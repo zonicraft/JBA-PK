@@ -160,43 +160,70 @@ function touchSet(k, on) {
   else if (keys.tp[k]) { keys.tp[k] = false; if (!keys.kb[k]) keys.held[k] = false; if (k === 'back' && !keys.kb.back) keys.held.run = false; }
 }
 function releaseTouch() { for (const k in keys.tp) touchSet(k, false); }
-function applyTouch() { const el = document.getElementById('touchUI'); if (el) el.style.display = SET.touch ? 'block' : 'none'; if (!SET.touch) releaseTouch(); }
+let touchHidden = false;   // LB hides the controls for now (setting stays on); double-tap or Options brings them back
+function applyTouch() { touchHidden = false; const el = document.getElementById('touchUI'); if (el) el.style.display = SET.touch ? 'block' : 'none'; if (!SET.touch) releaseTouch(); }
+function hideTouch() { touchHidden = true; releaseTouch(); const el = document.getElementById('touchUI'); if (el) el.style.display = 'none'; }
 (function buildTouchUI() {
+  // Xbox-style layout: stick/d-pad combo (left), Y/X/B/A diamond (right), LB / RB along the top.
   const css = document.createElement('style');
-  css.textContent = '#touchUI{position:fixed;inset:0;z-index:4;pointer-events:none;display:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}' +
-    '#touchUI .tc{position:absolute;pointer-events:auto;touch-action:none;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.35);color:rgba(255,255,255,.8);font:700 20px sans-serif;display:flex;align-items:center;justify-content:center;border-radius:50%}' +
+  css.textContent = '#touchUI{--b:clamp(46px,14vmin,72px);--m:max(14px,env(safe-area-inset-left));position:fixed;inset:0;z-index:4;pointer-events:none;display:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}' +
+    '#touchUI .tc{position:absolute;pointer-events:auto;touch-action:none;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);color:rgba(255,255,255,.85);font:700 calc(var(--b)*.36) sans-serif;display:flex;align-items:center;justify-content:center;box-sizing:border-box}' +
     '#touchUI .tc.on{background:rgba(255,255,255,.4)}' +
-    '#tDpad{left:max(14px,env(safe-area-inset-left));bottom:max(14px,env(safe-area-inset-bottom));width:clamp(110px,32vmin,180px);height:clamp(110px,32vmin,180px)}' +
-    '#tDpad::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,255,255,.35) 0 18%,transparent 19%)}' +
-    '.tBtn{width:clamp(48px,15vmin,80px);height:clamp(48px,15vmin,80px)}' +
-    '#tA{right:max(14px,env(safe-area-inset-right));bottom:calc(max(14px,env(safe-area-inset-bottom)) + clamp(30px,10vmin,56px))}' +
-    '#tB{right:calc(max(14px,env(safe-area-inset-right)) + clamp(60px,18vmin,100px));bottom:max(14px,env(safe-area-inset-bottom))}' +
-    '#tMenu{right:max(14px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));width:clamp(40px,11vmin,60px);height:clamp(40px,11vmin,60px);font-size:14px}' +
-    '#tBike{right:calc(max(14px,env(safe-area-inset-right)) + clamp(60px,18vmin,100px));bottom:calc(max(14px,env(safe-area-inset-bottom)) + clamp(70px,22vmin,120px));width:clamp(40px,11vmin,60px);height:clamp(40px,11vmin,60px);font-size:14px}';
+    '#tStick{left:var(--m);bottom:max(14px,env(safe-area-inset-bottom));width:calc(var(--b)*2.7);height:calc(var(--b)*2.7);border-radius:50%}' +
+    '#tStick .ar{position:absolute;color:rgba(255,255,255,.55);font-size:calc(var(--b)*.3);pointer-events:none}' +
+    '#tStick .u{top:5%;left:50%;transform:translateX(-50%)}#tStick .d{bottom:5%;left:50%;transform:translateX(-50%)}#tStick .l{left:7%;top:50%;transform:translateY(-50%)}#tStick .r{right:7%;top:50%;transform:translateY(-50%)}' +
+    '#tKnob{position:absolute;left:50%;top:50%;width:46%;height:46%;margin:-23% 0 0 -23%;border-radius:50%;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.55);pointer-events:none;transition:transform .08s}' +
+    '#tStick.on #tKnob{transition:none;background:rgba(255,255,255,.5)}' +
+    '#tFace{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:calc(var(--b)*3);height:calc(var(--b)*3);pointer-events:none}' +
+    '#tFace .tc{width:var(--b);height:var(--b);border-radius:50%}' +
+    '#tY{left:var(--b);top:0;color:#f2c230;border-color:rgba(242,194,48,.7)}#tA{left:var(--b);top:calc(var(--b)*2);color:#4cc24c;border-color:rgba(76,194,76,.7)}' +
+    '#tX{left:0;top:var(--b);color:#4a90e8;border-color:rgba(74,144,232,.7)}#tB{left:calc(var(--b)*2);top:var(--b);color:#e8504a;border-color:rgba(232,80,74,.7)}' +
+    '.tSh{width:calc(var(--b)*1.7);height:calc(var(--b)*.62);top:max(8px,env(safe-area-inset-top));border-radius:12px;font-size:calc(var(--b)*.3)!important}' +
+    '#tLB{left:var(--m)}#tRB{right:max(14px,env(safe-area-inset-right))}';
   document.head.appendChild(css);
   const ui = document.createElement('div'); ui.id = 'touchUI';
-  const mk = (id, cls, label) => { const d = document.createElement('div'); d.id = id; d.className = 'tc ' + cls; d.textContent = label; ui.appendChild(d); return d; };
+  const mk = (id, cls, label, parent) => { const d = document.createElement('div'); d.id = id; d.className = 'tc ' + cls; d.textContent = label; (parent || ui).appendChild(d); return d; };
   const buzz = () => { try { navigator.vibrate && navigator.vibrate(8); } catch (e) { } };
-  const bind = (el, k) => {
-    const dn = e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (x) { } el.classList.add('on'); touchSet(k, true); buzz(); };
-    const up = e => { e.preventDefault(); el.classList.remove('on'); touchSet(k, false); };
+  const bind = (el, k, fn) => {
+    const dn = e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (x) { } el.classList.add('on'); buzz(); if (fn) fn(); else touchSet(k, true); };
+    const up = e => { e.preventDefault(); el.classList.remove('on'); if (!fn) touchSet(k, false); };
     el.addEventListener('pointerdown', dn); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); el.addEventListener('lostpointercapture', up);
   };
-  bind(mk('tA', 'tBtn', 'A'), 'ok'); bind(mk('tB', 'tBtn', 'B'), 'back'); bind(mk('tMenu', '', 'MENU'), 'menu'); bind(mk('tBike', '', 'BIKE'), 'bike');
-  // d-pad: one zone, direction follows the finger (slide to change direction)
-  const dp = mk('tDpad', '', ''); dp.style.borderRadius = '50%';
+  // shoulders: LB hides the controls (double-tap the screen to bring them back), RB = skateboard
+  bind(mk('tLB', 'tSh', 'LB'), null, hideTouch); bind(mk('tRB', 'tSh', 'RB'), 'bike');
+  // face buttons: A confirm, B cancel/run, X menu, Y fullscreen (same as the controller)
+  const face = document.createElement('div'); face.id = 'tFace'; ui.appendChild(face);
+  bind(mk('tY', '', 'Y', face), null, toggleFullscreen); bind(mk('tX', '', 'X', face), 'menu');
+  bind(mk('tB', '', 'B', face), 'back'); bind(mk('tA', '', 'A', face), 'ok');
+  // stick + d-pad combo: arrows on a round base, a thumb knob follows the finger; slide to change direction
+  const st = mk('tStick', '', ''); st.style.borderRadius = '50%';
+  for (const [c, t] of [['u', '▲'], ['d', '▼'], ['l', '◀'], ['r', '▶']]) { const a = document.createElement('div'); a.className = 'ar ' + c; a.textContent = t; st.appendChild(a); }
+  const knob = document.createElement('div'); knob.id = 'tKnob'; st.appendChild(knob);
   const dir = e => {
-    const r = dp.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), dz = r.width * 0.12;
-    const h = Math.abs(dx) >= Math.abs(dy);
+    const r = st.getBoundingClientRect(), R = r.width / 2;
+    let dx = e.clientX - (r.left + R), dy = e.clientY - (r.top + R);
+    const len = Math.hypot(dx, dy), lim = R * 0.5, k = len > lim ? lim / len : 1;
+    knob.style.transform = 'translate(' + dx * k + 'px,' + dy * k + 'px)';
+    const dz = R * 0.2, h = Math.abs(dx) >= Math.abs(dy);
     const want = { left: h && dx < -dz, right: h && dx > dz, up: !h && dy < -dz, down: !h && dy > dz };
-    for (const k in want) touchSet(k, want[k]);
+    for (const q in want) touchSet(q, want[q]);
   };
-  dp.addEventListener('pointerdown', e => { e.preventDefault(); try { dp.setPointerCapture(e.pointerId); } catch (x) { } dp.classList.add('on'); dir(e); });
-  dp.addEventListener('pointermove', e => { if (dp.classList.contains('on')) dir(e); });
-  const dpUp = e => { e.preventDefault(); dp.classList.remove('on'); for (const k of ['up', 'down', 'left', 'right']) touchSet(k, false); };
-  dp.addEventListener('pointerup', dpUp); dp.addEventListener('pointercancel', dpUp);
+  st.addEventListener('pointerdown', e => { e.preventDefault(); try { st.setPointerCapture(e.pointerId); } catch (x) { } st.classList.add('on'); dir(e); });
+  st.addEventListener('pointermove', e => { if (st.classList.contains('on')) dir(e); });
+  const stUp = e => { e.preventDefault(); st.classList.remove('on'); knob.style.transform = ''; for (const q of ['up', 'down', 'left', 'right']) touchSet(q, false); };
+  st.addEventListener('pointerup', stUp); st.addEventListener('pointercancel', stUp);
   ui.addEventListener('contextmenu', e => e.preventDefault());
   document.body.appendChild(ui); applyTouch();
+})();
+// double-click / double-tap anywhere on the game brings the on-screen controls back
+(function dblShow() {
+  let last = 0, lx = 0, ly = 0;
+  window.addEventListener('pointerdown', e => {
+    if (e.target.closest && e.target.closest('#touchUI')) return;
+    const t = Date.now(), near = Math.abs(e.clientX - lx) < 40 && Math.abs(e.clientY - ly) < 40;
+    if (t - last < 350 && near && (!SET.touch || touchHidden)) { SET.touch = 1; applyTouch(); saveSettings(); try { navigator.vibrate && navigator.vibrate(15); } catch (x) { } last = 0; }
+    else { last = t; lx = e.clientX; ly = e.clientY; }
+  });
 })();
 
 // ------------------------------------------------------------ switches / variables

@@ -145,7 +145,7 @@ function* trainerCard() { return yield* withDraw(drawTrainerCard, (function* () 
 
 // ------------------------------------------------------------ Options
 function* optionsScreen() {
-  const S = { idx: 0 };
+  const S = { idx: 0, touch: SET.touch };   // S.touch = pending value: turning controls OFF only takes effect on Close
   const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Side Bars', 'bars'], ['On-Screen Controls', 'touch'], ['Close', null]];
   const draw = () => {
     pic('loadbg', 0, 0); skinBox('skin_choice_1', 24, 24, SW - 48, 300);
@@ -157,7 +157,7 @@ function* optionsScreen() {
         ctx.strokeStyle = '#485058'; ctx.strokeRect(280.5, y + 6.5, 129, 13); txt(Math.round(SET[k] * 100) + '%', 420, y, { size: 22 });
       } else if (k === 'speed') txt('◀ ' + SET.speed + 'x ▶', 280, y, { size: 26 });
       else if (k === 'bars') txt('◀ ' + (SET.bars ? 'Image' : 'Black') + ' ▶', 280, y, { size: 26 });
-      else if (k === 'touch') txt('◀ ' + (SET.touch ? 'On' : 'Off') + ' ▶', 280, y, { size: 26 });
+      else if (k === 'touch') txt('◀ ' + (S.touch ? 'On' : 'Off') + ' ▶', 280, y, { size: 26 });
     });
     txt('Left/Right: change   X: back', 52, 294, { size: 20, col: COL.dark });
   };
@@ -173,11 +173,12 @@ function* optionsScreen() {
         else if (k === 'sfx') { SET.sfx = Math.max(0, Math.min(1, Math.round((SET.sfx + dl * 0.05) * 20) / 20)); sfx('cursor'); }
         else if (k === 'speed') { let i = SPEEDS.indexOf(SET.speed); i = Math.max(0, Math.min(SPEEDS.length - 1, i + dl)); SET.speed = SPEEDS[i]; sfx('cursor'); }
         else if (k === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
-        else if (k === 'touch') { SET.touch = SET.touch ? 0 : 1; applyTouch(); sfx('cursor'); }
+        else if (k === 'touch') { S.touch = S.touch ? 0 : 1; if (S.touch) { SET.touch = 1; applyTouch(); } sfx('cursor'); }
       }
       if (ok() && items[S.idx][1] === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
-      if (ok() && items[S.idx][1] === 'touch') { SET.touch = SET.touch ? 0 : 1; applyTouch(); sfx('cursor'); }
-      if (back() || (ok() && S.idx === items.length - 1)) { sfx('back'); saveSettings(); return; }
+      if (ok() && items[S.idx][1] === 'touch') { S.touch = S.touch ? 0 : 1; if (S.touch) { SET.touch = 1; applyTouch(); } sfx('cursor'); }
+      if (ok() && S.idx === items.length - 1) { SET.touch = S.touch; applyTouch(); sfx('back'); saveSettings(); return; }   // Close: apply the choice
+      if (back()) { sfx('back'); SET.touch = SET.touch ? 1 : 0; saveSettings(); return; }   // X: a pending 'Off' is discarded
     }
   })());
 }
