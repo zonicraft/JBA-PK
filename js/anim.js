@@ -119,8 +119,14 @@ function animDrawLayer(g, c) {
   if (g.on && (g.im || g.white) && g.op > 0) {
     ctx.save(); ctx.globalAlpha = Math.max(0, Math.min(1, g.op / 255));
     if (g.white) { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, SW, SH); }
-    else if (g.col[3] > 0) ctx.drawImage(animTinted(g.im, 0, 0, g.im.width, g.im.height, g.col), 0, 0, g.im.width, g.im.height, -g.ox, -g.oy, g.im.width, g.im.height);
-    else ctx.drawImage(g.im, -g.ox, -g.oy);
+    else {
+      // Essentials draws these layers as tiling Planes, so the image wraps around as it scrolls and always covers the screen
+      const w = g.im.width, h = g.im.height; if (w > 0 && h > 0) {
+        const src = g.col[3] > 0 ? animTinted(g.im, 0, 0, w, h, g.col) : g.im;
+        const x0 = ((-g.ox % w) + w) % w - w, y0 = ((-g.oy % h) + h) % h - h;
+        for (let y = y0; y < SH; y += h) for (let x = x0; x < SW; x += w) ctx.drawImage(src, 0, 0, w, h, Math.round(x), Math.round(y), w, h);
+      }
+    }
     ctx.restore();
   } else if (!g.on && c.op > 0 && c.col[3] > 0) {
     ctx.save(); ctx.globalAlpha = Math.max(0, Math.min(1, c.op / 255 * c.col[3] / 255)); ctx.fillStyle = 'rgb(' + (c.col[0] | 0) + ',' + (c.col[1] | 0) + ',' + (c.col[2] | 0) + ')'; ctx.fillRect(0, 0, SW, SH); ctx.restore();

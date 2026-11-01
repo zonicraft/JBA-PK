@@ -274,8 +274,29 @@ function* learnMoveField(p, id) {   // field version of learnMove (uses the same
     sfx('Pkmn_move_learnt'); yield* uiMessage(pokeName(p) + ' learned ' + md.name + '!'); return;
   }
 }
+function* cheatGivePokemon() {
+  const q = yield* promptName('Which Pokémon? (name)', '', 20);
+  const key = (q || '').trim().toLowerCase(); if (!key) return;
+  const all = Object.keys(D.SP).filter(k => D.SP[k] && D.SP[k].name);
+  let hits = all.filter(k => D.SP[k].name.toLowerCase() === key || k.toLowerCase() === key);
+  if (!hits.length) hits = all.filter(k => D.SP[k].name.toLowerCase().startsWith(key));
+  if (!hits.length) hits = all.filter(k => D.SP[k].name.toLowerCase().includes(key));
+  if (!hits.length) { yield* uiMessage('No Pokémon found for "' + q + '".'); return; }
+  if (hits.length > 1) {
+    const shown = hits.slice(0, 8), labels = shown.map(k => D.SP[k].name).concat(['CANCEL']);
+    const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0 });
+    if (c < 0 || c >= shown.length) return; hits = [shown[c]];
+  }
+  const sym = hits[0];
+  const lv = yield* promptName('Level? (1-' + MAXLEVEL + ')', '5', 3);
+  const lvl = Math.max(1, Math.min(MAXLEVEL, parseInt(lv, 10) || 5));
+  const mon = mkPoke(sym, lvl);
+  G.owned = G.owned || {}; G.owned[sym] = true; dexMarkSeen(sym);
+  if (G.party.length < 6) { G.party.push(mon); sfx('item'); yield* uiMessage('Got ' + pokeName(mon) + ' (Lv. ' + lvl + ')! Added to your party.'); }
+  else { pcAdd(mon); sfx('item'); yield* uiMessage(pokeName(mon) + ' (Lv. ' + lvl + ') was sent to the PC because your party is full.'); }
+}
 function* cheatsMenu() {
-  const labels = ['LEVEL UP POKéMON', 'RARE CANDY x10', '+$10000', 'HEAL PARTY', 'CANCEL'];
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', '+$10000', 'HEAL PARTY', 'CANCEL'];
   let idx = 0;
   while (true) {
     const w = 330, x = SW - w - 8, y = 8;
@@ -293,7 +314,7 @@ function* cheatsMenu() {
         if (evoTarget(p)) { p.evoCheck = false; yield* evolveScene([p]); }
         if (p.hp > 0) p.hp = Math.min(p.maxhp, p.hp + 1);
       }
-    } else if (r === 1) { G.items.RARECANDY = Math.min(999, (G.items.RARECANDY || 0) + 10); sfx('item'); yield* uiMessage('Got 10 Rare Candies!'); }
+    } else if (r === 1) { yield* cheatGivePokemon(); }
     else if (r === 2) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage('Got $10000! You now have $' + G.money + '.'); }
     else if (r === 3) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
   }

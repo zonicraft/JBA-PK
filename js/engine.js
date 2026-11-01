@@ -732,6 +732,7 @@ class Interp {
     { const nb = s.match(/^\$Trainer\.numbadges\s*(>=|>|==)\s*(\d+)$/); if (nb) { const have = badgeCount(), n = +nb[2]; return nb[1] === '>=' ? have >= n : nb[1] === '>' ? have > n : have === n; } }
     { const hi = s.match(/^\$PokemonBag\.pbHasItem\?\(:(\w+)\)$/); if (hi) return !!(G.items[hi[1]] > 0); }
     if (s.includes('pbPokerus')) return false;
+    if (s.includes('isMale')) return true;   // the player is Jorge
     if (s.includes('gender == 0')) return true;
     if (s.includes('gender == 1')) return false;
     { const pm = s.match(/^\$game_player\.([xy])\s*(==|!=|<=|>=|<|>)\s*(\d+)$/);

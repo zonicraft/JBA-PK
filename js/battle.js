@@ -23,7 +23,7 @@ const BOX_FOE = { x: -16, y: 36, base: 16 }, BOX_ME = { x: SW - 260, y: SH - 192
 function newSide() { return { st: [0, 0, 0, 0, 0, 0, 0, 0], protect: false, protectN: 0, flinch: false, gone: false }; }
 function bgFor(mapId) {
   const m = window.MAPS && MAPS[mapId], ts = m ? m.tileset : 1;
-  if ([7, 87, 100].includes(mapId)) return 'City';
+  if ([7, 87, 100, 171].includes(mapId)) return 'City';
   if (mapId === 48) return 'Forest';
   if (ts === 6) return 'Cave';
   if (ts === 14) return 'IndoorB';
