@@ -1,7 +1,4 @@
 the tips on the starting room are not correct and the pc doesnt work
-on the git sites deployment the game has trouble loading the assets
-feature to download the save
-the basic repel should be available on the mart with 0 badges
 the cheats should have a way to give the player pokemon
 some items dont have icons
 bike icon instead of skateboard
