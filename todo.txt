@@ -2,7 +2,7 @@ the tips on the starting room are not correct and the pc doesnt work
 some items dont have icons
 bike icon instead of skateboard
 on miss mushrooms the player still mentions the 1st pokemon in the party instead of the starter choosen
-
+remove the underground entrances, its not needed
 
 some places are not using the correct fight backgrounds
 can you add more trainer variety? grab assets from the essential project and change some of the already placed npcs

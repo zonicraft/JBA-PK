@@ -11,6 +11,21 @@ const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [109, 'S', 4, 100, 'N', 0], [100, 'N', 36, 111, 'S', 0], [109, 'E', 0, 111, 'W', 1], [111, 'S', 0, 110, 'N', 121],
   [114, 'N', 0, 100, 'S', 0], [114, 'W', 0, 110, 'E', 40], [120, 'S', 0, 122, 'N', 2], [129, 'W', 0, 122, 'E', 6],
   [169, 'W', 0, 171, 'E', 0], [194, 'E', 0, 171, 'W', 0]];  // the rest lead to areas not built yet
+// ---- map tile patches: a rectangle of tiles is blanked while its switch is on (the story changes the scenery)
+const TILE_PATCHES = [
+  { map: 171, sw: 215, rects: [[31, 21, 37, 26, 2, 0]] },   // Celadon: the arcade building is blown up
+  { map: 185, sw: 208, rects: [[11, 0, 11, 1, 1, 0]] },     // arcade: the poster has been torn off the wall
+];
+function syncTilePatches() {
+  const m = G.map, raw = window.MAPS && window.MAPS[G.mapId]; if (!m || !raw) return;
+  const act = TILE_PATCHES.filter(p => p.map === G.mapId && getSwitch(p.sw)), key = act.map(p => p.sw).join(',');
+  if (m.patchKey === key) return;
+  m.patchKey = key;
+  if (!act.length) { m.data = raw.data; return; }
+  const d = raw.data.slice();
+  for (const p of act) for (const [x1, y1, x2, y2, z, t] of p.rects) for (let y = y1; y <= y2; y++) for (let x = x1; x <= x2; x++) d[x + y * m.w + z * m.w * m.h] = t;
+  m.data = d;
+}
 function findConnection(mapId, dir, p) {
   const edge = { 8: 'N', 2: 'S', 4: 'W', 6: 'E' }[dir];
   let first = null;
@@ -41,6 +56,17 @@ function edgeConnection() {
 const ENC = {
   5: { chance: 0.1, land: [['DAVINCI', 2, 3, 20], ['KUKA', 2, 3, 20], ['ARU', 2, 3, 20], ['CHINO', 2, 3, 20], ['YUITRINITY', 2, 3, 20]] },
 };
+// water you can fish in: terrain tags 5-7, or any water autotile (the sea / pond / fountain tiles of a tileset carry no tag in some places)
+function isWaterAt(x, y) {
+  const m = G.map; if (!m || x < 0 || y < 0 || x >= m.w || y >= m.h) return false;
+  if ([5, 6, 7].includes(terrainTagAt(x, y))) return true;
+  const names = m.ts.autotiles || [];
+  for (let z = 0; z < 3; z++) {
+    const tid = m.data[x + y * m.w + z * m.w * m.h];
+    if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return true; }
+  }
+  return false;
+}
 function terrainTagAt(x, y) {
   const m = G.map; if (!m || !m.ts.tags) return 0;
   for (let z = 2; z >= 0; z--) {
@@ -51,6 +77,7 @@ function terrainTagAt(x, y) {
 }
 // counters: terrain tag 1, or - the interior tilesets (3, 25) carry no terrain tags in this project - any fully blocked tile indoors
 function isCounter(x, y) {
+  if (G.mapId === 185 && y === 3 && x >= 4 && x <= 6) return true;   // the arcade's service counter (the employee stands behind it)
   if (terrainTagAt(x, y) === 1) return true;
   if (![3, 25].includes(G.map.tsId)) return false;
   const m = G.map; if (x < 0 || y < 0 || x >= m.w || y >= m.h) return false;
@@ -172,7 +199,7 @@ function pcAll() { const l = (G.box || []).slice(); if (G.pc) for (const b of G.
 
 // ---- the region map on the wall of the Poké Center / Mart building
 function wallMapCheck(x, y) {
-  if (![354, 355, 356, 357, 358].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
+  if (![172, 354, 355, 356, 357, 358].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
   G.main = new Interp([[355, 0, ['pbWallTownMap']], [0, 0, []]], null); return true;
 }
 function* worldScript(it, s) {
@@ -244,11 +271,17 @@ function* worldScript(it, s) {
   }
   if ((m = s.match(/^pbFish\("(\w+)"\)/))) {          // field use of a fishing rod: needs water in front of the player
     const pl = G.player, [fx, fy] = dirVec[pl.dir]; const wx = pl.x + fx, wy = pl.y + fy;
-    if (![5, 6, 7].includes(terrainTagAt(wx, wy))) { yield* showMessage("There's no water to fish in here."); return true; }
+    if (!isWaterAt(wx, wy)) { yield* showMessage("There's no water to fish in here."); return true; }
     const e = window.ENCOUNTERS && ENCOUNTERS[G.mapId], tbl = e && ((e[m[1]] && e[m[1]].length ? e[m[1]] : null) || (e.Water && e.Water.length ? e.Water : null));
+    const pose = n => { pl.sheetOverride = 'boy_fish_offset'; pl.basePattern = n; pl.pattern = n; };
+    if (G.biking) { G.biking = false; pl.sheetOverride = null; pl.speed = 3; }          // fishing is done on foot
+    pl.fishing = true; pl.turn(pl.dir);
+    for (let n = 3; n >= 0; n--) { pose(n); for (let i = 0; i < 5; i++) yield; }           // cast: rod raised (3) -> swung out over the water (0)
+    const reel = function* () { for (let n = 0; n <= 3; n++) { pose(n); for (let i = 0; i < 5; i++) yield; } pl.fishing = false; pl.sheetOverride = null; pl.basePattern = 0; pl.pattern = 0; };
     yield* showMessage('\\PN cast the line...'); for (let i = 0; i < 50; i++) yield;
-    if (!tbl || Math.random() < 0.2) { yield* showMessage('Not even a nibble...'); return true; }
-    yield* exclaim(pl); yield* showMessage('Oh! A bite!');
+    if (!tbl || Math.random() < 0.2) { yield* reel(); yield* showMessage('Not even a nibble...'); return true; }
+    yield* exclaim(pl); for (let k = 0; k < 4; k++) { pose(k % 2 ? 0 : 1); for (let i = 0; i < 4; i++) yield; }   // the rod tugs on the bite
+    yield* showMessage('Oh! A bite!'); yield* reel();
     const pk = tbl[Math.floor(Math.random() * tbl.length)], lv = pk[1] + Math.floor(Math.random() * (pk[2] - pk[1] + 1));
     yield* runWildBattle(pk[0], lv);
     if (G.battleResult === 'lose') yield* blackout(); else if (G.map && G.map.bgm) playBGM(G.map.bgm);

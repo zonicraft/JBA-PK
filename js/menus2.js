@@ -296,12 +296,12 @@ function* cheatGivePokemon() {
   else { pcAdd(mon); sfx('item'); yield* uiMessage(pokeName(mon) + ' (Lv. ' + lvl + ') was sent to the PC because your party is full.'); }
 }
 function* cheatsMenu() {
-  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', '+$10000', 'HEAL PARTY', 'CANCEL'];
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', '+$10000', 'HEAL PARTY', 'GIVE OLD ROD', 'CANCEL'];
   let idx = 0;
   while (true) {
     const w = 330, x = SW - w - 8, y = 8;
     const r = yield* choiceWindow(labels, { x, y, w, idx });
-    if (r < 0 || r === 4) return; idx = r;
+    if (r < 0 || r === 5) return; idx = r;
     if (r === 0) {
       while (true) {
         const i = yield* partyScreen({ mode: 'choose', text: 'Level up which Pokémon?' });
@@ -317,6 +317,7 @@ function* cheatsMenu() {
     } else if (r === 1) { yield* cheatGivePokemon(); }
     else if (r === 2) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage('Got $10000! You now have $' + G.money + '.'); }
     else if (r === 3) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
+    else if (r === 4) { G.items.OLDROD = 1; sfx('item'); yield* uiMessage('Got an Old Rod!'); }
   }
 }
 
@@ -413,7 +414,7 @@ function* saveFileMenu(drawBase) {
       let data = null; try { const j = JSON.parse(text); data = j && j.save ? j.save : j; } catch (e) { }
       if (!validSaveData(data)) { sfx('buzzer'); yield* uiMessage("That file isn't a valid JBA Pokémon save."); continue; }
       if (hasSave()) {
-        const badges = [260, 261, 262, 263].filter(k => data.switches[k]).length;
+        const badges = [260, 261, 262, 263, 212].filter(k => data.switches[k]).length;
         yield* uiMessage('Import ' + data.name + "'s save (" + badges + ' badges, ' + fmtTime(data.playFrames || 0) + ')? This replaces the save in this browser.', { noWait: true });
         const yes = yield* yesNo(); G.uiMsg = null; if (!yes) continue;
       }
@@ -456,7 +457,7 @@ function* titleScreen() {
         ctx.drawImage(lp, 0, sel ? 222 : 0, 408, 222, 52, y, 408, 222);
         txt('CONTINUE', 70, y + 11, { col: COL.light, shadow: '#383838', size: 24 });
         txt('Player', 70, y + 50, { col: COL.light, shadow: '#383838', size: 22 }); txt(save.name, 440, y + 50, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
-        txt('Badges', 70, y + 76, { col: COL.light, shadow: '#383838', size: 22 }); txt(String([260, 261, 262, 263].filter(k => save.switches && save.switches[k]).length), 440, y + 76, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
+        txt('Badges', 70, y + 76, { col: COL.light, shadow: '#383838', size: 22 }); txt(String([260, 261, 262, 263, 212].filter(k => save.switches && save.switches[k]).length), 440, y + 76, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
         txt('Time', 70, y + 102, { col: COL.light, shadow: '#383838', size: 22 }); txt(fmtTime(save.playFrames), 440, y + 102, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
         txt(mapNameOf(save.map), 70, y + 128, { col: COL.light, shadow: '#383838', size: 22 });
         save.party.slice(0, 6).forEach((p, j) => drawIcon(p, 62 + j * 62, y + 160, false, 0.9));

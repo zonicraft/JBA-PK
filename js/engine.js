@@ -243,7 +243,7 @@ function toggleBike() {   // B key / LB / RB
   if (G.biking) { G.biking = false; return; }
   if (bikeAllowed()) G.biking = true; else G.bikeMsg = 'You can\'t use the Skateboard here.';
 }
-function badgeCount() { return [260, 261, 262, 263].filter(k => getSwitch(k)).length; }   // 260 Pewter, 261 Cerulean, 262 Saffron, 263 Vermilion (Wuant mixtape)
+function badgeCount() { return [260, 261, 262, 263, 212].filter(k => getSwitch(k)).length; }   // 260 Pewter, 261 Cerulean, 262 Saffron, 263 Vermilion (Wuant mixtape), 212 Celadon (survival knife)
 function getVar(id) { return G.vars[id] || 0; }
 function setVar(id, v) { G.vars[id] = v; G.refresh = true; }
 function selfKey(mapId, evId, ch) { return mapId + '_' + evId + '_' + ch; }
@@ -291,6 +291,7 @@ class Chr {
   get gname() { return this.sheetOverride || this.gfx; }
   passableTile(x, y, d) {
     const m = G.map; if (x < 0 || y < 0 || x >= m.w || y >= m.h) { if (this === G.player && !this.through) G.edgeHit = true; return false; }
+    if (m.behind && m.behind.some(r => x >= r[0] && x <= r[2] && y >= r[1] && y <= r[3])) return true;     // walk-behind areas (e.g. the Saffron HQ)
     const ts = m.ts; const bit = (1 << (d / 2 - 1)) & 0x0f;
     for (let z = 2; z >= 0; z--) {
       const tid = m.data[x + y * m.w + z * m.w * m.h];
@@ -373,7 +374,10 @@ class Chr {
       case 35: this.dirFix = true; break; case 36: this.dirFix = false; break;
       case 37: this.through = true; break; case 38: this.through = false; break;
       case 39: this.top = true; break; case 40: this.top = false; break;
-      case 41: this.gfx = p[0]; this.dir = p[2]; this.basePattern = p[3]; break;
+      case 41:
+        if (this.isPlayer && /Spin$/.test(p[0])) { this.spinning = true; break; }          // the hideout's spin pads: no spin sheet exists, so the player's own sprite is turned round in drawChr
+        if (this.isPlayer && this.spinning) { this.spinning = false; break; }
+        this.gfx = p[0]; this.dir = p[2]; this.basePattern = p[3]; break;
       case 42: this.opacity = p[0]; break;
       case 43: break; case 44: break; case 45: break;
     }
@@ -406,7 +410,7 @@ class EventChr extends Chr {
     this.gfx = p.gfx.name; this.tile = p.gfx.tile; this.dir = p.gfx.dir; this.basePattern = p.gfx.pat; this.pattern = p.gfx.pat;
     this.opacity = p.gfx.opacity; this.speed = p.speed; this.walkAnim = p.walk; this.stepAnim = p.step; this.dirFix = p.dirfix;
     this.through = p.through; this.top = p.top; this.route = null; this.forcing = false; this.transparent = false;
-    this.parallel = (p.trigger === 4) ? new Interp(p.list, this) : null;
+    this.parallel = (p.trigger === 4) ? new Interp(p.list, this, true) : null;
   }
   update() {
     super.update();
@@ -439,10 +443,10 @@ function loadMap(id) {
     tileset: window.TILESETS[raw.tileset].tileset, autotiles: window.TILESETS[raw.tileset].autotiles,
     passages: window.TILESETS[raw.tileset].passages, priorities: window.TILESETS[raw.tileset].priorities, tags: window.TILESETS[raw.tileset].tags || []
   } : { tileset: '', autotiles: [], passages: [], priorities: [], tags: [] };
-  return { id, w: raw.w, h: raw.h, data: raw.data, ts, bgm: raw.bgm, events: raw.events, tsId: raw.tileset };
+  return { id, w: raw.w, h: raw.h, data: raw.data, ts, bgm: raw.bgm, events: raw.events, tsId: raw.tileset, behind: raw.behind };
 }
 function enterMap(id, x, y, dir) {
-  const prevMap = G.mapId; const m = loadMap(id); G.map = m; G.mapId = id;
+  const prevMap = G.mapId; const m = loadMap(id); G.map = m; G.mapId = id; if (typeof syncTilePatches === 'function') syncTilePatches();
   G.temp = {};
   G.chars = [];
   G.events = {};
@@ -509,8 +513,11 @@ function checkAction() {
   if (typeof isCounter === 'function' && isCounter(p.x + dx, p.y + dy))        // counter: talk across it
     for (const e of eventAt(p.x + dx * 2, p.y + dy * 2, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }
   if (typeof wallMapCheck === 'function' && wallMapCheck(p.x + dx, p.y + dy)) return true;
-  if (G.items && G.items.OLDROD && typeof terrainTagAt === 'function' && [5, 6, 7].includes(terrainTagAt(p.x + dx, p.y + dy)) && !G.main) {
+  if (G.items && G.items.OLDROD && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {
     G.main = new Interp([[355, 0, ['pbFishAsk']], [0, 0, []]], null); return true;
+  }
+  if (G.items && !G.items.OLDROD && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {   // water, but no rod yet
+    G.main = new Interp([[101, 0, ['The water is calm.']], [0, 0, []]], null); return true;
   }
   return false;
 }
@@ -615,7 +622,7 @@ function* promptName(label, def, max) {
 
 // ------------------------------------------------------------ interpreter
 class Interp {
-  constructor(list, ev) { this.list = list; this.ev = ev; this.gen = this.run(); this.done = false; if (G.player) { G.player.speed = 3; G.player.sheetOverride = null; } }   // cutscenes always start at walking pace (not mid-run)
+  constructor(list, ev, par) { this.list = list; this.ev = ev; this.gen = this.run(); this.done = false; if (G.player && !par) { G.player.speed = 3; G.player.sheetOverride = null; } }   // cutscenes always start at walking pace (not mid-run)
   update() { if (this.done) return; const r = this.gen.next(); if (r.done) this.done = true; }
   evChr(id) {
     if (id === -1) return G.player;
@@ -769,6 +776,7 @@ class Interp {
       yield* showMessage('Move: arrow keys or WASD.\nConfirm / talk: Z, Enter or Space.\nCancel: X. Hold X or Shift to run (once you own running shoes).'); return;
     }
     if (s.startsWith('pbChangePlayer')) { return; }
+    if ((m = s.match(/^pbPlaceNear\((\d+),(-?\d+),(-?\d+)(?:,(\d))?\)/))) { const pe = G.events[+m[1]]; if (pe) { pe.setPos(G.player.x + +m[2], G.player.y + +m[3]); if (m[4]) pe.dir = +m[4]; } return; }   // put an event next to the player (used by the Celadon arrival scene)
     if (s === 'pbTrainerName') { G.name = yield* promptName('Your name?', 'Jorge', 8); return; }
     if (s.startsWith('pbTrainerName(')) return;
     if ((m = s.match(/^pbSet\((\d+),pbEnterNPCName\("([^"]*)",(\d+),(\d+),"([^"]*)"/))) {
@@ -837,15 +845,15 @@ function update() {
   if (G.uiGen) { updateUI(); keys.pressed = {}; return; }
   if (G.started) G.playFrames++;
   if (G.menu) { updateMenu(); return; }
-  if (G.refresh) { G.refresh = false; G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
+  if (G.refresh) { G.refresh = false; if (typeof syncTilePatches === 'function') syncTilePatches(); G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
   updateTone(); updatePics();
   if (G.battle) { updateBattle(); keys.pressed = {}; return; }
   if (G.main) { G.main.update(); if (G.main.done) G.main = null; }
   // parallel processes
   for (const c of G.chars) {
-    if (c.parallel) { c.parallel.update(); if (c.parallel.done && c.page) c.parallel = new Interp(c.page.list, c); }
+    if (c.parallel) { c.parallel.update(); if (c.parallel.done && c.page) c.parallel = new Interp(c.page.list, c, true); }
   }
-  if (G.refresh) { G.refresh = false; G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
+  if (G.refresh) { G.refresh = false; if (typeof syncTilePatches === 'function') syncTilePatches(); G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
   if (G.biking && !bikeAllowed()) G.biking = false;
   if (G.repelEnd && !G.main && !G.msg && !G.battle && !G.trans && !G.frozen && !G.uiGen) { G.repelEnd = false; G.main = new Interp([[355, 0, ['pbRepelEnd']], [0, 0, []]], null); }
   if (G.bikeMsg && !G.main && !G.msg && !G.main) { const m = G.bikeMsg; G.bikeMsg = null; G.main = new Interp([[101, 0, [m]], [0, 0, []]], null); }
@@ -891,6 +899,7 @@ function update() {
     if (!moved && pressed('ok') && !(G.lock && G.lock.ok)) checkAction();
   }
   if (G.biking) p.sheetOverride = 'boy_bike';
+  else if (p.fishing) { /* keeps the casting sheet */ }
   else if (!p.moving && !p.forcing && !keys.held.run) p.sheetOverride = null;
   else if (p.sheetOverride === 'boy_bike') p.sheetOverride = null;
   keys.pressed = {};
@@ -952,11 +961,17 @@ function camera() {
 }
 function drawChr(c, cx, cy) {
   if (c.erased || c.transparent || c.opacity <= 0) return;
-  const name = c.gname; if (!name) return;
+  const name = c.gname;
+  if (!name) {   // an event shown as a map tile (RPG Maker 'tile' graphic), e.g. the stairs the lever reveals
+    if (c.tile >= 384 && G.map) { ctx.globalAlpha = c.opacity / 255; drawTile(ctx, G.map.ts, c.tile, Math.round(c.rx - cx), Math.round(c.ry - cy)); ctx.globalAlpha = 1; }
+    return;
+  }
   const im = img('characters', name); if (!im) return;
   const fw = im.width / 4, fh = im.height / 4;
-  const row = (name === 'boy_bike' ? { 2: 0, 4: 2, 6: 2, 8: 3 } : { 2: 0, 4: 1, 6: 2, 8: 3 })[c.dir];
-  const px = Math.round(c.rx + 16 - fw / 2 - cx), py = Math.round(c.ry + 32 - fh - cy);
+  const spinRow = c.spinning ? [0, 1, 3, 2][Math.floor(G.frame / 3) % 4] : -1;
+  let row = (name === 'boy_bike' ? { 2: 0, 4: 2, 6: 2, 8: 3 } : { 2: 0, 4: 1, 6: 2, 8: 3 })[c.dir];
+  if (spinRow >= 0) row = spinRow;
+  const px = Math.round(c.rx + 16 - fw / 2 - cx), py = Math.round(c.ry + 32 - fh - cy + (/offset/i.test(name) ? 16 : 0));   // "offset" sheets keep the feet 16px above the bottom of the frame
   ctx.globalAlpha = c.opacity / 255;
   let yo = 0;
   if (c.jumping && c.jumpTotal) { const rem = Math.abs(c.x * TS - c.rx) + Math.abs(c.y * TS - c.ry); const pr = Math.max(0, Math.min(1, 1 - rem / c.jumpTotal)); yo = -Math.sin(pr * Math.PI) * 26; const sh = img('ui', 'battle/object_shadow'); ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(Math.round(c.rx + 16 - cx), Math.round(c.ry + 30 - cy), 11, 5, 0, 0, 7); ctx.fill(); }
@@ -972,11 +987,13 @@ function drawMap() {
   for (let z = 0; z < 3; z++) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
     const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
     const pr = tid >= 48 ? (m.ts.priorities[tid] || 0) : (m.ts.priorities[tid] || 0);
-    if (pr === 0) drawTile(ctx, m.ts, tid, x * TS - cx, y * TS - cy);
+    const inB = z > 0 && m.behind && m.behind.some(r => x >= r[0] && x <= r[2] && y >= r[1] - 1 && y <= r[3]);   // building tiles (not the floor) cover the player; one row above so the head is hidden too
+    if (inB) top.push({ z: 60000 + z, tid, x, y });
+    else if (pr === 0) drawTile(ctx, m.ts, tid, x * TS - cx, y * TS - cy);
     else top.push({ z: (y + pr) * TS + 0.1, tid, x, y });
   }
   const items = top.map(t => ({ z: t.z, f: () => drawTile(ctx, m.ts, t.tid, t.x * TS - cx, t.y * TS - cy) }));
-  for (const c of G.chars) items.push({ z: c.top ? 99999 : c.ry + 32 + (c.isPlayer ? 0.05 : 0), f: () => drawChr(c, cx, cy) });
+  for (const c of G.chars) items.push({ z: c.top ? 99999 : (c.tile > 0 && !c.gname && !(G.map.ts.priorities[c.tile] || 0)) ? -50 : c.ry + 32 + (c.isPlayer ? 0.05 : 0), f: () => drawChr(c, cx, cy) });
   if (typeof grassItems === 'function') grassItems(items, cx, cy);
   items.sort((a, b) => a.z - b.z);
   items.forEach(it => it.f());
