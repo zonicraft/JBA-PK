@@ -295,17 +295,41 @@ function* cheatGivePokemon() {
   if (G.party.length < 6) { G.party.push(mon); sfx('item'); yield* uiMessage('Got ' + pokeName(mon) + ' (Lv. ' + lvl + ')! Added to your party.'); }
   else { pcAdd(mon); sfx('item'); yield* uiMessage(pokeName(mon) + ' (Lv. ' + lvl + ') was sent to the PC because your party is full.'); }
 }
+function* cheatGiveMove() {
+  const start = Math.min(G.cheatPartyIdx || 0, Math.max(0, G.party.length - 1));
+  const i = yield* partyScreen({ mode: 'choose', text: 'Give a move to which Pokémon?', start });
+  if (i < 0) return; G.cheatPartyIdx = i;
+  const p = G.party[i];
+  const q = yield* promptName('Which move? (name)', '', 20);
+  const key = (q || '').trim().toLowerCase().replace(/[\s-]+/g, ' '); if (!key) return;
+  const all = Object.keys(D.MV).filter(k => D.MV[k] && D.MV[k].name);
+  const nm = k => D.MV[k].name.toLowerCase().replace(/[\s-]+/g, ' ');
+  let hits = all.filter(k => nm(k) === key || k.toLowerCase() === key.replace(/ /g, ''));
+  if (!hits.length) hits = all.filter(k => nm(k).startsWith(key));
+  if (!hits.length) hits = all.filter(k => nm(k).includes(key));
+  if (!hits.length) { yield* uiMessage('No move found for "' + q + '".'); return; }
+  if (hits.length > 1) {
+    const shown = hits.slice(0, 8), labels = shown.map(k => D.MV[k].name).concat(['CANCEL']);
+    const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0 });
+    if (c < 0 || c >= shown.length) return; hits = [shown[c]];
+  }
+  if (p.moves.some(m => m.id === hits[0])) { yield* uiMessage(pokeName(p) + ' already knows ' + D.MV[hits[0]].name + '.'); return; }
+  yield* learnMoveField(p, hits[0]);
+}
 function* cheatsMenu() {
-  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', '+$10000', 'HEAL PARTY', 'GIVE OLD ROD', 'CANCEL'];
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'GIVE OLD ROD', 'CANCEL'];
+  const CANCEL = labels.length - 1;
   let idx = 0;
   while (true) {
     const w = 330, x = SW - w - 8, y = 8;
     const r = yield* choiceWindow(labels, { x, y, w, idx });
-    if (r < 0 || r === 5) return; idx = r;
+    if (r < 0 || r === CANCEL) return; idx = r;
     if (r === 0) {
       while (true) {
-        const i = yield* partyScreen({ mode: 'choose', text: 'Level up which Pokémon?' });
+        const start = Math.min(G.cheatLvIdx || 0, Math.max(0, G.party.length - 1));   // cursor starts on the last Pokémon you levelled
+        const i = yield* partyScreen({ mode: 'choose', text: 'Level up which Pokémon?', start });
         if (i < 0) break;
+        G.cheatLvIdx = i;
         const p = G.party[i];
         if (p.lvl >= MAXLEVEL) { yield* uiMessage(pokeName(p) + ' is already at the maximum level.'); continue; }
         const res = gainExp(p, expFor(D.SP[p.sym].growth, p.lvl + 1) - p.exp); sfx('exp');
@@ -315,9 +339,11 @@ function* cheatsMenu() {
         if (p.hp > 0) p.hp = Math.min(p.maxhp, p.hp + 1);
       }
     } else if (r === 1) { yield* cheatGivePokemon(); }
-    else if (r === 2) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage('Got $10000! You now have $' + G.money + '.'); }
-    else if (r === 3) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
-    else if (r === 4) { G.items.OLDROD = 1; sfx('item'); yield* uiMessage('Got an Old Rod!'); }
+    else if (r === 2) { yield* cheatGiveMove(); }
+    else if (r === 3) { yield* pcSession(); }
+    else if (r === 4) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage('Got $10000! You now have $' + G.money + '.'); }
+    else if (r === 5) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
+    else if (r === 6) { G.items.OLDROD = 1; sfx('item'); yield* uiMessage('Got an Old Rod!'); }
   }
 }
 

@@ -10,7 +10,8 @@ const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [87, 'E', 15, 79, 'W', 0], [79, 'N', 0, 95, 'S', 0], [79, 'E', 0, 110, 'W', 30], [95, 'E', 0, 110, 'W', 6], [100, 'W', 0, 110, 'E', 0],
   [109, 'S', 4, 100, 'N', 0], [100, 'N', 36, 111, 'S', 0], [109, 'E', 0, 111, 'W', 1], [111, 'S', 0, 110, 'N', 121],
   [114, 'N', 0, 100, 'S', 0], [114, 'W', 0, 110, 'E', 40], [120, 'S', 0, 122, 'N', 2], [129, 'W', 0, 122, 'E', 6],
-  [169, 'W', 0, 171, 'E', 0], [194, 'E', 0, 171, 'W', 0]];  // the rest lead to areas not built yet
+  [169, 'W', 0, 171, 'E', 0], [194, 'E', 0, 171, 'W', 0],
+  [195, 'S', 0, 198, 'N', 0], [199, 'N', 0, 198, 'S', 6], [202, 'W', 0, 201, 'E', 0]];  // Route 16-18 and Fuchsia; the rest lead to areas not built yet
 // ---- map tile patches: a rectangle of tiles is blanked while its switch is on (the story changes the scenery)
 const TILE_PATCHES = [
   { map: 171, sw: 215, rects: [[31, 21, 37, 26, 2, 0]] },   // Celadon: the arcade building is blown up
@@ -54,6 +55,8 @@ function edgeConnection() {
 
 // ---- wild encounters (PBS/encounters.txt, Land only, equal-ish slot weights)
 const ENC = {
+  // Route 7: Kanna is a rare (5%) wild encounter
+  169: { chance: 0.1, land: [['BAKI', 24, 27, 19], ['TAKAO', 24, 27, 19], ['ELICHANHALLOWEEN', 24, 27, 19], ['ANASTASIA', 24, 27, 19], ['MIRAJANE', 24, 27, 19], ['KANNA', 24, 27, 5]] },
   5: { chance: 0.1, land: [['DAVINCI', 2, 3, 20], ['KUKA', 2, 3, 20], ['ARU', 2, 3, 20], ['CHINO', 2, 3, 20], ['YUITRINITY', 2, 3, 20]] },
 };
 // water you can fish in: terrain tags 5-7, or any water autotile (the sea / pond / fountain tiles of a tileset carry no tag in some places)

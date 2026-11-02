@@ -625,7 +625,7 @@ function* runTrainerBattle(script) {
   let foeParty;
   if (tr) foeParty = tr.p.map(([sym, lvl, , mv]) => mkPoke(sym, lvl, { moves: mv.filter(x => D.MV[x]).length ? mv.filter(x => D.MV[x]) : undefined, ot: rival }));
   else { const sp = { 1: 'RORY', 2: 'HIZUNA', 3: 'ILLYA' }[G.vars[202] || 1]; foeParty = [mkPoke(sp, 5, { moves: ['TACKLE', 'GROWL'], ot: rival })]; }
-  const B = mkBattle({ kind: 'trainer', foeParty, trainer: { name: rival, money: tt.money, sprite: 'trainer' + String(tt.id).padStart(3, '0') }, bg: bgFor(G.mapId), endText });
+  const B = mkBattle({ kind: 'trainer', foeParty, trainer: { name: rival, money: tt.money, sprite: tt.noSprite ? '' : 'trainer' + String(tt.id).padStart(3, '0') }, bg: bgFor(G.mapId), endText });
   if (tr && tr.scripted) B.scripted = true;
   yield* runBattle(B);
 }
@@ -744,7 +744,7 @@ function drawBattle() {
   if (bg) ctx.drawImage(bg, 0, 0);
   if (eb) ctx.drawImage(eb, FOE_BASE.x - 128, FOE_BASE.y - 78);
   if (pb) ctx.drawImage(pb, ME_BASE.x - 128 - 40, 288 - 64 + 4, 512, 64);
-  const ftr = B.trainer && img('trainers', B.trainer.sprite);
+  const ftr = B.trainer && B.trainer.sprite && img('trainers', B.trainer.sprite);
   if (B.spr.foeTr.vis && ftr) { const sc = 1.3, w = ftr.width * sc, h = ftr.height * sc; ctx.drawImage(ftr, B.spr.foeTr.x - w / 2, FOE_BASE.y + 6 - h, w, h); }
   if (B.foe && !(B.anim && B.anim.cov[1])) { const sp = D.SP[B.foe.sym]; drawSprite(B.spr.foe, img('battlers', String(sp.id).padStart(3, '0')), FOE_BASE.x, FOE_BASE.y + 8 + (sp.enemyY || 0), 160); }
   const mtr = img('trainers', 'trback000');

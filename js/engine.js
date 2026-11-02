@@ -738,6 +738,7 @@ class Interp {
     if (s.includes('$game_player.x<15')) return G.player.x < 15 && G.mapId === 3;
     { const nb = s.match(/^\$Trainer\.numbadges\s*(>=|>|==)\s*(\d+)$/); if (nb) { const have = badgeCount(), n = +nb[2]; return nb[1] === '>=' ? have >= n : nb[1] === '>' ? have > n : have === n; } }
     { const hi = s.match(/^\$PokemonBag\.pbHasItem\?\(:(\w+)\)$/); if (hi) return !!(G.items[hi[1]] > 0); }
+    if (s === 'pbLastBattleWon') return G.battleResult === 'win';   // wild battle won or caught
     if (s.includes('pbPokerus')) return false;
     if (s.includes('isMale')) return true;   // the player is Jorge
     if (s.includes('gender == 0')) return true;
@@ -814,7 +815,7 @@ class Interp {
     if (s.startsWith('$PokemonBag.pbDeleteItem')) { return; }
     if (s.startsWith('$Trainer.pokedex')) { G.pokedex = true; return; }
     if (s === 'pbTrainerPC') { yield* showMessage('\\PN booted up the PC.\n(Storage is not in this test build.)'); return; }
-    if (s === 'pbCaveEntrance') return;
+    if (s === 'pbCaveEntrance' || s === 'pbCaveExit') return;
     if (typeof worldScript === 'function' && (yield* worldScript(this, s))) return;
     console.warn('unhandled script:', s);
   }
@@ -967,7 +968,8 @@ function drawChr(c, cx, cy) {
     return;
   }
   const im = img('characters', name); if (!im) return;
-  const fw = im.width / 4, fh = im.height / 4;
+  const single = /^roadblock_/i.test(name);   // one-picture sprites (not a 4x4 walking sheet)
+  const fw = single ? im.width : im.width / 4, fh = single ? im.height : im.height / 4;
   const spinRow = c.spinning ? [0, 1, 3, 2][Math.floor(G.frame / 3) % 4] : -1;
   let row = (name === 'boy_bike' ? { 2: 0, 4: 2, 6: 2, 8: 3 } : { 2: 0, 4: 1, 6: 2, 8: 3 })[c.dir];
   if (spinRow >= 0) row = spinRow;
@@ -975,7 +977,7 @@ function drawChr(c, cx, cy) {
   ctx.globalAlpha = c.opacity / 255;
   let yo = 0;
   if (c.jumping && c.jumpTotal) { const rem = Math.abs(c.x * TS - c.rx) + Math.abs(c.y * TS - c.ry); const pr = Math.max(0, Math.min(1, 1 - rem / c.jumpTotal)); yo = -Math.sin(pr * Math.PI) * 26; const sh = img('ui', 'battle/object_shadow'); ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(Math.round(c.rx + 16 - cx), Math.round(c.ry + 30 - cy), 11, 5, 0, 0, 7); ctx.fill(); }
-  ctx.drawImage(im, c.pattern * fw, row * fh, fw, fh, px, py + Math.round(yo), fw, fh);
+  ctx.drawImage(im, single ? 0 : c.pattern * fw, single ? 0 : row * fh, fw, fh, px, py + Math.round(yo), fw, fh);
   ctx.globalAlpha = 1;
 }
 function drawMap() {
