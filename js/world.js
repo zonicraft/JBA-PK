@@ -171,6 +171,12 @@ function ledgeJump(p, d) {
   if (terrainTagAt(nx, ny) !== 1 || m.tsId !== 1) return false;
   // sideways hops only over vertical ledge walls (the tile above or below is a ledge too)
   if (dx && terrainTagAt(nx, ny - 1) !== 1 && terrainTagAt(nx, ny + 1) !== 1) return false;
+  // ...and each vertical wall only one way: you hop towards the side where the cliff face is drawn: tiles 1205/1206/1214 left to right, tiles 1202/1203/1210 right to left
+  if (dx) {
+    let ids = []; for (let z = 0; z < 3; z++) ids.push(m.data[nx + ny * m.w + z * m.w * m.h]);
+    const R = [1205, 1206, 1214], Lf = [1202, 1203, 1210];
+    if (dx > 0 ? !ids.some(t => R.includes(t)) : !ids.some(t => Lf.includes(t))) return false;
+  }
   if (!p.passableTile(lx, ly, { 2: 8, 4: 6, 6: 4 }[d])) return false;
   for (const e of G.chars) if (e !== p && !e.erased && !e.through && e.x === lx && e.y === ly && (e.gname !== '' || e.tile > 0)) return false;
   p.dir = d; p.speed = 3; p.sheetOverride = null; playSE('Player_jump'); p.jump(dx * 2, dy * 2); return true;

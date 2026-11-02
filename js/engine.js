@@ -115,7 +115,7 @@ function cry(id) { try { const a = new Audio('assets/cries/' + String(id).padSta
 // ------------------------------------------------------------ input
 const KEYMAP = {
   ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right',
-  z: 'ok', Z: 'ok', Enter: 'ok', ' ': 'ok', c: 'ok', C: 'ok', x: 'back', X: 'back', Escape: 'menu', m: 'menu', M: 'menu', Tab: 'menu', Shift: 'run', b: 'bike', B: 'bike'
+  z: 'ok', Z: 'ok', Enter: 'ok', ' ': 'ok', x: 'back', X: 'back', Escape: 'menu', m: 'menu', M: 'menu', Tab: 'menu', Shift: 'run', c: 'bike', C: 'bike'
 };
 const keys = { held: {}, pressed: {} };
 keys.kb = {};
@@ -238,7 +238,7 @@ function getSwitch(id, ev) {
 function setSwitch(id, v) { G.switches[id] = v; G.refresh = true; }
 // Skateboard (the Bike): can be used everywhere
 function bikeAllowed() { return true; }
-function toggleBike() {   // B key / LB / RB
+function toggleBike() {   // C key / LB / RB
   if (!(G.items.BICYCLE > 0)) return;
   if (G.biking) { G.biking = false; return; }
   if (bikeAllowed()) G.biking = true; else G.bikeMsg = 'You can\'t use the Skateboard here.';
