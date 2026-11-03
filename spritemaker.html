@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprite Maker (prototype)</title>
+<style>
+  :root{
+    --bg:#f4f1ec; --panel:#ffffff; --ink:#1d1b19; --muted:#6c675f; --line:#dcd6cb;
+    --accent:#3d6fd6; --accent-ink:#fff; --chk1:#e9e5dd; --chk2:#f7f4ee; --warn:#b4531c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#17181b; --panel:#212328; --ink:#ecebe8; --muted:#a09d96; --line:#33363d;
+      --accent:#6c98ff; --accent-ink:#0b0d12; --chk1:#2a2d33; --chk2:#24272c; --warn:#e0925a; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{display:flex;align-items:baseline;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header h1{font-size:17px;margin:0;font-weight:650}
+  header span{color:var(--muted);font-size:12.5px}
+  main{display:grid;grid-template-columns:minmax(340px,430px) 1fr;gap:16px;padding:16px 20px;max-width:1280px;margin:0 auto}
+  @media (max-width:860px){ main{grid-template-columns:1fr} }
+  .col{display:flex;flex-direction:column;gap:14px;min-width:0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .card h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:650;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .stage{display:flex;justify-content:center;padding:6px 0 10px}
+  canvas.view{image-rendering:pixelated;border-radius:8px;border:1px solid var(--line);
+    background-image:linear-gradient(45deg,var(--chk1) 25%,transparent 25%,transparent 75%,var(--chk1) 75%),linear-gradient(45deg,var(--chk1) 25%,transparent 25%,transparent 75%,var(--chk1) 75%);
+    background-color:var(--chk2);background-size:20px 20px;background-position:0 0,10px 10px;max-width:100%;height:auto}
+  .cyc{display:flex;gap:4px;align-items:stretch}
+  .cyc select{flex:1;min-width:0}
+  .cyc button{padding:4px 11px;font-size:16px;line-height:1}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .row + .row{margin-top:8px}
+  label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);flex:1;min-width:120px}
+  select,input[type=text],input[type=number],button{font:inherit;color:var(--ink)}
+  [hidden]{display:none !important}
+  select,input[type=text],input[type=number]{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 8px;width:100%}
+  button{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 11px;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+  button.seg{border-radius:0;margin-left:-1px}
+  button.seg:first-child{border-radius:7px 0 0 7px;margin-left:0}
+  button.seg:last-child{border-radius:0 7px 7px 0}
+  button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .lock{font-size:12px;color:var(--muted);display:inline-flex;gap:5px;align-items:center;text-transform:none;letter-spacing:0;font-weight:500;cursor:pointer}
+  .swatches{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .sw{width:20px;height:20px;border-radius:5px;border:1px solid rgba(0,0,0,.25);padding:0;cursor:pointer}
+  .sw.sel{outline:2px solid var(--accent);outline-offset:1px}
+  .slot{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .slot > b{font-weight:500;font-size:12px;color:var(--muted);min-width:62px}
+  input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--line);border-radius:5px;background:none;cursor:pointer}
+  .hint{color:var(--muted);font-size:12px}
+  .na{color:var(--warn);font-size:12px;min-height:16px;text-align:center}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips label{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer;background:var(--bg)}
+  #sheetWrap{overflow:auto;border:1px solid var(--line);border-radius:8px;max-height:340px;background-color:var(--chk2)}
+  #sheetCanvas{image-rendering:pixelated;display:block}
+  .meta{font-size:12px;color:var(--muted);margin-top:6px}
+  #toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none}
+  #toast.show{opacity:.95}
+</style>
+</head>
+<body>
+<header>
+  <h1>Sprite Maker</h1><span>prototype · 40×40 top-down character sheets · runs fully offline</span>
+</header>
+<main>
+  <div class="col">
+    <section class="card">
+      <h2>Preview</h2>
+      <div class="stage"><canvas id="view" class="view" width="40" height="40"></canvas></div>
+      <div class="na" id="naMsg"></div>
+      <div class="row">
+        <label class="f">Animation<select id="animSel"></select></label>
+        <label class="f" style="flex:0 0 120px">Zoom<select id="zoomSel"><option value="6">6×</option><option value="8" selected>8×</option><option value="10">10×</option></select></label>
+      </div>
+      <div class="row">
+        <span class="hint">Direction</span>
+        <span id="dirBtns"></span>
+        <button id="playBtn" style="margin-left:auto">Pause</button>
+      </div>
+      <div class="meta" id="frameInfo"></div>
+    </section>
+
+    <section class="card">
+      <h2>Randomize</h2>
+      <div class="row">
+        <button id="rndBtn" class="primary">Randomize</button>
+        <button id="resetBtn">Reset</button>
+        <span class="hint">Lock a section (🔒) to keep it when randomizing.</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Export</h2>
+      <div class="row">
+        <label class="f">Format<select id="expFormat">
+          <option value="grid">Grid: 4 directions × one animation (classic 4×4 walk sheet)</option>
+          <option value="multi">Multi-animation sheet (native 40×40 frames)</option>
+        </select></label>
+      </div>
+      <div id="gridOpts">
+        <div class="row">
+          <label class="f">Animation<select id="gridAnim"></select></label>
+          <label class="f" style="flex:0 0 110px">Pixel scale<select id="gridScale"><option value="1">1×</option><option value="2" selected>2×</option><option value="3">3×</option><option value="4">4×</option></select></label>
+        </div>
+        <div class="row">
+          <label class="f">Cell width (px)<input type="number" id="cellW" value="32" min="1" max="512"></label>
+          <label class="f">Cell height (px)<input type="number" id="cellH" value="48" min="1" max="512"></label>
+        </div>
+        <div class="row">
+          <label class="f">Move sprite down (sprite px)<input type="number" id="nudgeY" value="1" min="-20" max="20" step="1"></label>
+        </div>
+        <label class="lock" style="margin-top:8px"><input type="checkbox" id="standFirst" checked> Standing frame first (stand, step, stand, step)</label>
+        <div class="hint" style="margin-top:6px">Rows: South, West, East, North. Columns: the frames of the animation (walk = 4). Characters are centered horizontally and rest on the bottom of each cell.</div>
+        <div class="na" id="clipMsg"></div>
+      </div>
+      <div id="multiOpts" hidden>
+        <div class="hint" style="margin-bottom:6px">Animations to include</div>
+        <div class="chips" id="expAnims"></div>
+        <div class="hint" style="margin:10px 0 6px">Directions to include</div>
+        <div class="chips" id="expDirs"></div>
+        <div class="row" style="margin-top:10px">
+          <label class="f">Frames run<select id="expOrient"><option value="h">Left → right (directions in rows)</option><option value="v">Top → bottom (directions in columns)</option></select></label>
+          <label class="f" style="flex:0 0 100px">Scale<select id="expScale"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+        </div>
+      </div>
+      <div class="row">
+        <label class="f">File name<input type="text" id="expName" value="character"></label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="expPng" class="primary">Download PNG sheet</button>
+        <button id="expJson">Download JSON</button>
+        <button id="impJson">Load JSON…</button>
+        <input type="file" id="impFile" accept=".json,application/json" hidden>
+      </div>
+      <div class="hint" style="margin-top:8px">The JSON records every choice and color, plus where each animation sits in the sheet.</div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card" id="panelBody"></section>
+    <section class="card" id="panelEyes"></section>
+    <section class="card" id="panelHair"></section>
+    <section class="card" id="panelHat"></section>
+    <section class="card" id="panelOutfit"></section>
+    <section class="card" id="panelCapsule"></section>
+    <section class="card">
+      <h2>Sheet preview</h2>
+      <div id="sheetWrap"><canvas id="sheetCanvas"></canvas></div>
+      <div class="meta" id="sheetInfo"></div>
+    </section>
+  </div>
+</main>
+<div id="toast"></div>
+
+<script src="assets.js"></script>
+<script>
+"use strict";
+/* ---------- constants ---------- */
+const FW = 40, FH = 40, HW = 20, TICKS_PER_SEC = 60;
+const DIRS = ["S","W","E","N"];
+const DIR_NAMES = {S:"South (down)", W:"West (left)", E:"East (right)", N:"North (up)"};
+const ANIMS = [
+  {id:"walk",        ticks:[10,10,10],     start:0,  pong:true},
+  {id:"idle",        ticks:[12],           start:1,  pong:false},
+  {id:"run",         ticks:[6,6,6],        start:3,  pong:true},
+  {id:"cycle",       ticks:[6,6,6],        start:6,  pong:true},
+  {id:"fish",        ticks:[12,12,12,12],  start:9,  pong:false},
+  {id:"surf",        ticks:[15,15],        start:13, pong:false},
+  {id:"use_pokeball",ticks:[12,12,12,12],  start:15, pong:false, southOnly:true}
+];
+const SWATCHES = {
+  skin:  ["#f8d0b8","#a88050","#c89060","#f8e0b8","#986860","#986840","#58402e"],
+  hair:  ["#404040","#342820","#4b382c","#684828","#82662d","#b2864b","#c4b880","#dedbb8","#888480","#c4beb8"],
+  eye:   ["#7b4141","#8b8b94","#522041","#442525"],
+  cloth: ["#cbcbce","#383838","#e06040","#4060e0","#a040e0","#309ea4","#c0709c","#70c070","#f8b020","#784040","#609038","#989090"]
+};
+// Placeholder colour groups used in the layer art; they get swapped for the chosen colours.
+const GROUPS = {
+  skin:{base:"b8f8b8", members:["b8f8b8","98e898","70d870"], outline:["557840","364030"]},
+  hair:{base:"b0b0f8", members:["b0b0f8","8080f0","4848c8","303070"]},
+  iris:{base:"ff0000", members:["ff0000","884848"]},
+  ew:  {base:"00ffff", members:["00ffff","a8d8d8"]},
+  c0:{base:"f08080", members:["f08080","f8b0b0","c84848","703030"]},
+  c1:{base:"f0b880", members:["f0b880","f8d4b0","c88848","705030"]},
+  c2:{base:"f0f080", members:["f0f080","f8f8b0","c8c848","707030"]},
+  c3:{base:"b8f080", members:["b8f080","d4f8b0","88c848","507030"]}
+};
+
+/* ---------- small helpers ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const mk = (w,h) => { const c=document.createElement("canvas"); c.width=w; c.height=h; return c; };
+const clamp = (x,a=0,b=1) => Math.min(b, Math.max(a, x));
+const pretty = s => s.replace(/-/g," ").replace(/_/g," ").replace(/\b\w/g, m=>m.toUpperCase());
+const hex2rgb = h => { h=h.replace("#",""); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; };
+const rgb2hex = (r,g,b) => "#"+[r,g,b].map(v=>Math.round(v).toString(16).padStart(2,"0")).join("");
+function rgb2hsv(r,g,b){
+  r/=255; g/=255; b/=255;
+  const mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn; let h=0;
+  if(d>0){
+    if(mx===r) h=((g-b)/d)%6; else if(mx===g) h=(b-r)/d+2; else h=(r-g)/d+4;
+    h/=6; if(h<0) h+=1;
+  }
+  return {h, s: mx===0?0:d/mx, v:mx};
+}
+function hsv2rgb(h,s,v){
+  h=((h%1)+1)%1; const i=Math.floor(h*6), f=h*6-i, p=v*(1-s), q=v*(1-f*s), t=v*(1-(1-f)*s);
+  const [r,g,b]=[[v,t,p],[q,v,p],[p,v,t],[p,q,v],[t,p,v],[v,p,q]][i%6];
+  return [r*255,g*255,b*255];
+}
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),1800); }
+const rnd = n => Math.floor(Math.random()*n);
+const pick = a => a[rnd(a.length)];
+
+/* ---------- asset loading ---------- */
+const IMG = {};   // IMG[layer][name] = canvas
+function loadAssets(){
+  const jobs=[];
+  for(const [layer,files] of Object.entries(ASSETS)){
+    IMG[layer]={};
+    for(const [name,uri] of Object.entries(files)){
+      jobs.push(new Promise((res,rej)=>{
+        const im=new Image();
+        im.onload=()=>{ const c=mk(im.width,im.height); c.getContext("2d").drawImage(im,0,0); IMG[layer][name]=c; res(); };
+        im.onerror=()=>rej(new Error("Could not load "+layer+"/"+name));
+        im.src=uri;
+      }));
+    }
+  }
+  return Promise.all(jobs);
+}
+
+/* ---------- recolouring (replaces the art's placeholder colours) ---------- */
+const LOOKUP = new Map();   // rgb int -> {g, outline}
+const BASEHSV = {};
+for(const [g,def] of Object.entries(GROUPS)){
+  BASEHSV[g]=rgb2hsv(...hex2rgb(def.base));
+  for(const m of def.members){ const [r,gg,b]=hex2rgb(m); LOOKUP.set((r<<16)|(gg<<8)|b,{g,outline:false}); }
+  for(const m of (def.outline||[])){ const [r,gg,b]=hex2rgb(m); LOOKUP.set((r<<16)|(gg<<8)|b,{g,outline:true}); }
+}
+const sheetCache = new Map();
+function recolored(layer, name, spec){
+  const src = IMG[layer] && IMG[layer][name];
+  if(!src) return null;
+  const key = layer+"/"+name+"|"+JSON.stringify(spec);
+  if(sheetCache.has(key)) return sheetCache.get(key);
+  const w=src.width,h=src.height, img=src.getContext("2d").getImageData(0,0,w,h), d=img.data;
+  const target={};
+  for(const [g,hex] of Object.entries(spec)) if(hex) target[g]=rgb2hsv(...hex2rgb(hex));
+  for(let i=0;i<d.length;i+=4){
+    if(d[i+3]===0) continue;
+    const m=LOOKUP.get((d[i]<<16)|(d[i+1]<<8)|d[i+2]);
+    if(!m) continue;
+    const t=target[m.g]; if(!t) continue;
+    const base=BASEHSV[m.g], inp=rgb2hsv(d[i],d[i+1],d[i+2]);
+    const s=clamp(t.s*inp.s/base.s), v=clamp(t.v*inp.v/base.v);
+    let hue=t.h; if(m.outline) hue=t.h-(base.h-inp.h);
+    const [r,g,b]=hsv2rgb(hue,s,v);
+    d[i]=r; d[i+1]=g; d[i+2]=b;
+  }
+  const out=mk(w,h); out.getContext("2d").putImageData(img,0,0);
+  sheetCache.set(key,out);
+  return out;
+}
+
+/* ---------- state ---------- */
+const DEFAULT_STATE = () => ({
+  body:0, head:0, eyes:0, eyeHeight:0, hair:2, hat:-1,
+  outfitType:"separate", top:0, bottom:0, shoes:0, outfit:0, capsule:0,
+  colors:{
+    skin:"#f8d0b8", hair:"#4b382c", brows:"#4b382c", eye:"#7b4141",
+    acc:["#e06040","#4060e0"], hat:["#e06040","#cbcbce","#383838","#f8b020"],
+    top:["#4060e0","#cbcbce","#383838","#f8b020"], bottom:["#383838","#cbcbce","#383838","#f8b020"],
+    shoes:["#e06040","#cbcbce"], capsule:["#e06040","#cbcbce"]
+  },
+  locks:{}
+});
+let S = DEFAULT_STATE();
+const CH = layer => CHOICES[layer];
+const gender = () => S.body===0 ? "dm" : "df";
+const hairN = () => S.hair>=0 ? CH("hair")[S.hair][1] : 0;   // accessory colour count
+const hatN  = () => S.hat>=0 ? CH("hat")[S.hat][1] : 0;
+const artN  = (key, i) => i>=0 ? CH(gender()+"-"+key)[i][1] : 0;
+
+/* ---------- compositing ---------- */
+function maskedHair(slice, maskSlice){
+  const g=slice.getContext("2d"), a=g.getImageData(0,0,HW,HW), m=maskSlice.getContext("2d").getImageData(0,0,HW,HW);
+  for(let i=3;i<a.data.length;i+=4) if(m.data[i]>0) a.data[i]=0;
+  g.putImageData(a,0,0);
+}
+const cut = (sheet, slot) => { const c=mk(HW,HW); if(sheet) c.getContext("2d").drawImage(sheet,slot*HW,0,HW,HW,0,0,HW,HW); return c; };
+function hairSpec(){ const k=hairN(); const sp={skin:S.colors.skin, hair:S.colors.hair}; for(let i=0;i<k&&i<2;i++) sp["c"+i]=S.colors.acc[i]; return sp; }
+function clothSpec(sels,n){ const sp={}; for(let i=0;i<n&&i<sels.length;i++) sp["c"+i]=sels[i]; return sp; }
+
+function headSlot(animId, dir){ return (animId==="run" && dir==="S") ? 4 : DIRS.indexOf(dir); }
+function headOffset(animId, dir, f){
+  let x=0, animC=0, frameC=0;
+  const rock3=q=>q%2===0?q-1:0, fishSide=q=>q===0?3:(q===2?1:2);
+  switch(animId){
+    case "cycle": x=rock3(f); break;
+    case "fish": x = dir==="S" ? (f===3?0:1) : dir==="N" ? (f>1?0:-1) : dir==="E" ? -fishSide(f) : fishSide(f); break;
+    case "use_pokeball": x=(f===1||f===4)?-1:0; break;
+    case "surf": x = dir==="W"?1 : dir==="E"?-1 : 0; break;
+  }
+  switch(animId){
+    case "idle": case "walk": animC = dir==="S"?2 : dir==="N"?4 : 3; break;
+    case "run": animC = 2+(dir==="S"?0:1); break;
+    case "cycle": animC = 1+(dir==="N"?1:0); break;
+    case "surf": animC = dir==="S"?-6 : dir==="N"?-4 : -5; break;
+    case "fish": animC = dir==="S"?-4:3; break;
+    case "use_pokeball": animC = 2; break;
+  }
+  switch(animId){
+    case "walk": case "run": frameC = f!==1?1:0; break;
+    case "surf": frameC = f; break;
+    case "fish": frameC = dir==="N" ? (f===3?-1:0) : dir==="S" ? (f===2?1:0) : (f%2===0?1:0); break;
+    case "use_pokeball": frameC = f===3?-1:0; break;
+  }
+  return [x, animC+frameC];
+}
+
+function headBackSlice(slot){
+  const c=mk(HW,HW), g=c.getContext("2d");
+  const hb = S.hair>=0 ? recolored("hair-back", CH("hair")[S.hair][0], hairSpec()) : null;
+  if(hb) g.drawImage(cut(hb,slot),0,0);
+  return c;
+}
+function headSlice(slot){
+  const c=mk(HW,HW), g=c.getContext("2d");
+  const skin={skin:S.colors.skin};
+  const head=recolored("head", CH("head")[S.head][0], skin);
+  if(head) g.drawImage(cut(head,slot),0,0);
+  const eyes=recolored("eyes", CH("eyes")[S.eyes][0], {skin:S.colors.skin, hair:S.colors.brows, iris:S.colors.eye});
+  if(eyes){
+    const es=cut(eyes, slot===4?0:slot);
+    g.drawImage(es, 0, -S.eyeHeight);
+  }
+  if(S.hair>=0){
+    const hn=CH("hair")[S.hair][0];
+    const hs=recolored("hair", hn, hairSpec());
+    const slice=cut(hs,slot);
+    if(S.hat>=0){
+      const mk_=IMG["hat-mask"] && IMG["hat-mask"][CH("hat")[S.hat][0]];
+      if(mk_) maskedHair(slice, cut(mk_,slot));
+    }
+    g.drawImage(slice,0,0);
+  }
+  if(S.hat>=0){
+    const hat=recolored("hat", CH("hat")[S.hat][0], clothSpec(S.colors.hat, hatN()));
+    if(hat) g.drawImage(cut(hat,slot),0,0);
+  }
+  if(S.hair>=0){
+    const hf=recolored("hair-front", CH("hair")[S.hair][0], hairSpec());
+    if(hf) g.drawImage(cut(hf,slot),0,0);
+  }
+  return c;
+}
+function drawCell(g, sheet, col, row){
+  if(sheet) g.drawImage(sheet, col*FW, row*FH, FW, FH, 0, 0, FW, FH);
+}
+function renderSprite(anim, dir, f){
+  const c=mk(FW,FH), g=c.getContext("2d");
+  if(anim.southOnly && dir!=="S") return c;               // the art has no frames for these cells
+  const col=anim.start+f, row=DIRS.indexOf(dir);
+  const [ox,oy]=headOffset(anim.id,dir,f), slot=headSlot(anim.id,dir);
+  g.drawImage(headBackSlice(slot),10+ox,10+oy);
+  drawCell(g, recolored("body", CH("body")[S.body][0], {skin:S.colors.skin}), col,row);
+  const gp=gender();
+  const article=(key,idx,sels)=>{ if(idx<0) return; const name=CH(gp+"-"+key)[idx][0];
+    drawCell(g, recolored(gp+"-"+key, name, clothSpec(sels, artN(key,idx))), col,row); };
+  if(S.outfitType==="combined") article("outfit", S.outfit, S.colors.top);
+  else { article("top",S.top,S.colors.top); article("bottom",S.bottom,S.colors.bottom); article("shoes",S.shoes,S.colors.shoes); }
+  g.drawImage(headSlice(slot),10+ox,10+oy);
+  if(anim.id==="use_pokeball" && f>=1){
+    const cap=recolored("pokeball", CH("pokeball")[S.capsule][0], clothSpec(S.colors.capsule, CH("pokeball")[S.capsule][1]));
+    const pos={1:[15,25],2:[22,24],3:[23,21]}[f];
+    if(cap && pos) g.drawImage(cap,pos[0],pos[1]);
+  }
+  return c;
+}
+
+/* ---------- preview & playback ---------- */
+let curAnim=ANIMS[0], curDir="S", playing=true, tickAcc=0, seqPos=0, lastT=0;
+const view=$("#view"), vctx=view.getContext("2d");
+const seqOf=a=>{ const n=a.ticks.length, s=[...Array(n).keys()]; if(a.pong && n>2) for(let i=n-2;i>=1;i--) s.push(i); return s; };
+function drawView(){
+  const seq=seqOf(curAnim); seqPos%=seq.length;
+  const f=seq[seqPos];
+  const zoom=+$("#zoomSel").value;
+  view.style.width=FW*zoom+"px"; view.style.height=FH*zoom+"px";
+  vctx.clearRect(0,0,FW,FH);
+  vctx.drawImage(renderSprite(curAnim,curDir,f),0,0);
+  $("#naMsg").textContent = (curAnim.southOnly && curDir!=="S") ? "This animation only exists facing south." : "";
+  $("#frameInfo").textContent = curAnim.id+" · "+curDir+" · frame "+(f+1)+"/"+curAnim.ticks.length+" · "+curAnim.ticks[f]+" ticks";
+}
+function loop(t){
+  const dt=(t-lastT)/1000; lastT=t;
+  if(playing){
+    tickAcc+=dt*TICKS_PER_SEC;
+    const seq=seqOf(curAnim);
+    let changed=false;
+    while(tickAcc>=curAnim.ticks[seq[seqPos%seq.length]]){
+      tickAcc-=curAnim.ticks[seq[seqPos%seq.length]]; seqPos=(seqPos+1)%seq.length; changed=true;
+    }
+    if(changed) drawView();
+  }
+  requestAnimationFrame(loop);
+}
+
+/* ---------- UI building ---------- */
+function slotRow(label, getter, setter, swatchKey){
+  const row=document.createElement("div"); row.className="slot";
+  const b=document.createElement("b"); b.textContent=label; row.appendChild(b);
+  const box=document.createElement("div"); box.className="swatches"; row.appendChild(box);
+  const cur=getter();
+  for(const col of SWATCHES[swatchKey]){
+    const s=document.createElement("button"); s.className="sw"+(col.toLowerCase()===cur.toLowerCase()?" sel":""); s.style.background=col; s.title=col;
+    s.onclick=()=>{ setter(col); refresh(); }; box.appendChild(s);
+  }
+  const p=document.createElement("input"); p.type="color"; p.value=cur; p.title="Custom colour";
+  p.oninput=()=>{ setter(p.value); refreshLight(); }; p.onchange=()=>refresh();
+  box.appendChild(p);
+  return row;
+}
+function selectField(label, options, value, onChange){
+  const lab=document.createElement("label"); lab.className="f"; lab.textContent=label;
+  const sel=document.createElement("select");
+  options.forEach(([v,t])=>{ const o=document.createElement("option"); o.value=v; o.textContent=t; sel.appendChild(o); });
+  sel.value=String(value); sel.onchange=()=>onChange(sel.value);
+  // ‹ › buttons step through the options (wrapping around)
+  const step=d=>{ const n=sel.options.length; sel.selectedIndex=(sel.selectedIndex+d+n)%n; onChange(sel.value); };
+  const mkBtn=(txt,title,d)=>{ const b=document.createElement("button"); b.type="button"; b.textContent=txt; b.title=title; b.onclick=()=>step(d); return b; };
+  const wrap=document.createElement("div"); wrap.className="cyc";
+  wrap.append(mkBtn("‹","Previous",-1), sel, mkBtn("›","Next",1));
+  lab.appendChild(wrap); return lab;
+}
+function panel(el, title, lockKey, build){
+  el.innerHTML="";
+  const h=document.createElement("h2"); h.append(document.createTextNode(title));
+  const lk=document.createElement("label"); lk.className="lock";
+  const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=!!S.locks[lockKey];
+  cb.onchange=()=>{ S.locks[lockKey]=cb.checked; };
+  lk.append(cb, document.createTextNode("🔒 Lock")); h.appendChild(lk); el.appendChild(h);
+  build(el);
+}
+const nameOpts = (layer, withNone) => { const o=CH(layer).map((c,i)=>[i,pretty(c[0])]); return withNone?[[-1,"None"],...o]:o; };
+const numOr = (v)=>parseInt(v,10);
+
+function buildPanels(){
+  panel($("#panelBody"),"Body & skin","body",el=>{
+    const r=document.createElement("div"); r.className="row";
+    r.append(selectField("Body type",nameOpts("body"),S.body,v=>{S.body=numOr(v);refresh();}),
+             selectField("Head shape",nameOpts("head"),S.head,v=>{S.head=numOr(v);refresh();}));
+    el.appendChild(r);
+    el.appendChild(slotRow("Skin",()=>S.colors.skin,c=>S.colors.skin=c,"skin"));
+  });
+  panel($("#panelEyes"),"Eyes","eyes",el=>{
+    const r=document.createElement("div"); r.className="row";
+    r.append(selectField("Eye style",nameOpts("eyes"),S.eyes,v=>{S.eyes=numOr(v);refresh();}),
+             selectField("Eye height",[[-1,"Low"],[0,"Average"],[1,"High"]],S.eyeHeight,v=>{S.eyeHeight=numOr(v);refresh();}));
+    el.appendChild(r);
+    el.appendChild(slotRow("Brows",()=>S.colors.brows,c=>S.colors.brows=c,"hair"));
+    el.appendChild(slotRow("Eyes",()=>S.colors.eye,c=>S.colors.eye=c,"eye"));
+  });
+  panel($("#panelHair"),"Hair","hair",el=>{
+    const r=document.createElement("div"); r.className="row";
+    r.append(selectField("Hairstyle",nameOpts("hair",true),S.hair,v=>{S.hair=numOr(v);refresh();}));
+    el.appendChild(r);
+    if(S.hair>=0){
+      el.appendChild(slotRow("Hair",()=>S.colors.hair,c=>S.colors.hair=c,"hair"));
+      for(let i=0;i<hairN()&&i<2;i++) el.appendChild(slotRow("Accessory "+(i+1),()=>S.colors.acc[i],c=>S.colors.acc[i]=c,"cloth"));
+    }
+  });
+  panel($("#panelHat"),"Hat","hat",el=>{
+    const r=document.createElement("div"); r.className="row";
+    r.append(selectField("Hat",nameOpts("hat",true),S.hat,v=>{S.hat=numOr(v);refresh();}));
+    el.appendChild(r);
+    for(let i=0;i<hatN();i++) el.appendChild(slotRow(["Main","Accent","3rd","4th"][i],()=>S.colors.hat[i],c=>S.colors.hat[i]=c,"cloth"));
+  });
+  panel($("#panelOutfit"),"Outfit","outfit",el=>{
+    const r=document.createElement("div"); r.className="row";
+    r.append(selectField("Outfit type",[["separate","Separate articles"],["combined","Combined outfit"]],S.outfitType,v=>{S.outfitType=v;refresh();}));
+    el.appendChild(r);
+    const g=gender();
+    const art=(label,key,colKey,count)=>{
+      const rr=document.createElement("div"); rr.className="row";
+      rr.append(selectField(label,nameOpts(g+"-"+key,true),S[key],v=>{S[key]=numOr(v);refresh();}));
+      el.appendChild(rr);
+      const n=artN(key,S[key]);
+      for(let i=0;i<n&&i<count;i++) el.appendChild(slotRow(["Main","Accent","3rd","4th"][i],()=>S.colors[colKey][i],c=>S.colors[colKey][i]=c,"cloth"));
+    };
+    if(S.outfitType==="combined") art("Combined outfit","outfit","top",4);
+    else { art("Top","top","top",4); art("Bottom","bottom","bottom",4); art("Shoes","shoes","shoes",2); }
+  });
+  panel($("#panelCapsule"),"Capsule (used by the use_pokeball animation)","capsule",el=>{
+    const r=document.createElement("div"); r.className="row";
+    r.append(selectField("Capsule",nameOpts("pokeball"),S.capsule,v=>{S.capsule=numOr(v);refresh();}));
+    el.appendChild(r);
+    for(let i=0;i<CH("pokeball")[S.capsule][1];i++) el.appendChild(slotRow(["Main","Accent"][i],()=>S.colors.capsule[i],c=>S.colors.capsule[i]=c,"cloth"));
+  });
+}
+function buildAnimControls(){
+  const sel=$("#animSel"); sel.innerHTML="";
+  ANIMS.forEach(a=>{ const o=document.createElement("option"); o.value=a.id; o.textContent=pretty(a.id); sel.appendChild(o); });
+  sel.onchange=()=>{ curAnim=ANIMS.find(a=>a.id===sel.value); seqPos=0; tickAcc=0; drawView(); };
+  const db=$("#dirBtns"); db.innerHTML="";
+  DIRS.forEach(d=>{ const b=document.createElement("button"); b.className="seg"+(d===curDir?" on":""); b.textContent=d; b.title=DIR_NAMES[d];
+    b.onclick=()=>{ curDir=d; [...db.children].forEach(x=>x.classList.toggle("on",x===b)); drawView(); }; db.appendChild(b); });
+  $("#playBtn").onclick=()=>{ playing=!playing; $("#playBtn").textContent=playing?"Pause":"Play"; };
+  $("#zoomSel").onchange=drawView;
+  const ea=$("#expAnims"); ea.innerHTML="";
+  ANIMS.forEach(a=>{ const l=document.createElement("label"); const c=document.createElement("input"); c.type="checkbox"; c.checked=(a.id==="walk"||a.id==="idle"); c.dataset.id=a.id; c.onchange=drawSheet;
+    l.append(c,document.createTextNode(pretty(a.id))); ea.appendChild(l); });
+  const ed=$("#expDirs"); ed.innerHTML="";
+  DIRS.forEach(d=>{ const l=document.createElement("label"); const c=document.createElement("input"); c.type="checkbox"; c.checked=true; c.dataset.id=d; c.onchange=drawSheet;
+    l.append(c,document.createTextNode(DIR_NAMES[d])); ed.appendChild(l); });
+  $("#expOrient").onchange=drawSheet;
+  $("#expScale").onchange=drawSheet;
+  const ga=$("#gridAnim"); ga.innerHTML="";
+  ANIMS.forEach(a=>{ const o=document.createElement("option"); o.value=a.id; o.textContent=pretty(a.id); ga.appendChild(o); });
+  ga.value="walk";
+  ["gridAnim","gridScale","cellW","cellH","standFirst","nudgeY"].forEach(id=>{ $("#"+id).oninput=drawSheet; $("#"+id).onchange=drawSheet; });
+  $("#expFormat").onchange=()=>{ const g=isGrid(); $("#gridOpts").hidden=!g; $("#multiOpts").hidden=g; drawSheet(); };
+}
+const isGrid=()=>$("#expFormat").value==="grid";
+
+/* ---------- grid export (4 directions x one animation, e.g. 4x4 walk sheet) ---------- */
+function gridParams(){
+  const anim=ANIMS.find(a=>a.id===$("#gridAnim").value)||ANIMS[0];
+  const ps=Math.max(1,parseInt($("#gridScale").value,10)||1);
+  const cw=Math.max(1,Math.min(512,parseInt($("#cellW").value,10)||32));
+  const ch=Math.max(1,Math.min(512,parseInt($("#cellH").value,10)||48));
+  let seq=seqOf(anim);
+  // walk/run/cycle play as step, stand, step, stand; swapping the pairs gives stand, step, stand, step
+  if($("#standFirst").checked && anim.pong && seq.length===4) seq=[seq[1],seq[0],seq[3],seq[2]];
+  return {anim, ps, cw, ch, dirs: anim.southOnly?["S"]:DIRS, seq};
+}
+function buildGrid(){
+  const {anim,ps,cw,ch,dirs,seq}=gridParams();
+  const c=mk(seq.length*cw, dirs.length*ch), g=c.getContext("2d"); g.imageSmoothingEnabled=false;
+  const nudge=parseInt($("#nudgeY").value,10)||0;
+  const BASELINE=37-nudge;                            // source row at the bottom edge of the cell (nudge moves the sprite down)
+  const winW=cw/ps, winH=ch/ps;
+  const x0=FW/2-winW/2, y0=BASELINE-winH;             // visible window in source pixels
+  let clipped=0;
+  dirs.forEach((d,di)=>seq.forEach((f,ci)=>{
+    const sp=renderSprite(anim,d,f);
+    const px=sp.getContext("2d").getImageData(0,0,FW,FH).data;
+    for(let y=0;y<FH;y++) for(let x=0;x<FW;x++){
+      if(px[(y*FW+x)*4+3]>0 && (x<x0 || x>=x0+winW || y<y0 || y>=BASELINE)) clipped++;
+    }
+    g.save(); g.beginPath(); g.rect(ci*cw,di*ch,cw,ch); g.clip();
+    g.drawImage(sp, Math.round(ci*cw-x0*ps), Math.round(di*ch-y0*ps), FW*ps, FH*ps);
+    g.restore();
+  }));
+  return {canvas:c, anim, ps, cw, ch, dirs, seq, clipped};
+}
+function drawGridPreview(){
+  const r=buildGrid(), sc=$("#sheetCanvas");
+  const W=r.canvas.width, H=r.canvas.height, z=Math.max(1,Math.min(4,Math.floor(560/W)));
+  sc.width=W; sc.height=H; sc.style.width=W*z+"px"; sc.style.height=H*z+"px";
+  const g=sc.getContext("2d"); g.clearRect(0,0,W,H); g.drawImage(r.canvas,0,0);
+  $("#sheetInfo").textContent=W+" × "+H+" px · "+r.dirs.length+" row(s) × "+r.seq.length+" column(s) · "+r.cw+"×"+r.ch+" cells";
+  $("#clipMsg").textContent = r.clipped>0
+    ? r.clipped+" pixel(s) fall outside the cells and would be cut off — increase the cell size or lower the pixel scale."
+    : "";
+}
+function gridJson(){
+  const r=buildGrid(), base=buildJson();
+  return {
+    program:base.program, style:base.style, version:1, format:"grid",
+    sheet:{width:r.canvas.width,height:r.canvas.height},
+    cell:{width:r.cw,height:r.ch}, pixelScale:r.ps, moveDownSpritePx:parseInt($("#nudgeY").value,10)||0,
+    rows:r.dirs, animation:r.anim.id,
+    columns:r.seq.map((f,i)=>({column:i,sourceFrame:f,ticks:r.anim.ticks[f]})),
+    character:base.character
+  };
+}
+
+/* ---------- export sheet ---------- */
+function exportPlan(){
+  const anims=ANIMS.filter(a=>$("#expAnims input[data-id="+a.id+"]").checked);
+  const dirs=DIRS.filter(d=>$("#expDirs input[data-id="+d+"]").checked);
+  const horiz=$("#expOrient").value==="h";
+  let x=0,y=0,W=0,H=0; const blocks=[];
+  for(const a of anims){
+    const n=a.ticks.length, bw=horiz?n*FW:dirs.length*FW, bh=horiz?dirs.length*FH:n*FH;
+    blocks.push({anim:a,x,y,w:bw,h:bh});
+    if(horiz){ y+=bh; W=Math.max(W,bw); H=y; } else { x+=bw; H=Math.max(H,bh); W=x; }
+  }
+  return {anims,dirs,horiz,blocks,W,H};
+}
+function buildSheet(scale){
+  const plan=exportPlan();
+  if(!plan.W||!plan.H) return {plan,canvas:null};
+  const c=mk(plan.W*scale,plan.H*scale), g=c.getContext("2d"); g.imageSmoothingEnabled=false;
+  for(const b of plan.blocks){
+    const n=b.anim.ticks.length;
+    for(let di=0;di<plan.dirs.length;di++) for(let f=0;f<n;f++){
+      const sp=renderSprite(b.anim,plan.dirs[di],f);
+      const px=b.x+(plan.horiz?f*FW:di*FW), py=b.y+(plan.horiz?di*FH:f*FH);
+      g.drawImage(sp,0,0,FW,FH,px*scale,py*scale,FW*scale,FH*scale);
+    }
+  }
+  return {plan,canvas:c};
+}
+function drawSheet(){
+  if(isGrid()) return drawGridPreview();
+  const {plan,canvas}=buildSheet(1);
+  const sc=$("#sheetCanvas");
+  if(!canvas){ sc.width=1; sc.height=1; sc.getContext("2d").clearRect(0,0,1,1); $("#sheetInfo").textContent="Select at least one animation and one direction."; return; }
+  const z=Math.max(1,Math.min(4,Math.floor(900/plan.W)));
+  sc.width=plan.W; sc.height=plan.H; sc.style.width=plan.W*z+"px"; sc.style.height=plan.H*z+"px";
+  const g=sc.getContext("2d"); g.clearRect(0,0,plan.W,plan.H); g.drawImage(canvas,0,0);
+  $("#sheetInfo").textContent=plan.W+" × "+plan.H+" px · "+plan.anims.length+" animation(s) × "+plan.dirs.length+" direction(s) · "+FW+"×"+FH+" frames";
+}
+function download(blob,name){
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+const safeName = () => ($("#expName").value.trim().replace(/[\\/:*?"<>|{}]/g,"_")||"character");
+function exportPng(){
+  if(isGrid()){
+    const r=buildGrid();
+    return r.canvas.toBlob(b=>{ download(b,safeName()+".png"); toast("Saved "+safeName()+".png ("+r.canvas.width+"×"+r.canvas.height+")"); },"image/png");
+  }
+  const scale=+$("#expScale").value, {plan,canvas}=buildSheet(scale);
+  if(!canvas) return toast("Nothing to export — pick an animation and a direction.");
+  canvas.toBlob(b=>{ download(b,safeName()+".png"); toast("Saved "+safeName()+".png"); },"image/png");
+}
+function buildJson(){
+  const plan=exportPlan(), scale=+$("#expScale").value;
+  return {
+    program:"Sprite Maker (prototype)", style:"pokemon-gen-3-layers", version:1,
+    frame:{width:FW*scale,height:FH*scale}, scale,
+    sheet:{width:plan.W*scale,height:plan.H*scale,
+      layout: plan.horiz ? "frames left-to-right, directions top-to-bottom" : "frames top-to-bottom, directions left-to-right"},
+    directions:plan.dirs,
+    animations:plan.blocks.map(b=>({id:b.anim.id,frames:b.anim.ticks.length,ticksPerFrame:b.anim.ticks,
+      playback:b.anim.pong?"pong":"loop", x:b.x*scale, y:b.y*scale, width:b.w*scale, height:b.h*scale})),
+    character:{
+      body:CH("body")[S.body][0], head:CH("head")[S.head][0], eyes:CH("eyes")[S.eyes][0], eyeHeight:S.eyeHeight,
+      hair:S.hair>=0?CH("hair")[S.hair][0]:null, hat:S.hat>=0?CH("hat")[S.hat][0]:null,
+      outfitType:S.outfitType,
+      top:S.top>=0?CH(gender()+"-top")[S.top][0]:null, bottom:S.bottom>=0?CH(gender()+"-bottom")[S.bottom][0]:null,
+      shoes:S.shoes>=0?CH(gender()+"-shoes")[S.shoes][0]:null, outfit:S.outfit>=0?CH(gender()+"-outfit")[S.outfit][0]:null,
+      capsule:CH("pokeball")[S.capsule][0], colors:S.colors
+    }
+  };
+}
+function exportJson(){
+  download(new Blob([JSON.stringify(isGrid()?gridJson():buildJson(),null,2)],{type:"application/json"}),safeName()+".json");
+  toast("Saved "+safeName()+".json");
+}
+function importJson(text){
+  let j; try{ j=JSON.parse(text); }catch(e){ return toast("That file is not valid JSON."); }
+  const c=j&&j.character; if(!c) return toast("No character data found in that file.");
+  const idx=(layer,name,none)=>{ if(name==null) return none?-1:0; const i=CH(layer).findIndex(x=>x[0]===name); return i<0?(none?-1:0):i; };
+  const ns=DEFAULT_STATE(); ns.locks=S.locks;
+  ns.body=idx("body",c.body); ns.head=idx("head",c.head); ns.eyes=idx("eyes",c.eyes);
+  ns.eyeHeight=[-1,0,1].includes(c.eyeHeight)?c.eyeHeight:0;
+  ns.hair=idx("hair",c.hair,true); ns.hat=idx("hat",c.hat,true);
+  ns.outfitType=c.outfitType==="combined"?"combined":"separate";
+  const g=ns.body===0?"dm":"df";
+  ns.top=idx(g+"-top",c.top,true); ns.bottom=idx(g+"-bottom",c.bottom,true); ns.shoes=idx(g+"-shoes",c.shoes,true);
+  ns.outfit=idx(g+"-outfit",c.outfit,true); ns.capsule=idx("pokeball",c.capsule);
+  if(c.colors) for(const k of Object.keys(ns.colors)){
+    const v=c.colors[k]; if(Array.isArray(ns.colors[k])){ if(Array.isArray(v)) v.forEach((x,i)=>{ if(/^#[0-9a-f]{6}$/i.test(x)&&i<ns.colors[k].length) ns.colors[k][i]=x; }); }
+    else if(typeof v==="string"&&/^#[0-9a-f]{6}$/i.test(v)) ns.colors[k]=v;
+  }
+  S=ns; refresh(); toast("Character loaded");
+}
+
+/* ---------- randomize / reset ---------- */
+function randomize(){
+  const L=S.locks, C=S.colors;
+  if(!L.body){ S.body=rnd(CH("body").length); S.head=rnd(CH("head").length); C.skin=pick(SWATCHES.skin); }
+  if(!L.eyes){ S.eyes=rnd(CH("eyes").length); S.eyeHeight=pick([-1,0,1]); C.brows=pick(SWATCHES.hair); C.eye=pick(SWATCHES.eye); }
+  if(!L.hair){ S.hair=rnd(CH("hair").length); C.hair=pick(SWATCHES.hair); C.acc=[pick(SWATCHES.cloth),pick(SWATCHES.cloth)]; }
+  if(!L.hat){ S.hat=Math.random()<0.75?-1:rnd(CH("hat").length); C.hat=[0,1,2,3].map(()=>pick(SWATCHES.cloth)); }
+  if(!L.outfit){
+    S.outfitType=Math.random()<0.3?"combined":"separate";
+    const g=S.body===0?"dm":"df";
+    S.top=rnd(CH(g+"-top").length); S.bottom=rnd(CH(g+"-bottom").length); S.shoes=rnd(CH(g+"-shoes").length); S.outfit=rnd(CH(g+"-outfit").length);
+    C.top=[0,1,2,3].map(()=>pick(SWATCHES.cloth)); C.bottom=[0,1,2,3].map(()=>pick(SWATCHES.cloth)); C.shoes=[0,1].map(()=>pick(SWATCHES.cloth));
+  }
+  if(!L.capsule){ S.capsule=rnd(CH("pokeball").length); C.capsule=[pick(SWATCHES.cloth),pick(SWATCHES.cloth)]; }
+  refresh();
+}
+
+/* ---------- refresh ---------- */
+let sheetTimer=null;
+function refreshLight(){ drawView(); clearTimeout(sheetTimer); sheetTimer=setTimeout(drawSheet,120); }
+function refresh(){ buildPanels(); drawView(); clearTimeout(sheetTimer); sheetTimer=setTimeout(drawSheet,60); }
+
+/* ---------- init ---------- */
+loadAssets().then(()=>{
+  buildAnimControls(); refresh();
+  $("#rndBtn").onclick=randomize;
+  $("#resetBtn").onclick=()=>{ const l=S.locks; S=DEFAULT_STATE(); S.locks=l; refresh(); };
+  $("#expPng").onclick=exportPng; $("#expJson").onclick=exportJson;
+  $("#impJson").onclick=()=>$("#impFile").click();
+  $("#impFile").onchange=e=>{ const f=e.target.files[0]; if(!f) return; f.text().then(importJson); e.target.value=""; };
+  requestAnimationFrame(t=>{ lastT=t; requestAnimationFrame(loop); });
+}).catch(err=>{
+  document.body.insertAdjacentHTML("afterbegin",'<p style="padding:20px;color:#b00">Could not load the art: '+err.message+'. Make sure assets.js sits next to index.html.</p>');
+});
+</script>
+</body>
+</html>
