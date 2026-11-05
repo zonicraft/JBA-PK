@@ -123,7 +123,7 @@ function toggleFullscreen() { try { if (document.fullscreenElement) document.exi
 window.addEventListener('keydown', e => {
   const k = KEYMAP[e.key]; if (!k) return;
   if (G.modal) return;
-  e.preventDefault(); keys.kb[k] = true;
+  e.preventDefault(); keys.kb[k] = true; G.padOn = false; G.touchIn = false;   // last input source: keyboard
   if (!keys.held[k]) keys.pressed[k] = true;
   keys.held[k] = true;
   if (k === 'back') keys.held.run = true;
@@ -141,7 +141,7 @@ function pollPad() {
   if (gp) {
     const b = i => !!(gp.buttons[i] && gp.buttons[i].pressed), ax = gp.axes[0] || 0, ay = gp.axes[1] || 0;
     now.up = b(12) || ay < -0.5; now.down = b(13) || ay > 0.5; now.left = b(14) || ax < -0.5; now.right = b(15) || ax > 0.5;
-    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1); now.bike = b(4) || b(5); now.mega = b(2); G.padOn = true;   // LB / RB: Skateboard
+    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1); now.bike = b(4) || b(5); now.mega = b(2); if (gp.buttons.some(x => x && x.pressed) || Math.abs(ax) > 0.5 || Math.abs(ay) > 0.5) { G.padOn = true; G.touchIn = false; }   // only counts as the active input once the pad is actually used   // LB / RB: Skateboard
     const yb = b(3); if (yb && !PAD.yDown) toggleFullscreen(); PAD.yDown = yb;
   }
   for (const k of ['up', 'down', 'left', 'right', 'ok', 'back', 'menu', 'run', 'bike', 'mega']) {
@@ -156,7 +156,7 @@ const pressed = k => { const p = keys.pressed[k]; return !!p; };
 // ---- on-screen touch controls (toggle in Options). Feeds the same keys.held / keys.pressed flags as keyboard + gamepad.
 keys.tp = {};
 function touchSet(k, on) {
-  if (on) { if (G.modal) return; if (!keys.tp[k]) { if (!keys.held[k]) keys.pressed[k] = true; keys.held[k] = true; if (k === 'back') keys.held.run = true; keys.tp[k] = true; } }
+  if (on) { if (G.modal) return; G.touchIn = true; G.padOn = false; if (!keys.tp[k]) { if (!keys.held[k]) keys.pressed[k] = true; keys.held[k] = true; if (k === 'back') keys.held.run = true; keys.tp[k] = true; } }
   else if (keys.tp[k]) { keys.tp[k] = false; if (!keys.kb[k]) keys.held[k] = false; if (k === 'back' && !keys.kb.back) keys.held.run = false; }
 }
 function releaseTouch() { for (const k in keys.tp) touchSet(k, false); }
@@ -452,6 +452,7 @@ function loadMap(id) {
 function enterMap(id, x, y, dir) {
   const prevMap = G.mapId; const m = loadMap(id); G.map = m; G.mapId = id; if (typeof syncTilePatches === 'function') syncTilePatches();
   if (typeof CHEAT_CITIES !== 'undefined' && CHEAT_CITIES.some(c => c[1] === id)) G.switches['city' + id] = true;   // city unlocked for the Portable Teleporter
+  if (typeof seviiVisit === 'function') seviiVisit(id);   // Sevii Islands: remember which islands the player has set foot on (ferry destinations)
   G.temp = {};
   G.chars = [];
   G.events = {};

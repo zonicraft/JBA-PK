@@ -244,19 +244,29 @@ function drawSaveInfo() {
 
 // ------------------------------------------------------------ Town map (PBS/townmap.txt)
 const TPOINTS = [[13, 13, "Pallet Town", ""], [13, 11, "Route 1", ""], [13, 12, "Route 1", ""], [12, 9, "Viridian City", ""], [13, 9, "Viridian City", ""], [12, 10, "Viridian City", ""], [13, 10, "Viridian City", ""], [9, 10, "Route 22", ""], [10, 10, "Route 22", ""], [11, 10, "Route 22", ""], [13, 6, "Route 2", "Burrow Tunnel"], [13, 7, "Route 2", "Viridian Forest"], [13, 8, "Route 2", ""], [13, 4, "Pewter City", ""], [13, 5, "Pewter City", ""], [14, 4, "Pewter City", ""], [14, 5, "Pewter City", ""], [15, 5, "Route 3", ""], [16, 5, "Route 3", ""], [17, 5, "Route 4", "Mt. Moon"], [18, 5, "Route 4", ""], [19, 5, "Route 4", ""], [20, 5, "Route 4", ""], [21, 5, "Cerulean City", "Cerulean Cave"], [22, 5, "Cerulean City", ""], [21, 6, "Cerulean City", ""], [22, 6, "Cerulean City", ""], [22, 3, "Route 24", ""], [22, 4, "Route 24", ""], [23, 3, "Route 25", ""], [24, 3, "Route 25", ""], [25, 3, "Route 25", ""], [21, 7, "Route 5", ""], [21, 10, "Route 6", ""], [21, 11, "Vermilion City", ""], [22, 11, "Vermilion City", ""], [21, 12, "Vermilion City", ""], [22, 12, "Vermilion City", ""], [23, 11, "Route 11", "Burrow Tunnel"], [24, 11, "Route 11", ""], [25, 10, "Route 12", ""], [25, 11, "Route 12", ""], [25, 12, "Route 12", ""], [25, 13, "Route 12", ""], [23, 6, "Route 9", ""], [24, 6, "Route 9", ""], [25, 6, "Route 10", "Rock Tunnel"], [25, 7, "Route 10", "Power Plant"], [25, 8, "Route 10", ""], [25, 9, "Lavender Town", "Pokémon Tower"], [23, 9, "Route 8", ""], [24, 9, "Route 8", ""], [20, 9, "Route 7", ""], [18, 9, "Celadon City", ""], [19, 9, "Celadon City", ""], [18, 10, "Celadon City", ""], [19, 10, "Celadon City", ""], [16, 10, "Route 16", ""], [17, 10, "Route 16", ""], [16, 11, "Route 17", ""], [16, 12, "Route 17", ""], [16, 13, "Route 17", ""], [16, 14, "Route 17", ""], [16, 15, "Route 18", ""], [17, 15, "Route 18", ""], [18, 14, "Fuchsia City", "Safari Zone"], [19, 14, "Fuchsia City", ""], [18, 15, "Fuchsia City", ""], [19, 15, "Fuchsia City", ""], [24, 13, "Route 13", ""], [23, 13, "Route 14", ""], [23, 14, "Route 14", ""], [23, 15, "Route 14", ""], [20, 15, "Route 15", ""], [21, 15, "Route 15", ""], [22, 15, "Route 15", ""], [21, 8, "Saffron City", ""], [22, 8, "Saffron City", ""], [21, 9, "Saffron City", ""], [22, 9, "Saffron City", ""], [18, 16, "Route 19", ""], [18, 17, "Route 19", ""], [14, 17, "Route 20", ""], [15, 17, "Route 20", ""], [16, 17, "Route 20", "Seafoam Islands"], [17, 17, "Route 20", ""], [13, 17, "Cinnabar Island", "Pokémon Mansion"], [13, 14, "Route 21", ""], [13, 15, "Route 21", ""], [13, 16, "Route 21", ""], [9, 9, "Route 23", "Victory Road"], [9, 8, "Indigo Plateau", ""], [6, 10, "Mt. Silver", ""], [7, 10, "Route 28", ""], [8, 10, "Route 28", ""]];
+// Sevii teleport points: [region, cell x, cell y, name, island number, map, x, y] (x, y = where you step out of the harbor)
+const SEV_TELE = [[1, 5, 11, 'One Island', 1, 274, 15, 19], [1, 13, 12, 'Two Island', 2, 290, 18, 8], [1, 22, 15, 'Three Island', 3, 299, 14, 13], [2, 7, 7, 'Four Island', 4, 19, 18, 30], [2, 20, 14, 'Five Island', 5, 31, 64, 14], [3, 9, 11, 'Six Island', 6, 49, 11, 23], [3, 9, 10, 'Seven Island', 7, 70, 22, 13]];
 const TMAP_HOME = { 'Pallet Town': [13, 13], 'Route 1': [13, 12], 'Viridian City': [13, 9], 'Pokémon Center': [13, 9], 'Route 2': [13, 8], 'Viridian Forest': [13, 7], 'Pewter City': [13, 5], 'Route 3': [15, 5], 'Route 4': [17, 5], 'Mt. Moon': [18, 5], 'Cerulean City': [21, 5], 'Route 24': [22, 3], 'Route 25': [24, 3], "Nuno's House": [24, 3] };
 function* townMapScreen(o = {}) {
   if (!o.teleport && !o.view && G.items && G.items.PORTABLETELEPORTER > 0) { o = Object.assign({}, o, { teleport: true, player: true, regular: true }); CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; }); }   // owning the Portable Teleporter turns the regular map into the teleporter   // o.teleport: the cheat version, pick a city and confirm to teleport there
-  const here = (window.MAPPOS && MAPPOS[G.mapId]) || TMAP_HOME[mapNameOf(G.mapId)] || [13, 13]; let cx = here[0], cy = here[1];
-  const ptName = (x, y) => { const p = TPOINTS.find(q => q[0] === x && q[1] === y); return p ? p[2] + (p[3] ? ' - ' + p[3] : '') : ''; };
+  // Sevii Islands: three extra map pages (regions 1-3), shown when the player owns the Island Pass (or is standing on one of the islands)
+  const sev = window.SEVPOS && SEVPOS[G.mapId];
+  const hasPass = !!(G.items && G.items.SEVIIPASS > 0) || !!sev, hereReg = sev ? sev[0] : 0;
+  const here = sev ? [sev[1], sev[2]] : (window.MAPPOS && MAPPOS[G.mapId]) || TMAP_HOME[mapNameOf(G.mapId)] || [13, 13]; let reg = hereReg, cx = here[0], cy = here[1];
+  const ptName = (x, y) => {
+    if (reg > 0) { const ps = (window.SEVPTS && SEVPTS[reg]) || []; let b = null, bd = 99; for (const q of ps) { const d = Math.abs(q[0] - x) + Math.abs(q[1] - y); if (d < bd) { bd = d; b = q; } } return b && bd <= 1 ? b[2] + (b[3] ? ' - ' + b[3] : '') : ''; }
+    const p = TPOINTS.find(q => q[0] === x && q[1] === y); return p ? p[2] + (p[3] ? ' - ' + p[3] : '') : '';
+  };
+  const gotoRegion = r => { reg = r; if (r === hereReg) { cx = here[0]; cy = here[1]; } else if (r === 0) { cx = 13; cy = 13; } else { const p = (SEVPTS[r] || [[10, 10]])[0]; cx = p[0]; cy = p[1]; } sfx('open'); };
   const draw = () => {
     ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH);
     pic('map/mapbg', 0, 0);
-    const rg = UI('map/mapRegion0'); if (rg) ctx.drawImage(rg, 16, 32);
-    const pl = UI('map/mapPlayer000'); if (pl) ctx.drawImage(pl, 16 + here[0] * 16 - 8, 32 + here[1] * 16 - 8);
+    const rg = UI('map/mapRegion' + reg); if (rg) ctx.drawImage(rg, 16, 32);
+    const pl = UI('map/mapPlayer000'); if (pl && reg === hereReg) ctx.drawImage(pl, 16 + here[0] * 16 - 8, 32 + here[1] * 16 - 8);
     const cu = UI('map/mapCursor'); if (cu) ctx.drawImage(cu, (Math.floor(G.frame / 14) % 2) * 32, 0, 32, 32, 16 + cx * 16 - 8, 32 + cy * 16 - 8, 32, 32);
     const nm = ptName(cx, cy); txt(nm, 24, 362, { col: COL.light, shadow: '#383838', size: 22 });
-    txt(o.teleport && !o.regular ? (o.player ? 'Teleporter: choose a city' : 'Teleport: choose a city') : mapNameOf(G.mapId), 24, 6, { col: COL.light, shadow: '#383838', size: 22 });
+    txt(reg > 0 ? 'Sevii Islands (' + reg + '/3)' : o.teleport && !o.regular ? (o.player ? 'Teleporter: choose a city' : 'Teleport: choose a city') : mapNameOf(G.mapId), 24, 6, { col: COL.light, shadow: '#383838', size: 22 });
+    if (hasPass) { const hint = ((G.padOn || G.touchIn) ? 'RB' : 'C') + ': ' + (reg === 0 ? 'Sevii Islands' : reg < 3 ? 'Next page' : 'Kanto'); txt(hint, SW - 24 - txtW(hint, 22), 362, { col: COL.light, shadow: '#383838', size: 22 }); }
     drawUiMsg(); drawPopup();
   };
   return yield* withDraw(draw, (function* () {
@@ -267,7 +277,17 @@ function* townMapScreen(o = {}) {
       if (rep('right') && cx < 29) { cx++; sfx('cursor'); }
       if (rep('up') && cy > 0) { cy--; sfx('cursor'); }
       if (rep('down') && cy < 19) { cy++; sfx('cursor'); }
-      if (o.teleport && ok()) {
+      if (hasPass && pressed('bike')) { keys.pressed.bike = false; gotoRegion(reg >= 3 ? 0 : reg + 1); continue; }
+      if (o.teleport && reg > 0 && ok()) {          // Sevii pages: teleport to an island town (needs the island to have been visited when using the Portable Teleporter)
+        const t = SEV_TELE.find(q => q[0] === reg && q[1] === cx && q[2] === cy);
+        if (!t || (o.player && !(G.switches['sev' + t[4]] || SEV_MAP_ISLAND[G.mapId] === t[4]))) { sfx('buzzer'); if (o.player && t) { yield* uiMessage('The teleporter did not react.'); } continue; }
+        sfx('ok');
+        yield* uiMessage((o.player ? 'The teleporter reacts. Teleport to ' : 'Teleport to ') + t[3] + '?', { noWait: true });
+        const yes = yield* yesNo(); G.uiMsg = null;
+        if (yes) { G.teleReq = { map: t[5], x: t[6], y: t[7] }; return; }
+        continue;
+      }
+      if (o.teleport && reg === 0 && ok()) {
         const pt = TPOINTS.find(q => q[0] === cx && q[1] === cy);
         const dest = pt && CHEAT_CITIES.find(c => c[0] === pt[2].toUpperCase() && window.MAPS && window.MAPS[c[1]]);
         if (!dest) { sfx('buzzer'); if (o.player && pt) { yield* uiMessage('The teleporter did not react.'); } continue; }

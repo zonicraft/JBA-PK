@@ -16,6 +16,8 @@ const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [310, 'S', 0, 264, 'N', 0], [256, 'W', 0, 264, 'E', 0], [311, 'S', 0, 264, 'N', 36],          // Route 21 / Route 20 / sea route to Cinnabar
   [256, 'N', 0, 310, 'S', 30], [311, 'W', 0, 310, 'E', 60], [311, 'S', 0, 256, 'N', 6],
   [146, 'W', 0, 100, 'E', 5], [147, 'W', 0, 146, 'E', 0], [164, 'E', 0, 147, 'W', 81], [147, 'S', 0, 151, 'N', 0],   // Cerulean - Route 9 - Route 10 (Route 8 / Lavender are not built yet)
+  // Sevii Islands
+  [290, 'N', 0, 292, 'S', 0], [297, 'W', 0, 308, 'E', 2], [299, 'N', 0, 308, 'S', 94], [299, 'N', 2, 297, 'S', 0], [37, 'N', 0, 38, 'S', 0], [47, 'W', 0, 45, 'E', 0], [31, 'E', 0, 45, 'W', 0], [37, 'S', 76, 45, 'N', 0], [37, 'S', 100, 47, 'N', 0], [37, 'S', 0, 31, 'N', 0], [57, 'N', 27, 49, 'S', 0], [64, 'S', 54, 49, 'N', 0], [54, 'W', 42, 49, 'E', 0], [64, 'N', 0, 66, 'S', 0], [54, 'W', 0, 66, 'E', 73], [54, 'W', 81, 57, 'E', 0], [54, 'W', 2, 64, 'E', 0], [78, 'E', 18, 88, 'W', 0], [328, 'N', 54, 88, 'S', 0], [78, 'W', 85, 336, 'E', 0], [328, 'N', 0, 336, 'S', 0], [337, 'W', 0, 78, 'E', 0], [328, 'N', 22, 78, 'S', 0], [70, 'S', 0, 78, 'N', 2], [70, 'S', 30, 337, 'N', 0], [70, 'N', 0, 75, 'S', 6], [277, 'E', 0, 276, 'W', 0], [279, 'E', 0, 276, 'W', 140], [274, 'E', 0, 276, 'W', 119], [274, 'N', 7, 277, 'S', 0], [274, 'S', 0, 279, 'N', 2],
   [202, 'S', 12, 255, 'N', 0], [256, 'E', 0, 255, 'W', 40], [311, 'E', 0, 255, 'W', 0]];                           // Fuchsia - Route 19 - Route 20
 // ---- map tile patches: a rectangle of tiles is blanked while its switch is on (the story changes the scenery)
 const TILE_PATCHES = [
@@ -252,8 +254,43 @@ function wallMapCheck(x, y) {
   if (![172, 205, 238, 266, 354, 355, 356, 357, 358, 359].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
   G.main = new Interp([[355, 0, ['pbWallTownMap']], [0, 0, []]], null); return true;
 }
+// ---- Sevii Islands: Island Pass + ferry network. Island 0 is Cinnabar's port, 1-7 are One Island .. Seven Island.
+const SEV_ISLANDS = ['Cinnabar Island', 'One Island', 'Two Island', 'Three Island', 'Four Island', 'Five Island', 'Six Island', 'Seven Island'];
+// where the ferry drops you: [map, x, y, dir] (each island's harbor building; Cinnabar's port is the beach south of the Poké Center)
+const SEV_LANDING = { 0: [264, 24, 12, 2], 1: [275, 8, 5, 2], 2: [291, 8, 5, 2], 3: [298, 8, 5, 2], 4: [20, 8, 5, 2], 5: [33, 8, 5, 2], 6: [50, 8, 5, 2], 7: [71, 8, 5, 2] };
+const SEV_MAP_ISLAND = { 264: 0, 275: 1, 274: 1, 291: 2, 290: 2, 298: 3, 299: 3, 297: 3, 20: 4, 19: 4, 33: 5, 31: 5, 50: 6, 49: 6, 71: 7, 70: 7 };
+function seviiVisit(id) { const n = SEV_MAP_ISLAND[id]; if (n > 0) G.switches['sev' + n] = true; }
+// an island can be picked once the player has been there, or when it is the next one along the chain (so every island is reachable in order)
+function seviiAllowed(n) { return n === 1 || !!G.switches['sev' + n] || !!G.switches['sev' + (n - 1)]; }
+function* seviiFerryUI(cur) {
+  G.ferryReq = null;
+  const draw = () => { drawUiMsg(); drawPopup(); };
+  return yield* withDraw(draw, (function* () {
+    const dests = [];
+    for (let n = 0; n <= 7; n++) if (n !== cur && (n === 0 || seviiAllowed(n))) dests.push(n);
+    yield* uiMessage('Welcome aboard the Seagallop Ferry! Where would you like to sail?', { noWait: true });
+    const labels = dests.map(n => SEV_ISLANDS[n]).concat(['CANCEL']);
+    const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0, max: 8 });
+    G.uiMsg = null;
+    if (c >= 0 && c < dests.length) G.ferryReq = { to: dests[c] };
+  })());
+}
 function* worldScript(it, s) {
   let m;
+  if (s === 'pbSeviiFerry') {
+    const cur = SEV_MAP_ISLAND[G.mapId] || 0;
+    if (!(G.items && G.items.SEVIIPASS > 0)) { yield* showMessage('Welcome to the Seagallop Ferry Service!\nOur ferries only carry passengers who hold an \\c[1]Island Pass\\c[0].'); return true; }
+    G.uiGen = seviiFerryUI(cur); yield;
+    const r = G.ferryReq; G.ferryReq = null; if (!r) return true;
+    const [mid, x, y, d] = SEV_LANDING[r.to];
+    tone([-255, -255, -255, 0], 20); while (G.tone.left > 0) yield;
+    for (let k = 0; k < 90; k++) yield;                         // the crossing
+    yield* it.transfer([0, mid, x, y, d, 1]);
+    if (r.to > 0) G.switches['sev' + r.to] = true;
+    tone([0, 0, 0, 0], 20); while (G.tone.left > 0) yield;
+    yield* showMessage('We have arrived at ' + SEV_ISLANDS[r.to] + '!\nThank you for sailing with us.');
+    return true;
+  }
   if (s === 'pbDayCareMan' || s === 'pbDayCareHeal') {          // the old folk turn to face the player, then back to where they were
     const ev = it && it.ev, d0 = ev && ev.dir; if (ev) faceEvent(ev, G.player);
     try { return yield* worldScriptDayCare(s); } finally { if (ev) ev.dir = d0; }
@@ -264,6 +301,24 @@ function* worldScript(it, s) {
     if (te && te !== G.player) faceEvent(G.player, te);   // the player turns towards the trainer who spotted them
     yield* exclaim(te || G.player); return true;
   }
+  if ((m = s.match(/^pbSpin\((\d),(\d+)\)$/))) {          // Rocket hideout spinner arrows: slide the player along, then chain into the next arrow they land on
+    const pl = G.player; let d = +m[1], n = +m[2], guard = 0;
+    while (guard++ < 60) {
+      let moved = 0;
+      for (let k = 0; k < n; k++) { if (!pl.moveDir(d, false)) break; moved++; while (pl.moving) yield; }
+      pl.dir = d;
+      let nx = null;
+      for (const e of G.chars) {
+        if (e === pl || e === (it && it.ev) || e.erased || !e.page || e.x !== pl.x || e.y !== pl.y) continue;
+        const c = e.page.list.find(c => c[0] === 355 && /^pbSpin\(/.test(String(c[2][0])));
+        const mm = c && String(c[2][0]).match(/^pbSpin\((\d),(\d+)\)$/); if (mm) { nx = mm; break; }
+      }
+      if (!nx || !moved) break;
+      d = +nx[1]; n = +nx[2];
+    }
+    return true;
+  }
+  if (s.startsWith('pbSEPlay(')) return true;
   if (s.startsWith('pbWait(')) { let n = +s.match(/\d+/)[0]; while (n-- > 0) yield; return true; }
   if (s === 'Kernel.pbSetPokemonCenter') { const p = G.player; G.healPoint = { map: G.mapId, x: p.x, y: p.y, dir: p.dir }; return true; }
   if (s.includes('for i in 1..')) {            // Poké Center ball-by-ball healing animation
