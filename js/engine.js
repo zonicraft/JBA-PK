@@ -110,7 +110,7 @@ function playME(name) {
   a.onended = () => { if (G.me && G.me.a === a) { G.me = null; applyVolumes(); } };
   a.play().catch(() => { if (G.me && G.me.a === a) { G.me = null; applyVolumes(); } });
 }
-function cry(id) { try { const a = new Audio('assets/cries/' + String(id).padStart(3, '0') + '.ogg'); a.volume = Math.min(1, 0.9 * SET.sfx); a.play().catch(() => { }); } catch (e) { } }
+function cry(id) { if (id === 891) id = 195; try { const a = new Audio('assets/cries/' + String(id).padStart(3, '0') + '.ogg'); a.volume = Math.min(1, 0.9 * SET.sfx); a.play().catch(() => { }); } catch (e) { } }
 
 // ------------------------------------------------------------ input
 const KEYMAP = {
@@ -239,7 +239,7 @@ function setSwitch(id, v) { G.switches[id] = v; G.refresh = true; }
 // Skateboard (the Bike): can be used everywhere
 function bikeAllowed() { return true; }
 function toggleBike() {   // C key / LB / RB
-  if (!(G.items.BICYCLE > 0)) return;
+  if (!(G.items.BICYCLE > 0) || G.surfing) return;
   if (G.biking) { G.biking = false; return; }
   if (bikeAllowed()) G.biking = true; else G.bikeMsg = 'You can\'t use the Skateboard here.';
 }
@@ -307,8 +307,9 @@ class Chr {
   canMove(d) {
     if (this.through) return true;
     const [dx, dy] = dirVec[d]; const nx = this.x + dx, ny = this.y + dy;
-    if (!this.passableTile(this.x, this.y, d)) return false;
-    if (!this.passableTile(nx, ny, opp[d])) return false;
+    const sf = this.isPlayer && G.surfing && typeof isWaterAt === 'function';      // surfing: water counts as floor
+    if (!(sf && isWaterAt(this.x, this.y) && !solidOverWater(this.x, this.y)) && !this.passableTile(this.x, this.y, d)) return false;
+    if (!(sf && isWaterAt(nx, ny) && !solidOverWater(nx, ny)) && !this.passableTile(nx, ny, opp[d])) return false;
     for (const e of G.chars) {
       if (e === this || e.through || e.erased) continue;
       if (e.x !== nx || e.y !== ny) continue;
@@ -433,7 +434,7 @@ class EventChr extends Chr {
 const INDOOR_MAPS = [1, 3, 4, 8, 81, 84, 354, 398];
 class PlayerChr extends Chr {
   constructor() { super(); this.isPlayer = true; this.name = 'Player'; this.gfx = 'trchar000'; this.speed = 3; this.running = false; this.walkSheet = 'trchar000'; }
-  onArrive() { if (typeof grassAnim === 'function') grassAnim(this.x, this.y); if (!G.main) checkTouch(this.x, this.y); if (!G.main && !G.battle && typeof checkWild === 'function') checkWild(this.x, this.y); if (typeof repelStep === 'function') repelStep(); }
+  onArrive() { if (G.surfing && typeof isWaterAt === 'function' && !isWaterAt(this.x, this.y)) G.surfing = false; if (typeof grassAnim === 'function') grassAnim(this.x, this.y); if (!G.main) checkTouch(this.x, this.y); if (!G.main && !G.battle && typeof checkWild === 'function') checkWild(this.x, this.y); if (typeof repelStep === 'function') repelStep(); }
 }
 
 // ------------------------------------------------------------ maps
@@ -447,6 +448,7 @@ function loadMap(id) {
 }
 function enterMap(id, x, y, dir) {
   const prevMap = G.mapId; const m = loadMap(id); G.map = m; G.mapId = id; if (typeof syncTilePatches === 'function') syncTilePatches();
+  if (typeof CHEAT_CITIES !== 'undefined' && CHEAT_CITIES.some(c => c[1] === id)) G.switches['city' + id] = true;   // city unlocked for the Portable Teleporter
   G.temp = {};
   G.chars = [];
   G.events = {};
@@ -513,6 +515,10 @@ function checkAction() {
   if (typeof isCounter === 'function' && isCounter(p.x + dx, p.y + dy))        // counter: talk across it
     for (const e of eventAt(p.x + dx * 2, p.y + dy * 2, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }
   if (typeof wallMapCheck === 'function' && wallMapCheck(p.x + dx, p.y + dy)) return true;
+  if (typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {
+    if (G.surfing) return false;                                                       // on the boat: nothing to ask
+    if ((G.items && G.items.BOAT > 0) || getSwitch(153)) { G.main = new Interp([[355, 0, ['pbSurfAsk']], [0, 0, []]], null); return true; }   // boat lent: fish or navigate?
+  }
   if (G.items && G.items.OLDROD && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {
     G.main = new Interp([[355, 0, ['pbFishAsk']], [0, 0, []]], null); return true;
   }
@@ -533,7 +539,7 @@ function prepText(s) {
   s = s.replace(/\\b/g, () => { bubble = 'b'; return ''; });
   s = s.replace(/\\r/g, () => { bubble = 'r'; return ''; });
   s = s.replace(/\\PN/g, G.name);
-  s = s.replace(/\\STARTER/g, () => G.starterName || ((G.party || []).find(p => /^(ILLYA|RORY|HIZUNA)/.test(p.sym)) || (G.party || [])[0] || {}).name || 'my Pokémon');
+  s = s.replace(/\\STARTER/g, () => (typeof G.vars[203] === 'string' && G.vars[203]) || G.starterName || ((G.party || []).find(p => /^(ILLYA|RORY|HIZUNA)/.test(p.sym)) || (G.party || [])[0] || {}).name || 'my Pokémon');
   s = s.replace(/\\v\[(\d+)\]/g, (m, n) => { const v = G.vars[+n]; return v === undefined ? '0' : String(v); });
   s = s.replace(/\\n/g, '\n');
   s = s.replace(/\\\\/g, '\\');
@@ -737,6 +743,7 @@ class Interp {
     if (s.includes('onEvent?')) return G.player.x === this.ev.x && G.player.y === this.ev.y;
     if (s.includes('$game_player.x<15')) return G.player.x < 15 && G.mapId === 3;
     { const nb = s.match(/^\$Trainer\.numbadges\s*(>=|>|==)\s*(\d+)$/); if (nb) { const have = badgeCount(), n = +nb[2]; return nb[1] === '>=' ? have >= n : nb[1] === '>' ? have > n : have === n; } }
+    { const hs = s.match(/^pbHasSpecies\?\(:(\w+)\)$/); if (hs) return (G.party || []).some(p => p.sym === hs[1]); }
     { const hi = s.match(/^\$PokemonBag\.pbHasItem\?\(:(\w+)\)$/); if (hi) return !!(G.items[hi[1]] > 0); }
     if (s === 'pbLastBattleWon') return G.battleResult === 'win';   // wild battle won or caught
     if (s.includes('pbPokerus')) return false;
@@ -784,6 +791,13 @@ class Interp {
       const v = yield* promptName(m[2].replace(/\s*\n\s*/g, ' ').replace(/Rival\\'s/, "Rival's"), m[5], +m[4]); setVar(+m[1], v); return;
     }
     if ((m = s.match(/^pbSet\((\d+),"([^"]*)"\)/))) { setVar(+m[1], m[2]); return; }
+    if ((m = s.match(/^pbWalkEventTo\((\d+),\s*(\d+),\s*(\d+)\)/))) { const ev = this.evChr(+m[1]); if (ev) { const list = [[37, []], [29, [4]]]; const tx = +m[2], ty = +m[3];
+      const key = (x, y) => x + ',' + y, W = G.map.w, H = G.map.h; const occ = new Set(G.chars.filter(c => c !== ev && !c.isPlayer && !c.erased && !c.through && (c.gname || c.tile || /Barricade/i.test(c.name || ''))).map(c => key(c.x, c.y)));      // BFS around fences/walls/other events (the player is walked through)
+      const prev = { [key(ev.x, ev.y)]: null }, q = [[ev.x, ev.y]]; let found = false;
+      while (q.length && !found) { const [x, y] = q.shift(); for (const d of [2, 4, 6, 8]) { const [dx, dy] = dirVec[d], nx = x + dx, ny = y + dy, k = key(nx, ny); if (prev[k] !== undefined || nx < 0 || ny < 0 || nx >= W || ny >= H) continue; if (!(nx === tx && ny === ty) && occ.has(k)) continue; if (!ev.passableTile(x, y, d) || !ev.passableTile(nx, ny, opp[d])) continue; prev[k] = [x, y, d]; if (nx === tx && ny === ty) { found = true; break; } q.push([nx, ny]); } }
+      if (found) { const steps = []; for (let k = key(tx, ty); prev[k];) { const [px, py, d] = prev[k]; steps.push([{ 2: 1, 4: 2, 6: 3, 8: 4 }[d], []]); k = key(px, py); } steps.reverse().forEach(st => list.push(st)); }
+      else { for (let x = ev.x; x !== tx; x += Math.sign(tx - x)) list.push([tx > x ? 3 : 2, []]); for (let y = ev.y; y !== ty; y += Math.sign(ty - y)) list.push([ty > y ? 1 : 4, []]); } list.push([0, []]); ev.startRoute({ mr: 1, repeat: false, skip: false, list }); while (ev.forcing) yield; } return; }
+    if ((m = s.match(/^pbFacePlayerToEvent\((\d+)\)/))) { const ev = this.evChr(+m[1]); if (ev) { const dx = ev.x - G.player.x, dy = ev.y - G.player.y; G.player.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 4) : (dy > 0 ? 2 : 8); } return; }
     if ((m = s.match(/^pbSetSelfSwitch\((\d+),"(\w)",(true|false)\)/))) { G.selfsw[selfKey(G.mapId, +m[1], m[2])] = m[3] === 'true'; G.refresh = true; return; }
     if ((m = s.match(/^setTempSwitchOn\("(\w)"\)/))) { if (this.ev) { G.temp[this.ev.key + m[1]] = true; G.refresh = true; } return; }
     if ((m = s.match(/^setTempSwitchOff\("(\w)"\)/))) { if (this.ev) { G.temp[this.ev.key + m[1]] = false; G.refresh = true; } return; }
@@ -855,7 +869,7 @@ function update() {
     if (c.parallel) { c.parallel.update(); if (c.parallel.done && c.page) c.parallel = new Interp(c.page.list, c, true); }
   }
   if (G.refresh) { G.refresh = false; if (typeof syncTilePatches === 'function') syncTilePatches(); G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
-  if (G.biking && !bikeAllowed()) G.biking = false;
+  if (G.biking && (!bikeAllowed() || G.surfing)) G.biking = false;
   if (G.repelEnd && !G.main && !G.msg && !G.battle && !G.trans && !G.frozen && !G.uiGen) { G.repelEnd = false; G.main = new Interp([[355, 0, ['pbRepelEnd']], [0, 0, []]], null); }
   if (G.bikeMsg && !G.main && !G.msg && !G.main) { const m = G.bikeMsg; G.bikeMsg = null; G.main = new Interp([[101, 0, [m]], [0, 0, []]], null); }
   // autorun
@@ -889,7 +903,7 @@ function update() {
         anyDir = true;
         if (p.dir !== d) { p.dir = d; p.turnWait = 7; p.bumped = false; break; }      // tap = just turn
         if (p.turnWait > 0) { p.turnWait--; break; }                                  // keep holding to walk
-        p.speed = G.biking ? 5 : run ? 4 : 3; p.sheetOverride = G.biking ? 'boy_bike' : run ? 'boy_run' : null;
+        p.speed = G.surfing ? 4 : G.biking ? 5 : run ? 4 : 3; p.sheetOverride = G.biking ? 'boy_bike' : run ? 'boy_run' : null;
         if (d !== 8 && typeof ledgeJump === 'function' && ledgeJump(p, d)) { moved = true; p.bumped = false; }
         else if (p.moveDir(d)) { moved = true; p.bumped = false; }
         else if (!p.bumped) { p.bumped = true; if (!checkBump(d)) sfx('bump'); }
@@ -899,7 +913,9 @@ function update() {
     if (!anyDir) { p.turnWait = 0; p.bumped = false; }
     if (!moved && pressed('ok') && !(G.lock && G.lock.ok)) checkAction();
   }
-  if (G.biking) p.sheetOverride = 'boy_bike';
+  if (G.surfing && !p.moving && !G.main && !G.battle && !G.trans && typeof isWaterAt === 'function' && !isWaterAt(p.x, p.y)) G.surfing = false;   // stepped ashore
+  if (G.surfing) p.sheetOverride = 'base_surf';
+  else if (G.biking) p.sheetOverride = 'boy_bike';
   else if (p.fishing) { /* keeps the casting sheet */ }
   else if (!p.moving && !p.forcing && !keys.held.run) p.sheetOverride = null;
   else if (p.sheetOverride === 'boy_bike') p.sheetOverride = null;

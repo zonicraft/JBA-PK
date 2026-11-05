@@ -11,7 +11,10 @@ const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [109, 'S', 4, 100, 'N', 0], [100, 'N', 36, 111, 'S', 0], [109, 'E', 0, 111, 'W', 1], [111, 'S', 0, 110, 'N', 121],
   [114, 'N', 0, 100, 'S', 0], [114, 'W', 0, 110, 'E', 40], [120, 'S', 0, 122, 'N', 2], [129, 'W', 0, 122, 'E', 6],
   [169, 'W', 0, 171, 'E', 0], [194, 'E', 0, 171, 'W', 0],
-  [195, 'S', 0, 198, 'N', 0], [199, 'N', 0, 198, 'S', 6], [202, 'W', 0, 201, 'E', 0]];  // Route 16-18 and Fuchsia; the rest lead to areas not built yet
+  [195, 'S', 0, 198, 'N', 0], [199, 'N', 0, 198, 'S', 6], [202, 'W', 0, 201, 'E', 0],
+  [311, 'N', 73, 201, 'S', 0], [202, 'S', 0, 311, 'N', 102],                                   // Fuchsia / Route 18 down to the sea route
+  [310, 'S', 0, 264, 'N', 0], [256, 'W', 0, 264, 'E', 0], [311, 'S', 0, 264, 'N', 36],          // Route 21 / Route 20 / sea route to Cinnabar
+  [256, 'N', 0, 310, 'S', 30], [311, 'W', 0, 310, 'E', 60], [311, 'S', 0, 256, 'N', 6]];       // Route 19 and later are not built yet
 // ---- map tile patches: a rectangle of tiles is blanked while its switch is on (the story changes the scenery)
 const TILE_PATCHES = [
   { map: 171, sw: 215, rects: [[31, 21, 37, 26, 2, 0]] },   // Celadon: the arcade building is blown up
@@ -70,6 +73,19 @@ function isWaterAt(x, y) {
   }
   return false;
 }
+// a solid tile (rock, pillar...) drawn on top of the water: the boat can't sail through it
+function solidOverWater(x, y) {
+  const m = G.map, ts = m.ts, names = ts.autotiles || [];
+  for (let z = 2; z >= 0; z--) {
+    const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
+    if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return false; }
+    const pas = ts.passages[tid] || 0;
+    if (pas & 0x10) continue;
+    if ((pas & 0x0f) === 0x0f) return true;
+    if ((ts.priorities[tid] || 0) === 0) return false;
+  }
+  return false;
+}
 function terrainTagAt(x, y) {
   const m = G.map; if (!m || !m.ts.tags) return 0;
   for (let z = 2; z >= 0; z--) {
@@ -95,10 +111,17 @@ function wildTable(mapId) {
   const dens = (e.dens && e.dens[kind === 'Land' ? 0 : 1]) || 25;
   return { chance: dens / 250, kind, land: e[kind].map((s, i) => [s[0], s[1], s[2], LAND_W[i] || 1]) };
 }
+const WATER_W = [60, 30, 5, 4, 1];
 function checkWild(x, y) {
-  const enc = wildTable(G.mapId); if (!enc || !G.party.length || !G.started) return;
+  let enc = wildTable(G.mapId);
+  if (G.surfing) {                                              // sailing: the Water table, only over water
+    const e = window.ENCOUNTERS && ENCOUNTERS[G.mapId];
+    enc = e && e.Water && e.Water.length ? { chance: ((e.dens && e.dens[2]) || 10) / 250, kind: 'Water', land: e.Water.map((s, i) => [s[0], s[1], s[2], WATER_W[i] || 1]) } : null;
+    if (!isWaterAt(x, y)) return;
+  }
+  if (!enc || !G.party.length || !G.started) return;
   if (!G.party.some(m => m.hp > 0)) return;
-  if (enc.kind !== 'Cave' && terrainTagAt(x, y) !== 2) return;
+  if (enc.kind !== 'Cave' && enc.kind !== 'Water' && terrainTagAt(x, y) !== 2) return;
   if (G.wildMap !== G.mapId) { G.wildMap = G.mapId; G.wildSteps = 0; }
   if (++G.wildSteps < 4) return;
   if (Math.random() >= enc.chance) return;
@@ -208,7 +231,7 @@ function pcAll() { const l = (G.box || []).slice(); if (G.pc) for (const b of G.
 
 // ---- the region map on the wall of the Poké Center / Mart building
 function wallMapCheck(x, y) {
-  if (![172, 354, 355, 356, 357, 358].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
+  if (![172, 205, 238, 266, 354, 355, 356, 357, 358].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
   G.main = new Interp([[355, 0, ['pbWallTownMap']], [0, 0, []]], null); return true;
 }
 function* worldScript(it, s) {
@@ -217,7 +240,7 @@ function* worldScript(it, s) {
     const ev = it && it.ev, d0 = ev && ev.dir; if (ev) faceEvent(ev, G.player);
     try { return yield* worldScriptDayCare(s); } finally { if (ev) ev.dir = d0; }
   }
-  if (s === 'pbWallTownMap') { playSE('GUI_sel_decision'); yield* showMessage('It\'s a map of the region.'); G.uiGen = townMapScreen(); yield; return true; }
+  if (s === 'pbWallTownMap') { playSE('GUI_sel_decision'); yield* showMessage('It\'s a map of the region.'); G.uiGen = townMapScreen({ view: true }); yield; return true; }
   if (s.startsWith('Kernel.pbExclaim')) {
     const mm = s.match(/events\[(\d+)\]/), te = mm ? G.events[+mm[1]] : null;
     if (te && te !== G.player) faceEvent(G.player, te);   // the player turns towards the trainer who spotted them
@@ -272,6 +295,22 @@ function* worldScript(it, s) {
     for (let i = 0; i < 8; i++) yield; return true;
   }
   if (s === 'pbBerryPlant') { yield* berryPlantScript(it); return true; }
+  if (s === 'pbSurfAsk') {                   // action button on water once the boat has been lent
+    const rod = G.items && G.items.OLDROD, opts = rod ? ['Navigate', 'Fish', 'Cancel'] : ['Navigate', 'Cancel'];
+    yield* showMessage(rod ? 'The water is calm.\nNavigate or fish?' : 'The water is calm.\nDo you want to navigate?', { noWait: true });
+    const c = opts[yield* showChoices(opts, opts.length)];
+    if (c === 'Fish') return yield* worldScript(it, 'pbFish("OldRod")');
+    if (c === 'Navigate') return yield* worldScript(it, 'pbSurfStart');
+    return true;
+  }
+  if (s === 'pbSurfStart') {                 // board the boat and sail one tile out
+    const pl = G.player, [fx, fy] = dirVec[pl.dir];
+    if (G.surfing) { yield* showMessage('You are already on the boat.'); return true; }
+    if (!isWaterAt(pl.x + fx, pl.y + fy)) { yield* showMessage("There's no water to sail on here."); return true; }
+    G.biking = false; G.surfing = true; pl.speed = 4; pl.sheetOverride = 'base_surf';
+    if (pl.moveDir(pl.dir, false)) { while (pl.moving) yield; }
+    return true;
+  }
   if (s === 'pbFishAsk') {                   // action button on water with a rod in the bag
     yield* showMessage('The water is calm.\nWant to fish here?', { noWait: true });
     const i = yield* showChoices(['Yes', 'No'], 2);
@@ -281,6 +320,7 @@ function* worldScript(it, s) {
   if ((m = s.match(/^pbFish\("(\w+)"\)/))) {          // field use of a fishing rod: needs water in front of the player
     const pl = G.player, [fx, fy] = dirVec[pl.dir]; const wx = pl.x + fx, wy = pl.y + fy;
     if (!isWaterAt(wx, wy)) { yield* showMessage("There's no water to fish in here."); return true; }
+    if (G.surfing) { yield* showMessage("You can't fish from the boat."); return true; }
     const e = window.ENCOUNTERS && ENCOUNTERS[G.mapId], tbl = e && ((e[m[1]] && e[m[1]].length ? e[m[1]] : null) || (e.Water && e.Water.length ? e.Water : null));
     const pose = n => { pl.sheetOverride = 'boy_fish_offset'; pl.basePattern = n; pl.pattern = n; };
     if (G.biking) { G.biking = false; pl.sheetOverride = null; pl.speed = 3; }          // fishing is done on foot

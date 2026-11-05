@@ -63,7 +63,7 @@ function drawBag(S) {
     if (i === pk.length) { txt('CLOSE', 212, y + 6, { size: 24 }); continue; }
     const k = pk[i], it = itemInfo(k);
     txt(itemLabel(k), 212, y + 6, { size: 22 });
-    if (it.pocket !== 8) txt('×' + G.items[k], 440, y + 6, { align: 'right', size: 22 });
+    if (it.pocket !== 8 && G.items[k] !== undefined) txt('×' + G.items[k], 440, y + 6, { align: 'right', size: 22 });
     if (S.reg && S.reg.includes(k)) pic('bag/icon_register', 440, y);
   }
   // item icon + description
@@ -94,14 +94,14 @@ function* bagScreen(o = {}) {
       if (S.idx >= pk.length) { sfx('back'); return null; }
       const key = pk[S.idx], it = itemInfo(key); sfx('ok');
       if (o.filter) { if (o.filter(key)) return key; yield* uiMessage("That won't fit in this plot."); continue; }
-      if (o.mode === 'give') { return key; }
+      if (o.mode === 'give') { if (it.pocket === 8) { yield* uiMessage("The " + it.name + " can't be held."); continue; } return key; }
       if (o.mode === 'party') { if (isMedicine(key)) return key; yield* uiMessage('It can\'t be used on a Pokémon.'); continue; }
       if (o.mode === 'battle') {
         if (isMedicine(key) || it.pocket === 3) return key;
         yield* uiMessage('It can\'t be used in battle.'); continue;
       }
       // field menu
-      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'BICYCLE' || key in REPEL_STEPS) opts.push('USE'); opts.push('TOSS', 'CANCEL');
+      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
       const c = yield* choiceWindow(opts, { y: SH - 96 - opts.length * 32 - 32, x: SW - 150 });
       const choice = c < 0 ? 'CANCEL' : opts[c];
       if (choice === 'USE') {
@@ -109,21 +109,32 @@ function* bagScreen(o = {}) {
           if (G.repel > 0) yield* uiMessage('But the effects of a Repel lingered from earlier.');
           else {
             G.repel = REPEL_STEPS[key]; G.repelItem = key; consume(key); sfx('item');
+            S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length; if (S.scroll > S.idx) S.scroll = S.idx;
             yield* uiMessage(G.name + ' used the ' + it.name + '!');
-            S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
           }
           continue;
         }
         if (key === 'OLDROD') { G.fishReq = 'OldRod'; return null; }
+        if (key === 'BOAT') { G.fishReq = 'Boat'; return null; }
+        if (key === 'PORTABLETELEPORTER') { CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; });   // everything before Cinnabar was visited by the time Einsteves hands it over
+          yield* townMapScreen({ teleport: true, player: true }); if (G.teleReq) return null; continue; }
         if (key === 'BICYCLE') { if (G.biking) { G.biking = false; G.bikeMsg = G.name + ' got off the Skateboard.'; } else if (bikeAllowed()) { G.biking = true; G.bikeMsg = G.name + ' got on the Skateboard.'; } else G.bikeMsg = 'You can\'t use the Skateboard here.'; return null; }
         if (isMedicine(key)) {
           const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i) => useItemOn(key, p) });
           S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
         }
+      } else if (choice === 'GIVE') {
+        const gi = yield* partyScreen({ mode: 'choose', text: 'Give to which Pokémon?' });
+        if (gi >= 0) {
+          const p = G.party[gi], old = p.item; p.item = key; G.items[key]--; if (!G.items[key]) delete G.items[key];
+          if (old) G.items[old] = (G.items[old] || 0) + 1;
+          S.pockets = bagPockets(); S.idx = Math.min(S.idx, Math.max(0, S.pockets[S.pocket].length)); if (S.scroll > S.idx) S.scroll = S.idx;
+          yield* uiMessage(pokeName(p) + (old ? ' swapped its ' + itemName(old) + ' for the ' + itemName(key) + '.' : ' is now holding the ' + itemName(key) + '.'));
+        }
       } else if (choice === 'TOSS') {
         if (it.pocket === 8) { yield* uiMessage('That\'s too important to toss out!'); continue; }
         const ok2 = yield* (function* () { G.uiMsg = null; yield* uiMessage('Toss out the ' + it.name + '?', { noWait: true }); const r = yield* yesNo(); G.uiMsg = null; return r; })();
-        if (ok2) { consume(key); yield* uiMessage('Threw away the ' + it.name + '.'); S.pockets = bagPockets(); S.idx = Math.min(S.idx, S.pockets[S.pocket].length); }
+        if (ok2) { consume(key); S.pockets = bagPockets(); S.idx = Math.min(S.idx, S.pockets[S.pocket].length); if (S.scroll > S.idx) S.scroll = S.idx; yield* uiMessage('Threw away the ' + it.name + '.'); }
       }
     }
   })());
@@ -191,7 +202,7 @@ function writeSave() {
   const p = G.player;
   const data = {
     v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
-    runningShoes: !!G.runningShoes, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
+    runningShoes: !!G.runningShoes, surfing: !!G.surfing, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
   };
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); return true; } catch (e) { return false; }
 }
@@ -204,7 +215,7 @@ function migrateSyms(d) {   // saves made before species were renamed to their c
 function loadSave(d) {
   migrateSyms(d);
   G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; G.name = d.name; G.starterName = d.starterName; G.money = d.money; G.trainerId = d.trainerId;
-  G.runningShoes = d.runningShoes; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {};
+  G.runningShoes = d.runningShoes; G.surfing = !!d.surfing; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {};
   enterMap(d.map, d.x, d.y, d.dir); if (d.bgm) playBGM(d.bgm);
 }
 const MAPNAMES = { 1: "Jorge's House 2F", 2: 'Pallet Town', 3: 'Pallet Town', 4: "Jorge's House", 8: "Geso's Lab", 5: 'Route 1', 7: 'Viridian City', 81: 'Viridian City', 84: 'Viridian City', 398: 'Viridian City', 354: 'Pokémon Center', 43: 'Route 2', 48: 'Viridian Forest', 85: 'Route 2', 86: 'Route 2', 132: 'Route 2', 145: 'Route 2', 87: 'Pewter City', 89: 'Pewter City', 92: 'Pewter City', 93: 'Pewter City', 94: 'Pewter City', 355: 'Pewter City', 79: 'Route 3', 95: 'Route 4', 96: 'Route 4', 110: 'Route 4', 356: 'Route 4', 97: 'Mt. Moon', 98: 'Mt. Moon', 99: 'Mt. Moon', 100: 'Cerulean City', 101: 'Cerulean City', 102: 'Cerulean City', 103: 'Cerulean City', 104: 'Cerulean City', 105: 'Cerulean City', 106: 'Cerulean City', 107: 'Cerulean City', 108: 'Cerulean City', 113: 'Cerulean City', 357: 'Cerulean City', 109: 'Route 24', 111: 'Route 25', 112: "Nuno's House" };
@@ -234,7 +245,8 @@ function drawSaveInfo() {
 // ------------------------------------------------------------ Town map (PBS/townmap.txt)
 const TPOINTS = [[13, 13, "Pallet Town", ""], [13, 11, "Route 1", ""], [13, 12, "Route 1", ""], [12, 9, "Viridian City", ""], [13, 9, "Viridian City", ""], [12, 10, "Viridian City", ""], [13, 10, "Viridian City", ""], [9, 10, "Route 22", ""], [10, 10, "Route 22", ""], [11, 10, "Route 22", ""], [13, 6, "Route 2", "Burrow Tunnel"], [13, 7, "Route 2", "Viridian Forest"], [13, 8, "Route 2", ""], [13, 4, "Pewter City", ""], [13, 5, "Pewter City", ""], [14, 4, "Pewter City", ""], [14, 5, "Pewter City", ""], [15, 5, "Route 3", ""], [16, 5, "Route 3", ""], [17, 5, "Route 4", "Mt. Moon"], [18, 5, "Route 4", ""], [19, 5, "Route 4", ""], [20, 5, "Route 4", ""], [21, 5, "Cerulean City", "Cerulean Cave"], [22, 5, "Cerulean City", ""], [21, 6, "Cerulean City", ""], [22, 6, "Cerulean City", ""], [22, 3, "Route 24", ""], [22, 4, "Route 24", ""], [23, 3, "Route 25", ""], [24, 3, "Route 25", ""], [25, 3, "Route 25", ""], [21, 7, "Route 5", ""], [21, 10, "Route 6", ""], [21, 11, "Vermilion City", ""], [22, 11, "Vermilion City", ""], [21, 12, "Vermilion City", ""], [22, 12, "Vermilion City", ""], [23, 11, "Route 11", "Burrow Tunnel"], [24, 11, "Route 11", ""], [25, 10, "Route 12", ""], [25, 11, "Route 12", ""], [25, 12, "Route 12", ""], [25, 13, "Route 12", ""], [23, 6, "Route 9", ""], [24, 6, "Route 9", ""], [25, 6, "Route 10", "Rock Tunnel"], [25, 7, "Route 10", "Power Plant"], [25, 8, "Route 10", ""], [25, 9, "Lavender Town", "Pokémon Tower"], [23, 9, "Route 8", ""], [24, 9, "Route 8", ""], [20, 9, "Route 7", ""], [18, 9, "Celadon City", ""], [19, 9, "Celadon City", ""], [18, 10, "Celadon City", ""], [19, 10, "Celadon City", ""], [16, 10, "Route 16", ""], [17, 10, "Route 16", ""], [16, 11, "Route 17", ""], [16, 12, "Route 17", ""], [16, 13, "Route 17", ""], [16, 14, "Route 17", ""], [16, 15, "Route 18", ""], [17, 15, "Route 18", ""], [18, 14, "Fuchsia City", "Safari Zone"], [19, 14, "Fuchsia City", ""], [18, 15, "Fuchsia City", ""], [19, 15, "Fuchsia City", ""], [24, 13, "Route 13", ""], [23, 13, "Route 14", ""], [23, 14, "Route 14", ""], [23, 15, "Route 14", ""], [20, 15, "Route 15", ""], [21, 15, "Route 15", ""], [22, 15, "Route 15", ""], [21, 8, "Saffron City", ""], [22, 8, "Saffron City", ""], [21, 9, "Saffron City", ""], [22, 9, "Saffron City", ""], [18, 16, "Route 19", ""], [18, 17, "Route 19", ""], [14, 17, "Route 20", ""], [15, 17, "Route 20", ""], [16, 17, "Route 20", "Seafoam Islands"], [17, 17, "Route 20", ""], [13, 17, "Cinnabar Island", "Pokémon Mansion"], [13, 14, "Route 21", ""], [13, 15, "Route 21", ""], [13, 16, "Route 21", ""], [9, 9, "Route 23", "Victory Road"], [9, 8, "Indigo Plateau", ""], [6, 10, "Mt. Silver", ""], [7, 10, "Route 28", ""], [8, 10, "Route 28", ""]];
 const TMAP_HOME = { 'Pallet Town': [13, 13], 'Route 1': [13, 12], 'Viridian City': [13, 9], 'Pokémon Center': [13, 9], 'Route 2': [13, 8], 'Viridian Forest': [13, 7], 'Pewter City': [13, 5], 'Route 3': [15, 5], 'Route 4': [17, 5], 'Mt. Moon': [18, 5], 'Cerulean City': [19, 5], 'Route 24': [19, 3], 'Route 25': [21, 3], "Nuno's House": [21, 3] };
-function* townMapScreen() {
+function* townMapScreen(o = {}) {
+  if (!o.teleport && !o.view && G.items && G.items.PORTABLETELEPORTER > 0) { o = Object.assign({}, o, { teleport: true, player: true, regular: true }); CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; }); }   // owning the Portable Teleporter turns the regular map into the teleporter   // o.teleport: the cheat version, pick a city and confirm to teleport there
   const here = (window.MAPPOS && MAPPOS[G.mapId]) || TMAP_HOME[mapNameOf(G.mapId)] || [13, 13]; let cx = here[0], cy = here[1];
   const ptName = (x, y) => { const p = TPOINTS.find(q => q[0] === x && q[1] === y); return p ? p[2] + (p[3] ? ' - ' + p[3] : '') : ''; };
   const draw = () => {
@@ -244,7 +256,8 @@ function* townMapScreen() {
     const pl = UI('map/mapPlayer000'); if (pl) ctx.drawImage(pl, 16 + here[0] * 16 - 8, 32 + here[1] * 16 - 8);
     const cu = UI('map/mapCursor'); if (cu) ctx.drawImage(cu, (Math.floor(G.frame / 14) % 2) * 32, 0, 32, 32, 16 + cx * 16 - 8, 32 + cy * 16 - 8, 32, 32);
     const nm = ptName(cx, cy); txt(nm, 24, 362, { col: COL.light, shadow: '#383838', size: 22 });
-    txt(mapNameOf(G.mapId), 24, 6, { col: COL.light, shadow: '#383838', size: 22 });
+    txt(o.teleport && !o.regular ? (o.player ? 'Teleporter: choose a city' : 'Teleport: choose a city') : mapNameOf(G.mapId), 24, 6, { col: COL.light, shadow: '#383838', size: 22 });
+    drawUiMsg(); drawPopup();
   };
   return yield* withDraw(draw, (function* () {
     sfx('open');
@@ -254,6 +267,17 @@ function* townMapScreen() {
       if (rep('right') && cx < 29) { cx++; sfx('cursor'); }
       if (rep('up') && cy > 0) { cy--; sfx('cursor'); }
       if (rep('down') && cy < 19) { cy++; sfx('cursor'); }
+      if (o.teleport && ok()) {
+        const pt = TPOINTS.find(q => q[0] === cx && q[1] === cy);
+        const dest = pt && CHEAT_CITIES.find(c => c[0] === pt[2].toUpperCase() && window.MAPS && window.MAPS[c[1]]);
+        if (!dest) { sfx('buzzer'); if (o.player && pt) { yield* uiMessage('The teleporter did not react.'); } continue; }
+        if (o.player && !(G.switches['city' + dest[1]] || G.mapId === dest[1])) { sfx('buzzer'); yield* uiMessage('The teleporter did not react.'); continue; }
+        sfx('ok');
+        yield* uiMessage((o.player ? 'The teleporter reacts. Teleport to ' : 'Teleport to ') + pt[2] + '?', { noWait: true });
+        const yes = yield* yesNo(); G.uiMsg = null;
+        if (yes) { G.teleReq = { map: dest[1], x: dest[2], y: dest[3] }; return; }
+        continue;
+      }
       if (back() || ok()) { sfx('back'); return; }
     }
   })());
@@ -316,8 +340,20 @@ function* cheatGiveMove() {
   if (p.moves.some(m => m.id === hits[0])) { yield* uiMessage(pokeName(p) + ' already knows ' + D.MV[hits[0]].name + '.'); return; }
   yield* learnMoveField(p, hits[0]);
 }
+// Teleport cheat: [label, map id, x, y] where (x, y) is the tile just below the city's Poké Center door (Pallet: below the player's house door).
+const CHEAT_CITIES = [
+  ['PALLET TOWN', 2, 12, 8], ['VIRIDIAN CITY', 7, 26, 27], ['PEWTER CITY', 87, 21, 31], ['CERULEAN CITY', 100, 22, 20],
+  ['SAFFRON CITY', 234, 24, 40], ['VERMILION CITY', 122, 20, 7], ['CELADON CITY', 171, 48, 16], ['FUCHSIA CITY', 202, 25, 33],
+  ['CINNABAR ISLAND', 264, 20, 12],
+];
+function* cheatTeleport() {   // opens the town map; picking a city + confirming sets G.teleReq, and openPause runs the transfer
+  yield* townMapScreen({ teleport: true });
+}
+// the Cheats menu only exists when the page URL carries cheats=1 (e.g. index.html?cheats=1)
+function cheatsEnabled() { try { return /[?&#]cheats=(1|true|on)\b/i.test(location.href); } catch (e) { return false; } }
 function* cheatsMenu() {
-  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'GIVE OLD ROD', 'CANCEL'];
+  if (!cheatsEnabled()) return;
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'GIVE OLD ROD', 'GIVE BOAT', 'TELEPORT TO CITY', 'CANCEL'];
   const CANCEL = labels.length - 1;
   let idx = 0;
   while (true) {
@@ -344,12 +380,14 @@ function* cheatsMenu() {
     else if (r === 4) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage('Got $10000! You now have $' + G.money + '.'); }
     else if (r === 5) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
     else if (r === 6) { G.items.OLDROD = 1; sfx('item'); yield* uiMessage('Got an Old Rod!'); }
+    else if (r === 7) { setSwitch(153, true); setSwitch(941, true); G.items.BOAT = 1; sfx('item'); yield* uiMessage('Got the boat! Interact with water to sail.'); }
+    else if (r === 8) { yield* cheatTeleport(); if (G.teleReq) return; }
   }
 }
 
 // ------------------------------------------------------------ Pause menu
 function pauseItems() {
-  const l = []; if (G.pokedex) l.push(['POKéDEX', 'dex']); if (G.party.length) l.push(['POKéMON', 'party']); l.push(['BAG', 'bag']); l.push(['CHEATS', 'cheats']); l.push(['MAP', 'map']); l.push([G.name.toUpperCase(), 'card']); l.push(['SAVE', 'save']); l.push(['OPTIONS', 'options']); l.push(['EXIT', 'title']);
+  const l = []; if (G.pokedex) l.push(['POKéDEX', 'dex']); if (G.party.length) l.push(['POKéMON', 'party']); l.push(['BAG', 'bag']); if (cheatsEnabled()) l.push(['CHEATS', 'cheats']); l.push(['MAP', 'map']); l.push([G.name.toUpperCase(), 'card']); l.push(['SAVE', 'save']); l.push(['OPTIONS', 'options']); l.push(['EXIT', 'title']);
   return l;
 }
 function* pauseMenu() {
@@ -378,16 +416,16 @@ function* pauseMenu() {
       }
       if (act === 'dex') yield* pokedexScreen();
       else if (act === 'party') yield* partyScreen({ mode: 'menu' });
-      else if (act === 'bag') { yield* bagScreen({ mode: 'field' }); if (G.fishReq) return; }
-      else if (act === 'cheats') yield* cheatsMenu();
-      else if (act === 'map') yield* townMapScreen();
+      else if (act === 'bag') { yield* bagScreen({ mode: 'field' }); if (G.fishReq || G.teleReq) return; }
+      else if (act === 'cheats') { yield* cheatsMenu(); if (G.teleReq) return; }
+      else if (act === 'map') { yield* townMapScreen(); if (G.teleReq) return; }
       else if (act === 'card') yield* trainerCard();
       else if (act === 'options') yield* optionsScreen();
       else if (act === 'save') { const r = yield* saveGame(); if (r) return; }
     }
   })());
 }
-function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; if (G.fishReq) { const rod = G.fishReq; G.fishReq = null; G.main = new Interp([[355, 0, ['pbFish("' + rod + '")']], [0, 0, []]], null); } })()); }
+function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; if (G.teleReq) { const t = G.teleReq; G.teleReq = null; G.main = new Interp([[201, 0, [0, t.map, t.x, t.y, 2, 0]], [0, 0, []]], null); } else if (G.fishReq) { const rod = G.fishReq; G.fishReq = null; G.main = new Interp([[355, 0, [rod === 'Boat' ? 'pbSurfStart' : 'pbFish("' + rod + '")']], [0, 0, []]], null); } })()); }
 
 // ------------------------------------------------------------ Export / import save files (title screen)
 // Export: downloads the current save as a .json file.  Import: reads such a file back into this browser's save slot.
@@ -664,7 +702,7 @@ function* pcStorageScreen(command) {
       const ab = D.AB && D.AB[m.ability]; txt(ab ? ab.name : (m.ability || 'No ability'), 86, 312, { align: 'center', base: ab || m.ability ? base : '#d0d0d0', shadow: ab || m.ability ? sh : '#e0e0e0', size: 22 });
       txt(m.item ? ((typeof itemInfo === 'function' && itemInfo(m.item).name) || itemName(m.item)) : 'No item', 86, 348, { align: 'center', base: m.item ? base : '#d0d0d0', shadow: m.item ? sh : '#e0e0e0', size: 22 });
       sp.types.forEach((t, i) => drawTypeIcon(t, sp.types.length === 1 ? 52 : 18 + 70 * i, 272));
-      const bim = img('battlers', String(sp.id).padStart(3, '0')); if (bim) drawFitted(bim, 10, 66, 160, 136, String(sp.id));
+      const bim = img('battlers', sprKey(sp)); if (bim) drawFitted(bim, 10, 66, 160, 136, String(sp.id));
     }
     // party tab
     if (st.partyY < SH) {

@@ -28,7 +28,7 @@ function drawPanel(p, i, sel, o) {
   pic(faint ? 'party/overlay_hp_back_faint' : swap ? 'party/overlay_hp_back_swap' : 'party/overlay_hp_back', x + 96, y + 50);
   if (p.hp > 0) drawHpFill('party/overlay_hp', 8, x + 128, y + 53, 96, p.hp, p.maxhp, 8);
   txt(p.hp + '/ ' + p.maxhp, x + 224, y + 66, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
-  if (p.item) pic('party/icon_item', x + 62, y + 58);
+  if (p.item) { const mi = img('icons', 'item' + String(itemInfo(p.item).id || 0).padStart(3, '0')); if (mi) ctx.drawImage(mi, 0, 0, mi.width, mi.height, x + 53, y + 41, 25, 25); else pic('party/icon_item', x + 58, y + 46); }
   if (faint) ctx.drawImage(UI('statuses'), 0, 5 * 16, 44, 16, x + 20, y + 68, 44, 16);
   else if (p.status) drawStatus(p.status, x + 20, y + 68);
 }
@@ -125,7 +125,7 @@ function drawSummary(S) {
   Dk(p.lvl, 46, 95, { base: '#404040', shadow: '#b0b0b0' });
   const ball = UI('summary/icon_ball_' + String(p.ball).padStart(2, '0')); if (ball) ctx.drawImage(ball, 14, 60);
   // sprite
-  const im = img('battlers', String(sp.id).padStart(3, '0')); if (im) drawFitted(im, 6, 130, 196, 154, String(sp.id));
+  const im = img('battlers', sprKey(sp)); if (im) drawFitted(im, 6, 130, 196, 154, String(sp.id));
   if (p.item) { drawItemIcon(p.item, 8, 290 - 4); Dk(itemName(p.item), 66, 324, { size: 22 }); } else Dk('None', 66, 324, { size: 22 });
   if (p.status) drawStatus(p.status, 4, 116);
   if (p.hp <= 0) ctx.drawImage(UI('statuses'), 0, 5 * 16, 44, 16, 4, 116, 44, 16);

@@ -148,8 +148,11 @@ function drawStatus(st, x, y) {
   ctx.drawImage(UI('battle/icon_statuses'), 0, row * 16, 44, 16, x, y, 44, 16);
 }
 // Pokémon icon (2 frames, 64x64 each, sheet 128x64 — older ones are 80x60? handled)
+// sprite file keys: Mega forms carry their own art (sp.sprite = '195_1' -> battlers 195_1 / 195b_1, icon195_1)
+function sprKey(sp) { return sp.sprite || String(sp.id).padStart(3, '0'); }
+function sprKeyBack(sp) { return sp.sprite ? sp.sprite.replace(/^(\d+)/, '$1b') : String(sp.id).padStart(3, '0') + 'b'; }
 function drawIcon(p, x, y, anim = true, scale = 1) {
-  const sp = D.SP[p.sym]; if (!sp) return; const im = img('icons', 'icon' + String(sp.id).padStart(3, '0')) || img('icons', 'icon000'); if (!im) return;
+  const sp = D.SP[p.sym]; if (!sp) return; const im = img('icons', 'icon' + sprKey(sp)) || img('icons', 'icon000'); if (!im) return;
   const fw = im.width >= 128 ? im.width / 2 : im.width, fh = im.height;
   const f = anim && im.width >= 128 ? Math.floor(G.frame / 10) % 2 : 0;
   ctx.drawImage(im, f * fw, 0, fw, fh, x + (64 - fw) / 2 * scale, y + (64 - fh) * scale, fw * scale, fh * scale);

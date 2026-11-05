@@ -343,6 +343,11 @@ function* commandPhase() {
     B.msg = null; B.menu = { type: 'cmd', idx }; B.menuText = 'What will ' + pokeName(me) + ' do?';
     while (true) { yield; yield* gridNav(B.menu, 4); if (ok()) { sfx('ok'); idx = B.menu.idx; break; } }
     B.lastCmd = idx; B.menu = null;
+    let wantMega = false;
+    if (idx === 0 && canMega(me)) {
+      const r = yield* bchoose(['MEGA EVOLVE', 'NOT NOW'], pokeName(me) + ' can Mega Evolve!');
+      if (r < 0) continue; wantMega = r === 0;
+    }
     if (idx === 0) {
       if (!me.moves.some(m => m.pp > 0)) { yield* bmsg(pokeName(me) + ' has no moves left!', { hold: 12 }); return { type: 'move', idx: -1 }; }
       let mi = Math.min(B.lastMove, me.moves.length - 1);
@@ -352,7 +357,7 @@ function* commandPhase() {
         B.menu = null;
         if (sel === -1) break;
         if (me.moves[sel].pp <= 0) { sfx('buzzer'); yield* bmsg('There\'s no PP left for this move!', { hold: 16 }); continue; }
-        B.lastMove = sel; return { type: 'move', idx: sel };
+        B.lastMove = sel; return { type: 'move', idx: sel, mega: wantMega };
       }
     } else if (idx === 1) {
       const key = yield* bagScreen({ mode: 'battle' });
@@ -375,6 +380,18 @@ function* commandPhase() {
 }
 
 // ------------------------------------------------------------ AI
+// ------------------------------------------------------------ Mega Evolution: Illya2 + Prisma Mega Stone + Key Stone
+function canMega(p) { const B = B_(); return !!(p && p.sym === 'ILLYA2' && p.item === 'CHARIZARDITEX' && G.items.KEYSTONE > 0 && D.SP.MEGAILLYA && !B.megaUsed); }
+function* doMega() {
+  const B = B_(), p = B.me, sp = B.spr.me, nm = pokeName(p);
+  yield* bmsg(pokeName(p) + '\'s ' + itemName(p.item) + ' is reacting to ' + G.name + '\'s Key Stone!', { hold: 20 });
+  sp.tintCol = '#ffffff'; for (let i = 1; i <= 14; i++) { sp.tint = i / 14; yield; }
+  p.megaBase = p.sym; p.sym = 'MEGAILLYA'; B.megaUsed = true;
+  refreshStats(p); B.meHp = p.hp;
+  cry(D.SP[p.sym].id); for (let i = 1; i <= 14; i++) { sp.tint = 1 - i / 14; yield; } sp.tint = 0; delete sp.tintCol;
+  yield* bmsg(nm + ' Mega Evolved into Mega Illya!', { hold: 24 });
+}
+function unMega(B) { new Set(G.party.concat(B && B.meParty || [])).forEach(p => { if (p && p.megaBase) { const hp0 = p.hp, old = p.maxhp; p.sym = p.megaBase; delete p.megaBase; refreshStats(p); p.hp = hp0 > 0 ? Math.max(1, Math.min(p.maxhp, hp0 - (old - p.maxhp))) : 0; } }); }
 function pickFoeMove() {
   const B = B_(), foe = B.foe; const opts = foe.moves.map((m, i) => ({ m, i })).filter(o => o.m.pp > 0);
   if (!opts.length) return -1;
@@ -498,6 +515,7 @@ function* handleFaint(s) {
 }
 function* resolveTurn(cmd) {
   const B = B_(); B.turn++;
+  if (cmd.mega && canMega(B.me)) yield* doMega();
   if (cmd.type === 'switch') yield* doSwitch(cmd.idx);
   else if (cmd.type === 'ball') { if (yield* throwBall(cmd.key)) return; }
   else if (cmd.type === 'run') { if (yield* tryRun()) return; }
@@ -574,6 +592,7 @@ function* runBattle(B) {
   playBGM(B.bgm || 'frlg_trainerbattle', 0.6);
   B.gen = battleMain(B);
   while (G.battle) yield;
+  unMega(B);
   G.battleResult = (B.result === 'win' || B.result === 'caught') ? 'win' : B.result === 'ran' ? 'ran' : B.result === 'scripted' ? 'scripted' : 'lose';
   stopME(); stopBGM(); if (G.map && G.map.bgm) playBGM(G.map.bgm);
   G.keepDir = true;   // keep walking if a direction is still held when the battle ends
@@ -746,10 +765,10 @@ function drawBattle() {
   if (pb) ctx.drawImage(pb, ME_BASE.x - 128 - 40, 288 - 64 + 4, 512, 64);
   const ftr = B.trainer && B.trainer.sprite && img('trainers', B.trainer.sprite);
   if (B.spr.foeTr.vis && ftr) { const sc = 1.3, w = ftr.width * sc, h = ftr.height * sc; ctx.drawImage(ftr, B.spr.foeTr.x - w / 2, FOE_BASE.y + 6 - h, w, h); }
-  if (B.foe && !(B.anim && B.anim.cov[1])) { const sp = D.SP[B.foe.sym]; drawSprite(B.spr.foe, img('battlers', String(sp.id).padStart(3, '0')), FOE_BASE.x, FOE_BASE.y + 8 + (sp.enemyY || 0), 160); }
+  if (B.foe && !(B.anim && B.anim.cov[1])) { const sp = D.SP[B.foe.sym]; drawSprite(B.spr.foe, img('battlers', sprKey(sp)), FOE_BASE.x, FOE_BASE.y + 8 + (sp.enemyY || 0), 160); }
   const mtr = img('trainers', 'trback000');
   if (B.spr.meTr.vis && mtr) { const sc = 1.5, w = 128 * sc; ctx.drawImage(mtr, 0, 0, 128, 128, B.spr.meTr.x - w / 2, ME_BASE.y + 30 - w, w, w); }
-  if (B.me && !(B.anim && B.anim.cov[0])) { const sp = D.SP[B.me.sym]; drawSprite(B.spr.me, img('battlers', String(sp.id).padStart(3, '0') + 'b'), ME_BASE.x, ME_BASE.y + 34 + (sp.playerY || 0), 160); }
+  if (B.me && !(B.anim && B.anim.cov[0])) { const sp = D.SP[B.me.sym]; drawSprite(B.spr.me, img('battlers', sprKeyBack(sp)), ME_BASE.x, ME_BASE.y + 34 + (sp.playerY || 0), 160); }
   if (B.anim) drawAnim(B);
   drawBattleFx();
   if (B.spr.ball) { const b = B.spr.ball; const im = UI('battle/ball_0' + (b.id || 0) + (b.open ? '_open' : '')); if (im && b.vis !== false) { ctx.save(); ctx.globalAlpha = b.a === undefined ? 1 : b.a; if (b.dark) ctx.filter = 'brightness(0.55)'; ctx.translate(b.x + (b.dx || 0), b.y); ctx.rotate(b.rot || 0); ctx.drawImage(im, -16, -32); ctx.restore(); } }

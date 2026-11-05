@@ -84,7 +84,7 @@
     <button id="btnSave" disabled>Save map (Ctrl+S)</button>
     <button id="btnRevert" disabled>Revert map</button>
     <span class="sp"></span>
-    <label>Game page <input id="gameUrl" class="w" value="../JBA Pokemon HTML/index.html" title="Path or URL of the game's index.html, relative to this editor"></label>
+    <label>Game page <input id="gameUrl" class="w" value="index.html" title="Path or URL of the game's index.html, relative to this editor (default: the same folder as the editor)"></label>
     <label>Variables <input id="tVars" class="s" placeholder="201:5,3:2" title="Set before testing: id:value, comma separated"></label>
     <label>Switches ON <input id="tSw" class="s" placeholder="12,14" title="Switch ids turned ON before testing"></label>
     <button id="btnTest" class="primary" disabled>▶ Test here</button>
@@ -98,7 +98,7 @@
     <div class="col" id="mapwrap">
       <div id="welcome">
         <h2>JBA PK Editor</h2>
-        Click <b>Open game folder…</b> and choose your <code>JBA Pokemon HTML</code> folder, then allow editing when the browser asks.
+        Click <b>Open game folder…</b> and choose the game folder (the one that contains <code>index.html</code> and this editor), then allow editing when the browser asks.
         <p>Pick a map on the left. You'll see the real tiles and character sprites. Click an event to edit it; its movement paths are drawn on the map. Click an empty tile and use <b>Add event here</b> to make a new one. Press <kbd>Ctrl</kbd>+<kbd>S</kbd> to save. A backup of each map is stored in <code>_editor_backups</code> the first time you save it each day.</p>
         <p>Works in Chrome and Edge.</p>
       </div>
@@ -652,7 +652,7 @@ async function testHere() {
   const m = curMap(); if (!m) return;
   if (m.dirty) await saveMap();
   let x = 0, y = 0; if (S.cell) ({ x, y } = S.cell); else if (m.obj.events[S.ev]) ({ x, y } = m.obj.events[S.ev]);
-  const base = $('#gameUrl').value.trim() || '../JBA Pokemon HTML/index.html';
+  const base = $('#gameUrl').value.trim() || 'index.html';
   const qs = new URLSearchParams({ map: m.id, x, y, dir: 2 });
   if ($('#tVars').value.trim()) qs.set('vars', $('#tVars').value.trim());
   if ($('#tSw').value.trim()) qs.set('sw', $('#tSw').value.trim());
@@ -668,7 +668,7 @@ $('#mapSearch').oninput = renderList;
 $('#textSearch').onkeydown = e => { if (e.key === 'Enter') searchAll(e.target.value); };
 document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); saveMap(); } });
 window.addEventListener('beforeunload', e => { if (Object.values(S.maps).some(m => m.dirty)) { e.preventDefault(); e.returnValue = ''; } });
-$('#gameUrl').value = lsGet('gameUrl', $('#gameUrl').value); $('#tVars').value = lsGet('tVars', ''); $('#tSw').value = lsGet('tSw', '');
+{ const g = lsGet('gameUrl', ''); $('#gameUrl').value = (g && !g.includes('JBA Pokemon HTML')) ? g : 'index.html'; } $('#tVars').value = lsGet('tVars', ''); $('#tSw').value = lsGet('tSw', '');
 (async () => {
   if (!window.showDirectoryPicker) { status('This browser can\'t edit folders. Open the editor in Chrome or Edge.', 'err'); $('#btnOpen').disabled = true; return; }
   const h = await idb.get('dir');

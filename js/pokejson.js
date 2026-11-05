@@ -23,7 +23,7 @@
     if (j.abilities) o.abilities = j.abilities.slice();
     if (j.hiddenAbility !== undefined) o.hidden = j.hiddenAbility;
     if (j.levelUpMoves) o.moves = j.levelUpMoves.map(m => [m.level, m.move]);
-    for (const k of ['kind', 'dex', 'height', 'weight', 'playerY', 'enemyY', 'evo']) if (j[k] !== undefined) o[k] = j[k];
+    for (const k of ['kind', 'dex', 'height', 'weight', 'playerY', 'enemyY', 'evo', 'sprite', 'megaOf']) if (j[k] !== undefined) o[k] = j[k];
     return o;
   }
   function apply(src, tag) {

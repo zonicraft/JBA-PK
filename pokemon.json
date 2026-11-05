@@ -19222,7 +19222,7 @@
   "weight": 79.5,
   "playerY": -7,
   "enemyY": 2,
-  "evo": "DARIUS,Level,32",
+  "evo": "",
   "role": "Speedster",
   "series": "Fate"
  },
@@ -24063,6 +24063,139 @@
   "evo": "",
   "role": "Special Attacker",
   "series": "Fate"
+ },
+ "MEGAILLYA": {
+  "internalName": "MEGAILLYA",
+  "dexNumber": 891,
+  "name": "Mega Illya",
+  "types": [
+   "PSYCHIC",
+   "FAIRY"
+  ],
+  "baseStats": {
+   "HP": 79,
+   "Attack": 50,
+   "Defense": 91,
+   "Speed": 107,
+   "SpAtk": 158,
+   "SpDef": 99
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 210,
+  "catchRate": 3,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 2,
+   "SpDef": 0
+  },
+  "abilities": [
+   "DAMP",
+   "WATERABSORB"
+  ],
+  "hiddenAbility": "UNAWARE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "SWIFT",
+    "moveName": "Swift"
+   },
+   {
+    "level": 1,
+    "move": "CONFUSION",
+    "moveName": "Confusion"
+   },
+   {
+    "level": 4,
+    "move": "PROTECT",
+    "moveName": "Protect"
+   },
+   {
+    "level": 9,
+    "move": "PSYBEAM",
+    "moveName": "Psybeam"
+   },
+   {
+    "level": 13,
+    "move": "TAILWIND",
+    "moveName": "Tailwind"
+   },
+   {
+    "level": 18,
+    "move": "FAIRYWIND",
+    "moveName": "Fairy Wind"
+   },
+   {
+    "level": 22,
+    "move": "SNARL",
+    "moveName": "Snarl"
+   },
+   {
+    "level": 27,
+    "move": "LUSTERPURGE",
+    "moveName": "Luster Purge"
+   },
+   {
+    "level": 31,
+    "move": "NASTYPLOT",
+    "moveName": "Nasty Plot"
+   },
+   {
+    "level": 36,
+    "move": "DAZZLINGGLEAM",
+    "moveName": "Dazzling Gleam"
+   },
+   {
+    "level": 41,
+    "move": "FLASHCANNON",
+    "moveName": "Flash Cannon"
+   },
+   {
+    "level": 45,
+    "move": "PSYSHOCK",
+    "moveName": "Psyshock"
+   },
+   {
+    "level": 50,
+    "move": "AGILITY",
+    "moveName": "Agility"
+   },
+   {
+    "level": 54,
+    "move": "STRANGESTEAM",
+    "moveName": "Strange Steam"
+   },
+   {
+    "level": 59,
+    "move": "NIGHTDAZE",
+    "moveName": "Night Daze"
+   },
+   {
+    "level": 63,
+    "move": "FUTURESIGHT",
+    "moveName": "Future Sight"
+   },
+   {
+    "level": 68,
+    "move": "DARKPULSE",
+    "moveName": "Dark Pulse"
+   }
+  ],
+  "kind": "Water Fish",
+  "dex": "Illya awakened by the Prisma Mega Stone, her magical girl power overflowing. From Fate. A Special Attacker Pokémon.",
+  "height": 1.4,
+  "weight": 75.0,
+  "playerY": -7,
+  "enemyY": 3,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "Fate",
+  "sprite": "195_1",
+  "megaOf": "ILLYA2"
  },
  "ILLYASUM": {
   "internalName": "ILLYASUM",

@@ -8,7 +8,7 @@ function dexSeen(sym) { return !!(G.seen && G.seen[sym]) || ownedSpecies(sym); }
 function dexMarkSeen(sym) { if (!sym) return; G.seen = G.seen || {}; G.seen[sym] = true; }
 function dexCounts() { let s = 0, o = 0; for (const k in D.SP) { if (dexOwned(k)) { o++; s++; } else if (dexSeen(k)) s++; } return [s, o]; }
 function dexList() {
-  const all = Object.keys(D.SP).map(k => ({ sym: k, num: D.SP[k].id, name: D.SP[k].name })).sort((a, b) => a.num - b.num);
+  const all = Object.keys(D.SP).filter(k => !D.SP[k].megaOf).map(k => ({ sym: k, num: D.SP[k].id, name: D.SP[k].name })).sort((a, b) => a.num - b.num);
   let n = all.length; while (n > 0 && !dexSeen(all[n - 1].sym)) n--;     // trailing unseen species are hidden
   return all.slice(0, n);
 }
