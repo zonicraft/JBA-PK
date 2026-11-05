@@ -247,6 +247,7 @@ function badgeCount() { return [260, 261, 262, 263, 212].filter(k => getSwitch(k
 function getVar(id) { return G.vars[id] || 0; }
 function setVar(id, v) { G.vars[id] = v; G.refresh = true; }
 function selfKey(mapId, evId, ch) { return mapId + '_' + evId + '_' + ch; }
+function evMapId(ev) { return ev && ev.mapId !== undefined ? ev.mapId : G.mapId; }   // the map an event lives on (it can be a neighbour of the active map)
 
 // ------------------------------------------------------------ autotiles
 const AUTOTILES = [
@@ -290,7 +291,10 @@ class Chr {
   setPos(x, y) { this.x = x; this.y = y; this.rx = x * TS; this.ry = y * TS; this.moving = false; }
   get gname() { return this.sheetOverride || this.gfx; }
   passableTile(x, y, d) {
-    const m = G.map; if (x < 0 || y < 0 || x >= m.w || y >= m.h) { if (this === G.player && !this.through) G.edgeHit = true; return false; }
+    const w = worldAt(x, y);       // the tile may belong to a connected neighbour map (seamless overworld)
+    if (!w) { if (this === G.player && !this.through) G.edgeHit = true; return false; }
+    if (!this.isPlayer && this.mapId !== undefined && w.m.id !== this.mapId) return false;       // NPCs stay on their own map
+    const m = w.m; x = w.x; y = w.y;
     if (m.behind && m.behind.some(r => x >= r[0] && x <= r[2] && y >= r[1] && y <= r[3])) return true;     // walk-behind areas (e.g. the Saffron HQ)
     const ts = m.ts; const bit = (1 << (d / 2 - 1)) & 0x0f;
     for (let z = 2; z >= 0; z--) {
@@ -307,7 +311,7 @@ class Chr {
   canMove(d) {
     if (this.through) return true;
     const [dx, dy] = dirVec[d]; const nx = this.x + dx, ny = this.y + dy;
-    if (this.isPlayer && G.noclip && G.map && nx >= 0 && ny >= 0 && nx < G.map.w && ny < G.map.h) return true;   // cheat: walk through walls, events and water
+    if (this.isPlayer && G.noclip && G.map && worldAt(nx, ny)) return true;   // cheat: walk through walls, events and water
     if (this.isPlayer && !G.surfing && typeof currentBlocks === 'function' && currentBlocks(nx, ny)) return false;   // water currents need the boat
     if (this.isPlayer && G.surfing && typeof currentDirAt === 'function' && currentDirAt(nx, ny) && !currentDirAt(this.x, this.y)) { G.tooFast = true; return false; }   // the boat can't enter a running current
     const sf = this.isPlayer && G.surfing && typeof isWaterAt === 'function';      // surfing: water counts as floor
@@ -327,7 +331,9 @@ class Chr {
   moveDir(d, turn = true) {
     if (turn) this.turn(d);
     if (!this.canMove(d)) return false;
-    const [dx, dy] = dirVec[d]; this.x += dx; this.y += dy; this.moving = true; return true;
+    const [dx, dy] = dirVec[d]; this.x += dx; this.y += dy; this.moving = true;
+    if (this.isPlayer && typeof worldCheckSwap === 'function') worldCheckSwap();      // stepped onto a neighbour map: it becomes the active one, without any fade
+    return true;
   }
   jump(dx, dy) { this.x += dx; this.y += dy; this.moving = true; this.jumping = true; this.jumpTotal = (Math.abs(dx) + Math.abs(dy)) * TS || 1; }
   towardPlayer() { const p = G.player; const dx = p.x - this.x, dy = p.y - this.y; if (Math.abs(dx) > Math.abs(dy)) return dx > 0 ? 6 : 4; return dy > 0 ? 2 : 8; }
@@ -459,9 +465,10 @@ function enterMap(id, x, y, dir) {
   const p = G.player; p.setPos(x, y); if (dir) p.dir = dir; p.route = null; p.forcing = false;
   G.chars.push(p);
   Object.values(m.events).sort((a, b) => a.id - b.id).forEach(d => {
-    const e = new EventChr(d, id); G.events[d.id] = e; G.chars.push(e);
+    const e = new EventChr(d, id); e.mts = m.ts; G.events[d.id] = e; G.chars.push(e);
     if (G.erasedEv && G.erasedEv[id + ':' + d.id]) e.erased = true;
   });
+  if (typeof worldBuild === 'function') worldBuild();     // connected neighbour maps: drawn and walkable across the edge
   G.refresh = true;
   if (typeof locationSign === 'function') locationSign(prevMap, id);
   p.transparent = (id === 1);
@@ -478,9 +485,10 @@ function startEvent(ev) {
 // player touch / event touch triggers (RMXP rules)
 function overTrigger(e) {
   if (e.gname !== '' && !e.through) return false;
-  const m = G.map, ts = m.ts;
+  const w = worldAt(e.x, e.y); if (!w) return true;
+  const m = w.m, ts = m.ts;
   for (let z = 2; z >= 0; z--) {                // passable?(x, y, 0): only fully blocked tiles stop it
-    const tid = m.data[e.x + e.y * m.w + z * m.w * m.h]; const pas = ts.passages[tid] || 0;
+    const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; const pas = ts.passages[tid] || 0;
     if (pas & 0x10) continue; if ((pas & 0x0f) === 0x0f) return false; if ((ts.priorities[tid] || 0) === 0) return true;
   }
   return true;
@@ -641,6 +649,7 @@ class Interp {
   evChr(id) {
     if (id === -1) return G.player;
     if (id === 0) return this.ev;
+    if (this.ev && this.ev.mapId !== undefined && this.ev.mapId !== G.mapId) return G.chars.find(c => c.mapId === this.ev.mapId && c.id === id);   // script of an event on a neighbour map
     return G.events[id];
   }
   findEnd(i, indent, codes) {
@@ -697,7 +706,7 @@ class Interp {
           }
           break;
         }
-        case 123: G.selfsw[selfKey(G.mapId, this.ev.id, p[0])] = p[1] === 0; G.refresh = true; break;
+        case 123: G.selfsw[selfKey(evMapId(this.ev), this.ev.id, p[0])] = p[1] === 0; G.refresh = true; break;
         case 106: { let n = p[0] * 2; while (n-- > 0) yield; break; }
         case 201: { yield* this.transfer(p); break; }
         case 202: { const c = this.evChr(p[0]); if (c) { c.setPos(p[2], p[3]); if (p[4]) c.dir = p[4]; } break; }
@@ -743,7 +752,7 @@ class Interp {
         const a = getVar(p[1]); const b = p[2] === 0 ? p[3] : getVar(p[3]);
         return [a === b, a >= b, a <= b, a > b, a < b, a !== b][p[4]];
       }
-      case 2: return !!G.selfsw[selfKey(G.mapId, this.ev.id, p[1])] === (p[2] === 0);
+      case 2: return !!G.selfsw[selfKey(evMapId(this.ev), this.ev.id, p[1])] === (p[2] === 0);
       case 12: return this.scriptCond(p[1]);
     }
     console.warn('unhandled cond', p); return false;
@@ -808,7 +817,7 @@ class Interp {
       if (found) { const steps = []; for (let k = key(tx, ty); prev[k];) { const [px, py, d] = prev[k]; steps.push([{ 2: 1, 4: 2, 6: 3, 8: 4 }[d], []]); k = key(px, py); } steps.reverse().forEach(st => list.push(st)); }
       else { for (let x = ev.x; x !== tx; x += Math.sign(tx - x)) list.push([tx > x ? 3 : 2, []]); for (let y = ev.y; y !== ty; y += Math.sign(ty - y)) list.push([ty > y ? 1 : 4, []]); } list.push([0, []]); ev.startRoute({ mr: 1, repeat: false, skip: false, list }); while (ev.forcing) yield; } return; }
     if ((m = s.match(/^pbFacePlayerToEvent\((\d+)\)/))) { const ev = this.evChr(+m[1]); if (ev) { const dx = ev.x - G.player.x, dy = ev.y - G.player.y; G.player.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 4) : (dy > 0 ? 2 : 8); } return; }
-    if ((m = s.match(/^pbSetSelfSwitch\((\d+),"(\w)",(true|false)\)/))) { G.selfsw[selfKey(G.mapId, +m[1], m[2])] = m[3] === 'true'; G.refresh = true; return; }
+    if ((m = s.match(/^pbSetSelfSwitch\((\d+),"(\w)",(true|false)\)/))) { G.selfsw[selfKey(evMapId(this.ev), +m[1], m[2])] = m[3] === 'true'; G.refresh = true; return; }
     if ((m = s.match(/^setTempSwitchOn\("(\w)"\)/))) { if (this.ev) { G.temp[this.ev.key + m[1]] = true; G.refresh = true; } return; }
     if ((m = s.match(/^setTempSwitchOff\("(\w)"\)/))) { if (this.ev) { G.temp[this.ev.key + m[1]] = false; G.refresh = true; } return; }
     if (s.startsWith('e=$game_map.events[')) {
@@ -877,7 +886,7 @@ function update() {
   if (G.main) { G.main.update(); if (G.main.done) G.main = null; }
   // parallel processes
   for (const c of G.chars) {
-    if (c.parallel) { c.parallel.update(); if (c.parallel.done && c.page) c.parallel = new Interp(c.page.list, c, true); }
+    if (c.parallel && (c.mapId === undefined || c.mapId === G.mapId)) { c.parallel.update(); if (c.parallel.done && c.page) c.parallel = new Interp(c.page.list, c, true); }
   }
   if (G.refresh) { G.refresh = false; if (typeof syncTilePatches === 'function') syncTilePatches(); G.chars.forEach(c => c.refreshPage && c.refreshPage()); }
   if (G.biking && (!bikeAllowed() || G.surfing)) G.biking = false;
@@ -885,7 +894,7 @@ function update() {
   if (G.bikeMsg && !G.main && !G.msg && !G.main) { const m = G.bikeMsg; G.bikeMsg = null; G.main = new Interp([[101, 0, [m]], [0, 0, []]], null); }
   // autorun
   if (!G.main && !G.msg && !G.battle && !G.trans && !G.frozen) {
-    for (const c of G.chars) { if (c.page && !c.erased && c.page.trigger === 3) { startEvent(c); break; } }
+    for (const c of G.chars) { if (c.page && !c.erased && c.page.trigger === 3 && (c.mapId === undefined || c.mapId === G.mapId)) { startEvent(c); break; } }
   }
   const p = G.player;
   for (const c of G.chars) c.update();
@@ -898,7 +907,7 @@ function update() {
   if (busy) { G.wasBusy = true; p.turnWait = 0; }
   else if (G.wasBusy) {             // an event just ended: keys still held from before must be released first (no re-trigger)
     G.wasBusy = false; G.lock = {}; keys.pressed = {};
-    const keep = G.keepDir; G.keepDir = false;                                   // after a map change keep walking in the held direction
+    const keep = G.keepDir || (G.swapAt && G.frame - G.swapAt < 240); G.keepDir = false;   // also after an event on a map the player just walked onto (seamless crossing)                                   // after a map change keep walking in the held direction
     for (const k of (keep ? ['ok'] : ['up', 'down', 'left', 'right', 'ok'])) if (keys.held[k]) G.lock[k] = true;
   }
   if (G.lock) for (const k in G.lock) if (!keys.held[k]) delete G.lock[k];
@@ -982,10 +991,13 @@ function drawMenu() {
 
 // ------------------------------------------------------------ render
 function camera() {
-  const m = G.map, p = G.player; const mw = m.w * TS, mh = m.h * TS;
+  const m = G.map, p = G.player;
+  let x0 = 0, y0 = 0, x1 = m.w, y1 = m.h;
+  for (const n of (G.nbrs || [])) { x0 = Math.min(x0, n.ox); y0 = Math.min(y0, n.oy); x1 = Math.max(x1, n.ox + n.m.w); y1 = Math.max(y1, n.oy + n.m.h); }   // the view may scroll over the connected maps
+  x0 *= TS; y0 *= TS; x1 *= TS; y1 *= TS; const mw = x1 - x0, mh = y1 - y0;
   let cx = p.rx + 16 - SW / 2, cy = p.ry + 16 - SH / 2;
-  cx = mw <= SW ? -(SW - mw) / 2 : Math.max(0, Math.min(mw - SW, cx));
-  cy = mh <= SH ? -(SH - mh) / 2 : Math.max(0, Math.min(mh - SH, cy));
+  cx = mw <= SW ? x0 - (SW - mw) / 2 : Math.max(x0, Math.min(x1 - SW, cx));
+  cy = mh <= SH ? y0 - (SH - mh) / 2 : Math.max(y0, Math.min(y1 - SH, cy));
   if (G.shake && G.shake.left > 0) { cx += Math.round(Math.sin(G.frame * 1.9) * G.shake.p); cy += Math.round(Math.cos(G.frame * 2.3) * G.shake.p * 0.6); }
   return [Math.round(cx), Math.round(cy)];
 }
@@ -993,7 +1005,7 @@ function drawChr(c, cx, cy) {
   if (c.erased || c.transparent || c.opacity <= 0) return;
   const name = c.gname;
   if (!name) {   // an event shown as a map tile (RPG Maker 'tile' graphic), e.g. the stairs the lever reveals
-    if (c.tile >= 384 && G.map) { ctx.globalAlpha = c.opacity / 255; drawTile(ctx, G.map.ts, c.tile, Math.round(c.rx - cx), Math.round(c.ry - cy)); ctx.globalAlpha = 1; }
+    if (c.tile >= 384 && G.map) { ctx.globalAlpha = c.opacity / 255; drawTile(ctx, c.mts || G.map.ts, c.tile, Math.round(c.rx - cx), Math.round(c.ry - cy)); ctx.globalAlpha = 1; }
     return;
   }
   const im = img('characters', name); if (!im) return;
@@ -1010,21 +1022,27 @@ function drawChr(c, cx, cy) {
   ctx.globalAlpha = 1;
 }
 function drawMap() {
-  const m = G.map; if (!m) return;
+  const m0 = G.map; if (!m0) return;
   const [cx, cy] = camera();
-  const x0 = Math.max(0, Math.floor(cx / TS)), x1 = Math.min(m.w - 1, Math.floor((cx + SW) / TS));
-  const y0 = Math.max(0, Math.floor(cy / TS)), y1 = Math.min(m.h - 1, Math.floor((cy + SH) / TS));
-  const top = [];
-  for (let z = 0; z < 3; z++) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
-    const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
-    const pr = tid >= 48 ? (m.ts.priorities[tid] || 0) : (m.ts.priorities[tid] || 0);
-    const inB = z > 0 && m.behind && m.behind.some(r => x >= r[0] && x <= r[2] && y >= r[1] - 1 && y <= r[3]);   // building tiles (not the floor) cover the player; one row above so the head is hidden too
-    if (inB) top.push({ z: 60000 + z, tid, x, y });
-    else if (pr === 0) drawTile(ctx, m.ts, tid, x * TS - cx, y * TS - cy);
-    else top.push({ z: (y + pr) * TS + 0.1, tid, x, y });
+  const items = [];
+  const layers = [{ m: m0, ox: 0, oy: 0 }].concat((G.nbrs || []).map(n => ({ m: n.m, ox: n.ox, oy: n.oy })));
+  for (const L of layers) {
+    const m = L.m, ox = L.ox, oy = L.oy;
+    const x0 = Math.max(0, Math.floor(cx / TS) - ox), x1 = Math.min(m.w - 1, Math.floor((cx + SW) / TS) - ox);
+    const y0 = Math.max(0, Math.floor(cy / TS) - oy), y1 = Math.min(m.h - 1, Math.floor((cy + SH) / TS) - oy);
+    if (x1 < x0 || y1 < y0) continue;
+    const top = [];
+    for (let z = 0; z < 3; z++) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+      const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
+      const pr = m.ts.priorities[tid] || 0;
+      const inB = z > 0 && m.behind && m.behind.some(r => x >= r[0] && x <= r[2] && y >= r[1] - 1 && y <= r[3]);   // building tiles (not the floor) cover the player; one row above so the head is hidden too
+      if (inB) top.push({ z: 60000 + z, tid, x, y });
+      else if (pr === 0) drawTile(ctx, m.ts, tid, (x + ox) * TS - cx, (y + oy) * TS - cy);
+      else top.push({ z: (y + oy + pr) * TS + 0.1, tid, x, y });
+    }
+    for (const t of top) items.push({ z: t.z, f: () => drawTile(ctx, m.ts, t.tid, (t.x + ox) * TS - cx, (t.y + oy) * TS - cy) });
   }
-  const items = top.map(t => ({ z: t.z, f: () => drawTile(ctx, m.ts, t.tid, t.x * TS - cx, t.y * TS - cy) }));
-  for (const c of G.chars) items.push({ z: c.top ? 99999 : (c.tile > 0 && !c.gname && !(G.map.ts.priorities[c.tile] || 0)) ? -50 : c.ry + 32 + (c.isPlayer ? 0.05 : 0), f: () => drawChr(c, cx, cy) });
+  for (const c of G.chars) items.push({ z: c.top ? 99999 : (c.tile > 0 && !c.gname && !((c.mts || m0.ts).priorities[c.tile] || 0)) ? -50 : c.ry + 32 + (c.isPlayer ? 0.05 : 0), f: () => drawChr(c, cx, cy) });
   if (typeof grassItems === 'function') grassItems(items, cx, cy);
   items.sort((a, b) => a.z - b.z);
   items.forEach(it => it.f());
@@ -1084,14 +1102,15 @@ function render() {
   if (G.dexPic && img('pictures', 'dex' + G.dexPic)) { const dpi = img('pictures', 'dex' + G.dexPic); ctx.drawImage(dpi, Math.round((SW - dpi.width) / 2), Math.max(8, Math.round((SH - 96 - dpi.height) / 2))); }
   drawMsg(); drawChoice(); drawMenu();
   if (G.uiDraw) G.uiDraw();
+  if (typeof drawSlowLog === 'function') drawSlowLog();
   if (G.fade > 0) { ctx.fillStyle = 'rgba(0,0,0,' + G.fade + ')'; ctx.fillRect(0, 0, SW, SH); }
 }
 
 // ------------------------------------------------------------ main loop
 let last = 0, acc = 0;
 function loop(ts) {
-  if (!last) last = ts; acc += Math.min(200, ts - last); last = ts;
-  if (!G.manual) { const step = 1000 / (FPS * SET.speed); let n = 0; while (acc >= step && n++ < 40) { update(); acc -= step; } if (acc > step) acc = 0; render(); }
+  if (!last) last = ts; const gap = ts - last; acc += Math.min(200, ts - last); last = ts; const t0 = performance.now();
+  if (!G.manual) { const step = 1000 / (FPS * SET.speed); let n = 0; while (acc >= step && n++ < 40) { update(); acc -= step; } if (acc > step) acc = 0; render(); if (typeof slowLogNote === 'function') slowLogNote(gap, performance.now() - t0); }
   requestAnimationFrame(loop);
 }
 G.tick = function (n = 1) { for (let i = 0; i < n; i++) update(); render(); };

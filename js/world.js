@@ -19,6 +19,103 @@ const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   // Sevii Islands
   [290, 'N', 0, 292, 'S', 0], [297, 'W', 0, 308, 'E', 2], [299, 'N', 0, 308, 'S', 94], [299, 'N', 2, 297, 'S', 0], [37, 'N', 0, 38, 'S', 0], [47, 'W', 0, 45, 'E', 0], [31, 'E', 0, 45, 'W', 0], [37, 'S', 76, 45, 'N', 0], [37, 'S', 100, 47, 'N', 0], [37, 'S', 0, 31, 'N', 0], [57, 'N', 27, 49, 'S', 0], [64, 'S', 54, 49, 'N', 0], [54, 'W', 42, 49, 'E', 0], [64, 'N', 0, 66, 'S', 0], [54, 'W', 0, 66, 'E', 73], [54, 'W', 81, 57, 'E', 0], [54, 'W', 2, 64, 'E', 0], [78, 'E', 18, 88, 'W', 0], [328, 'N', 54, 88, 'S', 0], [78, 'W', 85, 336, 'E', 0], [328, 'N', 0, 336, 'S', 0], [337, 'W', 0, 78, 'E', 0], [328, 'N', 22, 78, 'S', 0], [70, 'S', 0, 78, 'N', 2], [70, 'S', 30, 337, 'N', 0], [70, 'N', 0, 75, 'S', 6], [277, 'E', 0, 276, 'W', 0], [279, 'E', 0, 276, 'W', 140], [274, 'E', 0, 276, 'W', 119], [274, 'N', 7, 277, 'S', 0], [274, 'S', 0, 279, 'N', 2],
   [202, 'S', 12, 255, 'N', 0], [256, 'E', 0, 255, 'W', 40], [311, 'E', 0, 255, 'W', 0]];                           // Fuchsia - Route 19 - Route 20
+// ---- seamless overworld: connected maps (CONNS) are loaded around the active one, drawn and walkable across the edge.
+// All characters share one coordinate space (the active map's); a neighbour sits at tile offset (ox, oy). When the player steps onto a neighbour
+// it becomes the active map: everything is shifted by its offset, so nothing moves on screen and no fade or reload happens.
+function connNeighbors(id) {
+  const out = [], me = window.MAPS && window.MAPS[id]; if (!me) return out;
+  for (const [a, ea, oa, b, eb, ob] of CONNS) {
+    let other, edge, shift;
+    if (a === id) { other = b; edge = ea; shift = ob - oa; } else if (b === id) { other = a; edge = eb; shift = oa - ob; } else continue;
+    const om = window.MAPS[other]; if (!om || out.some(q => q.id === other)) continue;
+    let ox, oy;
+    if (edge === 'N') { ox = -shift; oy = -om.h; } else if (edge === 'S') { ox = -shift; oy = me.h; } else if (edge === 'W') { ox = -om.w; oy = -shift; } else { ox = me.w; oy = -shift; }
+    const overlap = (edge === 'N' || edge === 'S') ? (ox < me.w && ox + om.w > 0) : (oy < me.h && oy + om.h > 0);
+    if (!overlap) continue;       // the connection's offset puts it beside the map's corner, not along its edge: the old edge transfer handles it
+    out.push({ id: other, ox, oy });
+  }
+  return out;
+}
+// which loaded map owns the world tile (x, y)? -> { m, x, y } with x, y local to that map, or null
+function worldAt(x, y) {
+  const m = G.map; if (!m) return null;
+  if (x >= 0 && y >= 0 && x < m.w && y < m.h) return { m, x, y };
+  for (const n of (G.nbrs || [])) { const lx = x - n.ox, ly = y - n.oy; if (lx >= 0 && ly >= 0 && lx < n.m.w && ly < n.m.h) return { m: n.m, x: lx, y: ly }; }
+  return null;
+}
+function worldAddChars(n) {
+  Object.values(n.m.events).sort((a, b) => a.id - b.id).forEach(d => {
+    const e = new EventChr(d, n.id); e.setPos(d.x + n.ox, d.y + n.oy); e.mts = n.m.ts; G.chars.push(e);
+    if (G.erasedEv && G.erasedEv[n.id + ':' + d.id]) e.erased = true;
+  });
+  G.refresh = true;
+}
+const IMG_WARMED = {};
+function worldWarmImages() {   // decode the pictures of the maps ahead (neighbours and their neighbours) off the main thread, so the first look at them can't stall a step
+  try {
+    const ids = {}; for (const n of (G.nbrs || [])) { ids[n.id] = n.m; for (const c of connNeighbors(n.id)) if (c.id !== G.mapId && !ids[c.id]) ids[c.id] = loadMap(c.id); }
+    const files = [];
+    for (const id in ids) {
+      const m = ids[id]; if (!m) continue;
+      if (m.ts) { if (m.ts.tileset) files.push('tilesets/' + m.ts.tileset); for (const a of (m.ts.autotiles || [])) if (a) files.push('autotiles/' + a); }
+      for (const e of Object.values(m.events || {})) for (const pg of (e.pages || [])) if (pg.gfx && pg.gfx.name) files.push('characters/' + pg.gfx.name);
+    }
+    for (const f of files) {
+      if (IMG_WARMED[f]) continue; IMG_WARMED[f] = true;
+      const im = (typeof IMGS !== 'undefined') && IMGS['assets/' + f + '.png'];
+      if (im && im.decode) im.decode().catch(() => { });
+    }
+  } catch (e) { }
+}
+const WARMED = {};
+function worldWarm() {
+  worldWarmImages();   // fully fetch + buffer the music of every adjacent map, so the switch at the border never waits on a download
+  try {
+    for (const n of (G.nbrs || [])) {
+      const name = n.m.bgm; if (!name || typeof audio !== 'function') continue;
+      const a = audio(name);
+      if (!WARMED[name]) {
+        WARMED[name] = true;
+        a.preload = 'auto'; try { a.load(); } catch (e) { }
+      }
+    }
+  } catch (e) { }
+}
+function worldBuild() {                 // called by enterMap once the active map is in place
+  G.nbrs = [];
+  for (const c of connNeighbors(G.mapId)) { const m = loadMap(c.id); if (!m) continue; const n = { id: c.id, m, ox: c.ox, oy: c.oy }; G.nbrs.push(n); worldAddChars(n); }
+  worldWarm();
+}
+function worldCheckSwap() {
+  const p = G.player, m = G.map; if (!m || (p.x >= 0 && p.y >= 0 && p.x < m.w && p.y < m.h)) return;
+  const n = (G.nbrs || []).find(q => p.x >= q.ox && p.y >= q.oy && p.x < q.ox + q.m.w && p.y < q.oy + q.m.h);
+  if (n) worldSwap(n);
+}
+function worldSwap(n) {
+  const prev = G.mapId, dx = n.ox, dy = n.oy;
+  for (const c of G.chars) { c.x -= dx; c.y -= dy; c.rx -= dx * TS; c.ry -= dy * TS; }          // new origin: everything shifts, the picture does not move
+  if (G.grassFx) for (const f of G.grassFx) { f.x -= dx; f.y -= dy; }
+  const loaded = [{ id: prev, m: G.map, ox: -dx, oy: -dy }].concat(G.nbrs.filter(q => q !== n).map(q => ({ id: q.id, m: q.m, ox: q.ox - dx, oy: q.oy - dy })));
+  G.map = n.m; G.mapId = n.id;
+  const next = [], fresh = [];
+  for (const c of connNeighbors(n.id)) {
+    const have = loaded.find(q => q.id === c.id);
+    if (have) next.push(have); else { const m = loadMap(c.id); if (!m) continue; const q = { id: c.id, m, ox: c.ox, oy: c.oy }; next.push(q); fresh.push(q); }
+  }
+  G.nbrs = next;
+  G.chars = G.chars.filter(c => c.isPlayer || c.mapId === undefined || c.mapId === n.id || next.some(q => q.id === c.mapId));
+  fresh.forEach(worldAddChars);
+  G.events = {}; for (const c of G.chars) if (c.mapId === n.id && c.data) G.events[c.id] = c;
+  if (typeof syncTilePatches === 'function') { G.map.patchKey = undefined; syncTilePatches(); }
+  if (typeof CHEAT_CITIES !== 'undefined' && CHEAT_CITIES.some(c => c[1] === n.id)) G.switches['city' + n.id] = true;
+  if (typeof seviiVisit === 'function') seviiVisit(n.id);
+  if (typeof locationSign === 'function') locationSign(prev, n.id);
+  G.player.transparent = (n.id === 1);
+  if (n.m.bgm) { const want = n.id, bgm = n.m.bgm; setTimeout(() => { if (G.mapId === want) playBGM(bgm); }, 120); }   // start the music just after the swap so audio start-up can't hitch the step
+  worldWarm();
+  G.swapAt = G.frame;
+  G.refresh = true;
+}
 // ---- map tile patches: a rectangle of tiles is blanked while its switch is on (the story changes the scenery)
 const TILE_PATCHES = [
   { map: 171, sw: 215, rects: [[31, 21, 37, 26, 2, 0]] },   // Celadon: the arcade building is blown up
@@ -68,20 +165,21 @@ const ENC = {
 };
 // water you can fish in: terrain tags 5-7, or any water autotile (the sea / pond / fountain tiles of a tileset carry no tag in some places)
 function isWaterAt(x, y) {
-  const m = G.map; if (!m || x < 0 || y < 0 || x >= m.w || y >= m.h) return false;
+  const w = worldAt(x, y); if (!w) return false;
   if ([5, 6, 7].includes(terrainTagAt(x, y))) return true;
-  const names = m.ts.autotiles || [];
+  const m = w.m, names = m.ts.autotiles || [], lx = w.x, ly = w.y;
   for (let z = 0; z < 3; z++) {
-    const tid = m.data[x + y * m.w + z * m.w * m.h];
+    const tid = m.data[lx + ly * m.w + z * m.w * m.h];
     if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return true; }
   }
   return false;
 }
 // a solid tile (rock, pillar...) drawn on top of the water: the boat can't sail through it
 function solidOverWater(x, y) {
-  const m = G.map, ts = m.ts, names = ts.autotiles || [];
+  const w = worldAt(x, y); if (!w) return false;
+  const m = w.m, ts = m.ts, names = ts.autotiles || [];
   for (let z = 2; z >= 0; z--) {
-    const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
+    const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue;
     if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return false; }
     const pas = ts.passages[tid] || 0;
     if (pas & 0x10) continue;
@@ -95,10 +193,10 @@ function solidOverWater(x, y) {
 const CURRENT_STOP = { 260: [102, 104], 262: [102, 104], 261: [107, 108], 263: [107, 108] };
 function currentsRunning() { const s = CURRENT_STOP[G.mapId]; return !(s && s.every(sw => getSwitch(sw))); }
 function currentInfo(x, y) {
-  const m = G.map; if (!m || x < 0 || y < 0 || x >= m.w || y >= m.h || !currentsRunning()) return null;
-  const names = m.ts.autotiles || []; let dir = 0, bridge = false;
+  const w = worldAt(x, y); if (!w || w.m !== G.map || !currentsRunning()) return null;
+  const m = w.m, names = m.ts.autotiles || []; let dir = 0, bridge = false;
   for (let z = 0; z < 3; z++) {
-    const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
+    const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue;
     if (tid >= 48 && tid < 384) { const mm = (names[Math.floor(tid / 48) - 1] || '').match(/current (north|south|east|west)/i); if (mm) dir = { north: 8, south: 2, east: 6, west: 4 }[mm[1].toLowerCase()]; }
     else if (tid >= 384 && z > 0 && (m.ts.priorities[tid] || 0) > 0) bridge = true;     // something walkable drawn above the water
   }
@@ -107,9 +205,10 @@ function currentInfo(x, y) {
 function currentDirAt(x, y) { const c = currentInfo(x, y); return c ? c.dir : 0; }
 function currentBlocks(x, y) { const c = currentInfo(x, y); return !!c && !c.bridge; }
 function terrainTagAt(x, y) {
-  const m = G.map; if (!m || !m.ts.tags) return 0;
+  const w = worldAt(x, y); if (!w || !w.m.ts.tags) return 0;
+  const m = w.m;
   for (let z = 2; z >= 0; z--) {
-    const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
+    const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue;
     const t = m.ts.tags[tid] || 0; if (t > 0) return t;
   }
   return 0;
@@ -118,9 +217,9 @@ function terrainTagAt(x, y) {
 function isCounter(x, y) {
   if (G.mapId === 185 && y === 3 && x >= 4 && x <= 6) return true;   // the arcade's service counter (the employee stands behind it)
   if (terrainTagAt(x, y) === 1) return true;
-  if (![3, 25].includes(G.map.tsId)) return false;
-  const m = G.map; if (x < 0 || y < 0 || x >= m.w || y >= m.h) return false;
-  for (let z = 2; z >= 0; z--) { const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue; const pv = m.ts.passages[tid] || 0; if (pv & 0x10) continue; return (pv & 0x0f) === 0x0f; }
+  const w = worldAt(x, y); if (!w || ![3, 25].includes(w.m.tsId)) return false;
+  const m = w.m;
+  for (let z = 2; z >= 0; z--) { const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue; const pv = m.ts.passages[tid] || 0; if (pv & 0x10) continue; return (pv & 0x0f) === 0x0f; }
   return false;
 }
 const LAND_W = [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1];   // Essentials land slot weights
@@ -357,7 +456,7 @@ function* worldScript(it, s) {
   }
   if (s === 'Kernel.pbRockSmashRandomEncounter') return true;
   if (s === 'pbEraseThisEvent') {
-    if (it.ev) { it.ev.erased = true; G.erasedEv = G.erasedEv || {}; G.erasedEv[(it.evMap || G.mapId) + ':' + it.ev.id] = true; }
+    if (it.ev) { it.ev.erased = true; G.erasedEv = G.erasedEv || {}; G.erasedEv[(it.ev.mapId !== undefined ? it.ev.mapId : (it.evMap || G.mapId)) + ':' + it.ev.id] = true; }
     return true;
   }
   if ((m = s.match(/^pbPickBerry\(:(\w+),(\d+)\)/))) {
@@ -367,7 +466,7 @@ function* worldScript(it, s) {
     if (i === 0) {
       G.items[m[1]] = (G.items[m[1]] || 0) + n; playME('frlg_berry');
       yield* showMessage('You picked the ' + n + ' \\c[1]' + nm + '\\c[0].');
-      if (it.ev) { G.selfsw[selfKey(G.mapId, it.ev.id, 'A')] = true; G.refresh = true; }
+      if (it.ev) { G.selfsw[selfKey(evMapId(it.ev), it.ev.id, 'A')] = true; G.refresh = true; }
     }
     return true;
   }
@@ -620,4 +719,22 @@ function* worldScriptDayCare(s) {
   playME('Item_get');
   yield* showMessage(G.name + ' took back ' + pokeName(mon) + (mon.lvl > lv ? ', now Lv. ' + mon.lvl + '!' : '.'));
   return true;
+}
+
+// ---- slow-frame log (testing): every frame that took too long is recorded. F3 shows/hides it on screen; window.SLOWLOG holds all of it.
+window.SLOWLOG = []; let slowShow = false;
+window.addEventListener('keydown', e => { if (e.key === 'F3') { slowShow = !slowShow; e.preventDefault(); } });
+function slowLogNote(gap, work) {
+  if (gap < 45 && work < 25) return;
+  if (G.frame < 120) return;
+  const since = G.swapAt ? G.frame - G.swapAt : -1;
+  const e = (G.mapId + ' (' + G.player.x + ',' + G.player.y + ')  gap ' + Math.round(gap) + 'ms  work ' + Math.round(work) + 'ms  ' + (since >= 0 && since < 90 ? 'swap+' + since + 'f' : 'no swap') + (G.main ? '  event' : '') + (G.bgm ? '  bgm ' + G.bgm.name : ''));
+  SLOWLOG.push(e); if (SLOWLOG.length > 200) SLOWLOG.shift(); console.warn('[slow frame] ' + e);
+}
+function drawSlowLog() {
+  if (!slowShow) return;
+  const L = SLOWLOG.slice(-8);
+  ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(0, 0, SW, 14 + L.length * 16 + 16);
+  txt('Slow frames (F3 hides) - ' + SLOWLOG.length + ' total', 6, 4, { size: 14, col: ['#ffd84a', '#000'] });
+  L.forEach((l, i) => txt(l, 6, 22 + i * 16, { size: 13, col: ['#fff', '#000'] }));
 }
