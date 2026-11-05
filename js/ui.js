@@ -112,15 +112,20 @@ function drawUiMsg() {
 }
 // small command window (Window_CommandPokemon-like). Returns index or -1. opts: x,y,w, anchor right/bottom
 function* choiceWindow(labels, o = {}) {
-  const rowH = 32, w = o.w || Math.max(...labels.map(l => txtW(l, 26))) + 64, h = labels.length * rowH + 32;
+  const rowH = 32, vis = o.max ? Math.min(o.max, labels.length) : labels.length;     // o.max: rows shown at once, the list scrolls
+  const w = o.w || Math.max(...labels.map(l => txtW(l, 26))) + 64, h = vis * rowH + 32;
   const x = o.x !== undefined ? o.x : SW - w, y = o.y !== undefined ? o.y : (SH - 96 - h);
-  let idx = o.idx || 0;
-  G.uiPopup = { x, y, w, h, labels, idx };
+  let idx = o.idx || 0, top = Math.max(0, Math.min(idx - vis + 1, labels.length - vis));
+  const fit = () => { if (idx < top) top = idx; if (idx >= top + vis) top = idx - vis + 1; };
+  fit();
+  G.uiPopup = { x, y, w, h, labels: labels.slice(top, top + vis), idx: idx - top, more: [top > 0, top + vis < labels.length] };
   while (true) {
     yield;
     if (rep('up')) { idx = (idx + labels.length - 1) % labels.length; sfx('cursor'); }
     if (rep('down')) { idx = (idx + 1) % labels.length; sfx('cursor'); }
-    G.uiPopup.idx = idx;
+    if (idx < top || idx >= top + vis) { top = idx < top ? idx : idx - vis + 1; }
+    if (idx === 0) top = 0; if (idx === labels.length - 1) top = labels.length - vis;
+    G.uiPopup.labels = labels.slice(top, top + vis); G.uiPopup.idx = idx - top; G.uiPopup.more = [top > 0, top + vis < labels.length];
     if (ok()) { sfx('ok'); G.uiPopup = null; return idx; }
     if (back()) { sfx('back'); G.uiPopup = null; return -1; }
   }
@@ -132,6 +137,11 @@ function drawPopup() {
     txt(l, p.x + 40, p.y + 16 + i * 32 + 4, { size: 26 });
     if (i === p.idx) pic('selarrow', p.x + 22, p.y + 16 + i * 32);
   });
+  if (p.more) {                                  // scroll hints: small triangles on the right edge
+    ctx.fillStyle = '#585858';
+    if (p.more[0]) { const cx = p.x + p.w - 22, cy = p.y + 12; ctx.beginPath(); ctx.moveTo(cx - 6, cy + 6); ctx.lineTo(cx + 6, cy + 6); ctx.lineTo(cx, cy); ctx.fill(); }
+    if (p.more[1]) { const cx = p.x + p.w - 22, cy = p.y + p.h - 12; ctx.beginPath(); ctx.moveTo(cx - 6, cy - 6); ctx.lineTo(cx + 6, cy - 6); ctx.lineTo(cx, cy); ctx.fill(); }
+  }
 }
 function* yesNo(x, y) { const r = yield* choiceWindow(['YES', 'NO'], { x: x ?? SW - 120, y: y ?? SH - 96 - 96 }); return r === 0; }
 // HP bar helpers (Essentials colours: >50% green, >20% yellow, else red). bar rows of overlay_hp = 3 colours.

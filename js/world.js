@@ -14,7 +14,9 @@ const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [195, 'S', 0, 198, 'N', 0], [199, 'N', 0, 198, 'S', 6], [202, 'W', 0, 201, 'E', 0],
   [311, 'N', 73, 201, 'S', 0], [202, 'S', 0, 311, 'N', 102],                                   // Fuchsia / Route 18 down to the sea route
   [310, 'S', 0, 264, 'N', 0], [256, 'W', 0, 264, 'E', 0], [311, 'S', 0, 264, 'N', 36],          // Route 21 / Route 20 / sea route to Cinnabar
-  [256, 'N', 0, 310, 'S', 30], [311, 'W', 0, 310, 'E', 60], [311, 'S', 0, 256, 'N', 6]];       // Route 19 and later are not built yet
+  [256, 'N', 0, 310, 'S', 30], [311, 'W', 0, 310, 'E', 60], [311, 'S', 0, 256, 'N', 6],
+  [146, 'W', 0, 100, 'E', 5], [147, 'W', 0, 146, 'E', 0], [164, 'E', 0, 147, 'W', 81], [147, 'S', 0, 151, 'N', 0],   // Cerulean - Route 9 - Route 10 (Route 8 / Lavender are not built yet)
+  [202, 'S', 12, 255, 'N', 0], [256, 'E', 0, 255, 'W', 40], [311, 'E', 0, 255, 'W', 0]];                           // Fuchsia - Route 19 - Route 20
 // ---- map tile patches: a rectangle of tiles is blanked while its switch is on (the story changes the scenery)
 const TILE_PATCHES = [
   { map: 171, sw: 215, rects: [[31, 21, 37, 26, 2, 0]] },   // Celadon: the arcade building is blown up
@@ -86,6 +88,22 @@ function solidOverWater(x, y) {
   }
   return false;
 }
+// Seafoam water currents: only the boat can enter them, and once on one it carries the player along (see the update loop)
+// the currents of B2F-B4F calm down once the boulders have been dropped into the holes above (those boulders set these switches)
+const CURRENT_STOP = { 260: [102, 104], 262: [102, 104], 261: [107, 108], 263: [107, 108] };
+function currentsRunning() { const s = CURRENT_STOP[G.mapId]; return !(s && s.every(sw => getSwitch(sw))); }
+function currentInfo(x, y) {
+  const m = G.map; if (!m || x < 0 || y < 0 || x >= m.w || y >= m.h || !currentsRunning()) return null;
+  const names = m.ts.autotiles || []; let dir = 0, bridge = false;
+  for (let z = 0; z < 3; z++) {
+    const tid = m.data[x + y * m.w + z * m.w * m.h]; if (!tid) continue;
+    if (tid >= 48 && tid < 384) { const mm = (names[Math.floor(tid / 48) - 1] || '').match(/current (north|south|east|west)/i); if (mm) dir = { north: 8, south: 2, east: 6, west: 4 }[mm[1].toLowerCase()]; }
+    else if (tid >= 384 && z > 0 && (m.ts.priorities[tid] || 0) > 0) bridge = true;     // something walkable drawn above the water
+  }
+  return dir ? { dir, bridge } : null;
+}
+function currentDirAt(x, y) { const c = currentInfo(x, y); return c ? c.dir : 0; }
+function currentBlocks(x, y) { const c = currentInfo(x, y); return !!c && !c.bridge; }
 function terrainTagAt(x, y) {
   const m = G.map; if (!m || !m.ts.tags) return 0;
   for (let z = 2; z >= 0; z--) {
@@ -173,10 +191,10 @@ function* cutTreeCheck() {
   return true;
 }
 
-function* rockSmashCheck() {
-  if (!getSwitch(156)) { yield* showMessage("It's a rugged rock, but a Pokémon may be able to smash it."); return false; }
+function* rockSmashCheck() {           // rocks are broken with the Pickaxe key item
+  if (!(G.items && G.items.PICKAXE > 0)) { yield* showMessage("It's a rugged rock.\nYou would need a pickaxe to break it."); return false; }
   yield* showMessage('This rock appears to be breakable.');
-  yield* showMessage('Would you like to use Rock Smash?', { noWait: true });
+  yield* showMessage('Would you like to use the Pickaxe?', { noWait: true });
   const i = yield* showChoices(['Yes', 'No'], 2);
   if (i !== 0) return false;
   playSE('Rock Smash'); for (let k = 0; k < 30; k++) yield;
@@ -231,7 +249,7 @@ function pcAll() { const l = (G.box || []).slice(); if (G.pc) for (const b of G.
 
 // ---- the region map on the wall of the Poké Center / Mart building
 function wallMapCheck(x, y) {
-  if (![172, 205, 238, 266, 354, 355, 356, 357, 358].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
+  if (![172, 205, 238, 266, 354, 355, 356, 357, 358, 359].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
   G.main = new Interp([[355, 0, ['pbWallTownMap']], [0, 0, []]], null); return true;
 }
 function* worldScript(it, s) {
@@ -272,9 +290,19 @@ function* worldScript(it, s) {
     }
     playSE('PC_close'); return true;
   }
+  if (s === 'pbPushThisBoulder') {          // Seafoam boulders: shoved one tile in the direction the player is facing (no Strength in this build)
+    const e = it.ev, pl = G.player; if (!e || e.moving) return true;
+    if (!(G.items && G.items.DOLLY > 0)) { yield* showMessage('A heavy boulder.\nYou would need a dolly to move it.'); return true; }
+    const d = pl.dir, [dx, dy] = dirVec[d]; if (e.x !== pl.x + dx || e.y !== pl.y + dy) return true;
+    const nx = e.x + dx, ny = e.y + dy;
+    const free = e.passableTile(e.x, e.y, d) && e.passableTile(nx, ny, opp[d]) && !(G.chars.some(c => c !== e && !c.erased && c.x === nx && c.y === ny && (c.isPlayer || c.gname !== '' || c.tile > 0)));
+    if (!free) return true;
+    sfx('bump'); e.speed = 3; e.x = nx; e.y = ny; e.moving = true; while (e.moving) yield;
+    return true;
+  }
   if (s === 'Kernel.pbRockSmashRandomEncounter') return true;
   if (s === 'pbEraseThisEvent') {
-    if (it.ev) { it.ev.erased = true; G.erasedEv = G.erasedEv || {}; G.erasedEv[G.mapId + ':' + it.ev.id] = true; }
+    if (it.ev) { it.ev.erased = true; G.erasedEv = G.erasedEv || {}; G.erasedEv[(it.evMap || G.mapId) + ':' + it.ev.id] = true; }
     return true;
   }
   if ((m = s.match(/^pbPickBerry\(:(\w+),(\d+)\)/))) {
@@ -337,6 +365,7 @@ function* worldScript(it, s) {
     return true;
   }
   if ((m = s.match(/^pbWildBattle\(:(\w+),(\d+)\)/))) {
+    it.evMap = G.mapId;   // a whiteout moves the player to another map, so remember where this event lives
     yield* runWildBattle(m[1], +m[2]);
     if (G.battleResult === 'lose') yield* blackout();
     else if (G.map && G.map.bgm) playBGM(G.map.bgm);

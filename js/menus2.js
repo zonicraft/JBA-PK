@@ -244,7 +244,7 @@ function drawSaveInfo() {
 
 // ------------------------------------------------------------ Town map (PBS/townmap.txt)
 const TPOINTS = [[13, 13, "Pallet Town", ""], [13, 11, "Route 1", ""], [13, 12, "Route 1", ""], [12, 9, "Viridian City", ""], [13, 9, "Viridian City", ""], [12, 10, "Viridian City", ""], [13, 10, "Viridian City", ""], [9, 10, "Route 22", ""], [10, 10, "Route 22", ""], [11, 10, "Route 22", ""], [13, 6, "Route 2", "Burrow Tunnel"], [13, 7, "Route 2", "Viridian Forest"], [13, 8, "Route 2", ""], [13, 4, "Pewter City", ""], [13, 5, "Pewter City", ""], [14, 4, "Pewter City", ""], [14, 5, "Pewter City", ""], [15, 5, "Route 3", ""], [16, 5, "Route 3", ""], [17, 5, "Route 4", "Mt. Moon"], [18, 5, "Route 4", ""], [19, 5, "Route 4", ""], [20, 5, "Route 4", ""], [21, 5, "Cerulean City", "Cerulean Cave"], [22, 5, "Cerulean City", ""], [21, 6, "Cerulean City", ""], [22, 6, "Cerulean City", ""], [22, 3, "Route 24", ""], [22, 4, "Route 24", ""], [23, 3, "Route 25", ""], [24, 3, "Route 25", ""], [25, 3, "Route 25", ""], [21, 7, "Route 5", ""], [21, 10, "Route 6", ""], [21, 11, "Vermilion City", ""], [22, 11, "Vermilion City", ""], [21, 12, "Vermilion City", ""], [22, 12, "Vermilion City", ""], [23, 11, "Route 11", "Burrow Tunnel"], [24, 11, "Route 11", ""], [25, 10, "Route 12", ""], [25, 11, "Route 12", ""], [25, 12, "Route 12", ""], [25, 13, "Route 12", ""], [23, 6, "Route 9", ""], [24, 6, "Route 9", ""], [25, 6, "Route 10", "Rock Tunnel"], [25, 7, "Route 10", "Power Plant"], [25, 8, "Route 10", ""], [25, 9, "Lavender Town", "Pokémon Tower"], [23, 9, "Route 8", ""], [24, 9, "Route 8", ""], [20, 9, "Route 7", ""], [18, 9, "Celadon City", ""], [19, 9, "Celadon City", ""], [18, 10, "Celadon City", ""], [19, 10, "Celadon City", ""], [16, 10, "Route 16", ""], [17, 10, "Route 16", ""], [16, 11, "Route 17", ""], [16, 12, "Route 17", ""], [16, 13, "Route 17", ""], [16, 14, "Route 17", ""], [16, 15, "Route 18", ""], [17, 15, "Route 18", ""], [18, 14, "Fuchsia City", "Safari Zone"], [19, 14, "Fuchsia City", ""], [18, 15, "Fuchsia City", ""], [19, 15, "Fuchsia City", ""], [24, 13, "Route 13", ""], [23, 13, "Route 14", ""], [23, 14, "Route 14", ""], [23, 15, "Route 14", ""], [20, 15, "Route 15", ""], [21, 15, "Route 15", ""], [22, 15, "Route 15", ""], [21, 8, "Saffron City", ""], [22, 8, "Saffron City", ""], [21, 9, "Saffron City", ""], [22, 9, "Saffron City", ""], [18, 16, "Route 19", ""], [18, 17, "Route 19", ""], [14, 17, "Route 20", ""], [15, 17, "Route 20", ""], [16, 17, "Route 20", "Seafoam Islands"], [17, 17, "Route 20", ""], [13, 17, "Cinnabar Island", "Pokémon Mansion"], [13, 14, "Route 21", ""], [13, 15, "Route 21", ""], [13, 16, "Route 21", ""], [9, 9, "Route 23", "Victory Road"], [9, 8, "Indigo Plateau", ""], [6, 10, "Mt. Silver", ""], [7, 10, "Route 28", ""], [8, 10, "Route 28", ""]];
-const TMAP_HOME = { 'Pallet Town': [13, 13], 'Route 1': [13, 12], 'Viridian City': [13, 9], 'Pokémon Center': [13, 9], 'Route 2': [13, 8], 'Viridian Forest': [13, 7], 'Pewter City': [13, 5], 'Route 3': [15, 5], 'Route 4': [17, 5], 'Mt. Moon': [18, 5], 'Cerulean City': [19, 5], 'Route 24': [19, 3], 'Route 25': [21, 3], "Nuno's House": [21, 3] };
+const TMAP_HOME = { 'Pallet Town': [13, 13], 'Route 1': [13, 12], 'Viridian City': [13, 9], 'Pokémon Center': [13, 9], 'Route 2': [13, 8], 'Viridian Forest': [13, 7], 'Pewter City': [13, 5], 'Route 3': [15, 5], 'Route 4': [17, 5], 'Mt. Moon': [18, 5], 'Cerulean City': [21, 5], 'Route 24': [22, 3], 'Route 25': [24, 3], "Nuno's House": [24, 3] };
 function* townMapScreen(o = {}) {
   if (!o.teleport && !o.view && G.items && G.items.PORTABLETELEPORTER > 0) { o = Object.assign({}, o, { teleport: true, player: true, regular: true }); CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; }); }   // owning the Portable Teleporter turns the regular map into the teleporter   // o.teleport: the cheat version, pick a city and confirm to teleport there
   const here = (window.MAPPOS && MAPPOS[G.mapId]) || TMAP_HOME[mapNameOf(G.mapId)] || [13, 13]; let cx = here[0], cy = here[1];
@@ -340,6 +340,26 @@ function* cheatGiveMove() {
   if (p.moves.some(m => m.id === hits[0])) { yield* uiMessage(pokeName(p) + ' already knows ' + D.MV[hits[0]].name + '.'); return; }
   yield* learnMoveField(p, hits[0]);
 }
+function* cheatGiveItem() {            // type (part of) an item name, pick from the matches, then a quantity
+  const q = yield* promptName('Which item? (name)', '', 24);
+  const key = (q || '').trim().toLowerCase().replace(/[\s-]+/g, ' '); if (!key) return;
+  const all = Object.keys(D.IT).filter(k => D.IT[k] && D.IT[k].name);
+  const nm = k => D.IT[k].name.toLowerCase().replace(/[\s-]+/g, ' ');
+  let hits = all.filter(k => nm(k) === key || k.toLowerCase() === key.replace(/ /g, ''));
+  if (!hits.length) hits = all.filter(k => nm(k).startsWith(key));
+  if (!hits.length) hits = all.filter(k => nm(k).includes(key));
+  if (!hits.length) { yield* uiMessage('No item found for "' + q + '".'); return; }
+  if (hits.length > 1) {
+    const shown = hits.slice(0, 8), labels = shown.map(k => D.IT[k].name).concat(['CANCEL']);
+    const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0 });
+    if (c < 0 || c >= shown.length) return; hits = [shown[c]];
+  }
+  const k = hits[0], qs = yield* promptName('How many?', '1', 3);
+  const n = Math.max(1, Math.min(999, parseInt(qs, 10) || 1));
+  G.items[k] = Math.min(999, (G.items[k] || 0) + n); sfx('item');
+  if (k === 'BOAT') { setSwitch(153, true); setSwitch(941, true); }   // same flags as GIVE BOAT
+  yield* uiMessage('Got ' + n + ' ' + (n > 1 && D.IT[k].plural ? D.IT[k].plural : D.IT[k].name) + '!');
+}
 // Teleport cheat: [label, map id, x, y] where (x, y) is the tile just below the city's Poké Center door (Pallet: below the player's house door).
 const CHEAT_CITIES = [
   ['PALLET TOWN', 2, 12, 8], ['VIRIDIAN CITY', 7, 26, 27], ['PEWTER CITY', 87, 21, 31], ['CERULEAN CITY', 100, 22, 20],
@@ -353,12 +373,12 @@ function* cheatTeleport() {   // opens the town map; picking a city + confirming
 function cheatsEnabled() { try { return /[?&#]cheats=(1|true|on)\b/i.test(location.href); } catch (e) { return false; } }
 function* cheatsMenu() {
   if (!cheatsEnabled()) return;
-  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'GIVE OLD ROD', 'GIVE BOAT', 'TELEPORT TO CITY', 'CANCEL'];
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'TELEPORT TO CITY', 'GIVE ITEM', 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'), 'CANCEL'];
   const CANCEL = labels.length - 1;
   let idx = 0;
   while (true) {
     const w = 330, x = SW - w - 8, y = 8;
-    const r = yield* choiceWindow(labels, { x, y, w, idx });
+    const r = yield* choiceWindow(labels, { x, y, w, idx, max: 10 });
     if (r < 0 || r === CANCEL) return; idx = r;
     if (r === 0) {
       while (true) {
@@ -379,9 +399,9 @@ function* cheatsMenu() {
     else if (r === 3) { yield* pcSession(); }
     else if (r === 4) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage('Got $10000! You now have $' + G.money + '.'); }
     else if (r === 5) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
-    else if (r === 6) { G.items.OLDROD = 1; sfx('item'); yield* uiMessage('Got an Old Rod!'); }
-    else if (r === 7) { setSwitch(153, true); setSwitch(941, true); G.items.BOAT = 1; sfx('item'); yield* uiMessage('Got the boat! Interact with water to sail.'); }
-    else if (r === 8) { yield* cheatTeleport(); if (G.teleReq) return; }
+    else if (r === 6) { yield* cheatTeleport(); if (G.teleReq) return; }
+    else if (r === 7) { yield* cheatGiveItem(); }
+    else if (r === 8) { G.noclip = !G.noclip; labels[8] = 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'); sfx('ok'); }
   }
 }
 

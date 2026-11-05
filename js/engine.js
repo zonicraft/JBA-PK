@@ -141,10 +141,10 @@ function pollPad() {
   if (gp) {
     const b = i => !!(gp.buttons[i] && gp.buttons[i].pressed), ax = gp.axes[0] || 0, ay = gp.axes[1] || 0;
     now.up = b(12) || ay < -0.5; now.down = b(13) || ay > 0.5; now.left = b(14) || ax < -0.5; now.right = b(15) || ax > 0.5;
-    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1); now.bike = b(4) || b(5);   // LB / RB: Skateboard
+    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1); now.bike = b(4) || b(5); now.mega = b(2); G.padOn = true;   // LB / RB: Skateboard
     const yb = b(3); if (yb && !PAD.yDown) toggleFullscreen(); PAD.yDown = yb;
   }
-  for (const k of ['up', 'down', 'left', 'right', 'ok', 'back', 'menu', 'run', 'bike']) {
+  for (const k of ['up', 'down', 'left', 'right', 'ok', 'back', 'menu', 'run', 'bike', 'mega']) {
     const n = !!now[k], p = !!PAD.prev[k];
     if (n && !p) { if (!keys.held[k] && k !== 'run') keys.pressed[k] = true; keys.held[k] = true; if (k === 'back') keys.held.run = true; }
     else if (!n && p) { if (!keys.kb[k]) keys.held[k] = false; if (k === 'back' && !keys.kb.back) keys.held.run = false; if (k === 'run' && !keys.kb.back && !now.back) keys.held.run = false; }
@@ -193,7 +193,7 @@ function hideTouch() { touchHidden = true; releaseTouch(); const el = document.g
   bind(mk('tLB', 'tSh', 'LB'), null, hideTouch); bind(mk('tRB', 'tSh', 'RB'), 'bike');
   // face buttons: A confirm, B cancel/run, X menu, Y fullscreen (same as the controller)
   const face = document.createElement('div'); face.id = 'tFace'; ui.appendChild(face);
-  bind(mk('tY', '', 'Y', face), null, toggleFullscreen); bind(mk('tX', '', 'X', face), 'menu');
+  bind(mk('tY', '', 'Y', face), null, toggleFullscreen); { const tx = mk('tX', '', 'X', face); bind(tx, 'menu'); tx.addEventListener('pointerdown', () => touchSet('mega', true)); for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) tx.addEventListener(ev, () => touchSet('mega', false)); }   // X also registers the Mega Evolution in battle, like the controller's X
   bind(mk('tB', '', 'B', face), 'back'); bind(mk('tA', '', 'A', face), 'ok');
   // stick + d-pad combo: arrows on a round base, a thumb knob follows the finger; slide to change direction
   const st = mk('tStick', '', ''); st.style.borderRadius = '50%';
@@ -307,6 +307,9 @@ class Chr {
   canMove(d) {
     if (this.through) return true;
     const [dx, dy] = dirVec[d]; const nx = this.x + dx, ny = this.y + dy;
+    if (this.isPlayer && G.noclip && G.map && nx >= 0 && ny >= 0 && nx < G.map.w && ny < G.map.h) return true;   // cheat: walk through walls, events and water
+    if (this.isPlayer && !G.surfing && typeof currentBlocks === 'function' && currentBlocks(nx, ny)) return false;   // water currents need the boat
+    if (this.isPlayer && G.surfing && typeof currentDirAt === 'function' && currentDirAt(nx, ny) && !currentDirAt(this.x, this.y)) { G.tooFast = true; return false; }   // the boat can't enter a running current
     const sf = this.isPlayer && G.surfing && typeof isWaterAt === 'function';      // surfing: water counts as floor
     if (!(sf && isWaterAt(this.x, this.y) && !solidOverWater(this.x, this.y)) && !this.passableTile(this.x, this.y, d)) return false;
     if (!(sf && isWaterAt(nx, ny) && !solidOverWater(nx, ny)) && !this.passableTile(nx, ny, opp[d])) return false;
@@ -515,6 +518,10 @@ function checkAction() {
   if (typeof isCounter === 'function' && isCounter(p.x + dx, p.y + dy))        // counter: talk across it
     for (const e of eventAt(p.x + dx * 2, p.y + dy * 2, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }
   if (typeof wallMapCheck === 'function' && wallMapCheck(p.x + dx, p.y + dy)) return true;
+  if (typeof currentDirAt === 'function' && currentDirAt(p.x + dx, p.y + dy) && !G.main) {            // a running current: no sailing, no fishing
+    if (!G.surfing) { G.main = new Interp([[101, 0, ['The current is too fast!']], [0, 0, []]], null); return true; }
+    return false;
+  }
   if (typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {
     if (G.surfing) return false;                                                       // on the boat: nothing to ask
     if ((G.items && G.items.BOAT > 0) || getSwitch(153)) { G.main = new Interp([[355, 0, ['pbSurfAsk']], [0, 0, []]], null); return true; }   // boat lent: fish or navigate?
@@ -681,6 +688,7 @@ class Interp {
         case 121: for (let k = p[0]; k <= p[1]; k++) setSwitch(k, p[2] === 0); break;
         case 122: {
           let val = p[4]; if (p[3] === 1) val = getVar(p[4]); else if (p[3] === 2) val = p[4] + Math.floor(Math.random() * (p[5] - p[4] + 1));
+          if (p[3] === 6) { const ch = p[4] === -1 ? G.player : this.evChr(p[4]); val = ch ? [ch.x, ch.y, ch.dir][p[5]] || 0 : 0; }   // a character's x / y / facing
           for (let k = p[0]; k <= p[1]; k++) {
             const cur = getVar(k);
             const nv = [val, cur + val, cur - val, cur * val, val ? Math.trunc(cur / val) : cur, val ? cur % val : cur][p[2]];
@@ -774,6 +782,7 @@ class Interp {
     const black = G.tone.cur[0] > -200 || G.tone.left > 0;
     if (fade === 0 && black) { tone([-255, -255, -255, 0], 8); while (G.tone.left > 0) yield; }
     enterMap(mid, x, y, dir || G.player.dir);
+    if (mid >= 257 && mid <= 263 && typeof isWaterAt === 'function' && isWaterAt(G.player.x, G.player.y)) G.surfing = true;   // Seafoam: falling into a current puts the player on the boat
     yield;
     if (fade === 0 && black) { tone([0, 0, 0, 0], 8); }
   }
@@ -812,6 +821,7 @@ class Interp {
       return;
     }
     if (/^pb(RemoveDependency2|DeregisterPartner|CaveExit|CaveEntrance)/.test(s)) return;
+    if (/^(Kernel\.pbCancelVehicles|\$PokemonEncounters\.clearStepCount|#)/.test(s)) return;
     if (s === 'pbHealAll') { G.party.forEach(healMon); return; }
     if (s === '$PokemonGlobal.runningShoes=true') { G.runningShoes = true; return; }
     if ((m = s.match(/^pbMEPlay\("([^"]+)"/))) { playME(m[1]); return; }
@@ -893,20 +903,22 @@ function update() {
   if (G.lock) for (const k in G.lock) if (!keys.held[k]) delete G.lock[k];
   const held = k => keys.held[k] && !(G.lock && G.lock[k]);
   if (!busy && !p.moving) {
+    let drifted = false;                                   // a water current carries the boat along
+    if (typeof currentDirAt === 'function') { const cd = currentDirAt(p.x, p.y); if (cd) { if (!G.surfing) G.surfing = true; p.speed = 3; drifted = p.moveDir(cd, false); } }
     if (trainerSight()) { keys.pressed = {}; return; }
     if (pressed('menu')) { openPause(); keys.pressed = {}; return; }
     if (pressed('bike')) { toggleBike(); keys.pressed = {}; return; }
     const run = held('run') && G.runningShoes;
     let moved = false, anyDir = false;
     for (const [k, d] of [['down', 2], ['left', 4], ['right', 6], ['up', 8]]) {
-      if (held(k)) {
+      if (held(k) && !drifted) {
         anyDir = true;
         if (p.dir !== d) { p.dir = d; p.turnWait = 7; p.bumped = false; break; }      // tap = just turn
         if (p.turnWait > 0) { p.turnWait--; break; }                                  // keep holding to walk
         p.speed = G.surfing ? 4 : G.biking ? 5 : run ? 4 : 3; p.sheetOverride = G.biking ? 'boy_bike' : run ? 'boy_run' : null;
         if (d !== 8 && typeof ledgeJump === 'function' && ledgeJump(p, d)) { moved = true; p.bumped = false; }
-        else if (p.moveDir(d)) { moved = true; p.bumped = false; }
-        else if (!p.bumped) { p.bumped = true; if (!checkBump(d)) sfx('bump'); }
+        else if ((G.tooFast = false) || p.moveDir(d)) { moved = true; p.bumped = false; }
+        else if (!p.bumped) { p.bumped = true; if (G.tooFast) { G.tooFast = false; sfx('bump'); G.main = new Interp([[101, 0, ['The current is too fast!']], [0, 0, []]], null); } else if (!checkBump(d)) sfx('bump'); }
         break;
       }
     }

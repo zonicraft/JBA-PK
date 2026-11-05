@@ -25,7 +25,7 @@ function bgFor(mapId) {
   const m = window.MAPS && MAPS[mapId], ts = m ? m.tileset : 1;
   if ([7, 87, 100, 171].includes(mapId)) return 'City';
   if (mapId === 48) return 'Forest';
-  if (ts === 6) return 'Cave';
+  if ([6, 23, 24].includes(ts)) return 'Cave';     // caves (23 / 24: the Seafoam floors with currents)
   if (ts === 14) return 'IndoorB';
   if ([3, 4, 5, 18, 25].includes(ts)) return 'IndoorA';
   return 'Field';
@@ -343,18 +343,18 @@ function* commandPhase() {
     B.msg = null; B.menu = { type: 'cmd', idx }; B.menuText = 'What will ' + pokeName(me) + ' do?';
     while (true) { yield; yield* gridNav(B.menu, 4); if (ok()) { sfx('ok'); idx = B.menu.idx; break; } }
     B.lastCmd = idx; B.menu = null;
-    let wantMega = false;
-    if (idx === 0 && canMega(me)) {
-      const r = yield* bchoose(['MEGA EVOLVE', 'NOT NOW'], pokeName(me) + ' can Mega Evolve!');
-      if (r < 0) continue; wantMega = r === 0;
-    }
     if (idx === 0) {
       if (!me.moves.some(m => m.pp > 0)) { yield* bmsg(pokeName(me) + ' has no moves left!', { hold: 12 }); return { type: 'move', idx: -1 }; }
       let mi = Math.min(B.lastMove, me.moves.length - 1);
       while (true) {
-        B.menu = { type: 'fight', idx: mi }; let sel = -2;
-        while (true) { yield; yield* gridNav(B.menu, me.moves.length); mi = B.menu.idx; if (ok()) { sfx('ok'); sel = mi; break; } if (back()) { sfx('back'); sel = -1; break; } }
-        B.menu = null;
+        // Essentials: a Mega button sits above the move list (0 hidden, 1 shown, 2 pressed); the A key (Shift / C here) registers the Mega Evolution
+        B.menu = { type: 'fight', idx: mi, mega: canMega(me) ? 1 : 0 }; let sel = -2;
+        while (true) {
+          yield; yield* gridNav(B.menu, me.moves.length); mi = B.menu.idx;
+          if (B.menu.mega === 1 && (pressed('bike') || pressed('mega'))) { B.menu.mega = 2; sfx('ok'); keys.pressed.menu = false; }
+          if (ok()) { sfx('ok'); sel = mi; break; } if (back()) { sfx('back'); sel = -1; break; }
+        }
+        const wantMega = B.menu.mega === 2; B.menu = null;
         if (sel === -1) break;
         if (me.moves[sel].pp <= 0) { sfx('buzzer'); yield* bmsg('There\'s no PP left for this move!', { hold: 16 }); continue; }
         B.lastMove = sel; return { type: 'move', idx: sel, mega: wantMega };
@@ -383,13 +383,14 @@ function* commandPhase() {
 // ------------------------------------------------------------ Mega Evolution: Illya2 + Prisma Mega Stone + Key Stone
 function canMega(p) { const B = B_(); return !!(p && p.sym === 'ILLYA2' && p.item === 'CHARIZARDITEX' && G.items.KEYSTONE > 0 && D.SP.MEGAILLYA && !B.megaUsed); }
 function* doMega() {
-  const B = B_(), p = B.me, sp = B.spr.me, nm = pokeName(p);
-  yield* bmsg(pokeName(p) + '\'s ' + itemName(p.item) + ' is reacting to ' + G.name + '\'s Key Stone!', { hold: 20 });
-  sp.tintCol = '#ffffff'; for (let i = 1; i <= 14; i++) { sp.tint = i / 14; yield; }
+  // same order as Essentials' pbMegaEvolve: message -> MegaEvolution common animation -> form change -> "has Mega Evolved" message
+  const B = B_(), p = B.me, nm = pokeName(p);
+  yield* bmsg(nm + '\'s ' + itemName(p.item) + ' is reacting to ' + G.name + '\'s Key Stone!', { hold: 20 });
+  if (window.ANIMS && ANIMS.common && ANIMS.common.MegaEvolution != null) yield* commonAnim('MegaEvolution', 0);
   p.megaBase = p.sym; p.sym = 'MEGAILLYA'; B.megaUsed = true;
   refreshStats(p); B.meHp = p.hp;
-  cry(D.SP[p.sym].id); for (let i = 1; i <= 14; i++) { sp.tint = 1 - i / 14; yield; } sp.tint = 0; delete sp.tintCol;
-  yield* bmsg(nm + ' Mega Evolved into Mega Illya!', { hold: 24 });
+  if (ANIMS.common.MegaEvolution2 != null) yield* commonAnim('MegaEvolution2', 0);   // not defined in this project's animation set
+  yield* bmsg(nm + ' has Mega Evolved into Mega Illya!', { hold: 24 });
 }
 function unMega(B) { new Set(G.party.concat(B && B.meParty || [])).forEach(p => { if (p && p.megaBase) { const hp0 = p.hp, old = p.maxhp; p.sym = p.megaBase; delete p.megaBase; refreshStats(p); p.hp = hp0 > 0 ? Math.max(1, Math.min(p.maxhp, hp0 - (old - p.maxhp))) : 0; } }); }
 function pickFoeMove() {
@@ -410,7 +411,7 @@ function* throwBall(key) {
   const mul = { POKEBALL: 1, GREATBALL: 1.5, ULTRABALL: 2, MASTERBALL: 255 }[key] || 1;
   consume(key);
   yield* bmsg(G.name + ' threw one ' + it.name + '!', { hold: 4 });
-  const bid = { POKEBALL: 0, GREATBALL: 1, ULTRABALL: 2, MASTERBALL: 3 }[key] || 0;
+  const bid = { POKEBALL: 0, GREATBALL: 1, SAFARIBALL: 2, ULTRABALL: 3, MASTERBALL: 4 }[key] || 0;   // Essentials $BallTypes numbering (picture ball_0N)
   // ---- catch roll (kept as before) ----
   const sh = D.SP[foe.sym], stat = foe.status === 'SLP' || foe.status === 'FRZ' ? 2 : foe.status ? 1.5 : 1;
   const a = Math.min(255, ((3 * foe.maxhp - 2 * foe.hp) * Math.max(sh.catch, 120) * mul) / (3 * foe.maxhp) * stat * 1.5);   // forgiving catch rate
@@ -696,6 +697,7 @@ function drawDataBox(side) {
     const ex = Math.floor(192 * B.meExp); if (ex > 0) ctx.drawImage(UI('battle/overlay_exp'), 0, 0, ex, 4, x + base + 6, y + 76, ex, 4);
   } else if (B.kind === 'wild' && ownedSpecies(mon.sym)) pic('battle/icon_own', x + base + 6, y + 40);
   if (mon.status) drawStatus(mon.status, x + base + 6, y + 36);
+  if (mon.megaBase && UI('battle/icon_mega')) pic('battle/icon_mega', x + base + 8, y + 34);   // Essentials: Mega icon on the databox
 }
 function drawBattleFx() {
   for (const f of B_().fx) {
@@ -805,6 +807,8 @@ function drawCmdMenu(B, m) {
 function drawFightMenu(B, m) {
   pic('battle/overlay_fight', 0, SH - 96);
   const me = B.me;
+  if (m.mega > 0 && UI('battle/cursor_mega')) { ctx.drawImage(UI('battle/cursor_mega'), 0, (m.mega - 1) * 46, 96, 46, 146, SH - 96 - 46, 96, 46);
+    if (m.mega === 1) { const k = (G.padOn || SET.touch) ? 'X' : 'C', lx = 146 + 66, ly = SH - 96 - 46 + 13; for (const [ox, oy] of [[-2, 0], [2, 0], [0, -2], [0, 2], [-2, -2], [2, 2], [-2, 2], [2, -2]]) txt(k, lx + ox, ly + oy, { size: 24, align: 'center', base: '#101010', shadow: null }); txt(k, lx, ly, { size: 24, align: 'center', base: '#ffffff', shadow: null }); } }
   for (let i = 0; i < 4; i++) {
     const mv = me.moves[i]; if (!mv) continue;
     const x = 4 + (i % 2) * 192, y = SH - 96 + 2 + Math.floor(i / 2) * 46; const md = D.MV[mv.id];
