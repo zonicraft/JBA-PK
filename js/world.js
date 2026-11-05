@@ -720,21 +720,3 @@ function* worldScriptDayCare(s) {
   yield* showMessage(G.name + ' took back ' + pokeName(mon) + (mon.lvl > lv ? ', now Lv. ' + mon.lvl + '!' : '.'));
   return true;
 }
-
-// ---- slow-frame log (testing): every frame that took too long is recorded. F3 shows/hides it on screen; window.SLOWLOG holds all of it.
-window.SLOWLOG = []; let slowShow = false;
-window.addEventListener('keydown', e => { if (e.key === 'F3') { slowShow = !slowShow; e.preventDefault(); } });
-function slowLogNote(gap, work) {
-  if (gap < 45 && work < 25) return;
-  if (G.frame < 120) return;
-  const since = G.swapAt ? G.frame - G.swapAt : -1;
-  const e = (G.mapId + ' (' + G.player.x + ',' + G.player.y + ')  gap ' + Math.round(gap) + 'ms  work ' + Math.round(work) + 'ms  ' + (since >= 0 && since < 90 ? 'swap+' + since + 'f' : 'no swap') + (G.main ? '  event' : '') + (G.bgm ? '  bgm ' + G.bgm.name : ''));
-  SLOWLOG.push(e); if (SLOWLOG.length > 200) SLOWLOG.shift(); console.warn('[slow frame] ' + e);
-}
-function drawSlowLog() {
-  if (!slowShow) return;
-  const L = SLOWLOG.slice(-8);
-  ctx.fillStyle = 'rgba(0,0,0,0.75)'; ctx.fillRect(0, 0, SW, 14 + L.length * 16 + 16);
-  txt('Slow frames (F3 hides) - ' + SLOWLOG.length + ' total', 6, 4, { size: 14, col: ['#ffd84a', '#000'] });
-  L.forEach((l, i) => txt(l, 6, 22 + i * 16, { size: 13, col: ['#fff', '#000'] }));
-}

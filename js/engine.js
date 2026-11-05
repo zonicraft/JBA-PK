@@ -1102,7 +1102,6 @@ function render() {
   if (G.dexPic && img('pictures', 'dex' + G.dexPic)) { const dpi = img('pictures', 'dex' + G.dexPic); ctx.drawImage(dpi, Math.round((SW - dpi.width) / 2), Math.max(8, Math.round((SH - 96 - dpi.height) / 2))); }
   drawMsg(); drawChoice(); drawMenu();
   if (G.uiDraw) G.uiDraw();
-  if (typeof drawSlowLog === 'function') drawSlowLog();
   if (G.fade > 0) { ctx.fillStyle = 'rgba(0,0,0,' + G.fade + ')'; ctx.fillRect(0, 0, SW, SH); }
 }
 
@@ -1110,7 +1109,7 @@ function render() {
 let last = 0, acc = 0;
 function loop(ts) {
   if (!last) last = ts; const gap = ts - last; acc += Math.min(200, ts - last); last = ts; const t0 = performance.now();
-  if (!G.manual) { const step = 1000 / (FPS * SET.speed); let n = 0; while (acc >= step && n++ < 40) { update(); acc -= step; } if (acc > step) acc = 0; render(); if (typeof slowLogNote === 'function') slowLogNote(gap, performance.now() - t0); }
+  if (!G.manual) { const step = 1000 / (FPS * SET.speed); let n = 0; while (acc >= step && n++ < 40) { update(); acc -= step; } if (acc > step) acc = 0; render(); }
   requestAnimationFrame(loop);
 }
 G.tick = function (n = 1) { for (let i = 0; i < n; i++) update(); render(); };
