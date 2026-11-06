@@ -31,9 +31,9 @@ function loadImage(f) {
     const tries = [f, f + '?r=1', f.replace(/\.png$/, '.PNG') + '?r=2', f + '?r=3'];
     let i = 0;
     const next = () => {
-      if (i >= tries.length) { console.warn('missing image', f); return res(); }
+      if (i >= tries.length) { console.warn('missing image', f); IMG_PENDING[f] = 2; return res(); }
       const n = i++, im = new Image();
-      im.onload = () => { IMGS[f] = im; res(); };
+      im.onload = () => { IMGS[f] = im; IMG_PENDING[f] = 2; res(); };
       im.onerror = () => setTimeout(next, n * 300);
       im.src = tries[n];
     };
@@ -42,7 +42,8 @@ function loadImage(f) {
 }
 async function loadAssets() {
   const list = window.ASSETS.filter(f => f.endsWith('.png')); let k = 0;
-  const worker = async () => { while (k < list.length) await loadImage(list[k++]); };
+  G.loadTotal = list.length; G.loadDone = 0;   // progress for the loading bar
+  const worker = async () => { while (k < list.length) { await loadImage(list[k++]); G.loadDone++; } };
   await Promise.all(Array.from({ length: 24 }, worker));
 }
 const symOf = s => (window.D && D.SP[s]) ? s : ((window.PH && window.PH[s]) || s);   // PBS placeholder species names -> current character keys
@@ -62,11 +63,12 @@ let BARS_URL = null;
 function applyBars() {
   try {
     if (!SET.bars) { document.body.style.backgroundImage = 'none'; return; }
-    const show = () => { if (SET.bars) document.body.style.backgroundImage = 'url("' + BARS_URL + '")'; };
+    const show = () => { if (SET.bars && !G.inMainMenu) document.body.style.backgroundImage = 'url("' + BARS_URL + '")'; };
     if (BARS_URL) return show();
     const im = new Image(); im.onload = () => { BARS_URL = im.src; show(); }; im.src = 'assets/ui/background_bars.jpg';
   } catch (err) { }
 }
+G.inMainMenu = true;   // the page starts on the main menu: its picture is the background, the game's backdrop only appears in-game
 applyBars();
 function saveSettings() { try { localStorage.setItem('jba_settings', JSON.stringify(SET)); } catch (e) { } }
 const AUD = {};
@@ -160,11 +162,9 @@ function touchSet(k, on) {
   else if (keys.tp[k]) { keys.tp[k] = false; if (!keys.kb[k]) keys.held[k] = false; if (k === 'back' && !keys.kb.back) keys.held.run = false; }
 }
 function releaseTouch() { for (const k in keys.tp) touchSet(k, false); }
-let touchHidden = false;   // LB hides the controls for now (setting stays on); double-tap or Options brings them back
-function applyTouch() { touchHidden = false; const el = document.getElementById('touchUI'); if (el) el.style.display = SET.touch ? 'block' : 'none'; if (!SET.touch) releaseTouch(); }
-function hideTouch() { touchHidden = true; releaseTouch(); const el = document.getElementById('touchUI'); if (el) el.style.display = 'none'; }
+function applyTouch() { const gw = document.getElementById('wrap'); if (gw) gw.style.visibility = G.inMainMenu ? 'hidden' : 'visible'; if (G.inMainMenu) { document.body.style.backgroundImage = ''; document.body.style.backgroundColor = ''; } else { const pre = document.getElementById('mmPre'); if (pre) pre.remove(); document.body.style.backgroundColor = '#000'; applyBars(); } const el = document.getElementById('touchUI'); if (el) el.style.display = (SET.touch && !G.inMainMenu) ? 'block' : 'none'; if (!SET.touch || G.inMainMenu) releaseTouch(); }   // the controller stays hidden while the main menu is open
 (function buildTouchUI() {
-  // Xbox-style layout: stick/d-pad combo (left), Y/X/B/A diamond (right), LB / RB along the top.
+  // Xbox-style layout: stick/d-pad combo (left), Y/X/B/A diamond (right), LB + RB (skateboard) along the top.
   const css = document.createElement('style');
   css.textContent = '#touchUI{--b:clamp(46px,14vmin,72px);--m:max(14px,env(safe-area-inset-left));position:fixed;inset:0;z-index:4;pointer-events:none;display:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}' +
     '#touchUI .tc{position:absolute;pointer-events:auto;touch-action:none;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);color:rgba(255,255,255,.85);font:700 calc(var(--b)*.36) sans-serif;display:flex;align-items:center;justify-content:center;box-sizing:border-box}' +
@@ -179,7 +179,7 @@ function hideTouch() { touchHidden = true; releaseTouch(); const el = document.g
     '#tY{left:var(--b);top:0;color:#f2c230;border-color:rgba(242,194,48,.7)}#tA{left:var(--b);top:calc(var(--b)*2);color:#4cc24c;border-color:rgba(76,194,76,.7)}' +
     '#tX{left:0;top:var(--b);color:#4a90e8;border-color:rgba(74,144,232,.7)}#tB{left:calc(var(--b)*2);top:var(--b);color:#e8504a;border-color:rgba(232,80,74,.7)}' +
     '.tSh{width:calc(var(--b)*1.7);height:calc(var(--b)*.62);top:max(8px,env(safe-area-inset-top));border-radius:12px;font-size:calc(var(--b)*.3)!important}' +
-    '#tLB{left:var(--m)}#tRB{right:max(14px,env(safe-area-inset-right))}';
+    '#tRB{right:max(14px,env(safe-area-inset-right))}#tLB{left:max(14px,env(safe-area-inset-left))}';
   document.head.appendChild(css);
   const ui = document.createElement('div'); ui.id = 'touchUI';
   const mk = (id, cls, label, parent) => { const d = document.createElement('div'); d.id = id; d.className = 'tc ' + cls; d.textContent = label; (parent || ui).appendChild(d); return d; };
@@ -189,8 +189,8 @@ function hideTouch() { touchHidden = true; releaseTouch(); const el = document.g
     const up = e => { e.preventDefault(); el.classList.remove('on'); if (!fn) touchSet(k, false); };
     el.addEventListener('pointerdown', dn); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); el.addEventListener('lostpointercapture', up);
   };
-  // shoulders: LB hides the controls (double-tap the screen to bring them back), RB = skateboard
-  bind(mk('tLB', 'tSh', 'LB'), null, hideTouch); bind(mk('tRB', 'tSh', 'RB'), 'bike');
+  // shoulder: RB = skateboard
+  bind(mk('tLB', 'tSh', 'LB'), 'bike'); bind(mk('tRB', 'tSh', 'RB'), 'bike');   // LB and RB both toggle the skateboard, like on a controller
   // face buttons: A confirm, B cancel/run, X menu, Y fullscreen (same as the controller)
   const face = document.createElement('div'); face.id = 'tFace'; ui.appendChild(face);
   bind(mk('tY', '', 'Y', face), null, toggleFullscreen); { const tx = mk('tX', '', 'X', face); bind(tx, 'menu'); tx.addEventListener('pointerdown', () => touchSet('mega', true)); for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) tx.addEventListener(ev, () => touchSet('mega', false)); }   // X also registers the Mega Evolution in battle, like the controller's X
@@ -214,16 +214,6 @@ function hideTouch() { touchHidden = true; releaseTouch(); const el = document.g
   st.addEventListener('pointerup', stUp); st.addEventListener('pointercancel', stUp);
   ui.addEventListener('contextmenu', e => e.preventDefault());
   document.body.appendChild(ui); applyTouch();
-})();
-// double-click / double-tap anywhere on the game brings the on-screen controls back
-(function dblShow() {
-  let last = 0, lx = 0, ly = 0;
-  window.addEventListener('pointerdown', e => {
-    if (e.target.closest && e.target.closest('#touchUI')) return;
-    const t = Date.now(), near = Math.abs(e.clientX - lx) < 40 && Math.abs(e.clientY - ly) < 40;
-    if (t - last < 350 && near && (!SET.touch || touchHidden)) { SET.touch = 1; applyTouch(); saveSettings(); try { navigator.vibrate && navigator.vibrate(15); } catch (x) { } last = 0; }
-    else { last = t; lx = e.clientX; ly = e.clientY; }
-  });
 })();
 
 // ------------------------------------------------------------ switches / variables
@@ -520,9 +510,9 @@ function checkBump(d) {
   return false;
 }
 function faceTalker(e) { if (!e.dirFix && /^(NPC|trchar|trainer)/i.test(e.gname || '')) e.dir = opp[G.player.dir]; }
-function checkAction() {
+function checkAction() {   // an empty event under the player (placeholder page) must not swallow the key press meant for the NPC in front
   const p = G.player; const [dx, dy] = dirVec[p.dir];
-  for (const e of eventAt(p.x, p.y, e => e.page.trigger === 0 && e.through)) { if (startEvent(e)) return true; }
+  for (const e of eventAt(p.x, p.y, e => e.page.trigger === 0 && e.through && e.page.list && e.page.list.length > 1)) { if (startEvent(e)) return true; }
   for (const e of eventAt(p.x + dx, p.y + dy, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }
   if (typeof isCounter === 'function' && isCounter(p.x + dx, p.y + dy))        // counter: talk across it
     for (const e of eventAt(p.x + dx * 2, p.y + dy * 2, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }

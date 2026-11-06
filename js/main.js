@@ -1,19 +1,21 @@
 'use strict';
 // Boot: load assets, show a title card, start the intro on the first key press.
 (async function boot() {
+  G.inMainMenu = true; applyTouch();   // keep the on-screen controller hidden while loading, so only the menu shows
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH);
-  ctx.fillStyle = '#fff'; ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Loading…', SW / 2, SH / 2); ctx.textAlign = 'left';
-  await loadAssets();
   G.player = new PlayerChr();
   G.manual = new URLSearchParams(location.search).has('manual');
   const q = new URLSearchParams(location.search);
-  try { await Promise.all(['24px PkmnEms', '24px PkmnFl'].map(f => document.fonts.load(f))); } catch (e) { }
   G.started = false;
+  // The game's pictures are not fetched while the main menu is up; they load after a save is picked.
+  G.assetsReady = false;
+  G.loadGame = () => (G._ready = G._ready || (async () => { await loadAssets(); try { await Promise.all(['24px PkmnEms', '24px PkmnFl'].map(f => document.fonts.load(f))); } catch (e) { } G.assetsReady = true; })());   // started only once a save is picked
+  if (q.has('autostart') || q.has('map')) await G.loadGame();   // test links jump straight into the game, so they wait for everything
   requestAnimationFrame(loop);
-  if (q.has('autostart')) { G.started = true; enterMap(START.map, START.x, START.y, START.dir); keys.pressed = {}; return; }
+  if (q.has('autostart')) { G.inMainMenu = false; applyTouch(); G.started = true; enterMap(START.map, START.x, START.y, START.dir); keys.pressed = {}; return; }
   // Editor test hook: ?map=ID&x=X&y=Y&dir=2&vars=201:5,3:2&sw=12,14 jumps straight into a map.
   if (q.has('map')) {
-    G.started = true; G.name = G.name || 'Jorge'; if (q.get('shoes') !== '0') G.runningShoes = true; if (q.get('rod') !== '0' && !G.items.OLDROD) G.items.OLDROD = 1;   // test jumps skip the home scene that hands them over
+    G.inMainMenu = false; applyTouch(); G.started = true; G.name = G.name || 'Jorge'; if (q.get('shoes') !== '0') G.runningShoes = true; if (q.get('rod') !== '0' && !G.items.OLDROD) G.items.OLDROD = 1;   // test jumps skip the home scene that hands them over
     (q.get('vars') || '').split(',').forEach(p => { const [k, v] = p.split(':'); if (k && v !== undefined && !isNaN(+k)) G.vars[+k] = +v; });
     (q.get('sw') || '').split(',').forEach(k => { if (k && !isNaN(+k)) G.switches[+k] = true; });
     enterMap(+q.get('map'), +q.get('x') || 0, +q.get('y') || 0, +q.get('dir') || 2); keys.pressed = {}; return;

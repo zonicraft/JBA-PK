@@ -195,16 +195,19 @@ function* optionsScreen() {
 }
 
 // ------------------------------------------------------------ Save / Load
-const SAVE_KEY = 'jba_save_v1';
-function hasSave() { try { return !!localStorage.getItem(SAVE_KEY); } catch (e) { return false; } }
-function readSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) { return null; } }
+const SAVE_KEY = 'jba_save_v1';          // slot 1 keeps the original key, so saves made before multiple slots existed still load
+const SAVE_SLOTS = 6, LAST_SLOT_KEY = 'jba_last_slot';
+function slotKey(n) { return n === 1 ? SAVE_KEY : SAVE_KEY + '_s' + n; }
+function curSlot() { return G.slot || 1; }      // the slot picked on the main menu (G.slot is set when a save is opened / a new game is started)
+function hasSave(n = curSlot()) { try { return !!localStorage.getItem(slotKey(n)); } catch (e) { return false; } }
+function readSave(n = curSlot()) { try { return JSON.parse(localStorage.getItem(slotKey(n))); } catch (e) { return null; } }
 function writeSave() {
   const p = G.player;
   const data = {
     v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
     runningShoes: !!G.runningShoes, surfing: !!G.surfing, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
   };
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); return true; } catch (e) { return false; }
+  try { localStorage.setItem(slotKey(curSlot()), JSON.stringify(data)); try { localStorage.setItem(LAST_SLOT_KEY, String(curSlot())); } catch (e) { } return true; } catch (e) { return false; }
 }
 const SYM_RENAME = { NIDOQUEEN: 'ARU', FERALIGATR: 'DAVINCI', WOOPER: 'ILLYA', QUAGSIRE: 'ILLYA2', CLAMPERL: 'RORY', HUNTAIL: 'AETHER', BURMY: 'CHINO', CHANDELURE: 'HIZUNA', AXEW: 'JIBRIL', VIRIZION: 'KUKA', ORANGURU: 'YUITRINITY' };
 function migrateSyms(d) {   // saves made before species were renamed to their character names
@@ -227,7 +230,7 @@ function* saveGame() {
     const yes = yield* yesNo(); G.uiMsg = null;
     if (!yes) return false;
     if (hasSave()) {
-      yield* uiMessage('There is already a saved file. Is it OK to overwrite it?', { noWait: true });
+      yield* uiMessage('Slot ' + curSlot() + ' already has a saved file. Is it OK to overwrite it?', { noWait: true });
       const y2 = yield* yesNo(); G.uiMsg = null; if (!y2) return false;
     }
     yield* uiMessage('Saving... Don\'t turn off the power.', { noWait: true }); yield* wait(40);
@@ -467,16 +470,16 @@ function* pauseMenu() {
 }
 function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; if (G.teleReq) { const t = G.teleReq; G.teleReq = null; G.main = new Interp([[201, 0, [0, t.map, t.x, t.y, 2, 0]], [0, 0, []]], null); } else if (G.fishReq) { const rod = G.fishReq; G.fishReq = null; G.main = new Interp([[355, 0, [rod === 'Boat' ? 'pbSurfStart' : 'pbFish("' + rod + '")']], [0, 0, []]], null); } })()); }
 
-// ------------------------------------------------------------ Export / import save files (title screen)
+// ------------------------------------------------------------ Export / import save files (main menu)
 // Export: downloads the current save as a .json file.  Import: reads such a file back into this browser's save slot.
 const SAVE_FILE_FORMAT = 'jba-pokemon-save';
-function exportSaveFile() {
-  let raw = null; try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { }
+function exportSaveFile(n = curSlot()) {
+  let raw = null; try { raw = localStorage.getItem(slotKey(n)); } catch (e) { }
   if (!raw) return null;
   let d; try { d = JSON.parse(raw); } catch (e) { return false; }
   const pack = { format: SAVE_FILE_FORMAT, version: 1, exported: new Date().toISOString(), save: d };
   const nm = String(d.name || 'save').replace(/[^\w-]+/g, '') || 'save', day = new Date().toISOString().slice(0, 10);
-  const name = 'JBA-Pokemon-' + nm + '-' + day + '.json';
+  const name = 'JBA-Pokemon-' + nm + '-slot' + n + '-' + day + '.json';
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(pack)], { type: 'application/json' })); a.download = name;
   a.style.display = 'none'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
   return name;
@@ -496,101 +499,7 @@ function pickSaveFile() {
     document.body.appendChild(inp); inp.click(); setTimeout(() => window.addEventListener('focus', onFocus), 500);
   });
 }
-// popup on the title screen. Returns true when a save was imported.
-function* saveFileMenu(drawBase) {
-  const d = () => { drawBase(); drawPopup(); drawUiMsg(); };
-  return yield* withDraw(d, (function* () {
-    let imported = false;
-    while (true) {
-      const i = yield* choiceWindow(['EXPORT SAVE', 'IMPORT SAVE', 'CANCEL'], { x: 112, y: 108, w: 288 });
-      if (i < 0 || i === 2) return imported;
-      if (i === 0) {
-        const r = exportSaveFile();
-        if (r === null) yield* uiMessage('There is no saved game to export yet.');
-        else if (r === false) yield* uiMessage('The saved game is damaged and could not be exported.');
-        else yield* uiMessage('Save exported! Look for ' + r + ' in your Downloads folder.');
-        continue;
-      }
-      yield* uiMessage('Choose a save file (.json) to import...', { noWait: true });
-      let text, fin = false; pickSaveFile().then(t => { text = t; fin = true; }); while (!fin) yield;
-      G.uiMsg = null;
-      if (text === null) continue;
-      let data = null; try { const j = JSON.parse(text); data = j && j.save ? j.save : j; } catch (e) { }
-      if (!validSaveData(data)) { sfx('buzzer'); yield* uiMessage("That file isn't a valid JBA Pokémon save."); continue; }
-      if (hasSave()) {
-        const badges = [260, 261, 262, 263, 212].filter(k => data.switches[k]).length;
-        yield* uiMessage('Import ' + data.name + "'s save (" + badges + ' badges, ' + fmtTime(data.playFrames || 0) + ')? This replaces the save in this browser.', { noWait: true });
-        const yes = yield* yesNo(); G.uiMsg = null; if (!yes) continue;
-      }
-      try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch (e) { yield* uiMessage('The save could not be stored in this browser.'); continue; }
-      sfx('save'); imported = true;
-      yield* uiMessage('Save imported! Choose CONTINUE to play it.');
-      return true;
-    }
-  })());
-}
-
-// ------------------------------------------------------------ Title + load screen (Essentials style)
-function* titleScreen() {
-  stopME(); stopBGM();
-  if (!G.gesture) {   // browsers only allow sound after a click / key press
-    yield* withDraw(() => { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH); if (Math.floor(Date.now() / 600) % 2 === 0) txt('Click or press any key to start', SW / 2, SH / 2 - 14, { col: COL.light, size: 26, align: 'center' }); },
-      (function* () { while (!G.gesture) { yield; const gps = navigator.getGamepads ? navigator.getGamepads() : []; for (const g of gps) if (g && g.buttons.some(b => b.pressed)) G.gesture = true; } })());
-    yield; keys.pressed = {};
-  }
-  let save = null, opts = [];
-  const refresh = () => { save = hasSave() ? readSave() : null; if (save) migrateSyms(save); opts = save ? ['continue', 'new', 'transfer', 'options'] : ['new', 'transfer', 'options']; };
-  refresh();
-  // splash: "press start"
-  const splash = () => {
-    pic('title_splash', 0, 0);
-    if (Math.floor(Date.now() / 600) % 2 === 0 && UI('title_start')) ctx.drawImage(UI('title_start'), 0, 0, 512, UI('title_start').height, 0, 300 + 0, 512, UI('title_start').height);
-  };
-  yield* withDraw(splash, (function* () { stopME(); playBGM('frlg_title', 0.6); while (true) { yield; if (ok() || pressed('menu')) { sfx('ok'); return; } } })());
-  yield* fadeTo(1, 10);
-  let idx = 0;
-  const label = { continue: 'CONTINUE', new: 'NEW GAME', transfer: 'EXPORT / IMPORT', options: 'OPTIONS' };
-  const draw = () => {
-    pic('loadbg', 0, 0);
-    // panel positions: continue (big), others (small)
-    const lp = UI('loadPanels');
-    let y = save ? 8 : 24;   // with a save the big CONTINUE panel needs the extra room
-    opts.forEach((o, i) => {
-      const sel = i === idx;
-      if (o === 'continue') {
-        ctx.drawImage(lp, 0, sel ? 222 : 0, 408, 222, 52, y, 408, 222);
-        txt('CONTINUE', 70, y + 11, { col: COL.light, shadow: '#383838', size: 24 });
-        txt('Player', 70, y + 50, { col: COL.light, shadow: '#383838', size: 22 }); txt(save.name, 440, y + 50, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
-        txt('Badges', 70, y + 76, { col: COL.light, shadow: '#383838', size: 22 }); txt(String([260, 261, 262, 263, 212].filter(k => save.switches && save.switches[k]).length), 440, y + 76, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
-        txt('Time', 70, y + 102, { col: COL.light, shadow: '#383838', size: 22 }); txt(fmtTime(save.playFrames), 440, y + 102, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
-        txt(mapNameOf(save.map), 70, y + 128, { col: COL.light, shadow: '#383838', size: 22 });
-        save.party.slice(0, 6).forEach((p, j) => drawIcon(p, 62 + j * 62, y + 160, false, 0.9));
-        y += 226;
-      } else {
-        ctx.drawImage(lp, 0, sel ? 490 : 444, 408, 46, 52, y, 408, 46);
-        txt(label[o], 76, y + 15, { col: COL.light, shadow: '#383838', size: 24 });
-        y += save ? 49 : 56;
-      }
-    });
-    if (G.fade) { ctx.fillStyle = 'rgba(0,0,0,' + G.fade + ')'; }
-  };
-  G.fade = 0;
-  while (true) {
-    const choice = yield* withDraw(draw, (function* () {
-      while (true) {
-        yield;
-        if (rep('up')) { idx = (idx + opts.length - 1) % opts.length; sfx('cursor'); }
-        if (rep('down')) { idx = (idx + 1) % opts.length; sfx('cursor'); }
-        if (ok()) { sfx('ok'); return opts[idx]; }
-      }
-    })());
-    if (choice === 'options') { yield* optionsScreen(); continue; }
-    if (choice === 'transfer') { const imported = yield* saveFileMenu(draw); if (imported) { refresh(); idx = 0; } continue; }
-    stopBGM(); G.fade = 0;
-    if (choice === 'continue') { loadSave(save); G.started = true; return; }
-    enterMap(START.map, START.x, START.y, START.dir); G.started = true; return;
-  }
-}
+// The title screen / save-slot picker now lives in js/mainmenu.js (HTML overlay).
 
 // ------------------------------------------------------------ Pokémon Storage System (port of Essentials' PokemonStorageScene / Screen)
 const PCB = { W: 6, H: 5, SIZE: 30 };

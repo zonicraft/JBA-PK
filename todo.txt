@@ -7,7 +7,8 @@ remove the underground entrances, its not needed
 some places are not using the correct fight backgrounds
 can you add more trainer variety? grab assets from the essential project and change some of the already placed npcs
 
+Start of the game
+geso is not walking up to jorge
+theres a new possible patch of grass that does not have triggers
 
-to check in a new run:
-bag of potatos doesnt have icon, create a placeholder
-
+theres routes with trainers missing 21, 20 and 19

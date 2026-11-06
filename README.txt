@@ -13,13 +13,21 @@ the work of its authors and community.
 
 PLAYING
 -------
-Open index.html in your browser and press Enter to start.
+Open index.html in your browser.
+
+The main menu works with mouse, touch, keyboard and gamepad. You pick one of
+6 save files: open an existing one to continue, or pick an empty slot to start
+a new game. Each file can be exported to a .json backup, imported into another
+slot, or deleted. The Controls page lists the keys / buttons for keyboard,
+controller and touch screen and has the switch for the on-screen touch
+controller. Settings (music, sound, speed, display) are kept in the browser
+between visits.
 
   Arrow keys / WASD   move
   Z / Enter / Space   confirm
   X                   cancel (hold X or Shift to run once you have the sneakers)
 
-The game saves through its own in-game menu.
+The game saves through its own in-game menu, into the slot you opened.
 
 
 WHAT'S IN THE GAME
@@ -51,6 +59,7 @@ PROJECT LAYOUT
                        world.js     overworld, encounters, items
                        battle.js    battle system
                        menus*.js    pause menu, bag, party, shops, options
+                       mainmenu.js  title screen / save files / settings (HTML overlay)
                        pokedex.js, berries.js, anim.js, ui.js, story.js, main.js
                        data.js, pokejson.js   species and move data
   data/              map files (mapNNN.js), tilesets.js, mapnames.js, pbs.js
