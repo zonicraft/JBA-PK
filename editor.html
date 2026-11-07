@@ -74,6 +74,10 @@
   #welcome{padding:30px;max-width:640px;color:var(--dim)}
   #welcome h2{color:var(--txt);margin-top:0}
   kbd{background:var(--panel2);border:1px solid var(--line);border-radius:3px;padding:0 4px}
+  .tmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:4px;max-height:210px;overflow:auto;margin:6px 0}
+  .tmtile{border:1px solid var(--line);border-radius:6px;padding:3px;text-align:center;cursor:pointer;font-size:11px;background:var(--panel2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .tmtile:hover{border-color:var(--acc)}.tmtile.on{border-color:var(--acc);background:#1f3350}
+  .tmtile div{overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -87,6 +91,7 @@
     <label>Game page <input id="gameUrl" class="w" value="index.html" title="Path or URL of the game's index.html, relative to this editor (default: the same folder as the editor)"></label>
     <label>Variables <input id="tVars" class="s" placeholder="201:5,3:2" title="Set before testing: id:value, comma separated"></label>
     <label>Switches ON <input id="tSw" class="s" placeholder="12,14" title="Switch ids turned ON before testing"></label>
+    <button id="btnTrainer" title="Click an empty tile first, then press this to make a trainer there">＋ Trainer here</button>
     <button id="btnTest" class="primary" disabled>▶ Test here</button>
   </header>
   <main>
@@ -226,6 +231,23 @@ async function attach(h) {
     } catch (e) { } return {};
   };
   S.names = await readJs('mapnames.js', 'MAPNAME'); S.tilesets = await readJs('tilesets.js', 'TILESETS');
+  S.pbs = null; S.pbsText = ''; S.pbsDirty = false; S.tm = null;
+  try {
+    S.pbsText = await (await (await S.data.getFileHandle('pbs.js')).getFile()).text();
+    S.pbs = { ENCOUNTERS: await readJs('pbs.js', 'ENCOUNTERS'), TRAINERS: await readJs('pbs.js', 'TRAINERS'), TTYPES: await readJs('pbs.js', 'TTYPES') };
+  } catch (e) { S.pbs = null; }
+  S.conns = []; S.enc = {}; S.species = new Set(); S.spName = {}; S.trchars = [];
+  try {
+    const wt = await (await (await (await S.dir.getDirectoryHandle('js')).getFileHandle('world.js')).getFile()).text();
+    const grab = (start, open, close) => { let i = wt.indexOf(start); i = wt.indexOf(open, i); let d = 0, q = null; for (let j = i; j < wt.length; j++) { const c = wt[j]; if (q) { if (c === '\\') j++; else if (c === q) q = null; } else if (c === "'" || c === '"') q = c; else if (c === '/' && wt[j + 1] === '/') { while (wt[j] !== '\n') j++; } else if (c === open) d++; else if (c === close && --d === 0) return wt.slice(i, j + 1).replace(/\/\/[^\n]*/g, ''); } return 'null'; };
+    S.conns = Function('return ' + grab('const CONNS', '[', ']'))() || [];
+    S.enc = Function('return ' + grab('const ENC =', '{', '}'))() || {};
+  } catch (e) { }
+  try {
+    const pt = await (await (await S.data.getFileHandle('pokemon.js')).getFile()).text();
+    for (const m of pt.matchAll(/"([A-Z0-9_]+)":\{"internalName":"[^"]*","dexNumber":\d+,"name":"([^"]*)"/g)) { S.species.add(m[1]); S.spName[m[1]] = m[2]; }
+  } catch (e) { }
+  try { const cd = await (await S.dir.getDirectoryHandle('assets')).getDirectoryHandle('characters'); for await (const [n, hd] of cd.entries()) if (hd.kind === 'file' && /^trchar.*\.png$/i.test(n)) S.trchars.push(n.replace(/\.png$/i, '')); S.trchars.sort(); } catch (e) { }
   S.ids = [];
   for await (const [name, handle] of S.data.entries()) { const m = /^map(\d+)\.js$/.exec(name); if (m && handle.kind === 'file') S.ids.push(+m[1]); }
   S.ids.sort((a, b) => a - b);
@@ -248,6 +270,7 @@ async function loadMap(id) {
   S.maps[id] = rec; return rec;
 }
 async function selectMap(id, keepSel) {
+  if (S.tm && S.tm.mapId !== id) tmCancel();
   try { await loadMap(id); } catch (e) { status('Could not load map ' + id + ': ' + e.message, 'err'); return; }
   S.cur = id; if (!keepSel) { S.ev = null; S.page = 0; S.cell = null; } S.cmdSel = -1; S.open.clear();
   const m = curMap(); if (!m.base) await buildBase(m);
@@ -275,6 +298,16 @@ async function saveMap() {
     }
     const w = await m.fh.createWritable();
     await w.write(`(window.MAPS=window.MAPS||{})[${m.id}]=${JSON.stringify(m.obj)};`); await w.close();
+    if (S.pbsDirty) {
+      const day2 = day, bdir2 = await S.dir.getDirectoryHandle('_editor_backups', { create: true }), pn = `pbs_${day2}.js`;
+      let ex2 = true; try { await bdir2.getFileHandle(pn); } catch (e) { ex2 = false; }
+      if (!ex2) { const wb = await (await bdir2.getFileHandle(pn, { create: true })).createWritable(); await wb.write(S.pbsText); await wb.close(); }
+      const t0 = S.pbsText; let i = t0.indexOf('window.TRAINERS='); i = t0.indexOf('{', i); let d = 0, str = false, j = i;
+      for (; j < t0.length; j++) { const c = t0[j]; if (str) { if (c === '\\') j++; else if (c === '"') str = false; } else if (c === '"') str = true; else if (c === '{') d++; else if (c === '}' && --d === 0) break; }
+      const nt = t0.slice(0, i) + JSON.stringify(S.pbs.TRAINERS) + t0.slice(j + 1);
+      const wp = await (await S.data.getFileHandle('pbs.js')).createWritable(); await wp.write(nt); await wp.close();
+      S.pbsText = nt; S.pbsDirty = false;
+    }
     m.dirty = false; m.reformat = false; renderList(); updateButtons();
     status(`Saved map ${m.id} (${new Date().toLocaleTimeString()}).`, 'ok');
   } catch (e) { status('Save failed: ' + e.message, 'err'); }
@@ -348,11 +381,11 @@ function collectPaths() {
   const m = curMap(), out = []; if (!m || !S.paths) return out;
   const ev = m.obj.events[S.ev];
   if (S.allPaths) for (const e of Object.values(m.obj.events)) {
-    if (ev && e.id === ev.id) continue; const pg = (e.pages || []).find(p => p.moveType === 3); if (pg) out.push({ pts: walk(pg.route.list, e.x, e.y, pg.gfx.dir || 2).pts, color: '#7d8da3', dashed: true, label: '#' + e.id, faint: true });
+    if (ev && e.id === ev.id) continue; const pg = (e.pages || []).find(p => p.moveType === 3 || p.moveType === 5); if (pg) out.push({ pts: walk(pg.route.list, e.x, e.y, pg.gfx.dir || 2).pts, color: '#7d8da3', dashed: true, label: '#' + e.id, faint: true });
   }
   if (!ev) return out;
   const pg = ev.pages[Math.min(S.page, ev.pages.length - 1)]; if (!pg) return out;
-  if (pg.moveType === 3) out.push({ pts: walk(pg.route.list, ev.x, ev.y, pg.gfx.dir || 2).pts, color: PALETTE[1], dashed: !!pg.route.repeat, label: 'patrol' + (pg.route.repeat ? ' ↻' : '') });
+  if (pg.moveType === 3 || pg.moveType === 5) out.push({ pts: walk(pg.route.list, ev.x, ev.y, pg.gfx.dir || 2).pts, color: PALETTE[1], dashed: !!pg.route.repeat, label: 'patrol' + (pg.route.repeat ? ' ↻' : '') });
   const pos = {}; const get = t => { const k = t <= 0 ? (t === 0 ? 'self' : 'player') : t; if (!pos[k]) { const e = t > 0 && m.obj.events[t] ? m.obj.events[t] : ev; pos[k] = [e.x, e.y, 2]; } return pos[k]; };
   let n = 0;
   (pg.list || []).forEach(c => {
@@ -420,7 +453,10 @@ function drawEvent(g, m, ev) {
 function cellAt(e) { const cv = $('#cv'), r = cv.getBoundingClientRect(), s = cv.width / r.width; return { x: Math.floor((e.clientX - r.left) * s / TS), y: Math.floor((e.clientY - r.top) * s / TS) }; }
 function evAt(x, y) { return Object.values(curMap().obj.events).find(ev => ev.x === x && ev.y === y); }
 $('#cv').addEventListener('click', e => {
-  const m = curMap(); if (!m) return; const c = cellAt(e); if (c.x < 0 || c.y < 0 || c.x >= m.obj.w || c.y >= m.obj.h) return;
+  const m = curMap(); if (!m) return; const c = cellAt(e);
+  if (S.tm && S.tm.draw) { tmAddTile(c); return; }
+  if (S.tm) return;
+  if (c.x < 0 || c.y < 0 || c.x >= m.obj.w || c.y >= m.obj.h) return;
   S.cell = { x: c.x, y: c.y }; const ev = evAt(c.x, c.y);
   if (ev) { S.ev = ev.id; S.page = 0; S.cmdSel = -1; S.open.clear(); } else S.ev = null;
   renderAll();
@@ -566,12 +602,13 @@ function condSummary(pg) {
   return a.length ? 'Appears when ' + a.join(' and ') : 'Always appears (no conditions)';
 }
 function renderEvent() {
+  if (S.tm) { renderTM(); return; }
   const box = $('#evpanel'), keepScroll = box.scrollTop; box.innerHTML = ''; const m = curMap();
   if (!m) return;
   const ev = m.obj.events[S.ev];
   if (!ev) {
     box.append(el('div', { style: 'color:var(--dim)', textContent: S.cell ? `Tile (${S.cell.x}, ${S.cell.y}) is empty.` : 'Click an event on the map to edit it.' }));
-    if (S.cell && !evAt(S.cell.x, S.cell.y)) box.append(el('div', { className: 'field' }, [el('button', { className: 'primary', textContent: '＋ Add event here', onclick: addEvent })]));
+    if (S.cell && !evAt(S.cell.x, S.cell.y)) box.append(el('div', { className: 'field' }, [el('button', { className: 'primary', textContent: '＋ Add event here', onclick: addEvent }), el('button', { textContent: '＋ Add trainer here', onclick: tmStart })]));
     return;
   }
   const top = el('div', { className: 'field' }); top.append(el('b', { textContent: '#' + ev.id }));
@@ -612,11 +649,11 @@ function renderEvent() {
   const th = el('input', { type: 'checkbox', checked: !!pg.through, onchange: () => { pg.through = th.checked; touch(); } });
   r3.append(el('label', { textContent: 'Sprite:' }), gn, gd, el('label', {}, [th, ' walk through']));
   const r4 = el('div', { className: 'field' });
-  const mt = el('select', { onchange: () => { pg.moveType = +mt.value; touch(); renderAll(); } }, ['Stands still', 'Wanders randomly', 'Approaches player', 'Follows a set path'].map((t, i) => el('option', { value: i, textContent: t, selected: pg.moveType === i })));
+  const mt = el('select', { onchange: () => { pg.moveType = +mt.value; touch(); renderAll(); } }, [[0, 'Stands still'], [1, 'Wanders randomly'], [2, 'Approaches player'], [3, 'Looks around (turns only)'], [5, 'Walks its path (patrol)']].map(([i, t]) => el('option', { value: i, textContent: t, selected: pg.moveType === i })));
   const sp = el('select', { className: 'mini', onchange: () => { pg.speed = +sp.value; touch(); } }, [1, 2, 3, 4, 5, 6].map(v => el('option', { value: v, textContent: v, selected: pg.speed === v })));
   r4.append(el('label', { textContent: 'Movement:' }), mt, el('label', { textContent: 'speed' }), sp);
   cb.append(r1, vr, r2, r3, r4);
-  if (pg.moveType === 3) {
+  if (pg.moveType === 3 || pg.moveType === 5) {
     pg.route = pg.route || { mr: 1, repeat: true, skip: false, list: [[0, []]] };
     const rp = el('input', { type: 'checkbox', checked: !!pg.route.repeat, onchange: () => { pg.route.repeat = rp.checked; touch(); renderMap(); } });
     cb.append(el('div', { className: 'field' }, [el('label', {}, [rp, ' repeat forever'])]), routeBox(pg.route, 'page', () => { touch(); renderEvent(); renderMap(); }));
@@ -647,6 +684,209 @@ function dupEvent(ev) {
   [c.x, c.y] = free; m.obj.events[id] = c; S.ev = id; S.cell = { x: c.x, y: c.y }; touch(); renderAll();
 }
 
+// ------------------------------------------------------------------ trainer maker
+const TM_FEM = /FEM|LASS|LADY|BEAUTY|PICNICK|GIRL|MAID|NURSE|SISTER|MISS|WOMAN|CUNNY|MIKO|_F$/i;
+const TM_MALE = /(^|[^A-Z])MALE|_M$|BOY|(^|[^A-Z])MAN$|GENTLEMAN|GUY|BROTHER/i;
+const genderOf = s => TM_FEM.test(s) ? 'f' : TM_MALE.test(s) ? 'm' : '?';
+const FACE = { 2: 16, 4: 17, 6: 18, 8: 19 }, STEPDIR = { 1: 2, 2: 4, 3: 6, 4: 8 }, OPPSTEP = { 1: 4, 4: 1, 2: 3, 3: 2 };
+const DNAME = { 8: '↑ up', 2: '↓ down', 4: '← left', 6: '→ right' };
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const spName = s => (S.spName && S.spName[s]) || s;
+const tmIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { tmIO.unobserve(e.target); e.target._load && e.target._load(); } }), { rootMargin: '120px' });
+function tmThumb(dir, name, w, h, frame) {
+  const c = el('canvas', { width: w, height: h }); c.style.cssText = 'width:' + w + 'px;height:' + h + 'px;background:transparent;border:0;cursor:pointer;margin:0 auto;display:block';
+  c._load = () => loadImg(dir, name).then(im => { if (!im) return; const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
+    const sw = frame ? im.width / 4 : im.width, sh = frame ? im.height / 4 : im.height, k = Math.min(w / sw, h / sh);
+    g.drawImage(im, 0, 0, sw, sh, (w - sw * k) / 2, (h - sh * k) / 2, sw * k, sh * k); });
+  tmIO.observe(c); return c;
+}
+function tmEvent() { const t = S.tm; return t && S.maps[t.mapId].obj.events[t.evId]; }
+function tmVr(t) { let vr = 0; while (S.pbs.TRAINERS[`${t.cls || 'X'}|${t.name}|${vr}`] && t.cls) vr++; return vr; }
+function tmApply() {
+  const t = S.tm, ev = tmEvent(); if (!ev) return;
+  let route = [], moveType = 0, dir = 2;
+  if (t.mode === 'walk') {
+    const st = t.steps, back = t.pingpong ? st.slice().reverse().map(c => OPPSTEP[c]) : [];
+    route = [...st, ...back].map(c => [c, []]); moveType = route.length ? 5 : 0; dir = st.length ? STEPDIR[st[0]] : 2;
+  } else {
+    const ds = t.dirs.length ? t.dirs : [2]; dir = ds[0];
+    if (ds.length > 1) { ds.forEach(d => route.push([FACE[d], []], [15, [40]])); moveType = 3; }
+  }
+  route.push([0, []]);
+  const gfx = { name: t.trchar || '', dir, pat: 0, tile: 0, opacity: 255 };
+  const nm = (t.name || 'Trainer').replace(/["\\]/g, '');
+  const page = (cond, list, trigger, mv) => ({ cond: Object.assign({ sw1: null, sw2: null, var: null, self: null }, cond), gfx: { ...gfx }, moveType: mv, speed: 3, freq: 3,
+    route: { mr: 1, repeat: true, skip: false, list: (mv === 3 || mv === 5) ? route : [[0, []]] }, walk: true, step: false, dirfix: false, through: false, top: false, trigger, list });
+  const script = `pbTrainerBattle(PBTrainers::${t.cls || 'YOUNGSTER'},"${nm}","${t.defeat}",false,${t.vr != null ? t.vr : tmVr(t)})`;
+  ev.name = `Trainer(${Math.max(1, t.sight | 0)})`;
+  ev.pages = [
+    page({}, [[355, 0, [`Kernel.pbExclaim($game_map.events[${ev.id}])`]], [355, 0, ['pbTrainerApproach']], [101, 0, ['\\b' + t.intro1]], [401, 0, [t.intro2]],
+      [111, 0, [12, script]], [123, 1, ['A', 0]], [0, 1, []], [411, 0, []], [0, 1, []], [412, 0, []], [0, 0, []]], 2, moveType),
+    page({ self: 'A' }, [[101, 0, ['\\b' + t.after]], [0, 0, []]], 0, 0)];
+  S.maps[t.mapId].dirty = true; updateButtons();
+}
+function tmStart() {
+  const m = curMap();
+  if (!m) return status('Open a map first.', 'err');
+  if (!S.pbs) return status('Could not read data/pbs.js, so the trainer maker is unavailable.', 'err');
+  if (S.tm) return;
+  if (!S.cell || evAt(S.cell.x, S.cell.y)) return status('Click an empty tile on the map first — that is where the trainer will stand.', 'err');
+  const id = Math.max(0, ...Object.keys(m.obj.events).map(Number)) + 1;
+  S.tm = { mapId: m.id, evId: id, gender: 'm', showAll: false, cls: null, name: 'Trainer', trchar: null, mode: 'look', dirs: [2], steps: [], runs: [], pingpong: true, draw: false, sight: 4,
+    min: 5, max: 8, size: 3, depth: 1, water: false, extra: '', excluded: new Set(), party: [], classQ: '', charQ: '',
+    intro1: '[intro line 1]', intro2: '[intro line 2]', defeat: '[defeat line]', after: '[after battle line]' };
+  m.obj.events[id] = { id, name: 'Trainer(4)', x: S.cell.x, y: S.cell.y, pages: [NEW_PAGE()] };
+  S.ev = id; S.page = 0; tmApply(); tmRoll(); renderAll();
+}
+function tmCancel() {
+  const t = S.tm; if (!t) return; const m = S.maps[t.mapId]; if (m) delete m.obj.events[t.evId];
+  S.tm = null; $('#cv').style.cursor = 'crosshair'; if (S.cur === t.mapId) { S.ev = null; renderAll(); } updateButtons();
+}
+function tmCreate() {
+  const t = S.tm; const miss = [];
+  if (!t.cls) miss.push('a trainer class'); if (!t.trchar) miss.push('a walking sprite'); if (!t.party.length) miss.push('at least one Pokémon'); if (!(t.name || '').trim()) miss.push('a name');
+  if (t.party.some(p => !S.species || !S.species.has(p.sym))) miss.push('valid Pokémon names');
+  if (miss.length) return status('Still needs ' + miss.join(', ') + '.', 'err');
+  const vr = tmVr(t), nm = t.name.replace(/["\\]/g, ''); t.vr = vr;
+  S.pbs.TRAINERS[`${t.cls}|${nm}|${vr}`] = { t: t.cls, n: nm, p: t.party.map(p => [p.sym, p.lvl, '', [], 'SERIOUS']) };
+  S.pbsDirty = true; tmApply(); const ev = tmEvent(); S.tm = null; $('#cv').style.cursor = 'crosshair'; S.cell = { x: ev.x, y: ev.y }; renderAll();
+  status(`Trainer #${ev.id} created (${t.cls} ${nm}). Fill in the [placeholder] lines on page 1 and page 2, then press Ctrl+S.`, 'ok');
+}
+function tmNeighbours(id, depth) {
+  const d = new Map([[id, 0]]); let frontier = [id];
+  for (let k = 1; k <= depth; k++) { const nx = [];
+    for (const c of S.conns) for (const [a, b] of [[c[0], c[3]], [c[3], c[0]]]) if (frontier.includes(a) && !d.has(b)) { d.set(b, k); nx.push(b); }
+    frontier = nx; }
+  return d;
+}
+function tmSpeciesOf(id) {
+  const t = S.tm; if (S.enc[id]) return S.enc[id].land.map(s => s[0]);
+  const e = S.pbs.ENCOUNTERS[id]; if (!e) return []; const r = [];
+  ['Land', 'Cave'].concat(t.water ? ['Water'] : []).forEach(k => (e[k] || []).forEach(s => r.push(s[0]))); return r;
+}
+function tmPool() {
+  const t = S.tm, dist = tmNeighbours(t.mapId, t.depth), out = new Map();
+  t.extra.split(',').map(s => +s.trim()).filter(Boolean).forEach(i => dist.set(i, 9));
+  for (const [id, d] of dist) for (const sym of new Set(tmSpeciesOf(id))) { if (!out.has(sym)) out.set(sym, []); out.get(sym).push([id, d]); }
+  return out;
+}
+function tmRoll() {
+  const t = S.tm, pool = [...tmPool().keys()].filter(s => !t.excluded.has(s)), n = Math.max(1, Math.min(6, t.size | 0));
+  const lo = Math.min(t.min, t.max), hi = Math.max(t.min, t.max);
+  if (!pool.length) { t.party = t.party.length ? t.party : []; return; }
+  const bag = shuffle(pool), syms = []; for (let i = 0; i < n; i++) syms.push(i < bag.length ? bag[i] : pool[Math.floor(Math.random() * pool.length)]);
+  const lv = syms.map(() => lo + Math.floor(Math.random() * (hi - lo + 1))).sort((a, b) => a - b);
+  t.party = syms.map((sym, i) => ({ sym, lvl: lv[i] }));
+}
+function tmAddTile(c) {
+  const t = S.tm, ev = tmEvent(), m = curMap(); if (c.x < 0 || c.y < 0 || c.x >= m.obj.w || c.y >= m.obj.h) return;
+  let x = ev.x, y = ev.y; for (const s of t.steps) { x += s === 3 ? 1 : s === 2 ? -1 : 0; y += s === 1 ? 1 : s === 4 ? -1 : 0; }
+  const before = t.steps.length;
+  while (x < c.x) { t.steps.push(3); x++; } while (x > c.x) { t.steps.push(2); x--; } while (y < c.y) { t.steps.push(1); y++; } while (y > c.y) { t.steps.push(4); y--; }
+  if (t.steps.length > before) t.runs.push(t.steps.length - before);
+  tmApply(); renderMap(); tmParts.behaviour();
+}
+const tmParts = {};
+function renderTM() {
+  const t = S.tm, box = $('#evpanel'); box.innerHTML = ''; const ev = tmEvent();
+  box.append(el('div', { className: 'field' }, [el('b', { textContent: `New trainer at (${ev.x}, ${ev.y})` }), el('span', { style: 'flex:1' }),
+    el('button', { textContent: 'Cancel', onclick: tmCancel }), el('button', { className: 'primary', textContent: '✔ Create trainer', onclick: tmCreate })]));
+  const sec = (title, kids) => { const b = el('div', { className: 'box' }); b.append(el('div', { className: 't', textContent: title })); kids.forEach(k => b.append(k)); box.append(b); return b; };
+  // 1 gender + class
+  const gb = el('div', { className: 'field' }); const gbtn = {};
+  [['m', '♂ Male'], ['f', '♀ Female']].forEach(([g, l]) => gbtn[g] = gb.appendChild(el('button', { textContent: l, onclick: () => { t.gender = g; paintG(); tmParts.classes(); tmParts.sprites(); } })));
+  const sa = el('input', { type: 'checkbox', checked: t.showAll, onchange: () => { t.showAll = sa.checked; tmParts.classes(); tmParts.sprites(); } });
+  gb.append(el('label', {}, [sa, ' show all']));
+  const paintG = () => Object.entries(gbtn).forEach(([g, b]) => b.className = t.gender === g ? 'primary' : '');
+  const cq = el('input', { placeholder: 'search trainer class…', className: 'wide', oninput: () => { t.classQ = cq.value; tmParts.classes(); } });
+  const cg = el('div', { className: 'tmgrid' }), ctitle = el('div', { className: 'summary' });
+  sec('1 · Gender & trainer class', [gb, cq, cg, ctitle]); paintG();
+  tmParts.classes = () => {
+    cg.innerHTML = ''; const q = t.classQ.toLowerCase(); let n = 0; const nameCount = {}; Object.values(S.pbs.TTYPES).forEach(v => nameCount[v.name] = (nameCount[v.name] || 0) + 1);
+    for (const [key, v] of Object.entries(S.pbs.TTYPES)) {
+      const g = genderOf(key + ' ' + (v.name || '')); if (!t.showAll && g !== '?' && g !== t.gender) continue;
+      if (q && !(key + ' ' + v.name).toLowerCase().includes(q)) continue; n++;
+      const tile = el('div', { className: 'tmtile' + (t.cls === key ? ' on' : ''), title: key, onclick: () => { t.cls = key; tmApply(); tmParts.classes(); } },
+        [v.noSprite ? el('div', { style: 'height:56px' }) : tmThumb('trainers', 'trainer' + pad3(v.id), 56, 56, false), el('div', { textContent: (nameCount[v.name] > 1 || !v.name) ? key : v.name })]);
+      cg.append(tile);
+    }
+    ctitle.textContent = t.cls ? `Selected: ${t.cls} (${(S.pbs.TTYPES[t.cls] || {}).name || ''}) · ${n} shown` : `${n} classes shown`;
+  };
+  // 2 name + sprite
+  const nm = el('input', { value: t.name, oninput: () => { t.name = nm.value; tmApply(); } });
+  const sq = el('input', { placeholder: 'search sprite…', className: 'wide', oninput: () => { t.charQ = sq.value; tmParts.sprites(); } });
+  const sg = el('div', { className: 'tmgrid' }), stitle = el('div', { className: 'summary' });
+  sec('2 · Name & walking sprite (trchar)', [el('div', { className: 'field' }, [el('label', { textContent: 'Name' }), nm]), sq, sg, stitle]);
+  tmParts.sprites = () => {
+    sg.innerHTML = ''; const q = t.charQ.toLowerCase(); let n = 0;
+    for (const f of S.trchars || []) {
+      const g = genderOf(f); if (!t.showAll && g !== '?' && g !== t.gender) continue; if (q && !f.toLowerCase().includes(q)) continue; n++;
+      sg.append(el('div', { className: 'tmtile' + (t.trchar === f ? ' on' : ''), title: f, onclick: () => { t.trchar = f; tmApply(); renderMap(); tmParts.sprites(); } },
+        [tmThumb('characters', f, 32, 48, true), el('div', { textContent: f.replace(/^trchar_?/i, '') || f })]));
+    }
+    stitle.textContent = (t.trchar ? `Selected: ${t.trchar} · ` : '') + `${n} shown`;
+  };
+  // 3 behaviour
+  const bh = el('div'); sec('3 · How it behaves', [bh]);
+  tmParts.behaviour = () => {
+    bh.innerHTML = '';
+    const mode = el('div', { className: 'field' }); [['look', '👀 Stands and looks'], ['walk', '🚶 Walks a route']].forEach(([k, l]) => mode.append(el('button', { textContent: l, className: t.mode === k ? 'primary' : '', onclick: () => { t.mode = k; t.draw = false; tmApply(); renderMap(); tmParts.behaviour(); } })));
+    bh.append(mode);
+    if (t.mode === 'look') {
+      const f = el('div', { className: 'field' }, [el('label', { textContent: 'Looks:' })]);
+      [8, 6, 2, 4].forEach(d => { const c = el('input', { type: 'checkbox', checked: t.dirs.includes(d), onchange: () => { t.dirs = [8, 6, 2, 4].filter(x => x === d ? c.checked : t.dirs.includes(x)); if (!t.dirs.length) { t.dirs = [d]; c.checked = true; } tmApply(); renderMap(); } }); f.append(el('label', {}, [c, ' ' + DNAME[d]])); });
+      bh.append(f, el('div', { className: 'summary', textContent: 'One direction = stands still facing it. Several = turns through them in order (clockwise from up).' }));
+    } else {
+      const b = el('div', { className: 'field' });
+      b.append(el('button', { textContent: t.draw ? '✔ Done drawing' : '✎ Draw route on map', className: t.draw ? 'primary' : '', onclick: () => { t.draw = !t.draw; $('#cv').style.cursor = t.draw ? 'cell' : 'crosshair'; tmParts.behaviour(); } }),
+        el('button', { textContent: 'undo last tile', onclick: () => { const n = t.runs.pop(); if (n) t.steps.length -= n; tmApply(); renderMap(); tmParts.behaviour(); } }),
+        el('button', { textContent: 'clear', onclick: () => { t.steps = []; t.runs = []; tmApply(); renderMap(); tmParts.behaviour(); } }));
+      const pp = el('input', { type: 'checkbox', checked: t.pingpong, onchange: () => { t.pingpong = pp.checked; tmApply(); renderMap(); } });
+      bh.append(b, el('div', { className: 'field' }, [el('label', {}, [pp, ' walk back to the start (loops forever)'])]),
+        el('div', { className: 'summary', textContent: t.draw ? 'Click tiles on the map — the route extends from its end tile to the tile you click (horizontal first, then vertical).' : `${t.steps.length} step(s) drawn.` }));
+    }
+    const si = el('input', { type: 'number', className: 'mini', min: 1, max: 10, value: t.sight, onchange: () => { t.sight = +si.value || 1; tmApply(); } });
+    bh.append(el('div', { className: 'field' }, [el('label', { textContent: 'Sight distance (tiles):' }), si]));
+  };
+  // 4 party
+  const pl = el('div', { className: 'field' });
+  const mk = (k, lab, mn, mx) => { const i = el('input', { type: 'number', className: 'mini', min: mn, max: mx, value: t[k], onchange: () => { t[k] = Math.max(mn, Math.min(mx, +i.value || mn)); i.value = t[k]; tmParts.pool(); } }); return [el('label', { textContent: lab }), i]; };
+  pl.append(...mk('min', 'Level min', 1, 100), ...mk('max', 'max', 1, 100), ...mk('size', 'Pokémon', 1, 6));
+  const pl2 = el('div', { className: 'field' });
+  const dp = el('select', { className: 'mini', onchange: () => { t.depth = +dp.value; tmParts.pool(); } }, [[0, 'this map only'], [1, 'this map + neighbours'], [2, 'neighbours of neighbours']].map(([v, l]) => el('option', { value: v, textContent: l, selected: t.depth === v })));
+  const wt = el('input', { type: 'checkbox', checked: t.water, onchange: () => { t.water = wt.checked; tmParts.pool(); } });
+  const ex = el('input', { className: 'mini', style: 'width:110px', placeholder: 'extra map ids', title: 'Also use the wild Pokémon of these maps, e.g. 5,7', oninput: () => { t.extra = ex.value; tmParts.pool(); } });
+  pl2.append(el('label', { textContent: 'Pokémon from' }), dp, el('label', {}, [wt, ' water']), ex);
+  const pool = el('div', { className: 'chips' }), poolInfo = el('div', { className: 'summary' }), party = el('div');
+  const btns = el('div', { className: 'field' }, [el('button', { className: 'primary', textContent: '🎲 Roll party', onclick: () => { tmRoll(); tmParts.party(); } }),
+    el('button', { textContent: '＋ add one', onclick: () => { const p = [...tmPool().keys()].filter(s => !t.excluded.has(s)); if (t.party.length < 6) { t.party.push({ sym: p.length ? p[Math.floor(Math.random() * p.length)] : '', lvl: t.max }); tmParts.party(); } } })]);
+  sec('4 · Party', [pl, pl2, poolInfo, pool, btns, party]);
+  tmParts.pool = () => {
+    const P = tmPool(); pool.innerHTML = '';
+    poolInfo.textContent = P.size ? `${P.size} possible Pokémon from ${new Set([...P.values()].flat().map(x => x[0])).size} map(s) — click one to leave it out.` : 'No wild Pokémon found nearby. Add map ids in the box above, or add Pokémon by hand below.';
+    [...P.entries()].sort((a, b) => a[1][0][1] - b[1][0][1]).forEach(([sym, srcs]) => pool.append(el('span', { className: 'chip', style: 'cursor:pointer;' + (t.excluded.has(sym) ? 'opacity:.35;text-decoration:line-through' : ''),
+      title: srcs.map(([id]) => id + ' ' + (S.names[id] || '')).join(', '), textContent: spName(sym), onclick: () => { t.excluded.has(sym) ? t.excluded.delete(sym) : t.excluded.add(sym); tmParts.pool(); } })));
+    if (!t.party.length) tmRoll(); tmParts.party();
+  };
+  tmParts.party = () => {
+    party.innerHTML = '';
+    t.party.forEach((p, i) => {
+      const s = el('input', { className: 'mini', style: 'width:150px', value: p.sym }); s.setAttribute('list', 'tmSpecies');
+      const lab = el('span', { className: 'tag', textContent: spName(p.sym) });
+      s.oninput = () => { p.sym = s.value.toUpperCase(); s.classList.toggle('bad', !(S.species && S.species.has(p.sym))); lab.textContent = spName(p.sym); };
+      s.classList.toggle('bad', !(S.species && S.species.has(p.sym)));
+      const l = el('input', { type: 'number', className: 'mini', value: p.lvl, min: 1, max: 100, onchange: () => { p.lvl = Math.max(1, Math.min(100, +l.value || 1)); } });
+      party.append(el('div', { className: 'field' }, [el('b', { textContent: i + 1 + '.' }), s, 'Lv', l, lab, el('button', { textContent: '✕', onclick: () => { t.party.splice(i, 1); tmParts.party(); } })]));
+    });
+    if (!t.party.length) party.append(el('div', { className: 'summary', textContent: '(empty party)' }));
+  };
+  // 5 phrases
+  const ph = (k, lab) => { const a = el('textarea', { rows: 1, className: 'speech', value: t[k], oninput: () => { t[k] = a.value; autosize(a); tmApply(); } }); return el('div', { className: 'field' }, [el('label', { textContent: lab, style: 'width:100%' }), a]); };
+  sec('5 · Phrases (placeholders — type the real lines later)', [ph('intro1', 'Before the fight (line 1)'), ph('intro2', 'Before the fight (line 2)'), ph('defeat', 'When you win (in battle)'), ph('after', 'Talking to them after the fight')]);
+  const dl = el('datalist', { id: 'tmSpecies' }); [...(S.species || [])].forEach(s => dl.append(el('option', { value: s, label: spName(s) }))); box.append(dl);
+  tmParts.classes(); tmParts.sprites(); tmParts.behaviour(); tmParts.pool();
+}
+
 // ------------------------------------------------------------------ test button
 async function testHere() {
   const m = curMap(); if (!m) return;
@@ -663,7 +903,7 @@ async function testHere() {
 
 // ------------------------------------------------------------------ wiring
 function renderAll() { renderMap(); renderEvent(); updateButtons(); }
-$('#btnOpen').onclick = openFolder; $('#btnSave').onclick = saveMap; $('#btnRevert').onclick = revertMap; $('#btnTest').onclick = testHere;
+$('#btnOpen').onclick = openFolder; $('#btnSave').onclick = saveMap; $('#btnRevert').onclick = revertMap; $('#btnTest').onclick = testHere; $('#btnTrainer').onclick = tmStart;
 $('#mapSearch').oninput = renderList;
 $('#textSearch').onkeydown = e => { if (e.key === 'Enter') searchAll(e.target.value); };
 document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); saveMap(); } });

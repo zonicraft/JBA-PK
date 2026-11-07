@@ -22,6 +22,7 @@ const BOX_FOE = { x: -16, y: 36, base: 16 }, BOX_ME = { x: SW - 260, y: SH - 192
 
 function newSide() { return { st: [0, 0, 0, 0, 0, 0, 0, 0], protect: false, protectN: 0, flinch: false, gone: false }; }
 function bgFor(mapId) {
+  if (G.surfing && G.player && typeof isWaterAt === 'function' && isWaterAt(G.player.x, G.player.y)) return 'Water';     // battles started while sailing use the water background
   const m = window.MAPS && MAPS[mapId], ts = m ? m.tileset : 1;
   if ([7, 87, 100, 171].includes(mapId)) return 'City';
   if (mapId === 48) return 'Forest';

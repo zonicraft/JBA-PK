@@ -304,7 +304,7 @@ class Chr {
     if (this.isPlayer && G.noclip && G.map && worldAt(nx, ny)) return true;   // cheat: walk through walls, events and water
     if (this.isPlayer && !G.surfing && typeof currentBlocks === 'function' && currentBlocks(nx, ny)) return false;   // water currents need the boat
     if (this.isPlayer && G.surfing && typeof currentDirAt === 'function' && currentDirAt(nx, ny) && !currentDirAt(this.x, this.y)) { G.tooFast = true; return false; }   // the boat can't enter a running current
-    const sf = this.isPlayer && G.surfing && typeof isWaterAt === 'function';      // surfing: water counts as floor
+    const sf = ((this.isPlayer && G.surfing) || this.swims()) && typeof isWaterAt === 'function';      // surfing: water counts as floor
     if (!(sf && isWaterAt(this.x, this.y) && !solidOverWater(this.x, this.y)) && !this.passableTile(this.x, this.y, d)) return false;
     if (!(sf && isWaterAt(nx, ny) && !solidOverWater(nx, ny)) && !this.passableTile(nx, ny, opp[d])) return false;
     for (const e of G.chars) {
@@ -317,6 +317,8 @@ class Chr {
     }
     return true;
   }
+  // a Trainer(N) event that starts out on the water is a swimmer: it moves, patrols and sees across water tiles
+  swims() { if (this.swimmer === undefined) this.swimmer = !this.isPlayer && /^Trainer\(/i.test(this.name || '') && typeof isWaterAt === 'function' && !!G.map && isWaterAt(this.x, this.y) && !solidOverWater(this.x, this.y); return this.swimmer; }
   turn(d) { if (!this.dirFix) this.dir = d; }
   moveDir(d, turn = true) {
     if (turn) this.turn(d);
@@ -493,7 +495,8 @@ function trainerSight() {
     const swim = [2, 4, 6, 8].every(d => !e.passableTile(e.x, e.y, d));     // trainer swimming in water: sees the shore tile next to it
     for (let i = 1; i <= dist; i++) {
       const x = e.x + dx * i, y = e.y + dy * i;
-      if (!(i === 1 && swim) && (!e.passableTile(x - dx, y - dy, e.dir) || !e.passableTile(x, y, opp[e.dir]))) break;     // trees / walls block the view
+      const see = (xx, yy, dd) => e.passableTile(xx, yy, dd) || (e.swims() && isWaterAt(xx, yy) && !solidOverWater(xx, yy));
+      if (!(i === 1 && swim) && (!see(x - dx, y - dy, e.dir) || !see(x, y, opp[e.dir]))) break;     // trees / walls block the view
       if (p.x === x && p.y === y) { if (startEvent(e)) return true; break; }
       if (G.chars.some(o => o !== e && !o.isPlayer && !o.erased && o.x === x && o.y === y && (o.gname || o.tile))) break;
     }

@@ -11,4 +11,6 @@ Start of the game
 geso is not walking up to jorge
 theres a new possible patch of grass that does not have triggers
 
-theres routes with trainers missing 21, 20 and 19
+its possible to enter the mansion before going to the restaurant
+
+theres routes with trainers missing 20 and 19
