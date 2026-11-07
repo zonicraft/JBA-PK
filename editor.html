@@ -244,8 +244,8 @@ async function attach(h) {
     S.enc = Function('return ' + grab('const ENC =', '{', '}'))() || {};
   } catch (e) { }
   try {
-    const pt = await (await (await S.data.getFileHandle('pokemon.js')).getFile()).text();
-    for (const m of pt.matchAll(/"([A-Z0-9_]+)":\{"internalName":"[^"]*","dexNumber":\d+,"name":"([^"]*)"/g)) { S.species.add(m[1]); S.spName[m[1]] = m[2]; }
+    const pj = JSON.parse(await (await (await S.dir.getFileHandle('pokemon.json')).getFile()).text());
+    for (const k in pj) { S.species.add(k); S.spName[k] = pj[k].name; }
   } catch (e) { }
   try { const cd = await (await S.dir.getDirectoryHandle('assets')).getDirectoryHandle('characters'); for await (const [n, hd] of cd.entries()) if (hd.kind === 'file' && /^trchar.*\.png$/i.test(n)) S.trchars.push(n.replace(/\.png$/i, '')); S.trchars.sort(); } catch (e) { }
   S.ids = [];

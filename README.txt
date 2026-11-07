@@ -72,8 +72,8 @@ PROJECT LAYOUT
   _editor_backups/   backups made by the editor (ignored by git)
   todo.txt           open tasks and known issues
 
-Species data is read from data/pokemon.js when the game is opened from disk,
-and from pokemon.json directly when it is served over http(s).
+Species data is read from pokemon.json every time the game loads, so the game
+must be served over http(s). Edit it with pokemon_editor.html.
 
 
 MAP AND SCRIPT EDITOR

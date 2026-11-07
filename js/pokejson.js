@@ -1,10 +1,9 @@
 'use strict';
 // ===================================================================
-//  pokemon.json is the data source for species. This merges it over the
-//  built-in table (js/data.js). Sources, in order:
-//    1. data/pokemon.js  (window.POKEMON, generated from pokemon.json by
-//       update_pokemon_data.bat – works when opening index.html directly)
-//    2. pokemon.json itself, read live when the game is served over http(s)
+//  Species data. pokemon_editor.html saves BOTH pokemon.json (master) and
+//  data/pokemon.js (a copy as a script, so the game also runs when index.html
+//  is opened straight from disk). data/pokemon.js is used when present; if it
+//  is missing the game falls back to reading pokemon.json (needs http).
 // ===================================================================
 (function () {
   const D = window.DATA; const ORDER = ['HP', 'Attack', 'Defense', 'Speed', 'SpAtk', 'SpDef'];
@@ -32,8 +31,14 @@
     console.log('[pokemon.json] ' + n + ' species loaded from ' + tag);
   }
   window.applyPokemonJson = apply;
-  if (window.POKEMON) apply(window.POKEMON, 'data/pokemon.js');
-  if (/^https?:/.test(location.protocol)) {
-    try { const x = new XMLHttpRequest(); x.open('GET', 'pokemon.json?' + Date.now(), false); x.send(); if (x.status === 200) apply(JSON.parse(x.responseText), 'pokemon.json'); } catch (e) { }
+  let ok = false;
+  if (window.POKEMON_DATA && typeof window.POKEMON_DATA === 'object') { apply(window.POKEMON_DATA, 'data/pokemon.js'); ok = true; }
+  else {
+    try {
+      const x = new XMLHttpRequest(); x.open('GET', 'pokemon.json?' + Date.now(), false); x.send();
+      if (x.status === 200) { apply(JSON.parse(x.responseText), 'pokemon.json'); ok = true; }
+      else console.error('[pokemon] data/pokemon.js missing and pokemon.json could not be loaded (HTTP ' + x.status + ')');
+    } catch (e) { console.error('[pokemon] data/pokemon.js is missing - save once in pokemon_editor.html to generate it. (' + e.message + ')'); }
   }
+  window.POKEMON_JSON_LOADED = ok;
 })();

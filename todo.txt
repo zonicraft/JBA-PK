@@ -7,10 +7,4 @@ remove the underground entrances, its not needed
 some places are not using the correct fight backgrounds
 can you add more trainer variety? grab assets from the essential project and change some of the already placed npcs
 
-Start of the game
-geso is not walking up to jorge
-theres a new possible patch of grass that does not have triggers
-
-its possible to enter the mansion before going to the restaurant
-
 theres routes with trainers missing 20 and 19
