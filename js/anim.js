@@ -140,7 +140,7 @@ function drawAnim(B) {
     const c = it.c; let im, sx = 0, sy = 0, sw, sh, hue = 0;
     if (it.pat === -1 || it.pat === -2) {
       const s = it.pat === -1 ? P.us : P.ts, mon = s === 0 ? B.me : B.foe, sp = sprOf(s); if (!mon || !sp.vis) continue;
-      const d = D.SP[mon.sym]; im = img('battlers', String(d.id).padStart(3, '0') + (s === 0 ? 'b' : '')); if (!im) continue;
+      const d = D.SP[mon.sym]; im = img('battlers', s === 0 ? sprKeyBack(d) : sprKey(d)); if (!im) continue;
       sw = sh = 160 * (sp.sc || 1); var srcw = im.width, srch = im.height;
     } else {
       im = P.sheet; if (!im) continue; sx = (it.pat % 5) * 192; sy = Math.floor(it.pat / 5) * 192; sw = srcw = sh = srch = 192; hue = P.A.hue || 0;

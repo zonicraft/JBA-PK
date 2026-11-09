@@ -5,7 +5,7 @@
 // ===================================================================
 
 // ---- map connections (PBS/connections.txt): [mapA, edgeA, offsetA, mapB, edgeB, offsetB]
-const CONNS = [[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
+const CONNS = [[317, 'S', 0, 313, 'N', 4],[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5, 'N', 0],
   [5, 'E', 120, 311, 'W', 0], [32, 'S', 59, 5, 'N', 0], [32, 'E', 0, 7, 'W', 6], [43, 'S', 2, 7, 'N', 0], [43, 'N', 0, 87, 'S', 2], [2, 'S', 0, 310, 'N', 0], [311, 'W', 0, 2, 'E', 80],
   [87, 'E', 15, 79, 'W', 0], [79, 'N', 0, 95, 'S', 0], [79, 'E', 0, 110, 'W', 30], [95, 'E', 0, 110, 'W', 6], [100, 'W', 0, 110, 'E', 0],
   [109, 'S', 4, 100, 'N', 0], [100, 'N', 36, 111, 'S', 0], [109, 'E', 0, 111, 'W', 1], [111, 'S', 0, 110, 'N', 121],
@@ -216,6 +216,7 @@ function terrainTagAt(x, y) {
 // counters: terrain tag 1, or - the interior tilesets (3, 25) carry no terrain tags in this project - any fully blocked tile indoors
 function isCounter(x, y) {
   if (G.mapId === 185 && y === 3 && x >= 4 && x <= 6) return true;   // the arcade's service counter (the employee stands behind it)
+  if (G.mapId === 318 && ((x === 1 && y >= 6 && y <= 7) || (x >= 11 && x <= 13 && y === 11))) return true;   // Indigo Plateau lobby: the Mart clerks and the Nurse stand behind their counters
   if (terrainTagAt(x, y) === 1) return true;
   const w = worldAt(x, y); if (!w || ![3, 25].includes(w.m.tsId)) return false;
   const m = w.m;
@@ -316,7 +317,7 @@ function ledgeJump(p, d) {
   // ...and each vertical wall only one way: you hop towards the side where the cliff face is drawn: tiles 1205/1206/1214 left to right, tiles 1202/1203/1210 right to left
   if (dx) {
     let ids = []; for (let z = 0; z < 3; z++) ids.push(m.data[nx + ny * m.w + z * m.w * m.h]);
-    const R = [1205, 1206, 1214], Lf = [1202, 1203, 1210];
+    const R = [1205, 1206, 1214, 1285, 1286, 1294], Lf = [1202, 1203, 1210, 1282, 1283, 1290];   // second set: the grey Mt. Ember cliff variant
     if (dx > 0 ? !ids.some(t => R.includes(t)) : !ids.some(t => Lf.includes(t))) return false;
   }
   if (!p.passableTile(lx, ly, { 2: 8, 4: 6, 6: 4 }[d])) return false;
@@ -353,14 +354,14 @@ function wallMapCheck(x, y) {
   if (![172, 205, 238, 266, 354, 355, 356, 357, 358, 359].includes(G.mapId) || y !== 10 || (x !== 7 && x !== 8) || G.main) return false;
   G.main = new Interp([[355, 0, ['pbWallTownMap']], [0, 0, []]], null); return true;
 }
-// ---- Sevii Islands: Island Pass + ferry network. Island 0 is Cinnabar's port, 1-7 are One Island .. Seven Island.
-const SEV_ISLANDS = ['Cinnabar Island', 'One Island', 'Two Island', 'Three Island', 'Four Island', 'Five Island', 'Six Island', 'Seven Island'];
+// ---- Sevii Islands: Island Pass + ferry network. Island 0 is Vermilion's port, 1-7 are One Island .. Seven Island.
+const SEV_ISLANDS = ['Vermilion City', 'One Island', 'Two Island', 'Three Island', 'Four Island', 'Five Island', 'Six Island', 'Seven Island'];
 // where the ferry drops you: [map, x, y, dir] (each island's harbor building; Cinnabar's port is the beach south of the Poké Center)
-const SEV_LANDING = { 0: [264, 24, 12, 2], 1: [275, 8, 5, 2], 2: [291, 8, 5, 2], 3: [298, 8, 5, 2], 4: [20, 8, 5, 2], 5: [33, 8, 5, 2], 6: [50, 8, 5, 2], 7: [71, 8, 5, 2] };
-const SEV_MAP_ISLAND = { 264: 0, 275: 1, 274: 1, 291: 2, 290: 2, 298: 3, 299: 3, 297: 3, 20: 4, 19: 4, 33: 5, 31: 5, 50: 6, 49: 6, 71: 7, 70: 7 };
+const SEV_LANDING = { 0: [122, 41, 25, 8], 1: [275, 8, 5, 2], 2: [291, 8, 5, 2], 3: [298, 8, 5, 2], 4: [20, 8, 5, 2], 5: [33, 8, 5, 2], 6: [50, 8, 5, 2], 7: [71, 8, 5, 2] };
+const SEV_MAP_ISLAND = { 264: 0, 122: 0, 275: 1, 274: 1, 291: 2, 290: 2, 298: 3, 299: 3, 297: 3, 20: 4, 19: 4, 33: 5, 31: 5, 50: 6, 49: 6, 71: 7, 70: 7 };
 function seviiVisit(id) { const n = SEV_MAP_ISLAND[id]; if (n > 0) G.switches['sev' + n] = true; }
-// an island can be picked once the player has been there, or when it is the next one along the chain (so every island is reachable in order)
-function seviiAllowed(n) { return n === 1 || !!G.switches['sev' + n] || !!G.switches['sev' + (n - 1)]; }
+// One Island is always open; the other islands unlock for good once the quest in the One Island lab is finished
+function seviiAllowed(n) { return n === 1 || !!G.switches[978]; }   // only One Island until Uchikido's research quest is done (switch 978), then every island
 function* seviiFerryUI(cur) {
   G.ferryReq = null;
   const draw = () => { drawUiMsg(); drawPopup(); };
@@ -425,12 +426,15 @@ function* worldScript(it, s) {
     for (let i = 1; i <= n; i++) { setVar(6, i); playSE('ballshake'); for (let k = 0; k < 16; k++) yield; }
     return true;
   }
+  if (s === 'pbAutoSave') { try { writeSave(); } catch (x) { } return true; }
+  if (s === 'pbHallOfFame') { G.uiGen = hallOfFameScene(); yield; return true; }
   if (s === 'pbPokeCenterPC') {
     playSE('PC_open'); yield* showMessage('\\PN booted up the PC.');
     while (true) {
       yield* showMessage('Which PC should be accessed?', { noWait: true });
-      const i = yield* showChoices(["Geso's PC", G.name + "'s PC", 'Log off'], 3);
+      const i = yield* showChoices(["Geso's PC", G.name + "'s PC", 'Hall of Fame', 'Log off'], 4);
       if (i === 0) { G.uiGen = pcSession(); yield; }
+      else if (i === 2) { G.uiGen = hallOfFameViewer(); yield; }
       else if (i === 1) {
         let c = 0;
         while (true) {

@@ -6,7 +6,7 @@
 //  opened or a new game is started in an empty slot (see titleScreen() at the bottom).
 //  Settings are written to localStorage ('jba_settings') through saveSettings(), like the in-game Options.
 // ===================================================================
-const MM_BADGE_SWITCHES = [260, 261, 262, 263, 212], MM_BADGE_PIPS = 8;
+const MM_BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['PRIMOGEMS', 980], ['SAPPHIRE']], MM_BADGE_PIPS = 8;
 const MM_SVG = (d, extra = '') => '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + extra + '</svg>';
 const MM_ICON = {
   play: MM_SVG('<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>'),
@@ -201,7 +201,7 @@ const MM_CSS = `
 `;
 
 function mmEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-function mmBadges(save) { return MM_BADGE_SWITCHES.filter(k => save.switches && save.switches[k]).length; }
+function mmBadges(save) { return MM_BADGE_ITEMS.filter(x => (save.items && save.items[x[0]] > 0) || (x[1] && save.switches && save.switches[x[1]])).length; }
 
 // reads one slot: { n, empty } | { n, broken } | { n, save }
 function mmSlot(n) {

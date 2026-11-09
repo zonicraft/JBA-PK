@@ -168,6 +168,6 @@ function drawIcon(p, x, y, anim = true, scale = 1) {
   ctx.drawImage(im, f * fw, 0, fw, fh, x + (64 - fw) / 2 * scale, y + (64 - fh) * scale, fw * scale, fh * scale);
 }
 function drawItemIcon(key, x, y) {
-  const it = itemInfo(key), mv = it.move && D.MV[it.move]; const im = (mv && img('icons', 'itemMachine' + mv.type)) || img('icons', 'item' + String(it.id || 0).padStart(3, '0')) || img('icons', 'itemBack'); if (im) ctx.drawImage(im, x, y);
+  const it = itemInfo(key), mv = it.move && D.MV[it.move]; const im = (mv && img('icons', 'itemMachine' + mv.type)) || img('icons', 'item' + String(it.icon || it.id || 0).padStart(3, '0')) || img('icons', 'itemBack'); if (im) ctx.drawImage(im, x, y);
 }
 function drawTypeIcon(typeKey, x, y) { ctx.drawImage(UI('types'), 0, typeIndex(typeKey) * 28, 64, 28, x, y, 64, 28); }

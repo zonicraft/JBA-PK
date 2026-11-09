@@ -382,17 +382,22 @@ function* commandPhase() {
 
 // ------------------------------------------------------------ AI
 // ------------------------------------------------------------ Mega Evolution: Illya2 + Prisma Mega Stone + Key Stone
-function canMega(p) { const B = B_(); return !!(p && p.sym === 'ILLYA2' && p.item === 'CHARIZARDITEX' && G.items.KEYSTONE > 0 && D.SP.MEGAILLYA && !B.megaUsed); }
-function* doMega() {
+// holder species + stone -> Mega species (the Mega species must exist in pokemon.json with megaOf set)
+const MEGA_STONES = { CHARIZARDITEX: ['ILLYA2', 'MEGAILLYA'], ALBIONSTONE: ['MELUSINE', 'MEGAMELUSINE'], SPACESTONE: ['ISHTAR', 'MEGAISHTAR'], ANUBISSTONE: ['NITOCRIS', 'MEGANITOCRIS'] };
+function megaFor(p) { const m = p && MEGA_STONES[p.item]; return m && m[0] === p.sym && D.SP[m[1]] ? m[1] : null; }
+function canMega(p) { const B = B_(); return !!(megaFor(p) && G.items.KEYSTONE > 0 && !B.megaUsed); }
+function* doMega(s = 0) {
   // same order as Essentials' pbMegaEvolve: message -> MegaEvolution common animation -> form change -> "has Mega Evolved" message
-  const B = B_(), p = B.me, nm = pokeName(p);
-  yield* bmsg(nm + '\'s ' + itemName(p.item) + ' is reacting to ' + G.name + '\'s Key Stone!', { hold: 20 });
-  if (window.ANIMS && ANIMS.common && ANIMS.common.MegaEvolution != null) yield* commonAnim('MegaEvolution', 0);
-  p.megaBase = p.sym; p.sym = 'MEGAILLYA'; B.megaUsed = true;
-  refreshStats(p); B.meHp = p.hp;
-  if (ANIMS.common.MegaEvolution2 != null) yield* commonAnim('MegaEvolution2', 0);   // not defined in this project's animation set
-  yield* bmsg(nm + ' has Mega Evolved into Mega Illya!', { hold: 24 });
+  const B = B_(), p = s === 0 ? B.me : B.foe, nm = s === 0 ? pokeName(p) : mname(1), owner = s === 0 ? G.name : B.trainer.name;
+  yield* bmsg(nm + '\'s ' + itemName(p.item) + ' is reacting to ' + owner + '\'s Key Stone!', { hold: 20 });
+  if (window.ANIMS && ANIMS.common && ANIMS.common.MegaEvolution != null) yield* commonAnim('MegaEvolution', s);
+  const mg = megaFor(p); p.megaBase = p.sym; p.sym = mg; if (s === 0) B.megaUsed = true; else B.foeMegaUsed = true;
+  refreshStats(p); B[s === 0 ? 'meHp' : 'foeHp'] = p.hp;
+  if (ANIMS.common.MegaEvolution2 != null) yield* commonAnim('MegaEvolution2', s);   // not defined in this project's animation set
+  yield* bmsg(nm + ' has Mega Evolved into ' + D.SP[p.sym].name + '!', { hold: 24 });
 }
+// trainers: a foe holding a matching Mega Stone Mega Evolves at the start of a turn (once per battle)
+function canFoeMega() { const B = B_(); return B.kind === 'trainer' && !B.foeMegaUsed && !!megaFor(B.foe) && B.foe.hp > 0; }
 function unMega(B) { new Set(G.party.concat(B && B.meParty || [])).forEach(p => { if (p && p.megaBase) { const hp0 = p.hp, old = p.maxhp; p.sym = p.megaBase; delete p.megaBase; refreshStats(p); p.hp = hp0 > 0 ? Math.max(1, Math.min(p.maxhp, hp0 - (old - p.maxhp))) : 0; } }); }
 function pickFoeMove() {
   const B = B_(), foe = B.foe; const opts = foe.moves.map((m, i) => ({ m, i })).filter(o => o.m.pp > 0);
@@ -509,7 +514,7 @@ function* handleFaint(s) {
     }
     yield* bmsg(B.trainer.name + ' sent out ' + pokeName(next) + '!', { hold: 6 }); yield* sendOut(1);
   } else {
-    if (!hasUsable(B.meParty)) { B.result = B.scripted ? 'scripted' : 'lose'; return; }
+    if (!hasUsable(B.meParty)) { B.result = (B.scripted || B.softLose) ? 'scripted' : 'lose'; return; }
     B.msg = null;
     const r = yield* partyScreen({ mode: 'battle', text: 'Use which Pokémon next?', noCancel: true, activeIdx: -1 });
     B.me = B.meParty[r]; yield* bmsg('Go! ' + pokeName(B.me) + '!', { hold: 6 }); yield* sendOut(0);
@@ -517,7 +522,8 @@ function* handleFaint(s) {
 }
 function* resolveTurn(cmd) {
   const B = B_(); B.turn++;
-  if (cmd.mega && canMega(B.me)) yield* doMega();
+  if (cmd.mega && canMega(B.me)) yield* doMega(0);
+  if (canFoeMega()) yield* doMega(1);
   if (cmd.type === 'switch') yield* doSwitch(cmd.idx);
   else if (cmd.type === 'ball') { if (yield* throwBall(cmd.key)) return; }
   else if (cmd.type === 'run') { if (yield* tryRun()) return; }
@@ -644,11 +650,14 @@ function* runTrainerBattle(script) {
   const tt = (window.TTYPES && TTYPES[type]) || { id: 5, money: 48 };
   const rival = type === 'RIVAL2' ? (G.vars[12] || name) : name;
   let foeParty;
-  if (tr) foeParty = tr.p.map(([sym, lvl, , mv]) => mkPoke(sym, lvl, { moves: mv.filter(x => D.MV[x]).length ? mv.filter(x => D.MV[x]) : undefined, ot: rival }));
+  if (tr) foeParty = tr.p.map(([sym, lvl, it, mv]) => { const q = mkPoke(sym, lvl, { moves: mv.filter(x => D.MV[x]).length ? mv.filter(x => D.MV[x]) : undefined, ot: rival }); if (it && D.IT && D.IT[it]) q.item = it; return q; });
   else { const sp = { 1: 'RORY', 2: 'HIZUNA', 3: 'ILLYA' }[G.vars[202] || 1]; foeParty = [mkPoke(sp, 5, { moves: ['TACKLE', 'GROWL'], ot: rival })]; }
-  const B = mkBattle({ kind: 'trainer', foeParty, trainer: { name: rival, money: tt.money, sprite: tt.noSprite ? '' : 'trainer' + String(tt.id).padStart(3, '0') }, bg: bgFor(G.mapId), endText });
+  let savedParty = null;
+  if (tr && tr.me) { savedParty = G.party; G.party = tr.me.map(([sym, lvl]) => mkPoke(sym, lvl, { ot: G.name })); }   // story fights where the player fights with a fixed team (e.g. Jorge himself)
+  const B = mkBattle({ kind: 'trainer', foeParty, trainer: { name: rival, money: tt.money, sprite: tt.noSprite ? '' : 'trainer' + String(tt.sprite != null ? tt.sprite : tt.id).padStart(3, '0') }, bg: bgFor(G.mapId), endText });
   if (tr && tr.scripted) B.scripted = true;
-  yield* runBattle(B);
+  if (tr && tr.softLose) B.softLose = true;   // losing does not black out: the event goes on (and may retry)
+  try { yield* runBattle(B); } finally { if (savedParty) G.party = savedParty; }
 }
 function* runWildBattle(sym, lvl) {
   sym = symOf(sym);

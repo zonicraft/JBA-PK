@@ -24187,6 +24187,256 @@
   "sprite": "195_1",
   "megaOf": "ILLYA2"
  },
+ "MEGAMELUSINE": {
+  "internalName": "MEGAMELUSINE",
+  "dexNumber": 892,
+  "name": "Mega Melusine",
+  "types": [
+   "DRAGON",
+   "FAIRY"
+  ],
+  "baseStats": {
+   "HP": 71,
+   "Attack": 176,
+   "Defense": 79,
+   "Speed": 93,
+   "SpAtk": 75,
+   "SpDef": 86
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Parabolic",
+  "baseExp": 190,
+  "catchRate": 3,
+  "baseHappiness": 100,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 3,
+   "SpDef": 0
+  },
+  "abilities": [
+   "NATURALCURE"
+  ],
+  "hiddenAbility": "",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "TWISTER",
+    "moveName": "Twister"
+   },
+   {
+    "level": 1,
+    "move": "FAIRYWIND",
+    "moveName": "Fairy Wind"
+   },
+   {
+    "level": 4,
+    "move": "PROTECT",
+    "moveName": "Protect"
+   },
+   {
+    "level": 9,
+    "move": "DRAININGKISS",
+    "moveName": "Draining Kiss"
+   },
+   {
+    "level": 13,
+    "move": "MIRRORSHOT",
+    "moveName": "Mirror Shot"
+   },
+   {
+    "level": 18,
+    "move": "NASTYPLOT",
+    "moveName": "Nasty Plot"
+   },
+   {
+    "level": 22,
+    "move": "DRAGONBREATH",
+    "moveName": "Dragon Breath"
+   },
+   {
+    "level": 27,
+    "move": "DAZZLINGGLEAM",
+    "moveName": "Dazzling Gleam"
+   },
+   {
+    "level": 31,
+    "move": "SLUDGE",
+    "moveName": "Sludge"
+   },
+   {
+    "level": 36,
+    "move": "CALMMIND",
+    "moveName": "Calm Mind"
+   },
+   {
+    "level": 41,
+    "move": "DRAGONPULSE",
+    "moveName": "Dragon Pulse"
+   },
+   {
+    "level": 45,
+    "move": "DRAGONHAMMER",
+    "moveName": "Dragon Hammer"
+   },
+   {
+    "level": 50,
+    "move": "AURASPHERE",
+    "moveName": "Aura Sphere"
+   },
+   {
+    "level": 54,
+    "move": "DRAGONDANCE",
+    "moveName": "Dragon Dance"
+   },
+   {
+    "level": 59,
+    "move": "DRACOMETEOR",
+    "moveName": "Draco Meteor"
+   },
+   {
+    "level": 63,
+    "move": "MOONBLAST",
+    "moveName": "Moonblast"
+   },
+   {
+    "level": 68,
+    "move": "OUTRAGE",
+    "moveName": "Outrage"
+   }
+  ],
+  "kind": "Time Travel",
+  "dex": "Melusine awakened by the Albion Stone, her draconic fairy power in full bloom. From Fate. A Special Attacker Pokémon.",
+  "height": 1.2,
+  "weight": 15,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "Fate",
+  "sprite": "251_1",
+  "megaOf": "MELUSINE"
+ },
+ "MEGAISHTAR": {
+  "internalName": "MEGAISHTAR",
+  "dexNumber": 893,
+  "name": "Mega Ishtar",
+  "types": [
+   "FIRE",
+   "FAIRY"
+  ],
+  "baseStats": {
+   "HP": 79,
+   "Attack": 50,
+   "Defense": 86,
+   "Speed": 102,
+   "SpAtk": 163,
+   "SpDef": 94
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Fluctuating",
+  "baseExp": 190,
+  "catchRate": 3,
+  "baseHappiness": 70,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 1,
+   "SpDef": 0
+  },
+  "abilities": [
+   "THICKFAT",
+   "GUTS"
+  ],
+  "hiddenAbility": "SHEERFORCE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "FIRESPIN",
+    "moveName": "Fire Spin"
+   },
+   {
+    "level": 1,
+    "move": "FAIRYWIND",
+    "moveName": "Fairy Wind"
+   },
+   {
+    "level": 4,
+    "move": "PROTECT",
+    "moveName": "Protect"
+   },
+   {
+    "level": 10,
+    "move": "DRAININGKISS",
+    "moveName": "Draining Kiss"
+   },
+   {
+    "level": 16,
+    "move": "NASTYPLOT",
+    "moveName": "Nasty Plot"
+   },
+   {
+    "level": 21,
+    "move": "AURASPHERE",
+    "moveName": "Aura Sphere"
+   },
+   {
+    "level": 27,
+    "move": "FLAMEBURST",
+    "moveName": "Flame Burst"
+   },
+   {
+    "level": 33,
+    "move": "CALMMIND",
+    "moveName": "Calm Mind"
+   },
+   {
+    "level": 39,
+    "move": "DAZZLINGGLEAM",
+    "moveName": "Dazzling Gleam"
+   },
+   {
+    "level": 45,
+    "move": "NIGHTDAZE",
+    "moveName": "Night Daze"
+   },
+   {
+    "level": 51,
+    "move": "WILLOWISP",
+    "moveName": "Will-O-Wisp"
+   },
+   {
+    "level": 56,
+    "move": "MAGMASTORM",
+    "moveName": "Magma Storm"
+   },
+   {
+    "level": 62,
+    "move": "FIREBLAST",
+    "moveName": "Fire Blast"
+   },
+   {
+    "level": 68,
+    "move": "OVERHEAT",
+    "moveName": "Overheat"
+   }
+  ],
+  "kind": "Guts",
+  "dex": "Ishtar awakened by the Space Stone, the goddess of Venus shining at full power. From Fate. A Special Attacker Pokémon.",
+  "height": 1,
+  "weight": 86.4,
+  "playerY": -7,
+  "enemyY": 5,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "Fate",
+  "sprite": "296_1",
+  "megaOf": "ISHTAR"
+ },
  "ILLYASUM": {
   "internalName": "ILLYASUM",
   "dexNumber": 196,
@@ -76503,12 +76753,12 @@
    "DARK"
   ],
   "baseStats": {
-   "HP": 71,
-   "Attack": 36,
-   "Defense": 64,
-   "Speed": 78,
-   "SpAtk": 106,
-   "SpDef": 71
+   "HP": 106,
+   "Attack": 68,
+   "Defense": 93,
+   "Speed": 126,
+   "SpAtk": 164,
+   "SpDef": 103
   },
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
@@ -98991,5 +99241,321 @@
   "enemyY": 1,
   "evo": "",
   "series": "???"
+ },
+ "JORGE": {
+  "internalName": "JORGE",
+  "dexNumber": 803,
+  "name": "Jorge",
+  "types": [
+   "FIGHTING",
+   "PSYCHIC"
+  ],
+  "baseStats": {
+   "HP": 85,
+   "Attack": 105,
+   "Defense": 80,
+   "Speed": 95,
+   "SpAtk": 85,
+   "SpDef": 80
+  },
+  "gender": "AlwaysMale",
+  "growthRate": "Parabolic",
+  "baseExp": 200,
+  "catchRate": 3,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 3,
+   "SpDef": 0
+  },
+  "abilities": [
+   "INNERFOCUS"
+  ],
+  "hiddenAbility": "",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "QUICKATTACK",
+    "moveName": "Quickattack"
+   },
+   {
+    "level": 1,
+    "move": "KARATECHOP",
+    "moveName": "Karatechop"
+   },
+   {
+    "level": 8,
+    "move": "PROTECT",
+    "moveName": "Protect"
+   },
+   {
+    "level": 16,
+    "move": "BRICKBREAK",
+    "moveName": "Brickbreak"
+   },
+   {
+    "level": 24,
+    "move": "AURASPHERE",
+    "moveName": "Aurasphere"
+   },
+   {
+    "level": 32,
+    "move": "BULKUP",
+    "moveName": "Bulkup"
+   },
+   {
+    "level": 40,
+    "move": "DRAINPUNCH",
+    "moveName": "Drainpunch"
+   },
+   {
+    "level": 48,
+    "move": "PSYCHIC",
+    "moveName": "Psychic"
+   },
+   {
+    "level": 56,
+    "move": "CLOSECOMBAT",
+    "moveName": "Closecombat"
+   },
+   {
+    "level": 64,
+    "move": "EXTREMESPEED",
+    "moveName": "Extremespeed"
+   }
+  ],
+  "kind": "Protagonist",
+  "dex": "The protagonist of JBA. His aura calls out to his lolis, and he makes his own destiny.",
+  "height": 1.8,
+  "weight": 75,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Physical Attacker",
+  "series": "JBA"
+ },
+ "GOKU": {
+  "internalName": "GOKU",
+  "dexNumber": 804,
+  "name": "Goku",
+  "types": [
+   "FIGHTING"
+  ],
+  "baseStats": {
+   "HP": 100,
+   "Attack": 130,
+   "Defense": 90,
+   "Speed": 130,
+   "SpAtk": 120,
+   "SpDef": 90
+  },
+  "gender": "AlwaysMale",
+  "growthRate": "Parabolic",
+  "baseExp": 250,
+  "catchRate": 3,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 3,
+   "SpDef": 0
+  },
+  "abilities": [
+   "INNERFOCUS"
+  ],
+  "hiddenAbility": "",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "QUICKATTACK",
+    "moveName": "Quickattack"
+   },
+   {
+    "level": 1,
+    "move": "KARATECHOP",
+    "moveName": "Karatechop"
+   },
+   {
+    "level": 10,
+    "move": "PROTECT",
+    "moveName": "Protect"
+   },
+   {
+    "level": 20,
+    "move": "BRICKBREAK",
+    "moveName": "Brickbreak"
+   },
+   {
+    "level": 30,
+    "move": "AURASPHERE",
+    "moveName": "Aurasphere"
+   },
+   {
+    "level": 40,
+    "move": "BULKUP",
+    "moveName": "Bulkup"
+   },
+   {
+    "level": 50,
+    "move": "DYNAMICPUNCH",
+    "moveName": "Dynamicpunch"
+   },
+   {
+    "level": 60,
+    "move": "FOCUSBLAST",
+    "moveName": "Focusblast"
+   },
+   {
+    "level": 70,
+    "move": "CLOSECOMBAT",
+    "moveName": "Closecombat"
+   },
+   {
+    "level": 80,
+    "move": "EXTREMESPEED",
+    "moveName": "Extremespeed"
+   }
+  ],
+  "kind": "Saiyan",
+  "dex": "A Saiyan who has mastered Ultra Instinct. From Dragon Ball. A Mixed Attacker Pokémon.",
+  "height": 1.75,
+  "weight": 62,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Mixed Attacker",
+  "series": "Dragon Ball"
+ },
+ "MEGANITOCRIS": {
+  "internalName": "MEGANITOCRIS",
+  "dexNumber": 894,
+  "name": "Mega Nitocris",
+  "types": [
+   "GHOST",
+   "DARK"
+  ],
+  "baseStats": {
+   "HP": 71,
+   "Attack": 46,
+   "Defense": 79,
+   "Speed": 93,
+   "SpAtk": 151,
+   "SpDef": 86
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Parabolic",
+  "baseExp": 190,
+  "catchRate": 3,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 3,
+   "SpDef": 0
+  },
+  "abilities": [
+   "CHLOROPHYLL"
+  ],
+  "hiddenAbility": "",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "OMINOUSWIND",
+    "moveName": "Ominous Wind"
+   },
+   {
+    "level": 1,
+    "move": "CONFUSION",
+    "moveName": "Confusion"
+   },
+   {
+    "level": 4,
+    "move": "PROTECT",
+    "moveName": "Protect"
+   },
+   {
+    "level": 9,
+    "move": "PSYBEAM",
+    "moveName": "Psybeam"
+   },
+   {
+    "level": 14,
+    "move": "NASTYPLOT",
+    "moveName": "Nasty Plot"
+   },
+   {
+    "level": 19,
+    "move": "SNARL",
+    "moveName": "Snarl"
+   },
+   {
+    "level": 24,
+    "move": "HEX",
+    "moveName": "Hex"
+   },
+   {
+    "level": 29,
+    "move": "PSYSHOCK",
+    "moveName": "Psyshock"
+   },
+   {
+    "level": 34,
+    "move": "CALMMIND",
+    "moveName": "Calm Mind"
+   },
+   {
+    "level": 38,
+    "move": "DARKPULSE",
+    "moveName": "Dark Pulse"
+   },
+   {
+    "level": 43,
+    "move": "SHADOWBALL",
+    "moveName": "Shadow Ball"
+   },
+   {
+    "level": 48,
+    "move": "PHANTOMFORCE",
+    "moveName": "Phantom Force"
+   },
+   {
+    "level": 53,
+    "move": "WILLOWISP",
+    "moveName": "Will-O-Wisp"
+   },
+   {
+    "level": 58,
+    "move": "AURASPHERE",
+    "moveName": "Aura Sphere"
+   },
+   {
+    "level": 63,
+    "move": "SPECTRALTHIEF",
+    "moveName": "Spectral Thief"
+   },
+   {
+    "level": 68,
+    "move": "PSYCHIC",
+    "moveName": "Psychic"
+   }
+  ],
+  "kind": "Wicked",
+  "dex": "Nitocris awakened by the Anubis Stone, the Alter form of the last Pharaoh. From Fate. A Special Attacker Pokémon.",
+  "height": 1.3,
+  "weight": 59.6,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "Fate",
+  "sprite": "275_1",
+  "megaOf": "NITOCRIS"
  }
 }

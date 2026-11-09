@@ -154,6 +154,62 @@ function drawTrainerCard() {
 }
 function* trainerCard() { return yield* withDraw(drawTrainerCard, (function* () { while (true) { yield; if (ok() || back()) { sfx('back'); return; } } })()); }
 
+
+// ------------------------------------------------------------ Hall of Fame
+// Each completion of the League stores {t, name, id, time, party:[{sym,lvl,name}]} in G.hof (part of the save file).
+function hofEntry() { return { t: Date.now(), name: G.name, id: G.trainerId, time: G.playFrames, party: G.party.map(p => ({ sym: p.sym, lvl: p.lvl, name: pokeName(p) })) }; }
+function drawHofEntry(e, title, shown, sub) {
+  ctx.fillStyle = '#10182c'; ctx.fillRect(0, 0, SW, SH);
+  skinBox('skin_choice_1', 8, 8, SW - 16, SH - 16);
+  txt(title, SW / 2, 18, { size: 28, align: 'center' });
+  const fim = img('faces', 'facemain'); if (fim) ctx.drawImage(fim, 0, 0, 96, 96, 26, 54, 64, 64);
+  txt(e.name, 102, 56, { size: 26 });
+  txt('ID No. ' + String(e.id).padStart(5, '0') + '    Play time ' + fmtTime(e.time), 102, 86, { size: 20, col: COL.dark });
+  if (sub) txt(sub, SW - 28, 56, { size: 20, align: 'right', col: COL.dark });
+  const cw = 152, ch = 104;
+  e.party.forEach((p, i) => {
+    if (i >= shown) return;
+    const cx = 24 + (i % 3) * cw + (i % 3) * 6, cy = 114 + Math.floor(i / 3) * (ch + 4), sp = D.SP[p.sym];
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(cx, cy, cw, ch);
+    const im = sp && img('battlers', sprKey(sp)); if (im) drawFitted(im, cx + 6, cy + 2, cw - 12, 72, String(sp.id)); else drawIcon(p, cx + cw / 2 - 32, cy + 10);
+    txt(p.name, cx + cw / 2, cy + 74, { size: 22, align: 'center' });
+    txt('Lv. ' + p.lvl, cx + cw / 2, cy + 90, { size: 18, align: 'center', col: COL.dark });
+  });
+  drawUiMsg();
+}
+function* hallOfFameScene() {
+  const e = hofEntry(); G.hof = G.hof || []; G.hof.push(e);
+  playBGM('frlg_halloffame');
+  yield* fadeTo(1, 10);
+  let shown = 0;
+  yield* withDraw(() => drawHofEntry(e, 'HALL OF FAME', shown, 'Entry No. ' + G.hof.length), (function* () {
+    yield* fadeTo(0, 12);
+    for (let i = 1; i <= e.party.length; i++) { shown = i; sfx('ok'); for (let k = 0; k < 36; k++) yield; }
+    for (let k = 0; k < 30; k++) yield;
+    yield* uiMessage('Welcome to the Hall of Fame!');
+    yield* uiMessage(e.name + ' and the party have been recorded.');
+    yield* fadeTo(1, 12);
+  })());
+  tone([-255, -255, -255, 0], 0); G.fade = 0;   // hand over to the map's own tone fade (the event fades the new map back in)
+}
+function* hallOfFameViewer() {
+  const list = (G.hof || []).slice().reverse();
+  if (!list.length) { yield* withDraw(drawUiMsg, uiMessage('There are no Hall of Fame records yet.')); return; }
+  let i = 0;
+  const fmtD = t => { try { return new Date(t).toLocaleDateString(); } catch (x) { return ''; } };
+  yield* withDraw(() => {
+    const e = list[i]; drawHofEntry(e, 'HALL OF FAME', 6, fmtD(e.t));
+    txt('No. ' + (list.length - i) + ' / ' + list.length + (list.length > 1 ? '    ◀ ▶ browse' : ''), SW / 2, SH - 44, { size: 20, align: 'center', col: COL.dark });
+  }, (function* () {
+    while (true) {
+      yield;
+      if (list.length > 1 && rep('left')) { i = (i + 1) % list.length; sfx('cursor'); }
+      if (list.length > 1 && rep('right')) { i = (i + list.length - 1) % list.length; sfx('cursor'); }
+      if (ok() || back()) { sfx('back'); return; }
+    }
+  })());
+}
+
 // ------------------------------------------------------------ Options
 function* optionsScreen() {
   const S = { idx: 0, touch: SET.touch };   // S.touch = pending value: turning controls OFF only takes effect on Close
@@ -205,7 +261,7 @@ function writeSave() {
   const p = G.player;
   const data = {
     v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
-    runningShoes: !!G.runningShoes, surfing: !!G.surfing, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
+    runningShoes: !!G.runningShoes, surfing: !!G.surfing, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, hof: G.hof || [], map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
   };
   try { localStorage.setItem(slotKey(curSlot()), JSON.stringify(data)); try { localStorage.setItem(LAST_SLOT_KEY, String(curSlot())); } catch (e) { } return true; } catch (e) { return false; }
 }
@@ -218,7 +274,7 @@ function migrateSyms(d) {   // saves made before species were renamed to their c
 function loadSave(d) {
   migrateSyms(d);
   G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; G.name = d.name; G.starterName = d.starterName; G.money = d.money; G.trainerId = d.trainerId;
-  G.runningShoes = d.runningShoes; G.surfing = !!d.surfing; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {};
+  G.runningShoes = d.runningShoes; G.surfing = !!d.surfing; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {}; G.hof = d.hof || [];
   enterMap(d.map, d.x, d.y, d.dir); if (d.bgm) playBGM(d.bgm);
 }
 const MAPNAMES = { 1: "Jorge's House 2F", 2: 'Pallet Town', 3: 'Pallet Town', 4: "Jorge's House", 8: "Geso's Lab", 5: 'Route 1', 7: 'Viridian City', 81: 'Viridian City', 84: 'Viridian City', 398: 'Viridian City', 354: 'Pokémon Center', 43: 'Route 2', 48: 'Viridian Forest', 85: 'Route 2', 86: 'Route 2', 132: 'Route 2', 145: 'Route 2', 87: 'Pewter City', 89: 'Pewter City', 92: 'Pewter City', 93: 'Pewter City', 94: 'Pewter City', 355: 'Pewter City', 79: 'Route 3', 95: 'Route 4', 96: 'Route 4', 110: 'Route 4', 356: 'Route 4', 97: 'Mt. Moon', 98: 'Mt. Moon', 99: 'Mt. Moon', 100: 'Cerulean City', 101: 'Cerulean City', 102: 'Cerulean City', 103: 'Cerulean City', 104: 'Cerulean City', 105: 'Cerulean City', 106: 'Cerulean City', 107: 'Cerulean City', 108: 'Cerulean City', 113: 'Cerulean City', 357: 'Cerulean City', 109: 'Route 24', 111: 'Route 25', 112: "Nuno's House" };
@@ -282,7 +338,8 @@ function* townMapScreen(o = {}) {
       if (rep('down') && cy < 19) { cy++; sfx('cursor'); }
       if (hasPass && pressed('bike')) { keys.pressed.bike = false; gotoRegion(reg >= 3 ? 0 : reg + 1); continue; }
       if (o.teleport && reg > 0 && ok()) {          // Sevii pages: teleport to an island town (needs the island to have been visited when using the Portable Teleporter)
-        const t = SEV_TELE.find(q => q[0] === reg && q[1] === cx && q[2] === cy);
+        let t = SEV_TELE.find(q => q[0] === reg && q[1] === cx && q[2] === cy);
+        if (!t) { const nm = ptName(cx, cy).split(' - ')[0].toLowerCase(); t = SEV_TELE.find(q => q[0] === reg && q[3].toLowerCase() === nm); }   // a named dot also works when the cursor is a tile off
         if (!t || (o.player && !(G.switches['sev' + t[4]] || SEV_MAP_ISLAND[G.mapId] === t[4]))) { sfx('buzzer'); if (o.player && t) { yield* uiMessage('The teleporter did not react.'); } continue; }
         sfx('ok');
         yield* uiMessage((o.player ? 'The teleporter reacts. Teleport to ' : 'Teleport to ') + t[3] + '?', { noWait: true });

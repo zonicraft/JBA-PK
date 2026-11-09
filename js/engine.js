@@ -233,7 +233,8 @@ function toggleBike() {   // C key / LB / RB
   if (G.biking) { G.biking = false; return; }
   if (bikeAllowed()) G.biking = true; else G.bikeMsg = 'You can\'t use the Skateboard here.';
 }
-function badgeCount() { return [260, 261, 262, 263, 212].filter(k => getSwitch(k)).length; }   // 260 Pewter, 261 Cerulean, 262 Saffron, 263 Vermilion (Wuant mixtape), 212 Celadon (survival knife)
+const BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['PRIMOGEMS', 980], ['SAPPHIRE']];   // one gym prize per badge; the old switches still count for the gyms that set them
+function badgeCount() { return BADGE_ITEMS.filter(b => G.items[b[0]] > 0 || (b[1] && getSwitch(b[1]))).length; }
 function getVar(id) { return G.vars[id] || 0; }
 function setVar(id, v) { G.vars[id] = v; G.refresh = true; }
 function selfKey(mapId, evId, ch) { return mapId + '_' + evId + '_' + ch; }
@@ -339,7 +340,7 @@ class Chr {
       this.anim += sp / TS * 2.2;
       if (this.rx === tx && this.ry === ty) { this.moving = false; this.jumping = false; this.onArrive && this.onArrive(); }
     } else if (this.stepAnim) { this.anim += 0.12; }
-    if (this.walkAnim && (this.moving || this.stepAnim)) this.pattern = Math.floor(this.anim) % 4;
+    if ((this.walkAnim && this.moving) || this.stepAnim) this.pattern = Math.floor(this.anim) % 4;   // stepping animation plays on the spot even when walking animation is off (Poké Center healing machine glow)
     else this.pattern = this.basePattern;
     this.updateRoute();
   }
@@ -504,12 +505,12 @@ function trainerSight() {
   return false;
 }
 function checkTouch(x, y) {
-  for (const e of eventAt(x, y, e => (e.page.trigger === 1 || e.page.trigger === 2) && overTrigger(e))) { if (startEvent(e)) return true; }
+  for (const e of eventAt(x, y, e => (e.page.trigger === 1 || e.page.trigger === 2) && overTrigger(e) && e.page.list && e.page.list.length > 1)) { if (startEvent(e)) return true; }   // empty placeholder pages must not interrupt (and key-lock) a running player
   return false;
 }
 function checkBump(d) {
   const [dx, dy] = dirVec[d]; const nx = G.player.x + dx, ny = G.player.y + dy;
-  for (const e of eventAt(nx, ny, e => (e.page.trigger === 1 || e.page.trigger === 2) && !overTrigger(e))) { if (startEvent(e)) return true; }
+  for (const e of eventAt(nx, ny, e => (e.page.trigger === 1 || e.page.trigger === 2) && (!overTrigger(e) || e.tile > 0))) { if (startEvent(e)) return true; }
   return false;
 }
 function faceTalker(e) { if (!e.dirFix && /^(NPC|trchar|trainer)/i.test(e.gname || '')) e.dir = opp[G.player.dir]; }
@@ -803,13 +804,14 @@ class Interp {
       const v = yield* promptName(m[2].replace(/\s*\n\s*/g, ' ').replace(/Rival\\'s/, "Rival's"), m[5], +m[4]); setVar(+m[1], v); return;
     }
     if ((m = s.match(/^pbSet\((\d+),"([^"]*)"\)/))) { setVar(+m[1], m[2]); return; }
-    if ((m = s.match(/^pbWalkEventTo\((\d+),\s*(\d+),\s*(\d+)\)/))) { const ev = this.evChr(+m[1]); if (ev) { const list = [[37, []], [29, [4]]]; const tx = +m[2], ty = +m[3];
+    if ((m = s.match(/^pbWalkEventTo\((-?\d+),\s*(\d+),\s*(\d+)\)/))) { const ev = this.evChr(+m[1]); if (ev) { const list = ev.isPlayer ? [[29, [3]]] : [[37, []], [29, [4]]]; const tx = +m[2], ty = +m[3];
       const key = (x, y) => x + ',' + y, W = G.map.w, H = G.map.h; const occ = new Set(G.chars.filter(c => c !== ev && !c.isPlayer && !c.erased && !c.through && (c.gname || c.tile || /Barricade/i.test(c.name || ''))).map(c => key(c.x, c.y)));      // BFS around fences/walls/other events (the player is walked through)
       const prev = { [key(ev.x, ev.y)]: null }, q = [[ev.x, ev.y]]; let found = false;
       while (q.length && !found) { const [x, y] = q.shift(); for (const d of [2, 4, 6, 8]) { const [dx, dy] = dirVec[d], nx = x + dx, ny = y + dy, k = key(nx, ny); if (prev[k] !== undefined || nx < 0 || ny < 0 || nx >= W || ny >= H) continue; if (!(nx === tx && ny === ty) && occ.has(k)) continue; if (!ev.passableTile(x, y, d) || !ev.passableTile(nx, ny, opp[d])) continue; prev[k] = [x, y, d]; if (nx === tx && ny === ty) { found = true; break; } q.push([nx, ny]); } }
       if (found) { const steps = []; for (let k = key(tx, ty); prev[k];) { const [px, py, d] = prev[k]; steps.push([{ 2: 1, 4: 2, 6: 3, 8: 4 }[d], []]); k = key(px, py); } steps.reverse().forEach(st => list.push(st)); }
       else { for (let x = ev.x; x !== tx; x += Math.sign(tx - x)) list.push([tx > x ? 3 : 2, []]); for (let y = ev.y; y !== ty; y += Math.sign(ty - y)) list.push([ty > y ? 1 : 4, []]); } list.push([0, []]); ev.startRoute({ mr: 1, repeat: false, skip: false, list }); while (ev.forcing) yield; } return; }
     if ((m = s.match(/^pbFacePlayerToEvent\((\d+)\)/))) { const ev = this.evChr(+m[1]); if (ev) { const dx = ev.x - G.player.x, dy = ev.y - G.player.y; G.player.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 4) : (dy > 0 ? 2 : 8); } return; }
+    if ((m = s.match(/^pbClearSelfSwitches\((\d+),(\d+)\)/))) { for (const k of Object.keys(G.selfsw)) { const mp = +k.split('_')[0]; if (mp >= +m[1] && mp <= +m[2]) delete G.selfsw[k]; } G.refresh = true; return; }
     if ((m = s.match(/^pbSetSelfSwitch\((\d+),"(\w)",(true|false)\)/))) { G.selfsw[selfKey(evMapId(this.ev), +m[1], m[2])] = m[3] === 'true'; G.refresh = true; return; }
     if ((m = s.match(/^setTempSwitchOn\("(\w)"\)/))) { if (this.ev) { G.temp[this.ev.key + m[1]] = true; G.refresh = true; } return; }
     if ((m = s.match(/^setTempSwitchOff\("(\w)"\)/))) { if (this.ev) { G.temp[this.ev.key + m[1]] = false; G.refresh = true; } return; }
@@ -833,6 +835,7 @@ class Interp {
       const n = m[2] ? +m[2] : 1; G.items[m[1]] = (G.items[m[1]] || 0) + n; playME('Item_get');
       yield* showMessage('\\PN found ' + (n > 1 ? n + ' ' : 'the ') + itemName(m[1]) + '!'); return;
     }
+    if ((m = s.match(/^pbGainMoney\((\d+)\)/))) { G.money = (G.money || 0) + (+m[1]); return; }
     if ((m = s.match(/^pbAddItem\(:(\w+)(?:,(\d+))?\)/))) { G.items[m[1]] = (G.items[m[1]] || 0) + (m[2] ? +m[2] : 1); return; }
     if ((m = s.match(/^pbTakeItem\(:(\w+)(?:,(\d+))?\)/))) { G.items[m[1]] = Math.max(0, (G.items[m[1]] || 0) - (m[2] ? +m[2] : 1)); if (!G.items[m[1]]) delete G.items[m[1]]; return; }
     if ((m = s.match(/^pbShake\((\d+),(\d+)\)/))) { G.shake = { p: +m[1], left: +m[2] }; return; }
