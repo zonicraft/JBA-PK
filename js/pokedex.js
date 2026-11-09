@@ -6,9 +6,13 @@
 function dexOwned(sym) { return ownedSpecies(sym); }
 function dexSeen(sym) { return !!(G.seen && G.seen[sym]) || ownedSpecies(sym); }
 function dexMarkSeen(sym) { if (!sym) return; G.seen = G.seen || {}; G.seen[sym] = true; }
-function dexCounts() { let s = 0, o = 0; for (const k in D.SP) { if (dexOwned(k)) { o++; s++; } else if (dexSeen(k)) s++; } return [s, o]; }
+// species that are not obtainable: kept out of the Pokédex list and its counts
+const DEX_HIDDEN = ['BUFFEDDAWEI'];
+function dexHidden(k) { return DEX_HIDDEN.includes(k) || !!(D.SP[k] && D.SP[k].megaOf); }
+function dexIsComplete() { for (const k in D.SP) { if (dexHidden(k)) continue; if (!dexOwned(k)) return false; } return true; }
+function dexCounts() { let s = 0, o = 0; for (const k in D.SP) { if (DEX_HIDDEN.includes(k)) continue; if (dexOwned(k)) { o++; s++; } else if (dexSeen(k)) s++; } return [s, o]; }
 function dexList() {
-  const all = Object.keys(D.SP).filter(k => !D.SP[k].megaOf).map(k => ({ sym: k, num: D.SP[k].id, name: D.SP[k].name })).sort((a, b) => a.num - b.num);
+  const all = Object.keys(D.SP).filter(k => !dexHidden(k)).map(k => ({ sym: k, num: D.SP[k].id, name: D.SP[k].name })).sort((a, b) => a.num - b.num);
   let n = all.length; while (n > 0 && !dexSeen(all[n - 1].sym)) n--;     // trailing unseen species are hidden
   return all.slice(0, n);
 }
@@ -90,15 +94,15 @@ function* pokedexEntry(list, index) {
   };
   const step = d => { let j = S.i; for (let n = 0; n < list.length; n++) { j = (j + d + list.length) % list.length; if (dexSeen(list[j].sym)) { S.i = j; return true; } } return false; };
   return yield* withDraw(draw, (function* () {
-    cry(cur().num);
+    cry(cryGender(D.SP[cur().sym]));
     while (true) {
       yield;
       if (rep('left') && S.page > 1) { S.page--; sfx('cursor'); }
       if (rep('right') && S.page < 3) { S.page++; sfx('cursor'); }
-      if (rep('up')) { const o = S.i; step(-1); if (S.i !== o) { sfx('cursor'); if (S.page === 1) cry(cur().num); } }
-      if (rep('down')) { const o = S.i; step(1); if (S.i !== o) { sfx('cursor'); if (S.page === 1) cry(cur().num); } }
+      if (rep('up')) { const o = S.i; step(-1); if (S.i !== o) { sfx('cursor'); if (S.page === 1) cry(cryGender(D.SP[cur().sym])); } }
+      if (rep('down')) { const o = S.i; step(1); if (S.i !== o) { sfx('cursor'); if (S.page === 1) cry(cryGender(D.SP[cur().sym])); } }
       if (back()) { sfx('back'); return S.i; }
-      if (ok() && S.page === 1) { sfx('ok'); cry(cur().num); }
+      if (ok() && S.page === 1) { sfx('ok'); cry(cryGender(D.SP[cur().sym])); }
     }
   })());
 }

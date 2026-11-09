@@ -355,7 +355,7 @@ function grassItems(items, cx, cy) {
 
 // ---- storage PC data: 40 boxes of 30 slots (Essentials' PokemonStorage)
 function pcInit() {
-  if (!G.pc) { G.pc = { cur: 0, boxes: [] }; for (let i = 0; i < 40; i++) G.pc.boxes.push({ name: 'Box ' + (i + 1), bg: i % 16, mons: new Array(30).fill(null) }); }
+  if (!G.pc) { G.pc = { cur: 0, boxes: [] }; for (let i = 0; i < 40; i++) G.pc.boxes.push({ name: 'Box ' + (i + 1), bg: i, mons: new Array(30).fill(null) }); }
   if (G.box && G.box.length) { for (const m of G.box) pcAdd(m); G.box = []; }
   return G.pc;
 }
@@ -374,7 +374,7 @@ function wallMapCheck(x, y) {
 // ---- Sevii Islands: Island Pass + ferry network. Island 0 is Vermilion's port, 1-7 are One Island .. Seven Island.
 const SEV_ISLANDS = ['Vermilion City', 'One Island', 'Two Island', 'Three Island', 'Four Island', 'Five Island', 'Six Island', 'Seven Island'];
 // where the ferry drops you: [map, x, y, dir] (each island's harbor building; Cinnabar's port is the beach south of the Poké Center)
-const SEV_LANDING = { 0: [122, 41, 25, 8], 1: [275, 8, 5, 2], 2: [291, 8, 5, 2], 3: [298, 8, 5, 2], 4: [20, 8, 5, 2], 5: [33, 8, 5, 2], 6: [50, 8, 5, 2], 7: [71, 8, 5, 2] };
+const SEV_LANDING = { 0: [122, 41, 23, 8], 1: [275, 8, 5, 2], 2: [291, 8, 5, 2], 3: [298, 8, 5, 2], 4: [20, 8, 5, 2], 5: [33, 8, 5, 2], 6: [50, 8, 5, 2], 7: [71, 8, 5, 2] };
 const SEV_MAP_ISLAND = { 264: 0, 122: 0, 275: 1, 274: 1, 291: 2, 290: 2, 298: 3, 299: 3, 297: 3, 20: 4, 19: 4, 33: 5, 31: 5, 50: 6, 49: 6, 71: 7, 70: 7 };
 function seviiVisit(id) { const n = SEV_MAP_ISLAND[id]; if (n > 0) G.switches['sev' + n] = true; }
 // One Island is always open; the other islands unlock for good once the quest in the One Island lab is finished
@@ -412,6 +412,7 @@ function* worldScript(it, s) {
     const ev = it && it.ev, d0 = ev && ev.dir; if (ev) faceEvent(ev, G.player);
     try { return yield* worldScriptDayCare(s); } finally { if (ev) ev.dir = d0; }
   }
+  if (s === 'pbDexAward') { G.switches = G.switches || {}; G.switches.dexAward = true; playME('Item_get'); return true; }
   if (s === 'pbWallTownMap') { playSE('GUI_sel_decision'); yield* showMessage('It\'s a map of the region.'); G.uiGen = townMapScreen({ view: true }); yield; return true; }
   if (s.startsWith('Kernel.pbExclaim')) {
     const mm = s.match(/events\[(\d+)\]/), te = mm ? G.events[+mm[1]] : null;
@@ -558,6 +559,7 @@ function* worldScript(it, s) {
   }
   if (s.startsWith('pbPokemonMart(')) {
     const list = [...s.matchAll(/:(\w+)/g)].map(x => x[1]);
+    if (list.includes('POTION') && badgeCount() >= 2) list.push('SUMMERSTONE', 'CASUALSTONE');   // general marts stock the stones after the 2nd badge
     G.uiGen = martScreen(list); yield; return true;
   }
   return false;

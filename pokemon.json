@@ -75229,7 +75229,7 @@
  },
  "HIZUNA": {
   "internalName": "HIZUNA",
-  "dexNumber": 611,
+  "dexNumber": 627,
   "name": "Hizuna",
   "types": [
    "FIGHTING"
@@ -75359,7 +75359,7 @@
  },
  "JIBRIL": {
   "internalName": "JIBRIL",
-  "dexNumber": 612,
+  "dexNumber": 628,
   "name": "Jibril",
   "types": [
    "FLYING",
@@ -75475,7 +75475,7 @@
  },
  "SHUVI": {
   "internalName": "SHUVI",
-  "dexNumber": 613,
+  "dexNumber": 629,
   "name": "Shuvi",
   "types": [
    "STEEL",
@@ -75606,7 +75606,7 @@
  },
  "SHIRO": {
   "internalName": "SHIRO",
-  "dexNumber": 614,
+  "dexNumber": 630,
   "name": "Shiro",
   "types": [
    "PSYCHIC",
@@ -75737,7 +75737,7 @@
  },
  "RENGE": {
   "internalName": "RENGE",
-  "dexNumber": 615,
+  "dexNumber": 631,
   "name": "Renge",
   "types": [
    "NORMAL"
@@ -75852,7 +75852,7 @@
  },
  "YATO": {
   "internalName": "YATO",
-  "dexNumber": 616,
+  "dexNumber": 632,
   "name": "Yato",
   "types": [
    "DARK",
@@ -75978,7 +75978,7 @@
  },
  "SAITAMA": {
   "internalName": "SAITAMA",
-  "dexNumber": 617,
+  "dexNumber": 633,
   "name": "Saitama",
   "types": [
    "FIGHTING"
@@ -76102,7 +76102,7 @@
  },
  "SATORU": {
   "internalName": "SATORU",
-  "dexNumber": 618,
+  "dexNumber": 634,
   "name": "Satoru",
   "types": [
    "NORMAL"
@@ -76232,7 +76232,7 @@
  },
  "TATSUMAKI": {
   "internalName": "TATSUMAKI",
-  "dexNumber": 619,
+  "dexNumber": 635,
   "name": "Tatsumaki",
   "types": [
    "PSYCHIC"
@@ -76357,7 +76357,7 @@
  },
  "AYASE": {
   "internalName": "AYASE",
-  "dexNumber": 620,
+  "dexNumber": 636,
   "name": "Ayase",
   "types": [
    "DARK"
@@ -76487,7 +76487,7 @@
  },
  "KANAKO": {
   "internalName": "KANAKO",
-  "dexNumber": 621,
+  "dexNumber": 637,
   "name": "Kanako",
   "types": [
    "FIGHTING"
@@ -76617,7 +76617,7 @@
  },
  "KIRINO": {
   "internalName": "KIRINO",
-  "dexNumber": 622,
+  "dexNumber": 638,
   "name": "Kirino",
   "types": [
    "FAIRY"
@@ -76747,7 +76747,7 @@
  },
  "KURONEKO": {
   "internalName": "KURONEKO",
-  "dexNumber": 623,
+  "dexNumber": 639,
   "name": "Kuroneko",
   "types": [
    "DARK"
@@ -76872,7 +76872,7 @@
  },
  "PETRALKA": {
   "internalName": "PETRALKA",
-  "dexNumber": 624,
+  "dexNumber": 640,
   "name": "Petralka",
   "types": [
    "ELECTRIC",
@@ -76988,7 +76988,7 @@
  },
  "AINZ": {
   "internalName": "AINZ",
-  "dexNumber": 625,
+  "dexNumber": 641,
   "name": "Ainz",
   "types": [
    "DARK"
@@ -77118,7 +77118,7 @@
  },
  "ALBEDOOVERLORD": {
   "internalName": "ALBEDOOVERLORD",
-  "dexNumber": 626,
+  "dexNumber": 642,
   "name": "AlbedoOverLord",
   "types": [
    "DARK",
@@ -77239,7 +77239,7 @@
  },
  "MOMONGA": {
   "internalName": "MOMONGA",
-  "dexNumber": 627,
+  "dexNumber": 643,
   "name": "Momonga",
   "types": [
    "DARK",
@@ -77365,7 +77365,7 @@
  },
  "SHALTEAR": {
   "internalName": "SHALTEAR",
-  "dexNumber": 628,
+  "dexNumber": 644,
   "name": "Shaltear",
   "types": [
    "DARK",
@@ -77491,7 +77491,7 @@
  },
  "DVA": {
   "internalName": "DVA",
-  "dexNumber": 629,
+  "dexNumber": 645,
   "name": "Dva",
   "types": [
    "FIRE"
@@ -77621,7 +77621,7 @@
  },
  "KRUL": {
   "internalName": "KRUL",
-  "dexNumber": 630,
+  "dexNumber": 646,
   "name": "Krul",
   "types": [
    "GHOST",
@@ -77752,7 +77752,7 @@
  },
  "SHINOA": {
   "internalName": "SHINOA",
-  "dexNumber": 631,
+  "dexNumber": 647,
   "name": "Shinoa",
   "types": [
    "PSYCHIC"
@@ -77882,7 +77882,7 @@
  },
  "PANTY": {
   "internalName": "PANTY",
-  "dexNumber": 632,
+  "dexNumber": 648,
   "name": "Panty",
   "types": [
    "FAIRY"
@@ -77997,7 +77997,7 @@
  },
  "STOCKING": {
   "internalName": "STOCKING",
-  "dexNumber": 633,
+  "dexNumber": 649,
   "name": "Stocking",
   "types": [
    "GHOST",
@@ -78128,7 +78128,7 @@
  },
  "ISLA": {
   "internalName": "ISLA",
-  "dexNumber": 634,
+  "dexNumber": 650,
   "name": "Isla",
   "types": [
    "STEEL"
@@ -78258,7 +78258,7 @@
  },
  "CHRISTINA": {
   "internalName": "CHRISTINA",
-  "dexNumber": 635,
+  "dexNumber": 651,
   "name": "Christina",
   "types": [
    "STEEL",
@@ -78388,7 +78388,7 @@
  },
  "ERIKO": {
   "internalName": "ERIKO",
-  "dexNumber": 636,
+  "dexNumber": 652,
   "name": "Eriko",
   "types": [
    "DARK",
@@ -78518,7 +78518,7 @@
  },
  "HATSUNE": {
   "internalName": "HATSUNE",
-  "dexNumber": 637,
+  "dexNumber": 653,
   "name": "Hatsune",
   "types": [
    "FAIRY"
@@ -78647,7 +78647,7 @@
  },
  "ILYA": {
   "internalName": "ILYA",
-  "dexNumber": 638,
+  "dexNumber": 654,
   "name": "Ilya",
   "types": [
    "DARK",
@@ -78762,7 +78762,7 @@
  },
  "IO": {
   "internalName": "IO",
-  "dexNumber": 639,
+  "dexNumber": 655,
   "name": "Io",
   "types": [
    "PSYCHIC"
@@ -78891,7 +78891,7 @@
  },
  "KARYL": {
   "internalName": "KARYL",
-  "dexNumber": 640,
+  "dexNumber": 656,
   "name": "Karyl",
   "types": [
    "DARK",
@@ -79016,7 +79016,7 @@
  },
  "KOKORO": {
   "internalName": "KOKORO",
-  "dexNumber": 641,
+  "dexNumber": 657,
   "name": "Kokoro",
   "types": [
    "FIGHTING"
@@ -79145,7 +79145,7 @@
  },
  "KUKA": {
   "internalName": "KUKA",
-  "dexNumber": 642,
+  "dexNumber": 658,
   "name": "Kuka",
   "types": [
    "DARK",
@@ -79275,7 +79275,7 @@
  },
  "KYOUKA": {
   "internalName": "KYOUKA",
-  "dexNumber": 643,
+  "dexNumber": 659,
   "name": "Kyouka",
   "types": [
    "WATER",
@@ -79400,7 +79400,7 @@
  },
  "MAHO": {
   "internalName": "MAHO",
-  "dexNumber": 644,
+  "dexNumber": 660,
   "name": "Maho",
   "types": [
    "FAIRY",
@@ -79530,7 +79530,7 @@
  },
  "MIMI": {
   "internalName": "MIMI",
-  "dexNumber": 645,
+  "dexNumber": 661,
   "name": "Mimi",
   "types": [
    "NORMAL"
@@ -79659,7 +79659,7 @@
  },
  "MISOGI": {
   "internalName": "MISOGI",
-  "dexNumber": 646,
+  "dexNumber": 662,
   "name": "Misogi",
   "types": [
    "FIGHTING"
@@ -79788,7 +79788,7 @@
  },
  "PECORINE": {
   "internalName": "PECORINE",
-  "dexNumber": 647,
+  "dexNumber": 663,
   "name": "Pecorine",
   "types": [
    "FIGHTING",
@@ -79918,7 +79918,7 @@
  },
  "SAREN": {
   "internalName": "SAREN",
-  "dexNumber": 648,
+  "dexNumber": 664,
   "name": "Saren",
   "types": [
    "NORMAL"
@@ -80047,7 +80047,7 @@
  },
  "TAMAKI": {
   "internalName": "TAMAKI",
-  "dexNumber": 649,
+  "dexNumber": 665,
   "name": "Tamaki",
   "types": [
    "BUG"
@@ -80176,7 +80176,7 @@
  },
  "YUKARI": {
   "internalName": "YUKARI",
-  "dexNumber": 650,
+  "dexNumber": 666,
   "name": "Yukari",
   "types": [
    "GRASS"
@@ -80305,7 +80305,7 @@
  },
  "IKKI": {
   "internalName": "IKKI",
-  "dexNumber": 651,
+  "dexNumber": 667,
   "name": "Ikki",
   "types": [
    "NORMAL"
@@ -80434,7 +80434,7 @@
  },
  "STELLA": {
   "internalName": "STELLA",
-  "dexNumber": 652,
+  "dexNumber": 668,
   "name": "Stella",
   "types": [
    "FIRE",
@@ -80549,7 +80549,7 @@
  },
  "KEYARU": {
   "internalName": "KEYARU",
-  "dexNumber": 653,
+  "dexNumber": 669,
   "name": "Keyaru",
   "types": [
    "DARK"
@@ -80663,7 +80663,7 @@
  },
  "BEATRICE": {
   "internalName": "BEATRICE",
-  "dexNumber": 654,
+  "dexNumber": 670,
   "name": "Beatrice",
   "types": [
    "PSYCHIC",
@@ -80783,7 +80783,7 @@
  },
  "ECHIDNA": {
   "internalName": "ECHIDNA",
-  "dexNumber": 655,
+  "dexNumber": 671,
   "name": "Echidna",
   "types": [
    "DARK"
@@ -80897,7 +80897,7 @@
  },
  "EMILIA": {
   "internalName": "EMILIA",
-  "dexNumber": 656,
+  "dexNumber": 672,
   "name": "Emilia",
   "types": [
    "ICE",
@@ -81017,7 +81017,7 @@
  },
  "PETRA": {
   "internalName": "PETRA",
-  "dexNumber": 657,
+  "dexNumber": 673,
   "name": "Petra",
   "types": [
    "NORMAL"
@@ -81131,7 +81131,7 @@
  },
  "RAM": {
   "internalName": "RAM",
-  "dexNumber": 658,
+  "dexNumber": 674,
   "name": "Ram",
   "types": [
    "PSYCHIC"
@@ -81245,7 +81245,7 @@
  },
  "REM": {
   "internalName": "REM",
-  "dexNumber": 659,
+  "dexNumber": 675,
   "name": "Rem",
   "types": [
    "FIGHTING"
@@ -81370,7 +81370,7 @@
  },
  "KONA": {
   "internalName": "KONA",
-  "dexNumber": 660,
+  "dexNumber": 676,
   "name": "Kona",
   "types": [
    "PSYCHIC"
@@ -81499,7 +81499,7 @@
  },
  "NASHETANIA": {
   "internalName": "NASHETANIA",
-  "dexNumber": 661,
+  "dexNumber": 677,
   "name": "Nashetania",
   "types": [
    "PSYCHIC"
@@ -81629,7 +81629,7 @@
  },
  "REL": {
   "internalName": "REL",
-  "dexNumber": 662,
+  "dexNumber": 678,
   "name": "Re=L",
   "types": [
    "PSYCHIC",
@@ -81760,7 +81760,7 @@
  },
  "RUMIA": {
   "internalName": "RUMIA",
-  "dexNumber": 663,
+  "dexNumber": 679,
   "name": "Rumia",
   "types": [
    "FIGHTING"
@@ -81889,7 +81889,7 @@
  },
  "SISTINE": {
   "internalName": "SISTINE",
-  "dexNumber": 664,
+  "dexNumber": 680,
   "name": "Sistine",
   "types": [
    "PSYCHIC",
@@ -82019,7 +82019,7 @@
  },
  "ERIRI": {
   "internalName": "ERIRI",
-  "dexNumber": 665,
+  "dexNumber": 681,
   "name": "Eriri",
   "types": [
    "NORMAL"
@@ -82133,7 +82133,7 @@
  },
  "MEGUMIBORING": {
   "internalName": "MEGUMIBORING",
-  "dexNumber": 666,
+  "dexNumber": 682,
   "name": "MegumiBoring",
   "types": [
    "NORMAL"
@@ -82263,7 +82263,7 @@
  },
  "UTAHA": {
   "internalName": "UTAHA",
-  "dexNumber": 667,
+  "dexNumber": 683,
   "name": "Utaha",
   "types": [
    "DARK"
@@ -82377,7 +82377,7 @@
  },
  "PHILPHIE": {
   "internalName": "PHILPHIE",
-  "dexNumber": 668,
+  "dexNumber": 684,
   "name": "Philphie",
   "types": [
    "STEEL"
@@ -82507,7 +82507,7 @@
  },
  "MASHIRO": {
   "internalName": "MASHIRO",
-  "dexNumber": 669,
+  "dexNumber": 685,
   "name": "Mashiro",
   "types": [
    "PSYCHIC"
@@ -82622,7 +82622,7 @@
  },
  "MUGEN": {
   "internalName": "MUGEN",
-  "dexNumber": 670,
+  "dexNumber": 686,
   "name": "Mugen",
   "types": [
    "FIGHTING"
@@ -82737,7 +82737,7 @@
  },
  "KOTONOHA": {
   "internalName": "KOTONOHA",
-  "dexNumber": 671,
+  "dexNumber": 687,
   "name": "Kotonoha",
   "types": [
    "NORMAL",
@@ -82867,7 +82867,7 @@
  },
  "SEKAI": {
   "internalName": "SEKAI",
-  "dexNumber": 672,
+  "dexNumber": 688,
   "name": "Sekai",
   "types": [
    "NORMAL",
@@ -82997,7 +82997,7 @@
  },
  "KOTOMISEITOKAI": {
   "internalName": "KOTOMISEITOKAI",
-  "dexNumber": 673,
+  "dexNumber": 689,
   "name": "KotomiSeitokai",
   "types": [
    "FIGHTING"
@@ -83111,7 +83111,7 @@
  },
  "RANKO": {
   "internalName": "RANKO",
-  "dexNumber": 674,
+  "dexNumber": 690,
   "name": "Ranko",
   "types": [
    "FIRE"
@@ -83240,7 +83240,7 @@
  },
  "SUZU": {
   "internalName": "SUZU",
-  "dexNumber": 675,
+  "dexNumber": 691,
   "name": "Suzu",
   "types": [
    "GRASS"
@@ -83354,7 +83354,7 @@
  },
  "CHRIS": {
   "internalName": "CHRIS",
-  "dexNumber": 676,
+  "dexNumber": 692,
   "name": "Chris",
   "types": [
    "ICE",
@@ -83470,7 +83470,7 @@
  },
  "HIBIKI": {
   "internalName": "HIBIKI",
-  "dexNumber": 677,
+  "dexNumber": 693,
   "name": "Hibiki",
   "types": [
    "FIRE",
@@ -83601,7 +83601,7 @@
  },
  "KIRIKA": {
   "internalName": "KIRIKA",
-  "dexNumber": 678,
+  "dexNumber": 694,
   "name": "Kirika",
   "types": [
    "STEEL",
@@ -83716,7 +83716,7 @@
  },
  "SHIRABE": {
   "internalName": "SHIRABE",
-  "dexNumber": 679,
+  "dexNumber": 695,
   "name": "Shirabe",
   "types": [
    "POISON",
@@ -83847,7 +83847,7 @@
  },
  "ALICESENTOUIN": {
   "internalName": "ALICESENTOUIN",
-  "dexNumber": 680,
+  "dexNumber": 696,
   "name": "AliceSentouin",
   "types": [
    "FAIRY"
@@ -83977,7 +83977,7 @@
  },
  "SNOW": {
   "internalName": "SNOW",
-  "dexNumber": 681,
+  "dexNumber": 697,
   "name": "Snow",
   "types": [
    "ICE"
@@ -84106,7 +84106,7 @@
  },
  "SHANA": {
   "internalName": "SHANA",
-  "dexNumber": 682,
+  "dexNumber": 698,
   "name": "Shana",
   "types": [
    "FIRE",
@@ -84236,7 +84236,7 @@
  },
  "RAFTALIA": {
   "internalName": "RAFTALIA",
-  "dexNumber": 683,
+  "dexNumber": 699,
   "name": "Raftalia",
   "types": [
    "FIGHTING"
@@ -84350,7 +84350,7 @@
  },
  "RAFTALIA2": {
   "internalName": "RAFTALIA2",
-  "dexNumber": 684,
+  "dexNumber": 700,
   "name": "Raftalia",
   "types": [
    "FIGHTING",
@@ -84480,7 +84480,7 @@
  },
  "CERBERUS": {
   "internalName": "CERBERUS",
-  "dexNumber": 685,
+  "dexNumber": 701,
   "name": "Cerberus",
   "types": [
    "FIRE",
@@ -84595,7 +84595,7 @@
  },
  "BASARA": {
   "internalName": "BASARA",
-  "dexNumber": 686,
+  "dexNumber": 702,
   "name": "Basara",
   "types": [
    "FIGHTING"
@@ -84709,7 +84709,7 @@
  },
  "CHISATO": {
   "internalName": "CHISATO",
-  "dexNumber": 687,
+  "dexNumber": 703,
   "name": "Chisato",
   "types": [
    "FIRE",
@@ -84839,7 +84839,7 @@
  },
  "MARIA": {
   "internalName": "MARIA",
-  "dexNumber": 688,
+  "dexNumber": 704,
   "name": "Maria",
   "types": [
    "DARK"
@@ -84969,7 +84969,7 @@
  },
  "MIO": {
   "internalName": "MIO",
-  "dexNumber": 689,
+  "dexNumber": 705,
   "name": "Mio",
   "types": [
    "DARK",
@@ -85085,7 +85085,7 @@
  },
  "YUKI": {
   "internalName": "YUKI",
-  "dexNumber": 690,
+  "dexNumber": 706,
   "name": "Yuki",
   "types": [
    "ICE",
@@ -85216,7 +85216,7 @@
  },
  "CHTHOLLY": {
   "internalName": "CHTHOLLY",
-  "dexNumber": 691,
+  "dexNumber": 707,
   "name": "Chtholly",
   "types": [
    "FAIRY"
@@ -85331,7 +85331,7 @@
  },
  "LEVIATHAN": {
   "internalName": "LEVIATHAN",
-  "dexNumber": 692,
+  "dexNumber": 708,
   "name": "Leviathan",
   "types": [
    "WATER"
@@ -85461,7 +85461,7 @@
  },
  "HOLO": {
   "internalName": "HOLO",
-  "dexNumber": 693,
+  "dexNumber": 709,
   "name": "Holo",
   "types": [
    "GRASS"
@@ -85591,7 +85591,7 @@
  },
  "KURISU": {
   "internalName": "KURISU",
-  "dexNumber": 694,
+  "dexNumber": 710,
   "name": "Kurisu",
   "types": [
    "PSYCHIC"
@@ -85720,7 +85720,7 @@
  },
  "LESKINEN": {
   "internalName": "LESKINEN",
-  "dexNumber": 695,
+  "dexNumber": 711,
   "name": "Leskinen",
   "types": [
    "PSYCHIC",
@@ -85835,7 +85835,7 @@
  },
  "MAHO2": {
   "internalName": "MAHO2",
-  "dexNumber": 696,
+  "dexNumber": 712,
   "name": "Maho",
   "types": [
    "PSYCHIC",
@@ -85966,7 +85966,7 @@
  },
  "MAYURI": {
   "internalName": "MAYURI",
-  "dexNumber": 697,
+  "dexNumber": 713,
   "name": "Mayuri",
   "types": [
    "NORMAL"
@@ -86096,7 +86096,7 @@
  },
  "RINTARO": {
   "internalName": "RINTARO",
-  "dexNumber": 698,
+  "dexNumber": 714,
   "name": "Rintaro",
   "types": [
    "ELECTRIC",
@@ -86226,7 +86226,7 @@
  },
  "KOJOU": {
   "internalName": "KOJOU",
-  "dexNumber": 699,
+  "dexNumber": 717,
   "name": "Kojou",
   "types": [
    "DARK",
@@ -86356,7 +86356,7 @@
  },
  "YUKINA": {
   "internalName": "YUKINA",
-  "dexNumber": 700,
+  "dexNumber": 718,
   "name": "Yukina",
   "types": [
    "STEEL"
@@ -86470,7 +86470,7 @@
  },
  "SUPERSONICO": {
   "internalName": "SUPERSONICO",
-  "dexNumber": 701,
+  "dexNumber": 719,
   "name": "SuperSonico",
   "types": [
    "ELECTRIC"
@@ -86599,7 +86599,7 @@
  },
  "MIKURU": {
   "internalName": "MIKURU",
-  "dexNumber": 702,
+  "dexNumber": 720,
   "name": "Mikuru",
   "types": [
    "FAIRY",
@@ -86714,7 +86714,7 @@
  },
  "NAGATO": {
   "internalName": "NAGATO",
-  "dexNumber": 703,
+  "dexNumber": 721,
   "name": "Nagato",
   "types": [
    "PSYCHIC",
@@ -86845,7 +86845,7 @@
  },
  "SUZUMIYA": {
   "internalName": "SUZUMIYA",
-  "dexNumber": 704,
+  "dexNumber": 722,
   "name": "Suzumiya",
   "types": [
    "PSYCHIC"
@@ -86975,7 +86975,7 @@
  },
  "ADMINISTRATOR": {
   "internalName": "ADMINISTRATOR",
-  "dexNumber": 705,
+  "dexNumber": 723,
   "name": "Administrator",
   "types": [
    "PSYCHIC",
@@ -87105,7 +87105,7 @@
  },
  "ALICE": {
   "internalName": "ALICE",
-  "dexNumber": 706,
+  "dexNumber": 724,
   "name": "Alice",
   "types": [
    "STEEL"
@@ -87235,7 +87235,7 @@
  },
  "ALICE2": {
   "internalName": "ALICE2",
-  "dexNumber": 707,
+  "dexNumber": 725,
   "name": "Alice",
   "types": [
    "STEEL"
@@ -87365,7 +87365,7 @@
  },
  "ARGO": {
   "internalName": "ARGO",
-  "dexNumber": 708,
+  "dexNumber": 726,
   "name": "Argo",
   "types": [
    "NORMAL"
@@ -87495,7 +87495,7 @@
  },
  "ASUNA": {
   "internalName": "ASUNA",
-  "dexNumber": 709,
+  "dexNumber": 727,
   "name": "Asuna",
   "types": [
    "FIGHTING"
@@ -87619,7 +87619,7 @@
  },
  "ASUNA2": {
   "internalName": "ASUNA2",
-  "dexNumber": 710,
+  "dexNumber": 728,
   "name": "Asuna",
   "types": [
    "FIGHTING",
@@ -87745,7 +87745,7 @@
  },
  "DEATHGUN": {
   "internalName": "DEATHGUN",
-  "dexNumber": 711,
+  "dexNumber": 729,
   "name": "DeathGun",
   "types": [
    "GHOST",
@@ -87861,7 +87861,7 @@
  },
  "EUGEO": {
   "internalName": "EUGEO",
-  "dexNumber": 712,
+  "dexNumber": 730,
   "name": "Eugeo",
   "types": [
    "ICE"
@@ -87976,7 +87976,7 @@
  },
  "EUGEO2": {
   "internalName": "EUGEO2",
-  "dexNumber": 713,
+  "dexNumber": 731,
   "name": "Eugeo",
   "types": [
    "ICE"
@@ -88091,7 +88091,7 @@
  },
  "FUKA": {
   "internalName": "FUKA",
-  "dexNumber": 714,
+  "dexNumber": 732,
   "name": "Fuka",
   "types": [
    "FLYING"
@@ -88206,7 +88206,7 @@
  },
  "KIRITO": {
   "internalName": "KIRITO",
-  "dexNumber": 715,
+  "dexNumber": 733,
   "name": "Kirito",
   "types": [
    "DARK"
@@ -88331,7 +88331,7 @@
  },
  "KIRITO2": {
   "internalName": "KIRITO2",
-  "dexNumber": 716,
+  "dexNumber": 734,
   "name": "Kirito",
   "types": [
    "DARK",
@@ -88462,7 +88462,7 @@
  },
  "KIRITO3": {
   "internalName": "KIRITO3",
-  "dexNumber": 717,
+  "dexNumber": 735,
   "name": "Kirito",
   "types": [
    "DARK",
@@ -88593,7 +88593,7 @@
  },
  "KUREHA": {
   "internalName": "KUREHA",
-  "dexNumber": 718,
+  "dexNumber": 736,
   "name": "Kureha",
   "types": [
    "PSYCHIC"
@@ -88717,7 +88717,7 @@
  },
  "LEAFA": {
   "internalName": "LEAFA",
-  "dexNumber": 719,
+  "dexNumber": 737,
   "name": "Leafa",
   "types": [
    "GRASS",
@@ -88842,7 +88842,7 @@
  },
  "SUGUHA": {
   "internalName": "SUGUHA",
-  "dexNumber": 720,
+  "dexNumber": 738,
   "name": "Suguha",
   "types": [
    "GRASS",
@@ -88972,7 +88972,7 @@
  },
  "LIZ": {
   "internalName": "LIZ",
-  "dexNumber": 721,
+  "dexNumber": 739,
   "name": "Liz",
   "types": [
    "FIRE",
@@ -89087,7 +89087,7 @@
  },
  "LLENN": {
   "internalName": "LLENN",
-  "dexNumber": 722,
+  "dexNumber": 740,
   "name": "LLENN",
   "types": [
    "ROCK"
@@ -89201,7 +89201,7 @@
  },
  "LUX": {
   "internalName": "LUX",
-  "dexNumber": 723,
+  "dexNumber": 741,
   "name": "Lux",
   "types": [
    "FAIRY"
@@ -89316,7 +89316,7 @@
  },
  "PHILIA": {
   "internalName": "PHILIA",
-  "dexNumber": 724,
+  "dexNumber": 742,
   "name": "Philia",
   "types": [
    "DARK"
@@ -89430,7 +89430,7 @@
  },
  "PITOHUI": {
   "internalName": "PITOHUI",
-  "dexNumber": 725,
+  "dexNumber": 743,
   "name": "Pitohui",
   "types": [
    "DARK",
@@ -89560,7 +89560,7 @@
  },
  "PREMIERE": {
   "internalName": "PREMIERE",
-  "dexNumber": 726,
+  "dexNumber": 744,
   "name": "Premiere",
   "types": [
    "FAIRY",
@@ -89675,7 +89675,7 @@
  },
  "RAIN": {
   "internalName": "RAIN",
-  "dexNumber": 727,
+  "dexNumber": 745,
   "name": "Rain",
   "types": [
    "GROUND"
@@ -89799,7 +89799,7 @@
  },
  "RAIN2": {
   "internalName": "RAIN2",
-  "dexNumber": 728,
+  "dexNumber": 746,
   "name": "Rain",
   "types": [
    "GROUND",
@@ -89924,7 +89924,7 @@
  },
  "SACHI": {
   "internalName": "SACHI",
-  "dexNumber": 729,
+  "dexNumber": 747,
   "name": "Sachi",
   "types": [
    "NORMAL"
@@ -90053,7 +90053,7 @@
  },
  "SELKA": {
   "internalName": "SELKA",
-  "dexNumber": 730,
+  "dexNumber": 748,
   "name": "Selka",
   "types": [
    "NORMAL"
@@ -90182,7 +90182,7 @@
  },
  "SEVEN": {
   "internalName": "SEVEN",
-  "dexNumber": 731,
+  "dexNumber": 749,
   "name": "Seven",
   "types": [
    "FAIRY",
@@ -90312,7 +90312,7 @@
  },
  "SILICA": {
   "internalName": "SILICA",
-  "dexNumber": 732,
+  "dexNumber": 750,
   "name": "Silica",
   "types": [
    "FLYING",
@@ -90442,7 +90442,7 @@
  },
  "SILICA2": {
   "internalName": "SILICA2",
-  "dexNumber": 733,
+  "dexNumber": 751,
   "name": "Silica",
   "types": [
    "FLYING",
@@ -90573,7 +90573,7 @@
  },
  "SINON": {
   "internalName": "SINON",
-  "dexNumber": 734,
+  "dexNumber": 752,
   "name": "Sinon",
   "types": [
    "ICE",
@@ -90704,7 +90704,7 @@
  },
  "SINON2": {
   "internalName": "SINON2",
-  "dexNumber": 735,
+  "dexNumber": 753,
   "name": "Sinon",
   "types": [
    "ICE",
@@ -90835,7 +90835,7 @@
  },
  "STREA": {
   "internalName": "STREA",
-  "dexNumber": 736,
+  "dexNumber": 754,
   "name": "Strea",
   "types": [
    "FAIRY"
@@ -90965,7 +90965,7 @@
  },
  "YUI": {
   "internalName": "YUI",
-  "dexNumber": 737,
+  "dexNumber": 755,
   "name": "Yui",
   "types": [
    "PSYCHIC"
@@ -91080,7 +91080,7 @@
  },
  "YUI2": {
   "internalName": "YUI2",
-  "dexNumber": 738,
+  "dexNumber": 756,
   "name": "Yui2",
   "types": [
    "PSYCHIC",
@@ -91195,7 +91195,7 @@
  },
  "YUUKI": {
   "internalName": "YUUKI",
-  "dexNumber": 739,
+  "dexNumber": 757,
   "name": "Yuuki",
   "types": [
    "FIGHTING"
@@ -91324,7 +91324,7 @@
  },
  "YUNA": {
   "internalName": "YUNA",
-  "dexNumber": 740,
+  "dexNumber": 758,
   "name": "Yuna",
   "types": [
    "ICE",
@@ -91454,7 +91454,7 @@
  },
  "SENPAI": {
   "internalName": "SENPAI",
-  "dexNumber": 741,
+  "dexNumber": 759,
   "name": "Senpai",
   "types": [
    "NORMAL"
@@ -91569,7 +91569,7 @@
  },
  "KAMINA": {
   "internalName": "KAMINA",
-  "dexNumber": 742,
+  "dexNumber": 760,
   "name": "Kamina",
   "types": [
    "FIRE"
@@ -91684,7 +91684,7 @@
  },
  "YOKO": {
   "internalName": "YOKO",
-  "dexNumber": 743,
+  "dexNumber": 761,
   "name": "Yoko",
   "types": [
    "FIRE",
@@ -91814,7 +91814,7 @@
  },
  "MILIM": {
   "internalName": "MILIM",
-  "dexNumber": 744,
+  "dexNumber": 762,
   "name": "Milim",
   "types": [
    "DRAGON",
@@ -91935,7 +91935,7 @@
  },
  "RIMURU": {
   "internalName": "RIMURU",
-  "dexNumber": 745,
+  "dexNumber": 763,
   "name": "Rimuru",
   "types": [
    "WATER"
@@ -92050,7 +92050,7 @@
  },
  "SHION": {
   "internalName": "SHION",
-  "dexNumber": 746,
+  "dexNumber": 764,
   "name": "Shion",
   "types": [
    "DARK",
@@ -92176,7 +92176,7 @@
  },
  "SHUNA": {
   "internalName": "SHUNA",
-  "dexNumber": 747,
+  "dexNumber": 765,
   "name": "Shuna",
   "types": [
    "FAIRY"
@@ -92291,7 +92291,7 @@
  },
  "ENDORSI": {
   "internalName": "ENDORSI",
-  "dexNumber": 748,
+  "dexNumber": 766,
   "name": "Endorsi",
   "types": [
    "WATER"
@@ -92405,7 +92405,7 @@
  },
  "YURIHA": {
   "internalName": "YURIHA",
-  "dexNumber": 749,
+  "dexNumber": 767,
   "name": "Yuriha",
   "types": [
    "ICE",
@@ -92521,7 +92521,7 @@
  },
  "ACCELERATOR": {
   "internalName": "ACCELERATOR",
-  "dexNumber": 750,
+  "dexNumber": 768,
   "name": "Accelerator",
   "types": [
    "PSYCHIC"
@@ -92651,7 +92651,7 @@
  },
  "INDEX": {
   "internalName": "INDEX",
-  "dexNumber": 751,
+  "dexNumber": 769,
   "name": "Index",
   "types": [
    "NORMAL"
@@ -92766,7 +92766,7 @@
  },
  "LASTORDER": {
   "internalName": "LASTORDER",
-  "dexNumber": 752,
+  "dexNumber": 770,
   "name": "LastOrder",
   "types": [
    "ELECTRIC"
@@ -92881,7 +92881,7 @@
  },
  "MISAKA": {
   "internalName": "MISAKA",
-  "dexNumber": 753,
+  "dexNumber": 771,
   "name": "Misaka",
   "types": [
    "ELECTRIC",
@@ -93006,7 +93006,7 @@
  },
  "SHIRAI": {
   "internalName": "SHIRAI",
-  "dexNumber": 754,
+  "dexNumber": 772,
   "name": "Shirai",
   "types": [
    "PSYCHIC"
@@ -93125,7 +93125,7 @@
  },
  "DARKNESS": {
   "internalName": "DARKNESS",
-  "dexNumber": 755,
+  "dexNumber": 773,
   "name": "Darkness",
   "types": [
    "STEEL",
@@ -93250,7 +93250,7 @@
  },
  "KOTEGAWA": {
   "internalName": "KOTEGAWA",
-  "dexNumber": 756,
+  "dexNumber": 774,
   "name": "Kotegawa",
   "types": [
    "NORMAL"
@@ -93364,7 +93364,7 @@
  },
  "LALA": {
   "internalName": "LALA",
-  "dexNumber": 757,
+  "dexNumber": 775,
   "name": "Lala",
   "types": [
    "ELECTRIC",
@@ -93480,7 +93480,7 @@
  },
  "MEA": {
   "internalName": "MEA",
-  "dexNumber": 758,
+  "dexNumber": 776,
   "name": "Mea",
   "types": [
    "GRASS"
@@ -93600,7 +93600,7 @@
  },
  "MIKAN": {
   "internalName": "MIKAN",
-  "dexNumber": 759,
+  "dexNumber": 777,
   "name": "Mikan",
   "types": [
    "NORMAL"
@@ -93729,7 +93729,7 @@
  },
  "MOMOTOLOVERU": {
   "internalName": "MOMOTOLOVERU",
-  "dexNumber": 760,
+  "dexNumber": 778,
   "name": "MomoToLoveRu",
   "types": [
    "GRASS",
@@ -93844,7 +93844,7 @@
  },
  "NANATOLOVERU": {
   "internalName": "NANATOLOVERU",
-  "dexNumber": 761,
+  "dexNumber": 779,
   "name": "NanaToLoveRu",
   "types": [
    "WATER",
@@ -93975,7 +93975,7 @@
  },
  "RUN": {
   "internalName": "RUN",
-  "dexNumber": 762,
+  "dexNumber": 780,
   "name": "Run",
   "types": [
    "BUG"
@@ -94105,7 +94105,7 @@
  },
  "SAIRENJI": {
   "internalName": "SAIRENJI",
-  "dexNumber": 763,
+  "dexNumber": 781,
   "name": "Sairenji",
   "types": [
    "NORMAL"
@@ -94220,7 +94220,7 @@
  },
  "TEARJU": {
   "internalName": "TEARJU",
-  "dexNumber": 764,
+  "dexNumber": 782,
   "name": "Tearju",
   "types": [
    "PSYCHIC"
@@ -94335,7 +94335,7 @@
  },
  "TAIGA2": {
   "internalName": "TAIGA2",
-  "dexNumber": 765,
+  "dexNumber": 783,
   "name": "Taiga",
   "types": [
    "FIGHTING"
@@ -94460,7 +94460,7 @@
  },
  "ARATA": {
   "internalName": "ARATA",
-  "dexNumber": 766,
+  "dexNumber": 784,
   "name": "Arata",
   "types": [
    "FIRE"
@@ -94575,7 +94575,7 @@
  },
  "YUITRINITY": {
   "internalName": "YUITRINITY",
-  "dexNumber": 767,
+  "dexNumber": 785,
   "name": "YuiTrinity",
   "types": [
    "PSYCHIC"
@@ -94705,7 +94705,7 @@
  },
  "AKIHA": {
   "internalName": "AKIHA",
-  "dexNumber": 768,
+  "dexNumber": 786,
   "name": "Akiha",
   "types": [
    "DARK",
@@ -94835,7 +94835,7 @@
  },
  "ARCUEID": {
   "internalName": "ARCUEID",
-  "dexNumber": 769,
+  "dexNumber": 787,
   "name": "Arcueid",
   "types": [
    "DARK",
@@ -94950,7 +94950,7 @@
  },
  "CIEL": {
   "internalName": "CIEL",
-  "dexNumber": 770,
+  "dexNumber": 788,
   "name": "Ciel",
   "types": [
    "FIGHTING"
@@ -95079,7 +95079,7 @@
  },
  "HISUI": {
   "internalName": "HISUI",
-  "dexNumber": 771,
+  "dexNumber": 789,
   "name": "Hisui",
   "types": [
    "NORMAL"
@@ -95193,7 +95193,7 @@
  },
  "KOHAKU": {
   "internalName": "KOHAKU",
-  "dexNumber": 772,
+  "dexNumber": 790,
   "name": "Kohaku",
   "types": [
    "GRASS"
@@ -95322,7 +95322,7 @@
  },
  "NEKOARC": {
   "internalName": "NEKOARC",
-  "dexNumber": 773,
+  "dexNumber": 823,
   "name": "NekoArc",
   "types": [
    "FAIRY",
@@ -95433,12 +95433,12 @@
   "enemyY": 17,
   "evo": "",
   "role": "Speedster",
-  "series": "Legendary",
+  "series": "Tsukihime",
   "legendary": true
  },
  "TOHNOSHIKI": {
   "internalName": "TOHNOSHIKI",
-  "dexNumber": 774,
+  "dexNumber": 791,
   "name": "TohnoShiki",
   "types": [
    "GHOST"
@@ -95567,7 +95567,7 @@
  },
  "TSUKI": {
   "internalName": "TSUKI",
-  "dexNumber": 775,
+  "dexNumber": 792,
   "name": "Tsuki",
   "types": [
    "NORMAL"
@@ -95681,7 +95681,7 @@
  },
  "UZAKICHAN": {
   "internalName": "UZAKICHAN",
-  "dexNumber": 776,
+  "dexNumber": 793,
   "name": "Uzaki-chan",
   "types": [
    "NORMAL"
@@ -95810,7 +95810,7 @@
  },
  "MIYUWAKE": {
   "internalName": "MIYUWAKE",
-  "dexNumber": 777,
+  "dexNumber": 794,
   "name": "MiyuWake",
   "types": [
    "FAIRY"
@@ -95939,7 +95939,7 @@
  },
  "ADELE": {
   "internalName": "ADELE",
-  "dexNumber": 778,
+  "dexNumber": 795,
   "name": "Adele",
   "types": [
    "NORMAL"
@@ -96068,7 +96068,7 @@
  },
  "HANA": {
   "internalName": "HANA",
-  "dexNumber": 779,
+  "dexNumber": 796,
   "name": "Hana",
   "types": [
    "FAIRY"
@@ -96198,7 +96198,7 @@
  },
  "HINATA": {
   "internalName": "HINATA",
-  "dexNumber": 780,
+  "dexNumber": 797,
   "name": "Hinata",
   "types": [
    "FAIRY"
@@ -96312,7 +96312,7 @@
  },
  "KANON": {
   "internalName": "KANON",
-  "dexNumber": 781,
+  "dexNumber": 798,
   "name": "Kanon",
   "types": [
    "FAIRY"
@@ -96427,7 +96427,7 @@
  },
  "KOYORI": {
   "internalName": "KOYORI",
-  "dexNumber": 782,
+  "dexNumber": 799,
   "name": "Koyori",
   "types": [
    "FAIRY"
@@ -96542,7 +96542,7 @@
  },
  "MIYAKO": {
   "internalName": "MIYAKO",
-  "dexNumber": 783,
+  "dexNumber": 800,
   "name": "Miyako",
   "types": [
    "POISON"
@@ -96656,7 +96656,7 @@
  },
  "NOA": {
   "internalName": "NOA",
-  "dexNumber": 784,
+  "dexNumber": 801,
   "name": "Noa",
   "types": [
    "FAIRY"
@@ -96781,7 +96781,7 @@
  },
  "HARUKA": {
   "internalName": "HARUKA",
-  "dexNumber": 785,
+  "dexNumber": 802,
   "name": "Haruka",
   "types": [
    "NORMAL"
@@ -96911,7 +96911,7 @@
  },
  "NAO": {
   "internalName": "NAO",
-  "dexNumber": 786,
+  "dexNumber": 803,
   "name": "Nao",
   "types": [
    "NORMAL"
@@ -97041,7 +97041,7 @@
  },
  "SORA": {
   "internalName": "SORA",
-  "dexNumber": 787,
+  "dexNumber": 804,
   "name": "Sora",
   "types": [
    "NORMAL"
@@ -97155,7 +97155,7 @@
  },
  "TANYA": {
   "internalName": "TANYA",
-  "dexNumber": 788,
+  "dexNumber": 805,
   "name": "Tanya",
   "types": [
    "FLYING"
@@ -97284,7 +97284,7 @@
  },
  "ZERO": {
   "internalName": "ZERO",
-  "dexNumber": 789,
+  "dexNumber": 806,
   "name": "Zero",
   "types": [
    "DARK",
@@ -97399,7 +97399,7 @@
  },
  "CHARLOTTE": {
   "internalName": "CHARLOTTE",
-  "dexNumber": 790,
+  "dexNumber": 807,
   "name": "Charlotte",
   "types": [
    "ICE"
@@ -97513,7 +97513,7 @@
  },
  "HENRIETTA": {
   "internalName": "HENRIETTA",
-  "dexNumber": 791,
+  "dexNumber": 808,
   "name": "Henrietta",
   "types": [
    "WATER"
@@ -97627,7 +97627,7 @@
  },
  "LOUISE": {
   "internalName": "LOUISE",
-  "dexNumber": 792,
+  "dexNumber": 809,
   "name": "Louise",
   "types": [
    "FIRE"
@@ -97756,7 +97756,7 @@
  },
  "SIESTA": {
   "internalName": "SIESTA",
-  "dexNumber": 793,
+  "dexNumber": 810,
   "name": "Siesta",
   "types": [
    "NORMAL"
@@ -97870,7 +97870,7 @@
  },
  "JIN": {
   "internalName": "JIN",
-  "dexNumber": 794,
+  "dexNumber": 811,
   "name": "Jin",
   "types": [
    "STEEL",
@@ -97985,7 +97985,7 @@
  },
  "SAKURAZOMBIE": {
   "internalName": "SAKURAZOMBIE",
-  "dexNumber": 795,
+  "dexNumber": 812,
   "name": "SakuraZombie",
   "types": [
    "GHOST",
@@ -98100,7 +98100,7 @@
  },
  "YUGIRI": {
   "internalName": "YUGIRI",
-  "dexNumber": 796,
+  "dexNumber": 813,
   "name": "Yugiri",
   "types": [
    "GHOST",
@@ -98230,7 +98230,7 @@
  },
  "AE86": {
   "internalName": "AE86",
-  "dexNumber": 797,
+  "dexNumber": 814,
   "name": "AE86",
   "types": [
    "STEEL"
@@ -98360,7 +98360,7 @@
  },
  "ELHERMANO": {
   "internalName": "ELHERMANO",
-  "dexNumber": 798,
+  "dexNumber": 815,
   "name": "ELHERMANO",
   "types": [
    "FIRE",
@@ -98476,7 +98476,7 @@
  },
  "GUOBA": {
   "internalName": "GUOBA",
-  "dexNumber": 799,
+  "dexNumber": 816,
   "name": "Guoba",
   "types": [
    "FIRE"
@@ -98606,7 +98606,7 @@
  },
  "ILLYABEAST": {
   "internalName": "ILLYABEAST",
-  "dexNumber": 800,
+  "dexNumber": 817,
   "name": "IllyaBeast",
   "types": [
    "PSYCHIC",
@@ -98737,7 +98737,7 @@
  },
  "MEKAELI": {
   "internalName": "MEKAELI",
-  "dexNumber": 801,
+  "dexNumber": 818,
   "name": "MekaEli",
   "types": [
    "STEEL",
@@ -98868,7 +98868,7 @@
  },
  "MEKAELIMK2": {
   "internalName": "MEKAELIMK2",
-  "dexNumber": 802,
+  "dexNumber": 819,
   "name": "MekaEliMK2",
   "types": [
    "STEEL",
@@ -98984,7 +98984,7 @@
  },
  "TAMAMOMAID": {
   "internalName": "TAMAMOMAID",
-  "dexNumber": 803,
+  "dexNumber": 820,
   "name": "TamamoMaid",
   "types": [
    "FIRE",
@@ -99115,7 +99115,7 @@
  },
  "BUFFEDDAWEI": {
   "internalName": "BUFFEDDAWEI",
-  "dexNumber": 804,
+  "dexNumber": 824,
   "name": "Buffed Da Wei",
   "types": [
    "FAIRY",
@@ -99461,6 +99461,1977 @@
   "evo": "",
   "role": "Special Attacker",
   "series": "Fate",
+  "legendary": false
+ },
+ "DOROTHY": {
+  "internalName": "DOROTHY",
+  "dexNumber": 611,
+  "name": "Dorothy",
+  "types": [
+   "FAIRY"
+  ],
+  "baseStats": {
+   "HP": 75,
+   "Attack": 40,
+   "Defense": 67,
+   "Speed": 62,
+   "SpAtk": 93,
+   "SpDef": 89
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 170,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 1,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 2
+  },
+  "abilities": [
+   "FRIENDGUARD",
+   "MAGICGUARD"
+  ],
+  "hiddenAbility": "COTTONDOWN",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "CHARM",
+    "moveName": "Charm"
+   },
+   {
+    "level": 1,
+    "move": "FAIRYWIND",
+    "moveName": "Fairy Wind"
+   },
+   {
+    "level": 6,
+    "move": "DISARMINGVOICE",
+    "moveName": "Disarming Voice"
+   },
+   {
+    "level": 10,
+    "move": "WISH",
+    "moveName": "Wish"
+   },
+   {
+    "level": 15,
+    "move": "DRAININGKISS",
+    "moveName": "Draining Kiss"
+   },
+   {
+    "level": 20,
+    "move": "HEALPULSE",
+    "moveName": "Heal Pulse"
+   },
+   {
+    "level": 25,
+    "move": "CALMMIND",
+    "moveName": "Calm Mind"
+   },
+   {
+    "level": 30,
+    "move": "MISTYTERRAIN",
+    "moveName": "Misty Terrain"
+   },
+   {
+    "level": 36,
+    "move": "DAZZLINGGLEAM",
+    "moveName": "Dazzling Gleam"
+   },
+   {
+    "level": 42,
+    "move": "PSYCHIC",
+    "moveName": "Psychic"
+   },
+   {
+    "level": 48,
+    "move": "MOONBLAST",
+    "moveName": "Moonblast"
+   },
+   {
+    "level": 54,
+    "move": "MOONLIGHT",
+    "moveName": "Moonlight"
+   }
+  ],
+  "kind": "Healer",
+  "dex": "A gentle presence who patches up her allies and shrugs off hits behind a shimmer of fairy light. From Nikke. A Support Pokémon.",
+  "height": 1.6,
+  "weight": 48,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Support",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "ELEGG": {
+  "internalName": "ELEGG",
+  "dexNumber": 613,
+  "name": "Elegg",
+  "types": [
+   "ELECTRIC"
+  ],
+  "baseStats": {
+   "HP": 53,
+   "Attack": 49,
+   "Defense": 49,
+   "Speed": 102,
+   "SpAtk": 106,
+   "SpDef": 67
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 170,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 1,
+   "SpAtk": 1,
+   "SpDef": 0
+  },
+  "abilities": [
+   "STATIC",
+   "LIGHTNINGROD"
+  ],
+  "hiddenAbility": "MOTORDRIVE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "THUNDERSHOCK",
+    "moveName": "Thunder Shock"
+   },
+   {
+    "level": 1,
+    "move": "QUICKATTACK",
+    "moveName": "Quick Attack"
+   },
+   {
+    "level": 6,
+    "move": "CHARGE",
+    "moveName": "Charge"
+   },
+   {
+    "level": 10,
+    "move": "SPARK",
+    "moveName": "Spark"
+   },
+   {
+    "level": 14,
+    "move": "DOUBLETEAM",
+    "moveName": "Double Team"
+   },
+   {
+    "level": 18,
+    "move": "THUNDERWAVE",
+    "moveName": "Thunder Wave"
+   },
+   {
+    "level": 23,
+    "move": "VOLTSWITCH",
+    "moveName": "Volt Switch"
+   },
+   {
+    "level": 28,
+    "move": "DISCHARGE",
+    "moveName": "Discharge"
+   },
+   {
+    "level": 33,
+    "move": "NASTYPLOT",
+    "moveName": "Nasty Plot"
+   },
+   {
+    "level": 38,
+    "move": "THUNDERBOLT",
+    "moveName": "Thunderbolt"
+   },
+   {
+    "level": 44,
+    "move": "AGILITY",
+    "moveName": "Agility"
+   },
+   {
+    "level": 52,
+    "move": "THUNDER",
+    "moveName": "Thunder"
+   }
+  ],
+  "kind": "Spark",
+  "dex": "Cheerful and crackling with static, she dashes in first and fires off lightning before anyone can react. From Nikke. A Speedster Pokémon.",
+  "height": 1.5,
+  "weight": 44,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Speedster",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "ELEGGSUM": {
+  "internalName": "ELEGGSUM",
+  "dexNumber": 614,
+  "name": "EleggSum",
+  "types": [
+   "ELECTRIC",
+   "WATER"
+  ],
+  "baseStats": {
+   "HP": 60,
+   "Attack": 47,
+   "Defense": 55,
+   "Speed": 89,
+   "SpAtk": 107,
+   "SpDef": 68
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 180,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 2,
+   "SpDef": 0
+  },
+  "abilities": [
+   "STATIC",
+   "SWIFTSWIM"
+  ],
+  "hiddenAbility": "LIGHTNINGROD",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "WATERGUN",
+    "moveName": "Water Gun"
+   },
+   {
+    "level": 1,
+    "move": "THUNDERSHOCK",
+    "moveName": "Thunder Shock"
+   },
+   {
+    "level": 6,
+    "move": "CHARGE",
+    "moveName": "Charge"
+   },
+   {
+    "level": 10,
+    "move": "BUBBLEBEAM",
+    "moveName": "Bubble Beam"
+   },
+   {
+    "level": 14,
+    "move": "SPARK",
+    "moveName": "Spark"
+   },
+   {
+    "level": 18,
+    "move": "RAINDANCE",
+    "moveName": "Rain Dance"
+   },
+   {
+    "level": 22,
+    "move": "VOLTSWITCH",
+    "moveName": "Volt Switch"
+   },
+   {
+    "level": 30,
+    "move": "SURF",
+    "moveName": "Surf"
+   },
+   {
+    "level": 36,
+    "move": "THUNDERBOLT",
+    "moveName": "Thunderbolt"
+   },
+   {
+    "level": 40,
+    "move": "NASTYPLOT",
+    "moveName": "Nasty Plot"
+   },
+   {
+    "level": 46,
+    "move": "HYDROPUMP",
+    "moveName": "Hydro Pump"
+   },
+   {
+    "level": 54,
+    "move": "THUNDER",
+    "moveName": "Thunder"
+   }
+  ],
+  "kind": "Splash",
+  "dex": "Her summer form splashes through the surf, lightning dancing off every wave she kicks up. From Nikke. A Special Attacker Pokémon.",
+  "height": 1.5,
+  "weight": 45,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "LAPLACE": {
+  "internalName": "LAPLACE",
+  "dexNumber": 615,
+  "name": "Laplace",
+  "types": [
+   "STEEL"
+  ],
+  "baseStats": {
+   "HP": 56,
+   "Attack": 62,
+   "Defense": 79,
+   "Speed": 51,
+   "SpAtk": 68,
+   "SpDef": 56
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 64,
+  "catchRate": 120,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 1,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "STURDY",
+   "CLEARBODY"
+  ],
+  "hiddenAbility": "LIGHTMETAL",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "TACKLE",
+    "moveName": "Tackle"
+   },
+   {
+    "level": 1,
+    "move": "HARDEN",
+    "moveName": "Harden"
+   },
+   {
+    "level": 5,
+    "move": "METALCLAW",
+    "moveName": "Metal Claw"
+   },
+   {
+    "level": 9,
+    "move": "CHARGE",
+    "moveName": "Charge"
+   },
+   {
+    "level": 13,
+    "move": "SPARK",
+    "moveName": "Spark"
+   },
+   {
+    "level": 17,
+    "move": "IRONDEFENSE",
+    "moveName": "Iron Defense"
+   },
+   {
+    "level": 21,
+    "move": "MAGNETRISE",
+    "moveName": "Magnet Rise"
+   },
+   {
+    "level": 25,
+    "move": "GYROBALL",
+    "moveName": "Gyro Ball"
+   }
+  ],
+  "kind": "Plating",
+  "dex": "A steel-plated calm that quietly stores up charge, waiting for the moment to release it all at once. From Nikke. A Defensive Pokémon.",
+  "height": 1.4,
+  "weight": 60,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "LAPLACE2,Level,28",
+  "role": "Defensive",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "LAPLACE2": {
+  "internalName": "LAPLACE2",
+  "dexNumber": 616,
+  "name": "Laplace",
+  "types": [
+   "STEEL",
+   "ELECTRIC"
+  ],
+  "baseStats": {
+   "HP": 71,
+   "Attack": 66,
+   "Defense": 95,
+   "Speed": 62,
+   "SpAtk": 99,
+   "SpDef": 81
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Slow",
+  "baseExp": 200,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 1,
+   "Speed": 0,
+   "SpAtk": 2,
+   "SpDef": 0
+  },
+  "abilities": [
+   "STURDY",
+   "LIGHTNINGROD"
+  ],
+  "hiddenAbility": "CLEARBODY",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "TACKLE",
+    "moveName": "Tackle"
+   },
+   {
+    "level": 1,
+    "move": "METALCLAW",
+    "moveName": "Metal Claw"
+   },
+   {
+    "level": 1,
+    "move": "SPARK",
+    "moveName": "Spark"
+   },
+   {
+    "level": 1,
+    "move": "IRONDEFENSE",
+    "moveName": "Iron Defense"
+   },
+   {
+    "level": 21,
+    "move": "MAGNETRISE",
+    "moveName": "Magnet Rise"
+   },
+   {
+    "level": 25,
+    "move": "GYROBALL",
+    "moveName": "Gyro Ball"
+   },
+   {
+    "level": 28,
+    "move": "FLASHCANNON",
+    "moveName": "Flash Cannon"
+   },
+   {
+    "level": 34,
+    "move": "DISCHARGE",
+    "moveName": "Discharge"
+   },
+   {
+    "level": 40,
+    "move": "THUNDERBOLT",
+    "moveName": "Thunderbolt"
+   },
+   {
+    "level": 46,
+    "move": "IRONHEAD",
+    "moveName": "Iron Head"
+   },
+   {
+    "level": 52,
+    "move": "WILDCHARGE",
+    "moveName": "Wild Charge"
+   },
+   {
+    "level": 58,
+    "move": "ZAPCANNON",
+    "moveName": "Zap Cannon"
+   }
+  ],
+  "kind": "Dynamo",
+  "dex": "Fully charged, she crackles with power sealed behind a steel shell, and discharges it in one devastating beam. From Nikke. A Special Defensive Pokémon.",
+  "height": 1.7,
+  "weight": 98,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Special Defensive",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "MARIAN": {
+  "internalName": "MARIAN",
+  "dexNumber": 617,
+  "name": "Marian",
+  "types": [
+   "GROUND"
+  ],
+  "baseStats": {
+   "HP": 58,
+   "Attack": 53,
+   "Defense": 64,
+   "Speed": 43,
+   "SpAtk": 48,
+   "SpDef": 64
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Parabolic",
+  "baseExp": 58,
+  "catchRate": 190,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 1
+  },
+  "abilities": [
+   "SANDVEIL",
+   "ROUGHSKIN"
+  ],
+  "hiddenAbility": "SANDFORCE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "TACKLE",
+    "moveName": "Tackle"
+   },
+   {
+    "level": 1,
+    "move": "MUDSLAP",
+    "moveName": "Mud-Slap"
+   },
+   {
+    "level": 5,
+    "move": "SANDATTACK",
+    "moveName": "Sand Attack"
+   },
+   {
+    "level": 9,
+    "move": "MUDSHOT",
+    "moveName": "Mud Shot"
+   },
+   {
+    "level": 13,
+    "move": "BULLDOZE",
+    "moveName": "Bulldoze"
+   },
+   {
+    "level": 17,
+    "move": "DIG",
+    "moveName": "Dig"
+   },
+   {
+    "level": 21,
+    "move": "ROCKTHROW",
+    "moveName": "Rock Throw"
+   }
+  ],
+  "kind": "Soldier",
+  "dex": "A sturdy fighter who digs in her heels and kicks up clouds of dust to wear opponents down. From Nikke. A Defensive Pokémon.",
+  "height": 1.5,
+  "weight": 45,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "MODERNIA,Level,24",
+  "role": "Defensive",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "MODERNIA": {
+  "internalName": "MODERNIA",
+  "dexNumber": 618,
+  "name": "Modernia",
+  "types": [
+   "BUG"
+  ],
+  "baseStats": {
+   "HP": 63,
+   "Attack": 87,
+   "Defense": 62,
+   "Speed": 87,
+   "SpAtk": 53,
+   "SpDef": 62
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Parabolic",
+  "baseExp": 140,
+  "catchRate": 90,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 1,
+   "Defense": 0,
+   "Speed": 1,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "SWARM",
+   "COMPOUNDEYES"
+  ],
+  "hiddenAbility": "TINTEDLENS",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "TACKLE",
+    "moveName": "Tackle"
+   },
+   {
+    "level": 1,
+    "move": "MUDSLAP",
+    "moveName": "Mud-Slap"
+   },
+   {
+    "level": 1,
+    "move": "FURYCUTTER",
+    "moveName": "Fury Cutter"
+   },
+   {
+    "level": 9,
+    "move": "BUGBITE",
+    "moveName": "Bug Bite"
+   },
+   {
+    "level": 14,
+    "move": "DIG",
+    "moveName": "Dig"
+   },
+   {
+    "level": 18,
+    "move": "LUNGE",
+    "moveName": "Lunge"
+   },
+   {
+    "level": 24,
+    "move": "UTURN",
+    "moveName": "U-turn"
+   },
+   {
+    "level": 28,
+    "move": "SWORDSDANCE",
+    "moveName": "Swords Dance"
+   },
+   {
+    "level": 33,
+    "move": "XSCISSOR",
+    "moveName": "X-Scissor"
+   },
+   {
+    "level": 38,
+    "move": "FIRSTIMPRESSION",
+    "moveName": "First Impression"
+   },
+   {
+    "level": 44,
+    "move": "EARTHQUAKE",
+    "moveName": "Earthquake"
+   }
+  ],
+  "kind": "Swarm",
+  "dex": "Quick and relentless, she weaves in and out of the fight in a flurry of fast, precise strikes. From Nikke. A Speedster Pokémon.",
+  "height": 1.6,
+  "weight": 52,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "MARIANQUEEN,Level,40",
+  "role": "Speedster",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "MARIANQUEEN": {
+  "internalName": "MARIANQUEEN",
+  "dexNumber": 619,
+  "name": "MarianQueen",
+  "types": [
+   "BUG",
+   "FAIRY"
+  ],
+  "baseStats": {
+   "HP": 89,
+   "Attack": 99,
+   "Defense": 79,
+   "Speed": 99,
+   "SpAtk": 94,
+   "SpDef": 74
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Parabolic",
+  "baseExp": 240,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 2,
+   "Defense": 0,
+   "Speed": 1,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "SWARM",
+   "FRIENDGUARD"
+  ],
+  "hiddenAbility": "PIXILATE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "XSCISSOR",
+    "moveName": "X-Scissor"
+   },
+   {
+    "level": 1,
+    "move": "MOONBLAST",
+    "moveName": "Moonblast"
+   },
+   {
+    "level": 1,
+    "move": "FIRSTIMPRESSION",
+    "moveName": "First Impression"
+   },
+   {
+    "level": 1,
+    "move": "SWORDSDANCE",
+    "moveName": "Swords Dance"
+   },
+   {
+    "level": 40,
+    "move": "QUIVERDANCE",
+    "moveName": "Quiver Dance"
+   },
+   {
+    "level": 44,
+    "move": "BUGBUZZ",
+    "moveName": "Bug Buzz"
+   },
+   {
+    "level": 48,
+    "move": "PLAYROUGH",
+    "moveName": "Play Rough"
+   },
+   {
+    "level": 52,
+    "move": "EARTHQUAKE",
+    "moveName": "Earthquake"
+   },
+   {
+    "level": 56,
+    "move": "DAZZLINGGLEAM",
+    "moveName": "Dazzling Gleam"
+   },
+   {
+    "level": 60,
+    "move": "MEGAHORN",
+    "moveName": "Megahorn"
+   }
+  ],
+  "kind": "Queen",
+  "dex": "She has ascended to royalty, ruling the field with swarm speed and a sovereign fairy glow. From Nikke. A Mixed Attacker Pokémon.",
+  "height": 1.8,
+  "weight": 64,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Mixed Attacker",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "RAPI": {
+  "internalName": "RAPI",
+  "dexNumber": 620,
+  "name": "Rapi",
+  "types": [
+   "FIRE"
+  ],
+  "baseStats": {
+   "HP": 56,
+   "Attack": 73,
+   "Defense": 51,
+   "Speed": 79,
+   "SpAtk": 62,
+   "SpDef": 51
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 64,
+  "catchRate": 120,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 1,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "BLAZE",
+   "FLASHFIRE"
+  ],
+  "hiddenAbility": "RUNAWAY",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "SCRATCH",
+    "moveName": "Scratch"
+   },
+   {
+    "level": 1,
+    "move": "EMBER",
+    "moveName": "Ember"
+   },
+   {
+    "level": 6,
+    "move": "QUICKATTACK",
+    "moveName": "Quick Attack"
+   },
+   {
+    "level": 10,
+    "move": "FIREFANG",
+    "moveName": "Fire Fang"
+   },
+   {
+    "level": 15,
+    "move": "FLAMEWHEEL",
+    "moveName": "Flame Wheel"
+   },
+   {
+    "level": 20,
+    "move": "SLASH",
+    "moveName": "Slash"
+   },
+   {
+    "level": 25,
+    "move": "BULKUP",
+    "moveName": "Bulk Up"
+   },
+   {
+    "level": 30,
+    "move": "FLAMECHARGE",
+    "moveName": "Flame Charge"
+   }
+  ],
+  "kind": "Soldier",
+  "dex": "A loyal soldier with a flickering fire in her eyes, always the first to charge in when things heat up. From Nikke. A Physical Attacker Pokémon.",
+  "height": 1.6,
+  "weight": 50,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "RAPIREDHOOD,Level,36",
+  "role": "Physical Attacker",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "RAPIREDHOOD": {
+  "internalName": "RAPIREDHOOD",
+  "dexNumber": 621,
+  "name": "RapiRedHood",
+  "types": [
+   "FIRE",
+   "DRAGON"
+  ],
+  "baseStats": {
+   "HP": 72,
+   "Attack": 107,
+   "Defense": 72,
+   "Speed": 94,
+   "SpAtk": 71,
+   "SpDef": 58
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Slow",
+  "baseExp": 230,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 3,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "BLAZE",
+   "MULTISCALE"
+  ],
+  "hiddenAbility": "ROUGHSKIN",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "SLASH",
+    "moveName": "Slash"
+   },
+   {
+    "level": 1,
+    "move": "EMBER",
+    "moveName": "Ember"
+   },
+   {
+    "level": 1,
+    "move": "FIREFANG",
+    "moveName": "Fire Fang"
+   },
+   {
+    "level": 1,
+    "move": "FLAMEWHEEL",
+    "moveName": "Flame Wheel"
+   },
+   {
+    "level": 36,
+    "move": "DRAGONDANCE",
+    "moveName": "Dragon Dance"
+   },
+   {
+    "level": 40,
+    "move": "DRAGONCLAW",
+    "moveName": "Dragon Claw"
+   },
+   {
+    "level": 44,
+    "move": "FLAREBLITZ",
+    "moveName": "Flare Blitz"
+   },
+   {
+    "level": 48,
+    "move": "CLOSECOMBAT",
+    "moveName": "Close Combat"
+   },
+   {
+    "level": 54,
+    "move": "DRAGONRUSH",
+    "moveName": "Dragon Rush"
+   },
+   {
+    "level": 60,
+    "move": "OUTRAGE",
+    "moveName": "Outrage"
+   }
+  ],
+  "kind": "Wolf Hunter",
+  "dex": "Beneath her blazing red hood burns a dragon-like fury that no opponent walks away from. From Nikke. A Physical Attacker Pokémon.",
+  "height": 1.7,
+  "weight": 64,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Physical Attacker",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "RAPIREDHOODSUM": {
+  "internalName": "RAPIREDHOODSUM",
+  "dexNumber": 623,
+  "name": "RapiRedHoodSum",
+  "types": [
+   "WATER",
+   "DRAGON"
+  ],
+  "baseStats": {
+   "HP": 71,
+   "Attack": 76,
+   "Defense": 67,
+   "Speed": 94,
+   "SpAtk": 103,
+   "SpDef": 63
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Slow",
+  "baseExp": 230,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 3,
+   "SpDef": 0
+  },
+  "abilities": [
+   "TORRENT",
+   "MULTISCALE"
+  ],
+  "hiddenAbility": "SWIFTSWIM",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "WATERGUN",
+    "moveName": "Water Gun"
+   },
+   {
+    "level": 1,
+    "move": "DRAGONBREATH",
+    "moveName": "Dragon Breath"
+   },
+   {
+    "level": 1,
+    "move": "SCALD",
+    "moveName": "Scald"
+   },
+   {
+    "level": 1,
+    "move": "SURF",
+    "moveName": "Surf"
+   },
+   {
+    "level": 36,
+    "move": "DRAGONPULSE",
+    "moveName": "Dragon Pulse"
+   },
+   {
+    "level": 40,
+    "move": "AQUATAIL",
+    "moveName": "Aqua Tail"
+   },
+   {
+    "level": 44,
+    "move": "HYDROPUMP",
+    "moveName": "Hydro Pump"
+   },
+   {
+    "level": 48,
+    "move": "DRAGONDANCE",
+    "moveName": "Dragon Dance"
+   },
+   {
+    "level": 54,
+    "move": "DRACOMETEOR",
+    "moveName": "Draco Meteor"
+   },
+   {
+    "level": 60,
+    "move": "MUDDYWATER",
+    "moveName": "Muddy Water"
+   }
+  ],
+  "kind": "Tidal",
+  "dex": "The red hood at the seaside: a tidal dragon in a swimsuit, crashing in with waves of water and draconic power. From Nikke. A Special Attacker Pokémon.",
+  "height": 1.7,
+  "weight": 62,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "RAPISUM": {
+  "internalName": "RAPISUM",
+  "dexNumber": 622,
+  "name": "RapiSum",
+  "types": [
+   "FIRE",
+   "WATER"
+  ],
+  "baseStats": {
+   "HP": 57,
+   "Attack": 62,
+   "Defense": 57,
+   "Speed": 72,
+   "SpAtk": 72,
+   "SpDef": 52
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 100,
+  "catchRate": 90,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 1,
+   "SpAtk": 1,
+   "SpDef": 0
+  },
+  "abilities": [
+   "BLAZE",
+   "TORRENT"
+  ],
+  "hiddenAbility": "FLASHFIRE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "EMBER",
+    "moveName": "Ember"
+   },
+   {
+    "level": 1,
+    "move": "WATERGUN",
+    "moveName": "Water Gun"
+   },
+   {
+    "level": 6,
+    "move": "QUICKATTACK",
+    "moveName": "Quick Attack"
+   },
+   {
+    "level": 10,
+    "move": "WATERPULSE",
+    "moveName": "Water Pulse"
+   },
+   {
+    "level": 15,
+    "move": "FLAMEWHEEL",
+    "moveName": "Flame Wheel"
+   },
+   {
+    "level": 20,
+    "move": "SCALD",
+    "moveName": "Scald"
+   },
+   {
+    "level": 25,
+    "move": "SURF",
+    "moveName": "Surf"
+   },
+   {
+    "level": 30,
+    "move": "FLAMETHROWER",
+    "moveName": "Flamethrower"
+   }
+  ],
+  "kind": "Beach",
+  "dex": "Her summer outfit and boundless energy blend fire and water, steaming up any beach she lands on. From Nikke. A Mixed Attacker Pokémon.",
+  "height": 1.6,
+  "weight": 50,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "RAPIREDHOODSUM,Level,36",
+  "role": "Mixed Attacker",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "REDHOOD": {
+  "internalName": "REDHOOD",
+  "dexNumber": 822,
+  "name": "RedHood",
+  "types": [
+   "GROUND",
+   "FIRE"
+  ],
+  "baseStats": {
+   "HP": 112,
+   "Attack": 152,
+   "Defense": 112,
+   "Speed": 106,
+   "SpAtk": 92,
+   "SpDef": 86
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Slow",
+  "baseExp": 210,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 3,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "BLAZE",
+   "ROUGHSKIN"
+  ],
+  "hiddenAbility": "SANDFORCE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "MUDSLAP",
+    "moveName": "Mud-Slap"
+   },
+   {
+    "level": 1,
+    "move": "EMBER",
+    "moveName": "Ember"
+   },
+   {
+    "level": 8,
+    "move": "BULLDOZE",
+    "moveName": "Bulldoze"
+   },
+   {
+    "level": 14,
+    "move": "FLAMEWHEEL",
+    "moveName": "Flame Wheel"
+   },
+   {
+    "level": 20,
+    "move": "DIG",
+    "moveName": "Dig"
+   },
+   {
+    "level": 26,
+    "move": "FIREPUNCH",
+    "moveName": "Fire Punch"
+   },
+   {
+    "level": 32,
+    "move": "EARTHQUAKE",
+    "moveName": "Earthquake"
+   },
+   {
+    "level": 38,
+    "move": "FLAREBLITZ",
+    "moveName": "Flare Blitz"
+   },
+   {
+    "level": 44,
+    "move": "STONEEDGE",
+    "moveName": "Stone Edge"
+   },
+   {
+    "level": 50,
+    "move": "SWORDSDANCE",
+    "moveName": "Swords Dance"
+   }
+  ],
+  "kind": "Hunter",
+  "dex": "A hunter who grinds her prey beneath the earth and finishes the job with flames. From Nikke. A Physical Attacker Pokémon.",
+  "height": 1.7,
+  "weight": 60,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Physical Attacker",
+  "series": "Nikke",
+  "legendary": true
+ },
+ "SNOWWHITE": {
+  "internalName": "SNOWWHITE",
+  "dexNumber": 624,
+  "name": "SnowWhite",
+  "types": [
+   "GROUND"
+  ],
+  "baseStats": {
+   "HP": 70,
+   "Attack": 56,
+   "Defense": 63,
+   "Speed": 39,
+   "SpAtk": 49,
+   "SpDef": 53
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 160,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 2,
+   "Attack": 0,
+   "Defense": 1,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "SANDVEIL",
+   "STURDY"
+  ],
+  "hiddenAbility": "ARENATRAP",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "TACKLE",
+    "moveName": "Tackle"
+   },
+   {
+    "level": 1,
+    "move": "MUDSLAP",
+    "moveName": "Mud-Slap"
+   },
+   {
+    "level": 1,
+    "move": "HARDEN",
+    "moveName": "Harden"
+   },
+   {
+    "level": 8,
+    "move": "ROCKTHROW",
+    "moveName": "Rock Throw"
+   },
+   {
+    "level": 14,
+    "move": "BULLDOZE",
+    "moveName": "Bulldoze"
+   },
+   {
+    "level": 20,
+    "move": "DIG",
+    "moveName": "Dig"
+   },
+   {
+    "level": 26,
+    "move": "STEALTHROCK",
+    "moveName": "Stealth Rock"
+   },
+   {
+    "level": 32,
+    "move": "ROCKSLIDE",
+    "moveName": "Rock Slide"
+   },
+   {
+    "level": 38,
+    "move": "EARTHQUAKE",
+    "moveName": "Earthquake"
+   },
+   {
+    "level": 44,
+    "move": "STONEEDGE",
+    "moveName": "Stone Edge"
+   }
+  ],
+  "kind": "Heavy",
+  "dex": "Rock-steady and heavily armed, she stands her ground and lets the dust settle around her. From Nikke. A Bulky Tank Pokémon.",
+  "height": 1.7,
+  "weight": 70,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "SNOWWHITE2,Level,16",
+  "role": "Bulky Tank",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "SNOWWHITE2": {
+  "internalName": "SNOWWHITE2",
+  "dexNumber": 625,
+  "name": "SnowWhite",
+  "types": [
+   "GROUND",
+   "STEEL"
+  ],
+  "baseStats": {
+   "HP": 84,
+   "Attack": 76,
+   "Defense": 83,
+   "Speed": 44,
+   "SpAtk": 64,
+   "SpDef": 63
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 200,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 2,
+   "Attack": 1,
+   "Defense": 1,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "STURDY",
+   "SANDFORCE"
+  ],
+  "hiddenAbility": "CLEARBODY",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "MUDSLAP",
+    "moveName": "Mud-Slap"
+   },
+   {
+    "level": 1,
+    "move": "METALCLAW",
+    "moveName": "Metal Claw"
+   },
+   {
+    "level": 1,
+    "move": "HARDEN",
+    "moveName": "Harden"
+   },
+   {
+    "level": 14,
+    "move": "BULLDOZE",
+    "moveName": "Bulldoze"
+   },
+   {
+    "level": 20,
+    "move": "DIG",
+    "moveName": "Dig"
+   },
+   {
+    "level": 26,
+    "move": "IRONHEAD",
+    "moveName": "Iron Head"
+   },
+   {
+    "level": 32,
+    "move": "EARTHQUAKE",
+    "moveName": "Earthquake"
+   },
+   {
+    "level": 38,
+    "move": "FLASHCANNON",
+    "moveName": "Flash Cannon"
+   },
+   {
+    "level": 44,
+    "move": "STONEEDGE",
+    "moveName": "Stone Edge"
+   },
+   {
+    "level": 50,
+    "move": "STEALTHROCK",
+    "moveName": "Stealth Rock"
+   }
+  ],
+  "kind": "Heavy",
+  "dex": "Reinforced in steel plating, she shrugs off a barrage of attacks and returns fire with ground-shaking force. From Nikke. A Bulky Tank Pokémon.",
+  "height": 1.7,
+  "weight": 95,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "SNOWWHITE3,Level,36",
+  "role": "Bulky Tank",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "SNOWWHITE3": {
+  "internalName": "SNOWWHITE3",
+  "dexNumber": 626,
+  "name": "SnowWhite",
+  "types": [
+   "GROUND",
+   "STEEL"
+  ],
+  "baseStats": {
+   "HP": 109,
+   "Attack": 104,
+   "Defense": 109,
+   "Speed": 54,
+   "SpAtk": 79,
+   "SpDef": 79
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 240,
+  "catchRate": 25,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 2,
+   "Attack": 1,
+   "Defense": 2,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "STURDY",
+   "CLEARBODY"
+  ],
+  "hiddenAbility": "SANDFORCE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "MUDSLAP",
+    "moveName": "Mud-Slap"
+   },
+   {
+    "level": 1,
+    "move": "METALCLAW",
+    "moveName": "Metal Claw"
+   },
+   {
+    "level": 1,
+    "move": "HARDEN",
+    "moveName": "Harden"
+   },
+   {
+    "level": 14,
+    "move": "BULLDOZE",
+    "moveName": "Bulldoze"
+   },
+   {
+    "level": 20,
+    "move": "DIG",
+    "moveName": "Dig"
+   },
+   {
+    "level": 26,
+    "move": "IRONHEAD",
+    "moveName": "Iron Head"
+   },
+   {
+    "level": 32,
+    "move": "EARTHQUAKE",
+    "moveName": "Earthquake"
+   },
+   {
+    "level": 38,
+    "move": "FLASHCANNON",
+    "moveName": "Flash Cannon"
+   },
+   {
+    "level": 44,
+    "move": "HEAVYSLAM",
+    "moveName": "Heavy Slam"
+   },
+   {
+    "level": 50,
+    "move": "GYROBALL",
+    "moveName": "Gyro Ball"
+   },
+   {
+    "level": 56,
+    "move": "STEALTHROCK",
+    "moveName": "Stealth Rock"
+   },
+   {
+    "level": 62,
+    "move": "SUPERPOWER",
+    "moveName": "Superpower"
+   }
+  ],
+  "kind": "Heavy",
+  "dex": "Her final form: a walking fortress of steel and earth that seems to stand through anything. From Nikke. A Bulky Tank Pokémon.",
+  "height": 1.8,
+  "weight": 125,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Bulky Tank",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "DOROTHYSUM": {
+  "internalName": "DOROTHYSUM",
+  "dexNumber": 612,
+  "name": "DorothySum",
+  "types": [
+   "FAIRY",
+   "WATER"
+  ],
+  "baseStats": {
+   "HP": 77,
+   "Attack": 38,
+   "Defense": 64,
+   "Speed": 64,
+   "SpAtk": 94,
+   "SpDef": 89
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 180,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 1,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 2
+  },
+  "abilities": [
+   "FRIENDGUARD",
+   "WATERABSORB"
+  ],
+  "hiddenAbility": "MAGICGUARD",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "CHARM",
+    "moveName": "Charm"
+   },
+   {
+    "level": 1,
+    "move": "WATERGUN",
+    "moveName": "Water Gun"
+   },
+   {
+    "level": 6,
+    "move": "DISARMINGVOICE",
+    "moveName": "Disarming Voice"
+   },
+   {
+    "level": 10,
+    "move": "WISH",
+    "moveName": "Wish"
+   },
+   {
+    "level": 13,
+    "move": "BUBBLEBEAM",
+    "moveName": "Bubble Beam"
+   },
+   {
+    "level": 16,
+    "move": "DRAININGKISS",
+    "moveName": "Draining Kiss"
+   },
+   {
+    "level": 20,
+    "move": "HEALPULSE",
+    "moveName": "Heal Pulse"
+   },
+   {
+    "level": 25,
+    "move": "CALMMIND",
+    "moveName": "Calm Mind"
+   },
+   {
+    "level": 30,
+    "move": "SCALD",
+    "moveName": "Scald"
+   },
+   {
+    "level": 36,
+    "move": "DAZZLINGGLEAM",
+    "moveName": "Dazzling Gleam"
+   },
+   {
+    "level": 42,
+    "move": "SURF",
+    "moveName": "Surf"
+   },
+   {
+    "level": 48,
+    "move": "MOONBLAST",
+    "moveName": "Moonblast"
+   },
+   {
+    "level": 54,
+    "move": "HYDROPUMP",
+    "moveName": "Hydro Pump"
+   }
+  ],
+  "kind": "Healer",
+  "dex": "Her summer form wades through shallow waves, mending allies with a soft fairy glow and sea spray. From Nikke. A Support Pokémon.",
+  "height": 1.6,
+  "weight": 46,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Support",
+  "series": "Nikke",
+  "legendary": false
+ },
+ "EVE": {
+  "internalName": "EVE",
+  "dexNumber": 715,
+  "name": "Eve",
+  "types": [
+   "NORMAL",
+   "STEEL"
+  ],
+  "baseStats": {
+   "HP": 62,
+   "Attack": 102,
+   "Defense": 62,
+   "Speed": 98,
+   "SpAtk": 44,
+   "SpDef": 58
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 170,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 1,
+   "Defense": 0,
+   "Speed": 1,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "INNERFOCUS",
+   "TECHNICIAN"
+  ],
+  "hiddenAbility": "JUSTIFIED",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "KARATECHOP",
+    "moveName": "Karate Chop"
+   },
+   {
+    "level": 1,
+    "move": "QUICKATTACK",
+    "moveName": "Quick Attack"
+   },
+   {
+    "level": 6,
+    "move": "DOUBLETEAM",
+    "moveName": "Double Team"
+   },
+   {
+    "level": 10,
+    "move": "BRICKBREAK",
+    "moveName": "Brick Break"
+   },
+   {
+    "level": 15,
+    "move": "AERIALACE",
+    "moveName": "Aerial Ace"
+   },
+   {
+    "level": 20,
+    "move": "SWORDSDANCE",
+    "moveName": "Swords Dance"
+   },
+   {
+    "level": 26,
+    "move": "SACREDSWORD",
+    "moveName": "Sacred Sword"
+   },
+   {
+    "level": 32,
+    "move": "CLOSECOMBAT",
+    "moveName": "Close Combat"
+   },
+   {
+    "level": 38,
+    "move": "NIGHTSLASH",
+    "moveName": "Night Slash"
+   },
+   {
+    "level": 44,
+    "move": "AGILITY",
+    "moveName": "Agility"
+   },
+   {
+    "level": 50,
+    "move": "SUPERPOWER",
+    "moveName": "Superpower"
+   }
+  ],
+  "kind": "Swordswoman",
+  "dex": "A lone swordswoman who fights with sharp reflexes and clean, relentless strikes. From Stellar Blade. A Speedster Pokémon.",
+  "height": 1.7,
+  "weight": 58,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Speedster",
+  "series": "Stellar Blade",
+  "legendary": false
+ },
+ "EVESKIN": {
+  "internalName": "EVESKIN",
+  "dexNumber": 821,
+  "name": "EveSkin",
+  "types": [
+   "NORMAL"
+  ],
+  "baseStats": {
+   "HP": 99,
+   "Attack": 145,
+   "Defense": 92,
+   "Speed": 152,
+   "SpAtk": 86,
+   "SpDef": 86
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 180,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 1,
+   "Defense": 0,
+   "Speed": 2,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "INNERFOCUS",
+   "PIXILATE"
+  ],
+  "hiddenAbility": "JUSTIFIED",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "KARATECHOP",
+    "moveName": "Karate Chop"
+   },
+   {
+    "level": 1,
+    "move": "FAIRYWIND",
+    "moveName": "Fairy Wind"
+   },
+   {
+    "level": 6,
+    "move": "QUICKATTACK",
+    "moveName": "Quick Attack"
+   },
+   {
+    "level": 10,
+    "move": "DISARMINGVOICE",
+    "moveName": "Disarming Voice"
+   },
+   {
+    "level": 15,
+    "move": "AERIALACE",
+    "moveName": "Aerial Ace"
+   },
+   {
+    "level": 20,
+    "move": "SWORDSDANCE",
+    "moveName": "Swords Dance"
+   },
+   {
+    "level": 26,
+    "move": "PLAYROUGH",
+    "moveName": "Play Rough"
+   },
+   {
+    "level": 32,
+    "move": "CLOSECOMBAT",
+    "moveName": "Close Combat"
+   },
+   {
+    "level": 38,
+    "move": "SACREDSWORD",
+    "moveName": "Sacred Sword"
+   },
+   {
+    "level": 44,
+    "move": "MOONBLAST",
+    "moveName": "Moonblast"
+   },
+   {
+    "level": 50,
+    "move": "AGILITY",
+    "moveName": "Agility"
+   }
+  ],
+  "kind": "Swordswoman",
+  "dex": "Another outfit, the same blade: she moves with a graceful, fairy-light polish that makes every strike look effortless. From Stellar Blade. A Speedster Pokémon.",
+  "height": 1.7,
+  "weight": 57,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Speedster",
+  "series": "Stellar Blade",
+  "legendary": true
+ },
+ "RAVEN": {
+  "internalName": "RAVEN",
+  "dexNumber": 716,
+  "name": "Raven",
+  "types": [
+   "DARK"
+  ],
+  "baseStats": {
+   "HP": 67,
+   "Attack": 93,
+   "Defense": 62,
+   "Speed": 106,
+   "SpAtk": 40,
+   "SpDef": 58
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Medium",
+  "baseExp": 170,
+  "catchRate": 45,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 2,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 0,
+   "SpDef": 0
+  },
+  "abilities": [
+   "INTIMIDATE",
+   "PRESSURE"
+  ],
+  "hiddenAbility": "MOXIE",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "SCRATCH",
+    "moveName": "Scratch"
+   },
+   {
+    "level": 1,
+    "move": "LEER",
+    "moveName": "Leer"
+   },
+   {
+    "level": 6,
+    "move": "PURSUIT",
+    "moveName": "Pursuit"
+   },
+   {
+    "level": 10,
+    "move": "SUCKERPUNCH",
+    "moveName": "Sucker Punch"
+   },
+   {
+    "level": 15,
+    "move": "KNOCKOFF",
+    "moveName": "Knock Off"
+   },
+   {
+    "level": 20,
+    "move": "SWORDSDANCE",
+    "moveName": "Swords Dance"
+   },
+   {
+    "level": 26,
+    "move": "NIGHTSLASH",
+    "moveName": "Night Slash"
+   },
+   {
+    "level": 32,
+    "move": "THROATCHOP",
+    "moveName": "Throat Chop"
+   },
+   {
+    "level": 38,
+    "move": "CRUNCH",
+    "moveName": "Crunch"
+   },
+   {
+    "level": 44,
+    "move": "CLOSECOMBAT",
+    "moveName": "Close Combat"
+   },
+   {
+    "level": 50,
+    "move": "FOULPLAY",
+    "moveName": "Foul Play"
+   }
+  ],
+  "kind": "Shadow",
+  "dex": "A grim, hard-hitting fighter who strikes from the shadows and doesn't stop until the job is done. From Stellar Blade. A Physical Attacker Pokémon.",
+  "height": 1.7,
+  "weight": 60,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Speedster",
+  "series": "Stellar Blade",
   "legendary": false
  }
 }

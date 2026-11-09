@@ -86,7 +86,7 @@ function* sendOut(s) {
   sfx('throw');
   const tx = base.x, ty = base.y - 30;
   for (let i = 1; i <= 20; i++) { const t = i / 20; ball.x = sx + (tx - sx) * t; ball.y = sy + (ty - sy) * t - Math.sin(t * Math.PI) * 60; ball.rot += 0.5; yield; }
-  ball.open = true; ball.rot = 0; sfx('ballopen'); cry(D.SP[mon.sym].id); sp.vis = true; sp.a = 0; sp.sc = 0.1; sp.tint = 1; sp.dx = 0; sp.dy = 0; B.flash = 1;
+  ball.open = true; ball.rot = 0; sfx('ballopen'); cry(mon.gender); sp.vis = true; sp.a = 0; sp.sc = 0.1; sp.tint = 1; sp.dx = 0; sp.dy = 0; B.flash = 1;
   for (let i = 1; i <= 16; i++) { const t = i / 16; sp.a = Math.min(1, t * 2); sp.sc = 0.1 + 0.9 * easeOut(t); sp.tint = 1 - t; if (i === 6) B.spr.ball = null; yield; }
   sp.sc = 1; sp.a = 1; sp.tint = 0; B.spr.ball = null;
   yield* tween(B.box, { [s === 0 ? 'me' : 'foe']: 1 }, 10);
@@ -383,8 +383,8 @@ function* commandPhase() {
 // ------------------------------------------------------------ AI
 // ------------------------------------------------------------ Mega Evolution: Illya2 + Prisma Mega Stone + Key Stone
 // holder species + stone -> Mega species (the Mega species must exist in pokemon.json with megaOf set)
-const MEGA_STONES = { CHARIZARDITEX: ['ILLYA2', 'MEGAILLYA'], ALBIONSTONE: ['MELUSINE', 'MEGAMELUSINE'], SPACESTONE: ['ISHTAR', 'MEGAISHTAR'], ANUBISSTONE: ['NITOCRIS', 'MEGANITOCRIS'] };
-function megaFor(p) { const m = p && MEGA_STONES[p.item]; return m && m[0] === p.sym && D.SP[m[1]] ? m[1] : null; }
+const MEGA_STONES = { CHARIZARDITEX: [['ILLYA2', 'ILLYASUM2'], 'MEGAILLYA'], ALBIONSTONE: ['MELUSINE', 'MEGAMELUSINE'], SPACESTONE: [['ISHTAR', 'ISHTARSUM'], 'MEGAISHTAR'], ANUBISSTONE: ['NITOCRIS', 'MEGANITOCRIS'] };
+function megaFor(p) { const m = p && MEGA_STONES[p.item]; return m && [].concat(m[0]).includes(p.sym) && D.SP[m[1]] ? m[1] : null; }
 function canMega(p) { const B = B_(); return !!(megaFor(p) && G.items.KEYSTONE > 0 && !B.megaUsed); }
 function* doMega(s = 0) {
   // same order as Essentials' pbMegaEvolve: message -> MegaEvolution common animation -> form change -> "has Mega Evolved" message
@@ -560,7 +560,7 @@ function* battleMain(B) {
     B.me = B.meParty.find(p => p.hp > 0);
     const sp = B.spr.foe; sp.vis = true; sp.a = 0;
     for (let i = 1; i <= 18; i++) { sp.a = i / 18; sp.dx = (1 - i / 18) * 120; yield; } sp.dx = 0;
-    cry(D.SP[B.foe.sym].id); yield* tween(B.box, { foe: 1 }, 10);
+    cry(B.foe.gender); yield* tween(B.box, { foe: 1 }, 10);
     yield* bmsg('A wild ' + pokeName(B.foe) + ' appeared!', { pause: true });
   }
   yield* bmsg('Go! ' + pokeName(B.me) + '!', { hold: 6 });
@@ -608,7 +608,7 @@ function* runBattle(B) {
 }
 function* evolveScene(list) {
   for (const p of list) {
-    const to = evoTarget(p); if (!to) continue;
+    const to = p.forceEvo || evoTarget(p); if (!to) continue;
     const oldKey = sprKey(D.SP[p.sym]), newKey = sprKey(D.SP[to]);
     for (let w = 0; w < 120 && !(img('battlers', oldKey) && img('battlers', newKey)); w++) yield;   // sprites missing from the manifest load lazily: wait for them
     let oldIm = img('battlers', oldKey), newIm = img('battlers', newKey) || oldIm;

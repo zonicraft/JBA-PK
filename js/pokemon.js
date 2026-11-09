@@ -129,6 +129,12 @@ function gainedExp(foe, isTrainer) {
 function hasUsable(party) { return party.some(p => p.hp > 0); }
 
 // ---- evolutions. D.SP[sym].evo = "TARGET,Level,24[,TARGET2,Level,30]" (Essentials format); only Level is supported
+// Summer / Casual Stones: X <-> XSUM, X2 <-> XSUM2 ... (exact pairs only: Illya -> IllyaSum, Illya2 -> IllyaSum2)
+function stoneTarget(key, sym) {
+  if (key === 'SUMMERSTONE') { const m = /^(.*?)(\d*)$/.exec(sym), to = m[1] + 'SUM' + m[2]; return !/SUM\d*$/.test(sym) && D.SP[to] ? to : null; }
+  if (key === 'CASUALSTONE') { const m = /^(.+)SUM(\d*)$/.exec(sym), to = m ? m[1] + m[2] : null; return to && D.SP[to] ? to : null; }
+  return null;
+}
 function evoTarget(p) {
   const e = (D.SP[p.sym].evo || '').split(',').map(x => x.trim()); if (e.length < 3) return null;
   for (let i = 0; i + 2 < e.length; i += 3) if (e[i + 1] === 'Level' && D.SP[e[i]] && p.lvl >= parseInt(e[i + 2], 10)) return e[i];

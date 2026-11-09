@@ -23,6 +23,13 @@ function* useItemOn(key, p, S) {
     yield* uiMessage(name + ' grew to Lv. ' + p.lvl + '!'); return true;
   }
   if (p.hp <= 0) { yield* uiMessage('It won\'t have any effect.'); return false; }
+  if (key === 'SUMMERSTONE' || key === 'CASUALSTONE') {
+    const to = stoneTarget(key, p.sym);
+    if (!to) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    p.forceEvo = to; yield* evolveScene([p]); p.forceEvo = null;
+    if (p.sym === to) { consume(key); return true; }
+    return false;   // evolution cancelled: the stone is kept
+  }
   let did = false;
   if (key in HEAL_HP) {
     if (p.hp < p.maxhp) {
@@ -101,7 +108,7 @@ function* bagScreen(o = {}) {
         yield* uiMessage('It can\'t be used in battle.'); continue;
       }
       // field menu
-      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
+      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
       const c = yield* choiceWindow(opts, { y: SH - 96 - opts.length * 32 - 32, x: SW - 150 });
       const choice = c < 0 ? 'CANCEL' : opts[c];
       if (choice === 'USE') {
@@ -119,7 +126,7 @@ function* bagScreen(o = {}) {
         if (key === 'PORTABLETELEPORTER') { CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; });   // everything before Cinnabar was visited by the time Einsteves hands it over
           yield* townMapScreen({ teleport: true, player: true }); if (G.teleReq) return null; continue; }
         if (key === 'BICYCLE') { if (G.biking) { G.biking = false; G.bikeMsg = G.name + ' got off the Skateboard.'; } else if (bikeAllowed()) { G.biking = true; G.bikeMsg = G.name + ' got on the Skateboard.'; } else G.bikeMsg = 'You can\'t use the Skateboard here.'; return null; }
-        if (isMedicine(key)) {
+        if (isMedicine(key) || key === 'SUMMERSTONE' || key === 'CASUALSTONE') {
           const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i) => useItemOn(key, p) });
           S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
         }
@@ -144,13 +151,32 @@ function* bagScreen(o = {}) {
 
 // ------------------------------------------------------------ Trainer card (simplified)
 function fmtTime(frames) { const s = Math.floor(frames / FPS); return Math.floor(s / 3600) + ':' + String(Math.floor(s / 60) % 60).padStart(2, '0'); }
+function starShape(cx, cy, r, fill) {
+  ctx.beginPath();
+  for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r * 0.45 : r; ctx[k ? 'lineTo' : 'moveTo'](cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
+  ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#785000'; ctx.stroke();
+}
 function drawTrainerCard() {
-  pic('loadbg', 0, 0);
-  skinBox('skin_choice_1', 24, 40, SW - 48, 280);
-  txt('TRAINER CARD', 52, 56, { size: 28 });
-  const rows = [['Name', G.name], ['ID No.', String(G.trainerId).padStart(5, '0')], ['Money', '$' + G.money], ['Pokédex', String(dexCounts()[1])], ['Time', fmtTime(G.playFrames)], ['Badges', String(badgeCount())]];
-  rows.forEach(([a, b], i) => { txt(a, 56, 106 + i * 36, { size: 24 }); txt(b, 330, 106 + i * 36, { size: 24, align: 'right' }); });
-  const im = img('faces', 'facemain'); if (im) ctx.drawImage(im, 0, 0, 96, 96, 350, 100, 112, 112);
+  // the Essentials trainer card (512x384): labels sit on the translucent bars, badges in the slots along the bottom
+  const bg = img('ui', 'trainercard/card');
+  if (bg) ctx.drawImage(bg, 0, 0); else { ctx.fillStyle = '#4a8ce0'; ctx.fillRect(0, 0, SW, SH); }
+  const W = { col: COL.light }, hof = (G.hof || []).length, dexDone = !!(G.switches && G.switches.dexAward);
+  const row = (i, a, b) => { const y = 64 + i * 48 + 3; txt(a, 38, y, { size: 22, col: COL.light }); txt(b, 298, y, { size: 22, align: 'right', col: COL.light }); };
+  const [seen, owned] = dexCounts();
+  row(0, 'Name', G.name);
+  row(1, 'Money', '$' + G.money);
+  row(2, 'Pokédex', String(owned));
+  row(3, 'Time', fmtTime(G.playFrames));
+  row(4, 'Hall of Fame', hof ? 'Champion' + (hof > 1 ? ' x' + hof : '') : 'Not yet');
+  txt('ID No. ' + String(G.trainerId).padStart(5, '0'), 399, 67, { size: 18, align: 'center', col: COL.light });
+  const im = img('faces', 'facemain'); if (im) ctx.drawImage(im, 0, 0, 96, 96, 350, 108, 96, 96);
+  // gold star next to the name = Champion, next to the Pokédex count = completed Pokédex (given by Nuno)
+  if (hof) starShape(38 + txtW('Name', 22) + 22, 79, 10, '#f8d030');
+  if (dexDone) starShape(38 + txtW('Pokédex', 22) + 22, 175, 10, '#f8d030');
+  if (hof) txt('CHAMPION', 399, 208, { size: 18, align: 'center', col: COL.light });
+  if (dexDone) txt('DEX COMPLETE', 399, hof ? 227 : 208, { size: 16, align: 'center', col: COL.light });
+  const ic = img('ui', 'trainercard/icon_badges');
+  if (ic) BADGE_ITEMS.forEach((b, k) => { if (G.items[b[0]] > 0 || (b[1] && getSwitch(b[1]))) ctx.drawImage(ic, k * 32, 0, 32, 32, 72 + k * 48, 310, 32, 32); });
 }
 function* trainerCard() { return yield* withDraw(drawTrainerCard, (function* () { while (true) { yield; if (ok() || back()) { sfx('back'); return; } } })()); }
 
@@ -261,7 +287,7 @@ function writeSave() {
   const p = G.player;
   const data = {
     v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
-    runningShoes: !!G.runningShoes, surfing: !!G.surfing, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, hof: G.hof || [], map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
+    runningShoes: !!G.runningShoes, surfing: !!G.surfing, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, tradeOut: G.tradeOut || [], tradePending: G.tradePending || null, tradeSeen: G.tradeSeen || {}, tradeLog: G.tradeLog || [], seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, hof: G.hof || [], map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
   };
   try { localStorage.setItem(slotKey(curSlot()), JSON.stringify(data)); try { localStorage.setItem(LAST_SLOT_KEY, String(curSlot())); } catch (e) { } return true; } catch (e) { return false; }
 }
@@ -274,7 +300,7 @@ function migrateSyms(d) {   // saves made before species were renamed to their c
 function loadSave(d) {
   migrateSyms(d);
   G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; G.name = d.name; G.starterName = d.starterName; G.money = d.money; G.trainerId = d.trainerId;
-  G.runningShoes = d.runningShoes; G.surfing = !!d.surfing; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {}; G.hof = d.hof || [];
+  G.runningShoes = d.runningShoes; G.surfing = !!d.surfing; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.tradeOut = d.tradeOut || []; G.tradePending = d.tradePending || null; G.tradeSeen = d.tradeSeen || {}; G.tradeLog = d.tradeLog || []; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {}; G.hof = d.hof || [];
   enterMap(d.map, d.x, d.y, d.dir); if (d.bgm) playBGM(d.bgm);
 }
 const MAPNAMES = { 1: "Jorge's House 2F", 2: 'Pallet Town', 3: 'Pallet Town', 4: "Jorge's House", 8: "Geso's Lab", 5: 'Route 1', 7: 'Viridian City', 81: 'Viridian City', 84: 'Viridian City', 398: 'Viridian City', 354: 'Pokémon Center', 43: 'Route 2', 48: 'Viridian Forest', 85: 'Route 2', 86: 'Route 2', 132: 'Route 2', 145: 'Route 2', 87: 'Pewter City', 89: 'Pewter City', 92: 'Pewter City', 93: 'Pewter City', 94: 'Pewter City', 355: 'Pewter City', 79: 'Route 3', 95: 'Route 4', 96: 'Route 4', 110: 'Route 4', 356: 'Route 4', 97: 'Mt. Moon', 98: 'Mt. Moon', 99: 'Mt. Moon', 100: 'Cerulean City', 101: 'Cerulean City', 102: 'Cerulean City', 103: 'Cerulean City', 104: 'Cerulean City', 105: 'Cerulean City', 106: 'Cerulean City', 107: 'Cerulean City', 108: 'Cerulean City', 113: 'Cerulean City', 357: 'Cerulean City', 109: 'Route 24', 111: 'Route 25', 112: "Nuno's House" };
@@ -304,7 +330,7 @@ function drawSaveInfo() {
 // ------------------------------------------------------------ Town map (PBS/townmap.txt)
 const TPOINTS = [[13, 13, "Pallet Town", ""], [13, 11, "Route 1", ""], [13, 12, "Route 1", ""], [12, 9, "Viridian City", ""], [13, 9, "Viridian City", ""], [12, 10, "Viridian City", ""], [13, 10, "Viridian City", ""], [9, 10, "Route 22", ""], [10, 10, "Route 22", ""], [11, 10, "Route 22", ""], [13, 6, "Route 2", "Burrow Tunnel"], [13, 7, "Route 2", "Viridian Forest"], [13, 8, "Route 2", ""], [13, 4, "Pewter City", ""], [13, 5, "Pewter City", ""], [14, 4, "Pewter City", ""], [14, 5, "Pewter City", ""], [15, 5, "Route 3", ""], [16, 5, "Route 3", ""], [17, 5, "Route 4", "Mt. Moon"], [18, 5, "Route 4", ""], [19, 5, "Route 4", ""], [20, 5, "Route 4", ""], [21, 5, "Cerulean City", "Cerulean Cave"], [22, 5, "Cerulean City", ""], [21, 6, "Cerulean City", ""], [22, 6, "Cerulean City", ""], [22, 3, "Route 24", ""], [22, 4, "Route 24", ""], [23, 3, "Route 25", ""], [24, 3, "Route 25", ""], [25, 3, "Route 25", ""], [21, 7, "Route 5", ""], [21, 10, "Route 6", ""], [21, 11, "Vermilion City", ""], [22, 11, "Vermilion City", ""], [21, 12, "Vermilion City", ""], [22, 12, "Vermilion City", ""], [23, 11, "Route 11", "Burrow Tunnel"], [24, 11, "Route 11", ""], [25, 10, "Route 12", ""], [25, 11, "Route 12", ""], [25, 12, "Route 12", ""], [25, 13, "Route 12", ""], [23, 6, "Route 9", ""], [24, 6, "Route 9", ""], [25, 6, "Route 10", "Rock Tunnel"], [25, 7, "Route 10", "Power Plant"], [25, 8, "Route 10", ""], [25, 9, "Lavender Town", "Pokémon Tower"], [23, 9, "Route 8", ""], [24, 9, "Route 8", ""], [20, 9, "Route 7", ""], [18, 9, "Celadon City", ""], [19, 9, "Celadon City", ""], [18, 10, "Celadon City", ""], [19, 10, "Celadon City", ""], [16, 10, "Route 16", ""], [17, 10, "Route 16", ""], [16, 11, "Route 17", ""], [16, 12, "Route 17", ""], [16, 13, "Route 17", ""], [16, 14, "Route 17", ""], [16, 15, "Route 18", ""], [17, 15, "Route 18", ""], [18, 14, "Fuchsia City", "Safari Zone"], [19, 14, "Fuchsia City", ""], [18, 15, "Fuchsia City", ""], [19, 15, "Fuchsia City", ""], [24, 13, "Route 13", ""], [23, 13, "Route 14", ""], [23, 14, "Route 14", ""], [23, 15, "Route 14", ""], [20, 15, "Route 15", ""], [21, 15, "Route 15", ""], [22, 15, "Route 15", ""], [21, 8, "Saffron City", ""], [22, 8, "Saffron City", ""], [21, 9, "Saffron City", ""], [22, 9, "Saffron City", ""], [18, 16, "Route 19", ""], [18, 17, "Route 19", ""], [14, 17, "Route 20", ""], [15, 17, "Route 20", ""], [16, 17, "Route 20", "Seafoam Islands"], [17, 17, "Route 20", ""], [13, 17, "Cinnabar Island", "Pokémon Mansion"], [13, 14, "Route 21", ""], [13, 15, "Route 21", ""], [13, 16, "Route 21", ""], [9, 9, "Route 23", "Victory Road"], [9, 8, "Indigo Plateau", ""], [6, 10, "Mt. Silver", ""], [7, 10, "Route 28", ""], [8, 10, "Route 28", ""]];
 // Sevii teleport points: [region, cell x, cell y, name, island number, map, x, y] (x, y = where you step out of the harbor)
-const SEV_TELE = [[1, 5, 11, 'One Island', 1, 274, 15, 19], [1, 13, 12, 'Two Island', 2, 290, 18, 8], [1, 22, 15, 'Three Island', 3, 299, 14, 13], [2, 7, 7, 'Four Island', 4, 19, 18, 30], [2, 20, 14, 'Five Island', 5, 31, 64, 14], [3, 9, 11, 'Six Island', 6, 49, 11, 23], [3, 9, 10, 'Seven Island', 7, 70, 22, 13]];
+const SEV_TELE = [[1, 5, 11, 'One Island', 1, 274, 15, 19], [1, 13, 12, 'Two Island', 2, 290, 18, 8], [1, 22, 15, 'Three Island', 3, 299, 14, 13], [2, 7, 7, 'Four Island', 4, 19, 18, 30], [2, 20, 14, 'Five Island', 5, 31, 64, 14], [3, 21, 8, 'Six Island', 6, 49, 11, 23], [3, 9, 11, 'Seven Island', 7, 70, 22, 13]];
 const TMAP_HOME = { 'Pallet Town': [13, 13], 'Route 1': [13, 12], 'Viridian City': [13, 9], 'Pokémon Center': [13, 9], 'Route 2': [13, 8], 'Viridian Forest': [13, 7], 'Pewter City': [13, 5], 'Route 3': [15, 5], 'Route 4': [17, 5], 'Mt. Moon': [18, 5], 'Cerulean City': [21, 5], 'Route 24': [22, 3], 'Route 25': [24, 3], "Nuno's House": [24, 3] };
 function* townMapScreen(o = {}) {
   if (!o.teleport && !o.view && G.items && G.items.PORTABLETELEPORTER > 0) { o = Object.assign({}, o, { teleport: true, player: true, regular: true }); CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; }); }   // owning the Portable Teleporter turns the regular map into the teleporter   // o.teleport: the cheat version, pick a city and confirm to teleport there
@@ -394,10 +420,24 @@ function* cheatGivePokemon() {
   const sym = hits[0];
   const lv = yield* promptName('Level? (1-' + MAXLEVEL + ')', '5', 3);
   const lvl = Math.max(1, Math.min(MAXLEVEL, parseInt(lv, 10) || 5));
-  const mon = mkPoke(sym, lvl);
+  const mon = mkPoke(sym, lvl); mon.cheat = true;      // cheat-made Pokémon are tagged and can't be traded
   G.owned = G.owned || {}; G.owned[sym] = true; dexMarkSeen(sym);
   if (G.party.length < 6) { G.party.push(mon); sfx('item'); yield* uiMessage('Got ' + pokeName(mon) + ' (Lv. ' + lvl + ')! Added to your party.'); }
   else { pcAdd(mon); sfx('item'); yield* uiMessage(pokeName(mon) + ' (Lv. ' + lvl + ') was sent to the PC because your party is full.'); }
+}
+function* cheatFillPC() {
+  // one of every species (no Megas) into the PC, skipping ones already stored; also completes the Pokédex
+  pcInit(); G.owned = G.owned || {};
+  const have = {}; for (const m of pcAll().concat(G.party)) have[m.sym] = true;
+  let added = 0, full = false;
+  for (const sym of Object.keys(D.SP)) {
+    const sp = D.SP[sym]; if (!sp || !sp.name || dexHidden(sym)) continue;
+    G.owned[sym] = true; dexMarkSeen(sym);
+    if (have[sym]) continue;
+    if (pcAdd(Object.assign(mkPoke(sym, 5), { cheat: true }))) added++; else full = true;
+  }
+  sfx('item');
+  yield* uiMessage(full ? 'The PC filled up after ' + added + ' Pokémon. Pokédex is complete anyway.' : 'Added ' + added + ' Pokémon to the PC. Pokédex complete!');
 }
 function* cheatGiveMove() {
   const start = Math.min(G.cheatPartyIdx || 0, Math.max(0, G.party.length - 1));
@@ -419,6 +459,7 @@ function* cheatGiveMove() {
   }
   if (p.moves.some(m => m.id === hits[0])) { yield* uiMessage(pokeName(p) + ' already knows ' + D.MV[hits[0]].name + '.'); return; }
   yield* learnMoveField(p, hits[0]);
+  if (p.moves.some(m => m.id === hits[0])) p.cheat = true;      // a cheated move also makes it untradable
 }
 function* cheatGiveItem() {            // type (part of) an item name, pick from the matches, then a quantity
   const q = yield* promptName('Which item? (name)', '', 24);
@@ -454,7 +495,7 @@ function* cheatTeleport() {   // opens the town map; picking a city + confirming
 function cheatsEnabled() { try { return /[?&#]cheats=(1|true|on)\b/i.test(location.href); } catch (e) { return false; } }
 function* cheatsMenu() {
   if (!cheatsEnabled()) return;
-  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'TELEPORT TO CITY', 'GIVE ITEM', 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'), 'CANCEL'];
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'TELEPORT TO CITY', 'GIVE ITEM', 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'), 'FILL PC WITH ALL', 'CANCEL'];
   const CANCEL = labels.length - 1;
   let idx = 0;
   while (true) {
@@ -469,7 +510,7 @@ function* cheatsMenu() {
         G.cheatLvIdx = i;
         const p = G.party[i];
         if (p.lvl >= MAXLEVEL) { yield* uiMessage(pokeName(p) + ' is already at the maximum level.'); continue; }
-        const res = gainExp(p, expFor(D.SP[p.sym].growth, p.lvl + 1) - p.exp); sfx('exp');
+        p.cheat = true; const res = gainExp(p, expFor(D.SP[p.sym].growth, p.lvl + 1) - p.exp); sfx('exp');
         yield* uiMessage(pokeName(p) + ' grew to Lv. ' + p.lvl + '!');
         for (const lv of res) for (const mv of lv.learn) yield* learnMoveField(p, mv);
         if (evoTarget(p)) { p.evoCheck = false; yield* evolveScene([p]); }
@@ -482,6 +523,7 @@ function* cheatsMenu() {
     else if (r === 5) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
     else if (r === 6) { yield* cheatTeleport(); if (G.teleReq) return; }
     else if (r === 7) { yield* cheatGiveItem(); }
+    else if (r === 9) { yield* cheatFillPC(); }
     else if (r === 8) { G.noclip = !G.noclip; labels[8] = 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'); sfx('ok'); }
   }
 }
@@ -589,9 +631,10 @@ function* pcSession() {
   yield* withDraw(() => { drawUiMsg(); }, uiMessage('The Pokémon Storage System was opened.', { noWait: false }));
   let cmd = 0;
   while (true) {
-    cmd = yield* pcMenuList(['Organize Boxes', 'Withdraw Pokémon', 'Deposit Pokémon', 'See ya!'],
-      ['Organize the Pokémon in Boxes and in your party.', 'Move Pokémon stored in Boxes to your party.', 'Store Pokémon in your party in Boxes.', 'Return to the previous menu.'], Math.max(cmd, 0));
-    if (cmd < 0 || cmd === 3) break;
+    cmd = yield* pcMenuList(['Organize Boxes', 'Withdraw Pokémon', 'Deposit Pokémon', 'Trade Pokémon', 'See ya!'],
+      ['Organize the Pokémon in Boxes and in your party.', 'Move Pokémon stored in Boxes to your party.', 'Store Pokémon in your party in Boxes.', 'Trade Pokémon with friends using trade codes.', 'Return to the previous menu.'], Math.max(cmd, 0));
+    if (cmd < 0 || cmd === 4) break;
+    if (cmd === 3) { yield* pcTrade(); continue; }
     if (cmd === 1 && G.party.length >= 6) { yield* withDraw(drawUiMsg, uiMessage('Your party is full!')); continue; }
     if (cmd === 2 && pcAbleCount() <= 1) { yield* withDraw(drawUiMsg, uiMessage("Can't deposit the last Pokémon!")); continue; }
     yield* fadeTo(1, 8);
@@ -678,7 +721,7 @@ const WALLPAPER_N = 40;
 function pcDrawMark(on, i, x, y) { const im = pcImg('markings'); if (im) ctx.drawImage(im, i * 16, on * 16, 16, 16, x, y, 16, 16); }
 function pcDrawMarks(m, x, y) { for (let i = 0; i < 6; i++) pcDrawMark(m.marks && m.marks[i] ? 1 : 0, i, x + i * 16, y); }
 function* pcStorageScreen(command) {
-  const PC = G.pc; const st = { sel: 0, partySel: 0, held: null, heldBack: null, partyY: command === 2 ? SH - 352 : SH, boxX: 184, slide: null, popup: null, msg: null, hand: 0, grab: 0, place: 0, rel: 0, relMon: null, inParty: command === 2, boxName: false };
+  const PC = G.pc; let picked = null; const st = { sel: 0, partySel: 0, held: null, heldBack: null, partyY: command === 2 ? SH - 352 : SH, boxX: 184, slide: null, popup: null, msg: null, hand: 0, grab: 0, place: 0, rel: 0, relMon: null, inParty: command === 2, boxName: false };
   const curBox = () => PC.boxes[PC.cur];
   const handPos = () => {
     if (st.inParty) { const i = st.partySel; if (i >= 6) return [236, 220]; return [200 + 72 * (i % 2), 2 + 16 * (i % 2) + 64 * Math.floor(i / 2)]; }
@@ -898,10 +941,11 @@ function* pcStorageScreen(command) {
         }
         const mon = curBox().mons[st.sel]; if (!mon && !st.held) continue;
         {
-          const names = command === 1 ? ['Withdraw', 'Summary', 'Mark', 'Release', 'Cancel']
+          const names = command === 3 ? ['Trade', 'Summary', 'Cancel'] : command === 1 ? ['Withdraw', 'Summary', 'Mark', 'Release', 'Cancel']
             : st.held ? [mon ? 'Shift' : 'Place', 'Summary', 'Item', 'Mark', 'Release', 'Cancel'] : ['Move', 'Summary', 'Withdraw', 'Item', 'Mark', 'Release', 'Cancel'];
           const c = yield* showCommands(pokeName(st.held || mon) + ' is selected.', names); const name = names[c];
-          if (name === 'Move') yield* act.hold(0, st.sel);
+          if (name === 'Trade') { picked = { where: 'box', mon }; break; }
+          else if (name === 'Move') yield* act.hold(0, st.sel);
           else if (name === 'Shift') yield* act.swap(0, st.sel);
           else if (name === 'Place') yield* act.place(0, st.sel);
           else if (name === 'Summary') yield* summary(0, st.sel);
@@ -933,10 +977,11 @@ function* pcStorageScreen(command) {
         const mon = G.party[st.partySel];
         {
           if (!mon && !st.held) continue;
-          const names = command === 2 ? ['Store', 'Summary', 'Mark', 'Release', 'Cancel']
+          const names = command === 3 ? ['Trade', 'Summary', 'Cancel'] : command === 2 ? ['Store', 'Summary', 'Mark', 'Release', 'Cancel']
             : st.held ? [mon ? 'Shift' : 'Place', 'Summary', 'Item', 'Mark', 'Release', 'Cancel'] : ['Move', 'Summary', 'Store', 'Item', 'Mark', 'Release', 'Cancel'];
           const c = yield* showCommands(pokeName(st.held || mon) + ' is selected.', names); const name = names[c];
-          if (name === 'Move') yield* act.hold(-1, st.partySel);
+          if (name === 'Trade') { picked = { where: 'party', mon }; break; }
+          else if (name === 'Move') yield* act.hold(-1, st.partySel);
           else if (name === 'Shift') yield* act.swap(-1, st.partySel);
           else if (name === 'Place') yield* act.place(-1, st.partySel);
           else if (name === 'Summary') yield* summary(-1, st.partySel);
@@ -947,7 +992,7 @@ function* pcStorageScreen(command) {
         }
       }
     }
-    G.pc.cur = PC.cur;
+    G.pc.cur = PC.cur; return picked;
   })());
   function* hideParty() { playSE('GUI_storage_hide_party_panel'); while (st.partyY < SH) { st.partyY = Math.min(SH, st.partyY + 24); yield; } }
 }

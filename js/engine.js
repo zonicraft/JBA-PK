@@ -112,7 +112,10 @@ function playME(name) {
   a.onended = () => { if (G.me && G.me.a === a) { G.me = null; applyVolumes(); } };
   a.play().catch(() => { if (G.me && G.me.a === a) { G.me = null; applyVolumes(); } });
 }
-function cry(id) { if (id === 891) id = 195; try { const a = new Audio('assets/cries/' + String(id).padStart(3, '0') + '.ogg'); a.volume = Math.min(1, 0.9 * SET.sfx); a.play().catch(() => { }); } catch (e) { } }
+// cries: just three files by gender (0 male, 1 female, 2 genderless)
+const CRY_FILES = ['male', 'female', 'genderless'];
+function cryGender(sp) { const g = sp && sp.gender; return g === 'Genderless' ? 2 : g === 'AlwaysFemale' ? 1 : 0; }
+function cry(g) { try { const a = new Audio('assets/cries/' + (CRY_FILES[g] || 'male') + '.ogg'); a.volume = Math.min(1, 0.9 * SET.sfx); a.play().catch(() => { }); } catch (e) { } }
 
 // ------------------------------------------------------------ input
 const KEYMAP = {
@@ -757,6 +760,8 @@ class Interp {
     { const nb = s.match(/^\$Trainer\.numbadges\s*(>=|>|==)\s*(\d+)$/); if (nb) { const have = badgeCount(), n = +nb[2]; return nb[1] === '>=' ? have >= n : nb[1] === '>' ? have > n : have === n; } }
     { const hs = s.match(/^pbHasSpecies\?\(:(\w+)\)$/); if (hs) return (G.party || []).some(p => p.sym === hs[1]); }
     { const hi = s.match(/^\$PokemonBag\.pbHasItem\?\(:(\w+)\)$/); if (hi) return !!(G.items[hi[1]] > 0); }
+    if (s === 'pbDexComplete') return dexIsComplete();
+    if (s === 'pbDexAwarded') return !!(G.switches && G.switches.dexAward);
     if (s === 'pbLastBattleWon') return G.battleResult === 'win';   // wild battle won or caught
     if (s.includes('pbPokerus')) return false;
     if (s.includes('isMale')) return true;   // the player is Jorge
@@ -844,7 +849,17 @@ class Interp {
     if ((m = s.match(/^\$PokemonBag\.pbDeleteItem\(:(\w+)(?:,\s*(\d+))?\)/))) { G.items[m[1]] = Math.max(0, (G.items[m[1]] || 0) - (m[2] ? +m[2] : 1)); if (!G.items[m[1]]) delete G.items[m[1]]; return; }
     if (s.startsWith('$PokemonBag.pbDeleteItem')) { return; }
     if (s.startsWith('$Trainer.pokedex')) { G.pokedex = true; return; }
-    if (s === 'pbTrainerPC') { yield* showMessage('\\PN booted up the PC.\n(Storage is not in this test build.)'); return; }
+    if (s === 'pbTrainerPC') {   // Jorge's PC at home: Item Storage only (it starts with a Potion in it)
+      playSE('PC_open'); yield* showMessage('\\PN booted up the PC.');
+      while (true) {
+        yield* showMessage('What do you want to do?', { noWait: true });
+        const c = yield* showChoices(['Item Storage', 'Mailbox', 'Turn Off'], 3);
+        if (c === 0) { G.uiGen = pcItemStorage(); yield; }
+        else if (c === 1) yield* showMessage("There's no Mail here.");
+        else break;
+      }
+      playSE('PC_close'); return;
+    }
     if (s === 'pbCaveEntrance' || s === 'pbCaveExit') return;
     if (typeof worldScript === 'function' && (yield* worldScript(this, s))) return;
     console.warn('unhandled script:', s);
@@ -1056,6 +1071,8 @@ function drawTone() {
   if (G.flash && G.flash.left > 0) { ctx.fillStyle = 'rgba(' + G.flash.c.join(',') + ',' + (G.flash.left / G.flash.total).toFixed(3) + ')'; ctx.fillRect(0, 0, SW, SH); }
   const t = G.tone.cur; const dark = Math.max(0, Math.min(1, -Math.min(t[0], t[1], t[2]) / 255));
   if (dark > 0.002) { ctx.fillStyle = 'rgba(0,0,0,' + dark + ')'; ctx.fillRect(0, 0, SW, SH); }
+  const lite = Math.max(0, Math.min(1, Math.min(t[0], t[1], t[2]) / 255));   // white fades (cave entrances use tone 255,255,255)
+  if (lite > 0.002) { ctx.fillStyle = 'rgba(255,255,255,' + lite + ')'; ctx.fillRect(0, 0, SW, SH); }
 }
 function roundRect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
 function drawBox(x, y, w, h) {
