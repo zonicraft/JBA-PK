@@ -445,6 +445,7 @@ const CHEAT_CITIES = [
   ['PALLET TOWN', 2, 12, 8], ['VIRIDIAN CITY', 7, 26, 27], ['PEWTER CITY', 87, 21, 31], ['CERULEAN CITY', 100, 22, 20],
   ['SAFFRON CITY', 234, 24, 40], ['VERMILION CITY', 122, 20, 7], ['CELADON CITY', 171, 48, 16], ['FUCHSIA CITY', 202, 25, 33],
   ['CINNABAR ISLAND', 264, 20, 12],
+  ['INDIGO PLATEAU', 317, 13, 7],
 ];
 function* cheatTeleport() {   // opens the town map; picking a city + confirming sets G.teleReq, and openPause runs the transfer
   yield* townMapScreen({ teleport: true });

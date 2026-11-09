@@ -15,7 +15,7 @@ const CONNS = [[317, 'S', 0, 313, 'N', 4],[2, 'N', 0, 5, 'S', 0], [7, 'S', 6, 5,
   [311, 'N', 73, 201, 'S', 0], [202, 'S', 0, 311, 'N', 102],                                   // Fuchsia / Route 18 down to the sea route
   [310, 'S', 0, 264, 'N', 0], [256, 'W', 0, 264, 'E', 0], [311, 'S', 0, 264, 'N', 36],          // Route 21 / Route 20 / sea route to Cinnabar
   [256, 'N', 0, 310, 'S', 30], [311, 'W', 0, 310, 'E', 60], [311, 'S', 0, 256, 'N', 6],
-  [146, 'W', 0, 100, 'E', 5], [147, 'W', 0, 146, 'E', 0], [164, 'E', 0, 147, 'W', 81], [147, 'S', 0, 151, 'N', 0],   // Cerulean - Route 9 - Route 10 (Route 8 / Lavender are not built yet)
+  [146, 'W', 0, 100, 'E', 5], [147, 'W', 0, 146, 'E', 0], [164, 'E', 0, 147, 'W', 81], [147, 'S', 0, 151, 'N', 0], [350, 'E', 12, 349, 'W', 0], [229, 'W', 0, 122, 'E', 69], [233, 'N', 0, 100, 'S', 100], [229, 'W', 0, 100, 'E', 229], [134, 'W', 119, 227, 'E', 0], [151, 'W', 139, 227, 'E', 0], [228, 'W', 0, 227, 'E', 1], [229, 'E', 0, 227, 'W', 0], [147, 'W', 224, 227, 'E', 0], [230, 'W', 71, 255, 'E', 0], [134, 'W', 0, 233, 'E', 70], [151, 'W', 0, 233, 'E', 50], [228, 'W', 0, 233, 'E', 190], [146, 'S', 52, 233, 'N', 0], [147, 'W', 35, 233, 'E', 0], [164, 'N', 53, 233, 'S', 0], [151, 'S', 0, 134, 'N', 0], [228, 'N', 0, 134, 'S', 0], [338, 'E', 0, 134, 'W', 5], [129, 'E', 0, 134, 'W', 56], [146, 'E', 105, 134, 'W', 0], [164, 'E', 24, 134, 'W', 0], [338, 'E', 0, 151, 'W', 25], [129, 'E', 0, 151, 'W', 76], [146, 'E', 85, 151, 'W', 0], [164, 'E', 4, 151, 'W', 0], [338, 'E', 115, 228, 'W', 0], [129, 'E', 64, 228, 'W', 0], [146, 'E', 225, 228, 'W', 0], [164, 'E', 144, 228, 'W', 0], [129, 'N', 52, 338, 'S', 0], [147, 'W', 110, 338, 'E', 0], [164, 'S', 53, 338, 'N', 0], [230, 'E', 0, 129, 'W', 63], [230, 'E', 0, 146, 'W', 224], [230, 'E', 0, 229, 'W', 0], [230, 'W', 30, 202, 'E', 0], [362, 'S', 17, 361, 'N', 0],   // Cerulean - Route 9 - Route 10 (Route 8 / Lavender are not built yet)
   // Sevii Islands
   [290, 'N', 0, 292, 'S', 0], [297, 'W', 0, 308, 'E', 2], [299, 'N', 0, 308, 'S', 94], [299, 'N', 2, 297, 'S', 0], [37, 'N', 0, 38, 'S', 0], [47, 'W', 0, 45, 'E', 0], [31, 'E', 0, 45, 'W', 0], [37, 'S', 76, 45, 'N', 0], [37, 'S', 100, 47, 'N', 0], [37, 'S', 0, 31, 'N', 0], [57, 'N', 27, 49, 'S', 0], [64, 'S', 54, 49, 'N', 0], [54, 'W', 42, 49, 'E', 0], [64, 'N', 0, 66, 'S', 0], [54, 'W', 0, 66, 'E', 73], [54, 'W', 81, 57, 'E', 0], [54, 'W', 2, 64, 'E', 0], [78, 'E', 18, 88, 'W', 0], [328, 'N', 54, 88, 'S', 0], [78, 'W', 85, 336, 'E', 0], [328, 'N', 0, 336, 'S', 0], [337, 'W', 0, 78, 'E', 0], [328, 'N', 22, 78, 'S', 0], [70, 'S', 0, 78, 'N', 2], [70, 'S', 30, 337, 'N', 0], [70, 'N', 0, 75, 'S', 6], [277, 'E', 0, 276, 'W', 0], [279, 'E', 0, 276, 'W', 140], [274, 'E', 0, 276, 'W', 119], [274, 'N', 7, 277, 'S', 0], [274, 'S', 0, 279, 'N', 2],
   [202, 'S', 12, 255, 'N', 0], [256, 'E', 0, 255, 'W', 40], [311, 'E', 0, 255, 'W', 0]];                           // Fuchsia - Route 19 - Route 20
@@ -171,6 +171,22 @@ function isWaterAt(x, y) {
   for (let z = 0; z < 3; z++) {
     const tid = m.data[lx + ly * m.w + z * m.w * m.h];
     if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return true; }
+  }
+  return false;
+}
+// a walkable bridge plank / platform drawn above water: stepping onto it from the boat means getting off the boat
+function bridgeAt(x, y) {
+  const ww = worldAt(x, y); if (!ww) return false;
+  const m = ww.m, ts = m.ts;
+  for (let z = 0; z < 3; z++) {
+    const tid = m.data[ww.x + ww.y * m.w + z * m.w * m.h];
+    if (tid >= 384 && ts.tags && ts.tags[tid] === 13) return true;   // tileset terrain tag 13 = bridge planks
+  }
+  for (let z = 2; z >= 0; z--) {                                      // otherwise: the top solid-or-not tile decides whether you could walk here on foot
+    const tid = m.data[ww.x + ww.y * m.w + z * m.w * m.h]; if (!tid) continue;
+    const pas = ts.passages[tid] || 0;
+    if (pas & 0x10) continue;
+    return z > 0 && tid >= 384 && (pas & 0x0f) !== 0x0f;
   }
   return false;
 }

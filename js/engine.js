@@ -436,7 +436,7 @@ class EventChr extends Chr {
 const INDOOR_MAPS = [1, 3, 4, 8, 81, 84, 354, 398];
 class PlayerChr extends Chr {
   constructor() { super(); this.isPlayer = true; this.name = 'Player'; this.gfx = 'trchar000'; this.speed = 3; this.running = false; this.walkSheet = 'trchar000'; }
-  onArrive() { if (G.surfing && typeof isWaterAt === 'function' && !isWaterAt(this.x, this.y)) G.surfing = false; if (typeof grassAnim === 'function') grassAnim(this.x, this.y); if (!G.main) checkTouch(this.x, this.y); if (!G.main && !G.battle && typeof checkWild === 'function') checkWild(this.x, this.y); if (typeof repelStep === 'function') repelStep(); }
+  onArrive() { if (G.surfing && typeof isWaterAt === 'function' && (!isWaterAt(this.x, this.y) || (typeof bridgeAt === 'function' && bridgeAt(this.x, this.y)))) G.surfing = false; if (typeof grassAnim === 'function') grassAnim(this.x, this.y); if (!G.main) checkTouch(this.x, this.y); if (!G.main && !G.battle && typeof checkWild === 'function') checkWild(this.x, this.y); if (typeof repelStep === 'function') repelStep(); }
 }
 
 // ------------------------------------------------------------ maps
@@ -931,7 +931,7 @@ function update() {
     if (!anyDir) { p.turnWait = 0; p.bumped = false; }
     if (!moved && pressed('ok') && !(G.lock && G.lock.ok)) checkAction();
   }
-  if (G.surfing && !p.moving && !G.main && !G.battle && !G.trans && typeof isWaterAt === 'function' && !isWaterAt(p.x, p.y)) G.surfing = false;   // stepped ashore
+  if (G.surfing && !p.moving && !G.main && !G.battle && !G.trans && typeof isWaterAt === 'function' && (!isWaterAt(p.x, p.y) || (typeof bridgeAt === 'function' && bridgeAt(p.x, p.y)))) G.surfing = false;   // stepped ashore
   if (G.surfing) p.sheetOverride = 'base_surf';
   else if (G.biking) p.sheetOverride = 'boy_bike';
   else if (p.fishing) { /* keeps the casting sheet */ }
