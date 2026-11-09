@@ -162,7 +162,7 @@ function drawStatus(st, x, y) {
 function sprKey(sp) { return sp.sprite || String(sp.id).padStart(3, '0'); }
 function sprKeyBack(sp) { return sp.sprite ? sp.sprite.replace(/^(\d+)/, '$1b') : String(sp.id).padStart(3, '0') + 'b'; }
 function drawIcon(p, x, y, anim = true, scale = 1) {
-  const sp = D.SP[p.sym]; if (!sp) return; const im = img('icons', 'icon' + sprKey(sp)) || img('icons', 'icon000'); if (!im) return;
+  const sp = D.SP[p.sym]; if (!sp) return; const im = img('battlersicons', 'icon' + sprKey(sp)) || img('battlersicons', 'icon000'); if (!im) return;
   const fw = im.width >= 128 ? im.width / 2 : im.width, fh = im.height;
   const f = anim && im.width >= 128 ? Math.floor(G.frame / 10) % 2 : 0;
   ctx.drawImage(im, f * fw, 0, fw, fh, x + (64 - fw) / 2 * scale, y + (64 - fh) * scale, fw * scale, fh * scale);

@@ -6,7 +6,7 @@
 //  opened or a new game is started in an empty slot (see titleScreen() at the bottom).
 //  Settings are written to localStorage ('jba_settings') through saveSettings(), like the in-game Options.
 // ===================================================================
-const MM_BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['PRIMOGEMS', 980], ['SAPPHIRE']], MM_BADGE_PIPS = 8;
+const MM_BADGE_SWITCHES = [260, 261, 262, 263, 212, 980], MM_BADGE_PIPS = 8;
 const MM_SVG = (d, extra = '') => '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + extra + '</svg>';
 const MM_ICON = {
   play: MM_SVG('<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>'),
@@ -201,7 +201,7 @@ const MM_CSS = `
 `;
 
 function mmEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-function mmBadges(save) { return MM_BADGE_ITEMS.filter(x => (save.items && save.items[x[0]] > 0) || (x[1] && save.switches && save.switches[x[1]])).length; }
+function mmBadges(save) { return MM_BADGE_SWITCHES.filter(k => save.switches && save.switches[k]).length + ((save.items && save.items.SAPPHIRE > 0) ? 1 : 0); }
 
 // reads one slot: { n, empty } | { n, broken } | { n, save }
 function mmSlot(n) {
@@ -318,9 +318,9 @@ class MainMenu {
     scope.querySelectorAll('canvas[data-sym]').forEach(c => {
       if (c.dataset.done) return;
       const sym = c.dataset.sym, sp = D.SP[typeof symOf === 'function' ? symOf(sym) : sym];
-      let im = sp ? img('icons', 'icon' + sprKey(sp)) : null;
+      let im = sp ? img('battlersicons', 'icon' + sprKey(sp)) : null;
       if (sp && !im && tries < 24) { waiting++; return; }
-      if (!im) im = img('icons', 'icon000');
+      if (!im) im = img('battlersicons', 'icon000');
       if (!im) { waiting++; return; }
       const fw = im.width >= 128 ? im.width / 2 : im.width, fh = im.height, k = Math.min(1, 64 / fw, 64 / fh), w = fw * k, h = fh * k, g = c.getContext('2d');
       g.clearRect(0, 0, 64, 64); g.imageSmoothingEnabled = false; g.drawImage(im, 0, 0, fw, fh, (64 - w) / 2, 64 - h, w, h); c.dataset.done = '1';

@@ -7170,7 +7170,7 @@
  "TOHKA2": {
   "internalName": "TOHKA2",
   "dexNumber": 59,
-  "name": "Tohka2",
+  "name": "Tohka",
   "types": [
    "GRASS",
    "STEEL"
@@ -12007,7 +12007,7 @@
  "ABIGAIL2": {
   "internalName": "ABIGAIL2",
   "dexNumber": 99,
-  "name": "Abigail2",
+  "name": "Abigail",
   "types": [
    "GHOST"
   ],
@@ -12243,7 +12243,7 @@
  "ABIGAILSUM2": {
   "internalName": "ABIGAILSUM2",
   "dexNumber": 101,
-  "name": "AbigailSum2",
+  "name": "AbigailSum",
   "types": [
    "WATER"
   ],
@@ -12358,7 +12358,7 @@
  "ABIGAILSUM3": {
   "internalName": "ABIGAILSUM3",
   "dexNumber": 102,
-  "name": "AbigailSum3",
+  "name": "AbigailSum",
   "types": [
    "WATER",
    "GHOST"
@@ -19605,7 +19605,7 @@
  "DAVINCI2": {
   "internalName": "DAVINCI2",
   "dexNumber": 161,
-  "name": "DaVinci2",
+  "name": "DaVinci",
   "types": [
    "ELECTRIC",
    "FIRE"
@@ -22180,7 +22180,7 @@
  "GILGAMESH2": {
   "internalName": "GILGAMESH2",
   "dexNumber": 181,
-  "name": "Gilgamesh2",
+  "name": "Gilgamesh",
   "types": [
    "ROCK",
    "STEEL"
@@ -22295,7 +22295,7 @@
  "GILGAMESH3": {
   "internalName": "GILGAMESH3",
   "dexNumber": 182,
-  "name": "Gilgamesh3",
+  "name": "Gilgamesh",
   "types": [
    "ROCK",
    "STEEL"
@@ -22555,7 +22555,7 @@
  "GILLES2": {
   "internalName": "GILLES2",
   "dexNumber": 184,
-  "name": "Gilles2",
+  "name": "Gilles",
   "types": [
    "DARK",
    "POISON"
@@ -23926,7 +23926,7 @@
  "ILLYA2": {
   "internalName": "ILLYA2",
   "dexNumber": 195,
-  "name": "Illya2",
+  "name": "Illya",
   "types": [
    "PSYCHIC",
    "FAIRY"
@@ -24434,7 +24434,7 @@
   "evo": "",
   "role": "Special Attacker",
   "series": "Fate",
-  "sprite": "296_1",
+  "sprite": "298_1",
   "megaOf": "ISHTAR"
  },
  "ILLYASUM": {
@@ -24555,7 +24555,7 @@
  "ILLYASUM2": {
   "internalName": "ILLYASUM2",
   "dexNumber": 197,
-  "name": "IllyaSum2",
+  "name": "IllyaSum",
   "types": [
    "WATER",
    "FAIRY"
@@ -24917,7 +24917,7 @@
  "IRISVIEL2": {
   "internalName": "IRISVIEL2",
   "dexNumber": 200,
-  "name": "Irisviel2",
+  "name": "Irisviel",
   "types": [
    "FAIRY",
    "ICE"
@@ -26284,7 +26284,7 @@
  "KAMA2": {
   "internalName": "KAMA2",
   "dexNumber": 211,
-  "name": "Kama2",
+  "name": "Kama",
   "types": [
    "FAIRY",
    "PSYCHIC"
@@ -26400,7 +26400,7 @@
  "KAMA3": {
   "internalName": "KAMA3",
   "dexNumber": 212,
-  "name": "Kama3",
+  "name": "Kama",
   "types": [
    "FAIRY",
    "PSYCHIC"
@@ -26922,7 +26922,7 @@
  "KINGPROTEA2": {
   "internalName": "KINGPROTEA2",
   "dexNumber": 216,
-  "name": "KingProtea2",
+  "name": "KingProtea",
   "types": [
    "FIGHTING",
    "GRASS"
@@ -28009,7 +28009,7 @@
  "KYARA2": {
   "internalName": "KYARA2",
   "dexNumber": 225,
-  "name": "Kyara2",
+  "name": "Kyara",
   "types": [
    "DARK",
    "FAIRY"
@@ -28371,7 +28371,7 @@
  "LANCELOT2": {
   "internalName": "LANCELOT2",
   "dexNumber": 228,
-  "name": "Lancelot2",
+  "name": "Lancelot",
   "types": [
    "DARK",
    "STEEL"
@@ -30457,7 +30457,7 @@
  "MEDEA2": {
   "internalName": "MEDEA2",
   "dexNumber": 245,
-  "name": "Medea2",
+  "name": "Medea",
   "types": [
    "POISON",
    "DARK"
@@ -30701,7 +30701,7 @@
  "MEDUSA2": {
   "internalName": "MEDUSA2",
   "dexNumber": 247,
-  "name": "Medusa2",
+  "name": "Medusa",
   "types": [
    "DARK",
    "POISON"
@@ -31681,7 +31681,7 @@
  "MHXX2": {
   "internalName": "MHXX2",
   "dexNumber": 255,
-  "name": "MHXX2",
+  "name": "MHXX",
   "types": [
    "DARK",
    "GHOST"
@@ -31811,7 +31811,7 @@
  "MHXX3": {
   "internalName": "MHXX3",
   "dexNumber": 256,
-  "name": "MHXX3",
+  "name": "MHXX",
   "types": [
    "DARK",
    "GHOST"
@@ -32284,7 +32284,7 @@
  "MIYU2": {
   "internalName": "MIYU2",
   "dexNumber": 260,
-  "name": "Miyu2",
+  "name": "Miyu",
   "types": [
    "FAIRY",
    "PSYCHIC"
@@ -34595,7 +34595,7 @@
  },
  "OKITA": {
   "internalName": "OKITA",
-  "dexNumber": 279,
+  "dexNumber": 281,
   "name": "Okita",
   "types": [
    "NORMAL"
@@ -34710,7 +34710,7 @@
  },
  "OKITAALTER": {
   "internalName": "OKITAALTER",
-  "dexNumber": 280,
+  "dexNumber": 282,
   "name": "OkitaAlter",
   "types": [
    "FIGHTING"
@@ -34825,7 +34825,7 @@
  },
  "OSAKABEHIME": {
   "internalName": "OSAKABEHIME",
-  "dexNumber": 281,
+  "dexNumber": 283,
   "name": "Osakabehime",
   "types": [
    "GHOST"
@@ -34940,7 +34940,7 @@
  },
  "OSAKABEHIMESUM": {
   "internalName": "OSAKABEHIMESUM",
-  "dexNumber": 282,
+  "dexNumber": 284,
   "name": "OsakabehimeSum",
   "types": [
    "WATER",
@@ -35056,7 +35056,7 @@
  },
  "OZYMANDIAS": {
   "internalName": "OZYMANDIAS",
-  "dexNumber": 283,
+  "dexNumber": 285,
   "name": "Ozymandias",
   "types": [
    "ROCK",
@@ -35171,7 +35171,7 @@
  },
  "PARACELSUS": {
   "internalName": "PARACELSUS",
-  "dexNumber": 284,
+  "dexNumber": 286,
   "name": "Paracelsus",
   "types": [
    "POISON"
@@ -35300,7 +35300,7 @@
  },
  "PASSIONLIP": {
   "internalName": "PASSIONLIP",
-  "dexNumber": 285,
+  "dexNumber": 287,
   "name": "Passionlip",
   "types": [
    "ELECTRIC",
@@ -35431,7 +35431,7 @@
  },
  "PAUL": {
   "internalName": "PAUL",
-  "dexNumber": 286,
+  "dexNumber": 288,
   "name": "Paul",
   "types": [
    "GRASS"
@@ -35561,7 +35561,7 @@
  },
  "PENTHESILEA": {
   "internalName": "PENTHESILEA",
-  "dexNumber": 287,
+  "dexNumber": 289,
   "name": "Penthesilea",
   "types": [
    "FIGHTING",
@@ -35691,7 +35691,7 @@
  },
  "QUETZ": {
   "internalName": "QUETZ",
-  "dexNumber": 288,
+  "dexNumber": 290,
   "name": "Quetz",
   "types": [
    "FIRE",
@@ -35806,7 +35806,7 @@
  },
  "RAIKOU": {
   "internalName": "RAIKOU",
-  "dexNumber": 289,
+  "dexNumber": 291,
   "name": "Raikou",
   "types": [
    "GROUND"
@@ -35935,7 +35935,7 @@
  },
  "RAIKOUSUM": {
   "internalName": "RAIKOUSUM",
-  "dexNumber": 290,
+  "dexNumber": 292,
   "name": "RaikouSum",
   "types": [
    "WATER",
@@ -36065,7 +36065,7 @@
  },
  "RAMA": {
   "internalName": "RAMA",
-  "dexNumber": 291,
+  "dexNumber": 293,
   "name": "Rama",
   "types": [
    "FIRE"
@@ -36194,7 +36194,7 @@
  },
  "REDHARE": {
   "internalName": "REDHARE",
-  "dexNumber": 292,
+  "dexNumber": 294,
   "name": "Redhare",
   "types": [
    "FIRE",
@@ -36309,7 +36309,7 @@
  },
  "REINES": {
   "internalName": "REINES",
-  "dexNumber": 293,
+  "dexNumber": 295,
   "name": "Reines",
   "types": [
    "PSYCHIC"
@@ -36423,7 +36423,7 @@
  },
  "RIN": {
   "internalName": "RIN",
-  "dexNumber": 294,
+  "dexNumber": 296,
   "name": "Rin",
   "types": [
    "FIRE"
@@ -36537,7 +36537,7 @@
  },
  "ERESHKIGAL": {
   "internalName": "ERESHKIGAL",
-  "dexNumber": 295,
+  "dexNumber": 297,
   "name": "Ereshkigal",
   "types": [
    "FIRE",
@@ -36667,7 +36667,7 @@
  },
  "ISHTAR": {
   "internalName": "ISHTAR",
-  "dexNumber": 296,
+  "dexNumber": 298,
   "name": "Ishtar",
   "types": [
    "FIRE",
@@ -36783,7 +36783,7 @@
  },
  "ISHTARSUM": {
   "internalName": "ISHTARSUM",
-  "dexNumber": 297,
+  "dexNumber": 299,
   "name": "IshtarSum",
   "types": [
    "WATER",
@@ -36914,7 +36914,7 @@
  },
  "ROBIN": {
   "internalName": "ROBIN",
-  "dexNumber": 298,
+  "dexNumber": 300,
   "name": "Robin",
   "types": [
    "GRASS",
@@ -37030,7 +37030,7 @@
  },
  "ROMULUS": {
   "internalName": "ROMULUS",
-  "dexNumber": 299,
+  "dexNumber": 301,
   "name": "Romulus",
   "types": [
    "FIRE"
@@ -37160,7 +37160,7 @@
  },
  "SAKURA": {
   "internalName": "SAKURA",
-  "dexNumber": 300,
+  "dexNumber": 302,
   "name": "Sakura",
   "types": [
    "DARK"
@@ -37290,8 +37290,8 @@
  },
  "SAKURA2": {
   "internalName": "SAKURA2",
-  "dexNumber": 301,
-  "name": "Sakura2",
+  "dexNumber": 303,
+  "name": "Sakura",
   "types": [
    "DARK",
    "GHOST"
@@ -37421,7 +37421,7 @@
  },
  "PARVATI": {
   "internalName": "PARVATI",
-  "dexNumber": 302,
+  "dexNumber": 304,
   "name": "Parvati",
   "types": [
    "GROUND"
@@ -37551,7 +37551,7 @@
  },
  "SALIERI": {
   "internalName": "SALIERI",
-  "dexNumber": 303,
+  "dexNumber": 305,
   "name": "Salieri",
   "types": [
    "PSYCHIC",
@@ -37682,7 +37682,7 @@
  },
  "SANSON": {
   "internalName": "SANSON",
-  "dexNumber": 304,
+  "dexNumber": 306,
   "name": "Sanson",
   "types": [
    "DARK",
@@ -37813,7 +37813,7 @@
  },
  "SASAKI": {
   "internalName": "SASAKI",
-  "dexNumber": 305,
+  "dexNumber": 307,
   "name": "Sasaki",
   "types": [
    "STEEL",
@@ -37944,7 +37944,7 @@
  },
  "SCATHATCH": {
   "internalName": "SCATHATCH",
-  "dexNumber": 306,
+  "dexNumber": 308,
   "name": "Scathatch",
   "types": [
    "FIGHTING"
@@ -38069,7 +38069,7 @@
  },
  "SCATHATCHSUM": {
   "internalName": "SCATHATCHSUM",
-  "dexNumber": 307,
+  "dexNumber": 309,
   "name": "ScathatchSum",
   "types": [
    "WATER",
@@ -38199,7 +38199,7 @@
  },
  "SCATHATCHBUNNY": {
   "internalName": "SCATHATCHBUNNY",
-  "dexNumber": 308,
+  "dexNumber": 310,
   "name": "ScathatchBunny",
   "types": [
    "FIGHTING",
@@ -38329,7 +38329,7 @@
  },
  "SCHEHERAZADE": {
   "internalName": "SCHEHERAZADE",
-  "dexNumber": 309,
+  "dexNumber": 311,
   "name": "Scheherazade",
   "types": [
    "NORMAL"
@@ -38459,7 +38459,7 @@
  },
  "SEMIRAMIS": {
   "internalName": "SEMIRAMIS",
-  "dexNumber": 310,
+  "dexNumber": 312,
   "name": "Semiramis",
   "types": [
    "POISON"
@@ -38589,7 +38589,7 @@
  },
  "SERENITY": {
   "internalName": "SERENITY",
-  "dexNumber": 311,
+  "dexNumber": 313,
   "name": "Serenity",
   "types": [
    "GHOST",
@@ -38704,7 +38704,7 @@
  },
  "SHAKESPEARE": {
   "internalName": "SHAKESPEARE",
-  "dexNumber": 312,
+  "dexNumber": 314,
   "name": "Shakespeare",
   "types": [
    "PSYCHIC"
@@ -38818,7 +38818,7 @@
  },
  "SHEBA": {
   "internalName": "SHEBA",
-  "dexNumber": 313,
+  "dexNumber": 315,
   "name": "Sheba",
   "types": [
    "FAIRY"
@@ -38943,7 +38943,7 @@
  },
  "SHERLOCK": {
   "internalName": "SHERLOCK",
-  "dexNumber": 314,
+  "dexNumber": 316,
   "name": "Sherlock",
   "types": [
    "PSYCHIC"
@@ -39073,7 +39073,7 @@
  },
  "SHIKI": {
   "internalName": "SHIKI",
-  "dexNumber": 315,
+  "dexNumber": 317,
   "name": "Shiki",
   "types": [
    "NORMAL"
@@ -39188,8 +39188,8 @@
  },
  "SHIKI2": {
   "internalName": "SHIKI2",
-  "dexNumber": 316,
-  "name": "Shiki2",
+  "dexNumber": 318,
+  "name": "Shiki",
   "types": [
    "DARK",
    "NORMAL"
@@ -39319,7 +39319,7 @@
  },
  "SHINJI": {
   "internalName": "SHINJI",
-  "dexNumber": 317,
+  "dexNumber": 319,
   "name": "Shinji",
   "types": [
    "NORMAL",
@@ -39450,7 +39450,7 @@
  },
  "SHIROU": {
   "internalName": "SHIROU",
-  "dexNumber": 318,
+  "dexNumber": 320,
   "name": "Shirou",
   "types": [
    "NORMAL",
@@ -39565,7 +39565,7 @@
  },
  "ANGRA": {
   "internalName": "ANGRA",
-  "dexNumber": 319,
+  "dexNumber": 321,
   "name": "Angra",
   "types": [
    "NORMAL",
@@ -39680,7 +39680,7 @@
  },
  "EMIYA": {
   "internalName": "EMIYA",
-  "dexNumber": 320,
+  "dexNumber": 322,
   "name": "Emiya",
   "types": [
    "STEEL",
@@ -39796,7 +39796,7 @@
  },
  "EMIYAALTER": {
   "internalName": "EMIYAALTER",
-  "dexNumber": 321,
+  "dexNumber": 323,
   "name": "EmiyaAlter",
   "types": [
    "DARK",
@@ -39927,7 +39927,7 @@
  },
  "MURAMASA": {
   "internalName": "MURAMASA",
-  "dexNumber": 322,
+  "dexNumber": 324,
   "name": "Muramasa",
   "types": [
    "STEEL",
@@ -40043,7 +40043,7 @@
  },
  "SHONAGON": {
   "internalName": "SHONAGON",
-  "dexNumber": 323,
+  "dexNumber": 325,
   "name": "Shonagon",
   "types": [
    "NORMAL"
@@ -40158,7 +40158,7 @@
  },
  "SHUTEN": {
   "internalName": "SHUTEN",
-  "dexNumber": 324,
+  "dexNumber": 326,
   "name": "Shuten",
   "types": [
    "POISON"
@@ -40288,7 +40288,7 @@
  },
  "SHUTENCASTER": {
   "internalName": "SHUTENCASTER",
-  "dexNumber": 325,
+  "dexNumber": 327,
   "name": "ShutenCaster",
   "types": [
    "POISON",
@@ -40404,7 +40404,7 @@
  },
  "SIEG": {
   "internalName": "SIEG",
-  "dexNumber": 326,
+  "dexNumber": 328,
   "name": "Sieg",
   "types": [
    "NORMAL",
@@ -40520,7 +40520,7 @@
  },
  "SIEGFRIED": {
   "internalName": "SIEGFRIED",
-  "dexNumber": 327,
+  "dexNumber": 329,
   "name": "Siegfried",
   "types": [
    "STEEL",
@@ -40651,7 +40651,7 @@
  },
  "SIGURD": {
   "internalName": "SIGURD",
-  "dexNumber": 328,
+  "dexNumber": 330,
   "name": "Sigurd",
   "types": [
    "STEEL",
@@ -40782,7 +40782,7 @@
  },
  "SITONAI": {
   "internalName": "SITONAI",
-  "dexNumber": 329,
+  "dexNumber": 331,
   "name": "Sitonai",
   "types": [
    "ICE"
@@ -40911,7 +40911,7 @@
  },
  "SKADI": {
   "internalName": "SKADI",
-  "dexNumber": 330,
+  "dexNumber": 332,
   "name": "Skadi",
   "types": [
    "ICE"
@@ -41040,7 +41040,7 @@
  },
  "SPARTACUS": {
   "internalName": "SPARTACUS",
-  "dexNumber": 331,
+  "dexNumber": 333,
   "name": "Spartacus",
   "types": [
    "FIGHTING"
@@ -41154,7 +41154,7 @@
  },
  "STHENO": {
   "internalName": "STHENO",
-  "dexNumber": 332,
+  "dexNumber": 334,
   "name": "Stheno",
   "types": [
    "FAIRY",
@@ -41284,7 +41284,7 @@
  },
  "SUZUKA": {
   "internalName": "SUZUKA",
-  "dexNumber": 333,
+  "dexNumber": 335,
   "name": "Suzuka",
   "types": [
    "FIRE"
@@ -41413,7 +41413,7 @@
  },
  "TAIGA": {
   "internalName": "TAIGA",
-  "dexNumber": 334,
+  "dexNumber": 336,
   "name": "Taiga",
   "types": [
    "FIGHTING"
@@ -41537,7 +41537,7 @@
  },
  "JAGUAR": {
   "internalName": "JAGUAR",
-  "dexNumber": 335,
+  "dexNumber": 337,
   "name": "Jaguar",
   "types": [
    "FIGHTING"
@@ -41666,7 +41666,7 @@
  },
  "TAIRA": {
   "internalName": "TAIRA",
-  "dexNumber": 336,
+  "dexNumber": 338,
   "name": "Taira",
   "types": [
    "FIRE"
@@ -41780,7 +41780,7 @@
  },
  "TAMAMO": {
   "internalName": "TAMAMO",
-  "dexNumber": 337,
+  "dexNumber": 339,
   "name": "Tamamo",
   "types": [
    "FIRE"
@@ -41904,7 +41904,7 @@
  },
  "TAMAMOCCC": {
   "internalName": "TAMAMOCCC",
-  "dexNumber": 338,
+  "dexNumber": 340,
   "name": "TamamoCCC",
   "types": [
    "FIRE",
@@ -42034,7 +42034,7 @@
  },
  "TAMAMOSUM": {
   "internalName": "TAMAMOSUM",
-  "dexNumber": 339,
+  "dexNumber": 341,
   "name": "TamamoSum",
   "types": [
    "WATER",
@@ -42165,7 +42165,7 @@
  },
  "TAMAMOCAT": {
   "internalName": "TAMAMOCAT",
-  "dexNumber": 340,
+  "dexNumber": 342,
   "name": "TamamoCat",
   "types": [
    "FIGHTING",
@@ -42296,7 +42296,7 @@
  },
  "TEACH": {
   "internalName": "TEACH",
-  "dexNumber": 341,
+  "dexNumber": 343,
   "name": "Teach",
   "types": [
    "WATER"
@@ -42411,7 +42411,7 @@
  },
  "TESLA": {
   "internalName": "TESLA",
-  "dexNumber": 342,
+  "dexNumber": 344,
   "name": "Tesla",
   "types": [
    "ELECTRIC"
@@ -42541,7 +42541,7 @@
  },
  "TIAMAT": {
   "internalName": "TIAMAT",
-  "dexNumber": 343,
+  "dexNumber": 345,
   "name": "Tiamat",
   "types": [
    "DRAGON"
@@ -42670,7 +42670,7 @@
  },
  "TOMOE": {
   "internalName": "TOMOE",
-  "dexNumber": 344,
+  "dexNumber": 346,
   "name": "Tomoe",
   "types": [
    "FIGHTING"
@@ -42784,7 +42784,7 @@
  },
  "TOMOESUM": {
   "internalName": "TOMOESUM",
-  "dexNumber": 345,
+  "dexNumber": 347,
   "name": "TomoeSum",
   "types": [
    "WATER",
@@ -42899,7 +42899,7 @@
  },
  "TRISTAN": {
   "internalName": "TRISTAN",
-  "dexNumber": 346,
+  "dexNumber": 348,
   "name": "Tristan",
   "types": [
    "FLYING",
@@ -43029,7 +43029,7 @@
  },
  "USHIWAKAMARU": {
   "internalName": "USHIWAKAMARU",
-  "dexNumber": 347,
+  "dexNumber": 349,
   "name": "Ushiwakamaru",
   "types": [
    "FIGHTING",
@@ -43159,7 +43159,7 @@
  },
  "USHIWAKAMARUSUM": {
   "internalName": "USHIWAKAMARUSUM",
-  "dexNumber": 348,
+  "dexNumber": 350,
   "name": "UshiwakamaruSum",
   "types": [
    "WATER",
@@ -43289,7 +43289,7 @@
  },
  "UTSUMI": {
   "internalName": "UTSUMI",
-  "dexNumber": 349,
+  "dexNumber": 351,
   "name": "Utsumi",
   "types": [
    "WATER"
@@ -43404,7 +43404,7 @@
  },
  "VITCH": {
   "internalName": "VITCH",
-  "dexNumber": 350,
+  "dexNumber": 352,
   "name": "Vitch",
   "types": [
    "FIRE",
@@ -43529,7 +43529,7 @@
  },
  "VLAD": {
   "internalName": "VLAD",
-  "dexNumber": 351,
+  "dexNumber": 353,
   "name": "Vlad",
   "types": [
    "DARK"
@@ -43643,7 +43643,7 @@
  },
  "VLADEXTRA": {
   "internalName": "VLADEXTRA",
-  "dexNumber": 352,
+  "dexNumber": 354,
   "name": "VladExtra",
   "types": [
    "DARK",
@@ -43758,7 +43758,7 @@
  },
  "WANG": {
   "internalName": "WANG",
-  "dexNumber": 353,
+  "dexNumber": 355,
   "name": "Wang",
   "types": [
    "STEEL",
@@ -43874,7 +43874,7 @@
  },
  "WAVER": {
   "internalName": "WAVER",
-  "dexNumber": 354,
+  "dexNumber": 356,
   "name": "Waver",
   "types": [
    "PSYCHIC"
@@ -43989,7 +43989,7 @@
  },
  "WILLIAM": {
   "internalName": "WILLIAM",
-  "dexNumber": 355,
+  "dexNumber": 357,
   "name": "William",
   "types": [
    "FIRE"
@@ -44103,7 +44103,7 @@
  },
  "WUZETIAN": {
   "internalName": "WUZETIAN",
-  "dexNumber": 356,
+  "dexNumber": 358,
   "name": "WuZetian",
   "types": [
    "POISON",
@@ -44233,7 +44233,7 @@
  },
  "XUANZANG": {
   "internalName": "XUANZANG",
-  "dexNumber": 357,
+  "dexNumber": 359,
   "name": "Xuanzang",
   "types": [
    "PSYCHIC",
@@ -44349,7 +44349,7 @@
  },
  "YANQING": {
   "internalName": "YANQING",
-  "dexNumber": 358,
+  "dexNumber": 360,
   "name": "Yanqing",
   "types": [
    "FIGHTING"
@@ -44463,7 +44463,7 @@
  },
  "MIA": {
   "internalName": "MIA",
-  "dexNumber": 359,
+  "dexNumber": 361,
   "name": "Mia",
   "types": [
    "FIGHTING"
@@ -44593,7 +44593,7 @@
  },
  "MIAHALLOWEEN": {
   "internalName": "MIAHALLOWEEN",
-  "dexNumber": 360,
+  "dexNumber": 362,
   "name": "MiaHalloween",
   "types": [
    "GHOST",
@@ -44718,7 +44718,7 @@
  },
  "SATELLIZER": {
   "internalName": "SATELLIZER",
-  "dexNumber": 361,
+  "dexNumber": 363,
   "name": "Satellizer",
   "types": [
    "ICE",
@@ -44834,7 +44834,7 @@
  },
  "ALPHONSE": {
   "internalName": "ALPHONSE",
-  "dexNumber": 362,
+  "dexNumber": 364,
   "name": "Alphonse",
   "types": [
    "STEEL"
@@ -44959,7 +44959,7 @@
  },
  "EDWARD": {
   "internalName": "EDWARD",
-  "dexNumber": 363,
+  "dexNumber": 365,
   "name": "Edward",
   "types": [
    "STEEL",
@@ -45085,7 +45085,7 @@
  },
  "MUSTANG": {
   "internalName": "MUSTANG",
-  "dexNumber": 364,
+  "dexNumber": 366,
   "name": "Mustang",
   "types": [
    "FIRE"
@@ -45215,7 +45215,7 @@
  },
  "SATANICHIA": {
   "internalName": "SATANICHIA",
-  "dexNumber": 365,
+  "dexNumber": 367,
   "name": "Satanichia",
   "types": [
    "DARK"
@@ -45340,7 +45340,7 @@
  },
  "RORY": {
   "internalName": "RORY",
-  "dexNumber": 366,
+  "dexNumber": 368,
   "name": "Rory",
   "types": [
    "DARK"
@@ -45454,7 +45454,7 @@
  },
  "AETHER": {
   "internalName": "AETHER",
-  "dexNumber": 367,
+  "dexNumber": 369,
   "name": "Aether",
   "types": [
    "NORMAL"
@@ -45583,7 +45583,7 @@
  },
  "ALBEDO": {
   "internalName": "ALBEDO",
-  "dexNumber": 368,
+  "dexNumber": 370,
   "name": "Albedo",
   "types": [
    "ROCK"
@@ -45697,7 +45697,7 @@
  },
  "AMBER": {
   "internalName": "AMBER",
-  "dexNumber": 369,
+  "dexNumber": 371,
   "name": "Amber",
   "types": [
    "FIRE"
@@ -45812,7 +45812,7 @@
  },
  "AYAKA": {
   "internalName": "AYAKA",
-  "dexNumber": 370,
+  "dexNumber": 372,
   "name": "Ayaka",
   "types": [
    "ICE"
@@ -45941,7 +45941,7 @@
  },
  "BARBARA": {
   "internalName": "BARBARA",
-  "dexNumber": 371,
+  "dexNumber": 373,
   "name": "Barbara",
   "types": [
    "WATER"
@@ -46065,7 +46065,7 @@
  },
  "BARBARASUM": {
   "internalName": "BARBARASUM",
-  "dexNumber": 372,
+  "dexNumber": 374,
   "name": "BarbaraSum",
   "types": [
    "WATER"
@@ -46189,7 +46189,7 @@
  },
  "BEIDOU": {
   "internalName": "BEIDOU",
-  "dexNumber": 373,
+  "dexNumber": 375,
   "name": "Beidou",
   "types": [
    "ELECTRIC",
@@ -46319,7 +46319,7 @@
  },
  "BENNETT": {
   "internalName": "BENNETT",
-  "dexNumber": 374,
+  "dexNumber": 376,
   "name": "Bennett",
   "types": [
    "FIRE"
@@ -46443,7 +46443,7 @@
  },
  "CHILDE": {
   "internalName": "CHILDE",
-  "dexNumber": 375,
+  "dexNumber": 377,
   "name": "Childe",
   "types": [
    "WATER"
@@ -46572,7 +46572,7 @@
  },
  "CHONGYUN": {
   "internalName": "CHONGYUN",
-  "dexNumber": 376,
+  "dexNumber": 378,
   "name": "Chongyun",
   "types": [
    "ICE",
@@ -46687,7 +46687,7 @@
  },
  "DILUCGAMING": {
   "internalName": "DILUCGAMING",
-  "dexNumber": 377,
+  "dexNumber": 379,
   "name": "DilucGaming",
   "types": [
    "FIRE",
@@ -46817,7 +46817,7 @@
  },
  "DIONA": {
   "internalName": "DIONA",
-  "dexNumber": 378,
+  "dexNumber": 380,
   "name": "Diona",
   "types": [
    "ICE"
@@ -46931,7 +46931,7 @@
  },
  "EI": {
   "internalName": "EI",
-  "dexNumber": 379,
+  "dexNumber": 381,
   "name": "Ei",
   "types": [
    "ELECTRIC"
@@ -47045,7 +47045,7 @@
  },
  "EULA": {
   "internalName": "EULA",
-  "dexNumber": 380,
+  "dexNumber": 382,
   "name": "Eula",
   "types": [
    "ICE",
@@ -47175,7 +47175,7 @@
  },
  "FISCHL": {
   "internalName": "FISCHL",
-  "dexNumber": 381,
+  "dexNumber": 383,
   "name": "Fischl",
   "types": [
    "ELECTRIC"
@@ -47289,7 +47289,7 @@
  },
  "GANYU": {
   "internalName": "GANYU",
-  "dexNumber": 382,
+  "dexNumber": 384,
   "name": "Ganyu",
   "types": [
    "ICE"
@@ -47403,7 +47403,7 @@
  },
  "HUTAO": {
   "internalName": "HUTAO",
-  "dexNumber": 383,
+  "dexNumber": 385,
   "name": "HuTao",
   "types": [
    "FIRE"
@@ -47527,7 +47527,7 @@
  },
  "JEAN": {
   "internalName": "JEAN",
-  "dexNumber": 384,
+  "dexNumber": 386,
   "name": "Jean",
   "types": [
    "FLYING"
@@ -47656,7 +47656,7 @@
  },
  "JEANSUM": {
   "internalName": "JEANSUM",
-  "dexNumber": 385,
+  "dexNumber": 387,
   "name": "JeanSum",
   "types": [
    "WATER",
@@ -47786,7 +47786,7 @@
  },
  "KAEYA": {
   "internalName": "KAEYA",
-  "dexNumber": 386,
+  "dexNumber": 388,
   "name": "Kaeya",
   "types": [
    "ICE"
@@ -47900,7 +47900,7 @@
  },
  "KAZUHA": {
   "internalName": "KAZUHA",
-  "dexNumber": 387,
+  "dexNumber": 389,
   "name": "Kazuha",
   "types": [
    "FLYING"
@@ -48024,7 +48024,7 @@
  },
  "KEQING": {
   "internalName": "KEQING",
-  "dexNumber": 388,
+  "dexNumber": 390,
   "name": "Keqing",
   "types": [
    "ELECTRIC"
@@ -48138,7 +48138,7 @@
  },
  "KLEE": {
   "internalName": "KLEE",
-  "dexNumber": 389,
+  "dexNumber": 391,
   "name": "Klee",
   "types": [
    "FIRE",
@@ -48268,7 +48268,7 @@
  },
  "KOKOMI": {
   "internalName": "KOKOMI",
-  "dexNumber": 390,
+  "dexNumber": 392,
   "name": "Kokomi",
   "types": [
    "WATER"
@@ -48397,7 +48397,7 @@
  },
  "LISA": {
   "internalName": "LISA",
-  "dexNumber": 391,
+  "dexNumber": 393,
   "name": "Lisa",
   "types": [
    "ELECTRIC"
@@ -48511,7 +48511,7 @@
  },
  "LUMINE": {
   "internalName": "LUMINE",
-  "dexNumber": 392,
+  "dexNumber": 394,
   "name": "Lumine",
   "types": [
    "NORMAL"
@@ -48640,7 +48640,7 @@
  },
  "MONA": {
   "internalName": "MONA",
-  "dexNumber": 393,
+  "dexNumber": 395,
   "name": "Mona",
   "types": [
    "WATER"
@@ -48769,7 +48769,7 @@
  },
  "NINGGUANG": {
   "internalName": "NINGGUANG",
-  "dexNumber": 394,
+  "dexNumber": 396,
   "name": "Ningguang",
   "types": [
    "ROCK"
@@ -48898,7 +48898,7 @@
  },
  "NOELLE": {
   "internalName": "NOELLE",
-  "dexNumber": 395,
+  "dexNumber": 397,
   "name": "Noelle",
   "types": [
    "ROCK"
@@ -49012,7 +49012,7 @@
  },
  "PAIMON": {
   "internalName": "PAIMON",
-  "dexNumber": 396,
+  "dexNumber": 398,
   "name": "Paimon",
   "types": [
    "FAIRY"
@@ -49126,7 +49126,7 @@
  },
  "QIQI": {
   "internalName": "QIQI",
-  "dexNumber": 397,
+  "dexNumber": 399,
   "name": "Qiqi",
   "types": [
    "GHOST",
@@ -49256,7 +49256,7 @@
  },
  "RAZOR": {
   "internalName": "RAZOR",
-  "dexNumber": 398,
+  "dexNumber": 400,
   "name": "Razor",
   "types": [
    "FIGHTING"
@@ -49385,7 +49385,7 @@
  },
  "ROSARIA": {
   "internalName": "ROSARIA",
-  "dexNumber": 399,
+  "dexNumber": 401,
   "name": "Rosaria",
   "types": [
    "ICE"
@@ -49500,7 +49500,7 @@
  },
  "SARA": {
   "internalName": "SARA",
-  "dexNumber": 400,
+  "dexNumber": 402,
   "name": "Sara",
   "types": [
    "FLYING",
@@ -49616,7 +49616,7 @@
  },
  "SAYU": {
   "internalName": "SAYU",
-  "dexNumber": 401,
+  "dexNumber": 403,
   "name": "Sayu",
   "types": [
    "FLYING",
@@ -49731,7 +49731,7 @@
  },
  "SUCROSE": {
   "internalName": "SUCROSE",
-  "dexNumber": 402,
+  "dexNumber": 404,
   "name": "Sucrose",
   "types": [
    "FLYING",
@@ -49856,7 +49856,7 @@
  },
  "VENTI": {
   "internalName": "VENTI",
-  "dexNumber": 403,
+  "dexNumber": 405,
   "name": "Venti",
   "types": [
    "FLYING"
@@ -49986,7 +49986,7 @@
  },
  "XIANGLING": {
   "internalName": "XIANGLING",
-  "dexNumber": 404,
+  "dexNumber": 406,
   "name": "Xiangling",
   "types": [
    "FIRE"
@@ -50116,7 +50116,7 @@
  },
  "XIAO": {
   "internalName": "XIAO",
-  "dexNumber": 405,
+  "dexNumber": 407,
   "name": "Xiao",
   "types": [
    "FLYING",
@@ -50247,7 +50247,7 @@
  },
  "XINGQIU": {
   "internalName": "XINGQIU",
-  "dexNumber": 406,
+  "dexNumber": 408,
   "name": "Xingqiu",
   "types": [
    "WATER"
@@ -50367,7 +50367,7 @@
  },
  "XINYAN": {
   "internalName": "XINYAN",
-  "dexNumber": 407,
+  "dexNumber": 409,
   "name": "Xinyan",
   "types": [
    "FIRE",
@@ -50498,7 +50498,7 @@
  },
  "YANFEI": {
   "internalName": "YANFEI",
-  "dexNumber": 408,
+  "dexNumber": 410,
   "name": "Yanfei",
   "types": [
    "FIRE"
@@ -50627,7 +50627,7 @@
  },
  "YOIMIYA": {
   "internalName": "YOIMIYA",
-  "dexNumber": 409,
+  "dexNumber": 411,
   "name": "Yoimiya",
   "types": [
    "FIRE"
@@ -50756,7 +50756,7 @@
  },
  "ZHONGLI": {
   "internalName": "ZHONGLI",
-  "dexNumber": 410,
+  "dexNumber": 412,
   "name": "Zhongli",
   "types": [
    "ROCK"
@@ -50885,7 +50885,7 @@
  },
  "GOBLINSLAYER": {
   "internalName": "GOBLINSLAYER",
-  "dexNumber": 411,
+  "dexNumber": 413,
   "name": "GoblinSlayer",
   "types": [
    "STEEL"
@@ -51014,7 +51014,7 @@
  },
  "CHINO": {
   "internalName": "CHINO",
-  "dexNumber": 412,
+  "dexNumber": 414,
   "name": "Chino",
   "types": [
    "ICE"
@@ -51143,7 +51143,7 @@
  },
  "KAGA": {
   "internalName": "KAGA",
-  "dexNumber": 413,
+  "dexNumber": 415,
   "name": "Kaga",
   "types": [
    "WATER",
@@ -51273,7 +51273,7 @@
  },
  "MAKINA": {
   "internalName": "MAKINA",
-  "dexNumber": 414,
+  "dexNumber": 416,
   "name": "Makina",
   "types": [
    "STEEL"
@@ -51402,7 +51402,7 @@
  },
  "MICHIRU": {
   "internalName": "MICHIRU",
-  "dexNumber": 415,
+  "dexNumber": 417,
   "name": "Michiru",
   "types": [
    "PSYCHIC",
@@ -51532,7 +51532,7 @@
  },
  "YUUJI": {
   "internalName": "YUUJI",
-  "dexNumber": 416,
+  "dexNumber": 418,
   "name": "Yuuji",
   "types": [
    "FIGHTING",
@@ -51662,7 +51662,7 @@
  },
  "INORI": {
   "internalName": "INORI",
-  "dexNumber": 417,
+  "dexNumber": 419,
   "name": "Inori",
   "types": [
    "PSYCHIC"
@@ -51777,7 +51777,7 @@
  },
  "TSUGUMI": {
   "internalName": "TSUGUMI",
-  "dexNumber": 418,
+  "dexNumber": 420,
   "name": "Tsugumi",
   "types": [
    "STEEL",
@@ -51907,7 +51907,7 @@
  },
  "HACKADOLL1": {
   "internalName": "HACKADOLL1",
-  "dexNumber": 419,
+  "dexNumber": 421,
   "name": "HackaDoll#1",
   "types": [
    "ELECTRIC",
@@ -52037,7 +52037,7 @@
  },
  "HACKADOLL2": {
   "internalName": "HACKADOLL2",
-  "dexNumber": 420,
+  "dexNumber": 422,
   "name": "HackaDoll#2",
   "types": [
    "STEEL",
@@ -52152,7 +52152,7 @@
  },
  "HACKADOLL3": {
   "internalName": "HACKADOLL3",
-  "dexNumber": 421,
+  "dexNumber": 423,
   "name": "HackaDoll#3",
   "types": [
    "ICE",
@@ -52282,7 +52282,7 @@
  },
  "SHIZUNE": {
   "internalName": "SHIZUNE",
-  "dexNumber": 422,
+  "dexNumber": 424,
   "name": "Shizune",
   "types": [
    "NORMAL"
@@ -52397,7 +52397,7 @@
  },
  "YUKANA": {
   "internalName": "YUKANA",
-  "dexNumber": 423,
+  "dexNumber": 425,
   "name": "Yukana",
   "types": [
    "FAIRY"
@@ -52527,7 +52527,7 @@
  },
  "SATOU": {
   "internalName": "SATOU",
-  "dexNumber": 424,
+  "dexNumber": 426,
   "name": "Satou",
   "types": [
    "ICE",
@@ -52643,7 +52643,7 @@
  },
  "SHIO": {
   "internalName": "SHIO",
-  "dexNumber": 425,
+  "dexNumber": 427,
   "name": "Shio",
   "types": [
    "BUG"
@@ -52758,7 +52758,7 @@
  },
  "ALUCARD": {
   "internalName": "ALUCARD",
-  "dexNumber": 426,
+  "dexNumber": 428,
   "name": "Alucard",
   "types": [
    "DARK"
@@ -52883,7 +52883,7 @@
  },
  "SENKOSAN": {
   "internalName": "SENKOSAN",
-  "dexNumber": 427,
+  "dexNumber": 429,
   "name": "Senko-san",
   "types": [
    "FAIRY",
@@ -53014,7 +53014,7 @@
  },
  "SHIROFOX": {
   "internalName": "SHIROFOX",
-  "dexNumber": 428,
+  "dexNumber": 430,
   "name": "ShiroFox",
   "types": [
    "ICE",
@@ -53140,7 +53140,7 @@
  },
  "AZUSA": {
   "internalName": "AZUSA",
-  "dexNumber": 429,
+  "dexNumber": 431,
   "name": "Azusa",
   "types": [
    "NORMAL"
@@ -53254,7 +53254,7 @@
  },
  "TSUKIKO": {
   "internalName": "TSUKIKO",
-  "dexNumber": 430,
+  "dexNumber": 432,
   "name": "Tsukiko",
   "types": [
    "GHOST"
@@ -53384,7 +53384,7 @@
  },
  "AKENO": {
   "internalName": "AKENO",
-  "dexNumber": 431,
+  "dexNumber": 433,
   "name": "Akeno",
   "types": [
    "ELECTRIC",
@@ -53500,7 +53500,7 @@
  },
  "KONEKO": {
   "internalName": "KONEKO",
-  "dexNumber": 432,
+  "dexNumber": 434,
   "name": "Koneko",
   "types": [
    "FIGHTING",
@@ -53626,7 +53626,7 @@
  },
  "RIAS": {
   "internalName": "RIAS",
-  "dexNumber": 433,
+  "dexNumber": 435,
   "name": "Rias",
   "types": [
    "FIRE",
@@ -53741,7 +53741,7 @@
  },
  "XENOVIA": {
   "internalName": "XENOVIA",
-  "dexNumber": 434,
+  "dexNumber": 436,
   "name": "Xenovia",
   "types": [
    "STEEL",
@@ -53867,7 +53867,7 @@
  },
  "BOCCHI": {
   "internalName": "BOCCHI",
-  "dexNumber": 435,
+  "dexNumber": 437,
   "name": "Bocchi",
   "types": [
    "NORMAL"
@@ -53982,7 +53982,7 @@
  },
  "CLAIRE": {
   "internalName": "CLAIRE",
-  "dexNumber": 436,
+  "dexNumber": 438,
   "name": "Claire",
   "types": [
    "FIRE"
@@ -54112,7 +54112,7 @@
  },
  "GON": {
   "internalName": "GON",
-  "dexNumber": 437,
+  "dexNumber": 439,
   "name": "Gon",
   "types": [
    "FIGHTING"
@@ -54242,7 +54242,7 @@
  },
  "HISOKA": {
   "internalName": "HISOKA",
-  "dexNumber": 438,
+  "dexNumber": 440,
   "name": "Hisoka",
   "types": [
    "PSYCHIC",
@@ -54358,7 +54358,7 @@
  },
  "ILLUMI": {
   "internalName": "ILLUMI",
-  "dexNumber": 439,
+  "dexNumber": 441,
   "name": "Illumi",
   "types": [
    "DARK",
@@ -54489,7 +54489,7 @@
  },
  "KILLUA": {
   "internalName": "KILLUA",
-  "dexNumber": 440,
+  "dexNumber": 442,
   "name": "Killua",
   "types": [
    "ELECTRIC",
@@ -54620,7 +54620,7 @@
  },
  "KURAPIKA": {
   "internalName": "KURAPIKA",
-  "dexNumber": 441,
+  "dexNumber": 443,
   "name": "Kurapika",
   "types": [
    "STEEL"
@@ -54735,7 +54735,7 @@
  },
  "NAYUTA": {
   "internalName": "NAYUTA",
-  "dexNumber": 442,
+  "dexNumber": 444,
   "name": "Nayuta",
   "types": [
    "FAIRY"
@@ -54849,7 +54849,7 @@
  },
  "TACHIBANA": {
   "internalName": "TACHIBANA",
-  "dexNumber": 443,
+  "dexNumber": 445,
   "name": "Tachibana",
   "types": [
    "NORMAL",
@@ -54979,7 +54979,7 @@
  },
  "NEMESIS": {
   "internalName": "NEMESIS",
-  "dexNumber": 444,
+  "dexNumber": 446,
   "name": "Nemesis",
   "types": [
    "STEEL",
@@ -55109,7 +55109,7 @@
  },
  "CRIMVAEL": {
   "internalName": "CRIMVAEL",
-  "dexNumber": 445,
+  "dexNumber": 447,
   "name": "Crimvael",
   "types": [
    "FAIRY"
@@ -55238,7 +55238,7 @@
  },
  "MAPLESHIELD": {
   "internalName": "MAPLESHIELD",
-  "dexNumber": 446,
+  "dexNumber": 448,
   "name": "MapleShield",
   "types": [
    "STEEL"
@@ -55368,7 +55368,7 @@
  },
  "AIENMA": {
   "internalName": "AIENMA",
-  "dexNumber": 447,
+  "dexNumber": 449,
   "name": "AiEnma",
   "types": [
    "GHOST"
@@ -55498,7 +55498,7 @@
  },
  "AVDOL": {
   "internalName": "AVDOL",
-  "dexNumber": 448,
+  "dexNumber": 450,
   "name": "Avdol",
   "types": [
    "FIRE"
@@ -55618,7 +55618,7 @@
  },
  "BUCCIARATI": {
   "internalName": "BUCCIARATI",
-  "dexNumber": 449,
+  "dexNumber": 451,
   "name": "Bucciarati",
   "types": [
    "STEEL",
@@ -55748,7 +55748,7 @@
  },
  "DIAVOLO": {
   "internalName": "DIAVOLO",
-  "dexNumber": 450,
+  "dexNumber": 452,
   "name": "Diavolo",
   "types": [
    "GHOST"
@@ -55877,7 +55877,7 @@
  },
  "DIOBRANDO": {
   "internalName": "DIOBRANDO",
-  "dexNumber": 451,
+  "dexNumber": 453,
   "name": "DioBrando",
   "types": [
    "DARK"
@@ -56002,7 +56002,7 @@
  },
  "GIORNO": {
   "internalName": "GIORNO",
-  "dexNumber": 452,
+  "dexNumber": 454,
   "name": "Giorno",
   "types": [
    "GRASS"
@@ -56122,7 +56122,7 @@
  },
  "JOSEPH": {
   "internalName": "JOSEPH",
-  "dexNumber": 453,
+  "dexNumber": 455,
   "name": "Joseph",
   "types": [
    "BUG",
@@ -56253,7 +56253,7 @@
  },
  "JOSEPH2": {
   "internalName": "JOSEPH2",
-  "dexNumber": 454,
+  "dexNumber": 456,
   "name": "Joseph2",
   "types": [
    "BUG",
@@ -56369,7 +56369,7 @@
  },
  "JOTARO": {
   "internalName": "JOTARO",
-  "dexNumber": 455,
+  "dexNumber": 457,
   "name": "Jotaro",
   "types": [
    "FIGHTING",
@@ -56494,7 +56494,7 @@
  },
  "KAKYOIN": {
   "internalName": "KAKYOIN",
-  "dexNumber": 456,
+  "dexNumber": 458,
   "name": "Kakyoin",
   "types": [
    "ROCK"
@@ -56609,7 +56609,7 @@
  },
  "POLNAREFF": {
   "internalName": "POLNAREFF",
-  "dexNumber": 457,
+  "dexNumber": 459,
   "name": "Polnareff",
   "types": [
    "STEEL",
@@ -56725,7 +56725,7 @@
  },
  "ISANA": {
   "internalName": "ISANA",
-  "dexNumber": 458,
+  "dexNumber": 460,
   "name": "Isana",
   "types": [
    "NORMAL"
@@ -56840,7 +56840,7 @@
  },
  "NEKO": {
   "internalName": "NEKO",
-  "dexNumber": 459,
+  "dexNumber": 461,
   "name": "Neko",
   "types": [
    "NORMAL"
@@ -56954,7 +56954,7 @@
  },
  "CHIKA": {
   "internalName": "CHIKA",
-  "dexNumber": 460,
+  "dexNumber": 462,
   "name": "Chika",
   "types": [
    "NORMAL",
@@ -57069,7 +57069,7 @@
  },
  "IINO": {
   "internalName": "IINO",
-  "dexNumber": 461,
+  "dexNumber": 463,
   "name": "Iino",
   "types": [
    "NORMAL"
@@ -57198,7 +57198,7 @@
  },
  "KAGUYASAMA": {
   "internalName": "KAGUYASAMA",
-  "dexNumber": 462,
+  "dexNumber": 464,
   "name": "Kaguya-sama",
   "types": [
    "PSYCHIC"
@@ -57328,7 +57328,7 @@
  },
  "KIRARI": {
   "internalName": "KIRARI",
-  "dexNumber": 463,
+  "dexNumber": 465,
   "name": "Kirari",
   "types": [
    "DARK",
@@ -57444,7 +57444,7 @@
  },
  "MARYKAKE": {
   "internalName": "MARYKAKE",
-  "dexNumber": 464,
+  "dexNumber": 466,
   "name": "MaryKake",
   "types": [
    "NORMAL"
@@ -57574,7 +57574,7 @@
  },
  "YUMEKO": {
   "internalName": "YUMEKO",
-  "dexNumber": 465,
+  "dexNumber": 467,
   "name": "Yumeko",
   "types": [
    "DARK"
@@ -57689,7 +57689,7 @@
  },
  "CHIZURU": {
   "internalName": "CHIZURU",
-  "dexNumber": 466,
+  "dexNumber": 468,
   "name": "Chizuru",
   "types": [
    "FIRE"
@@ -57818,7 +57818,7 @@
  },
  "NOZOMU": {
   "internalName": "NOZOMU",
-  "dexNumber": 467,
+  "dexNumber": 469,
   "name": "Nozomu",
   "types": [
    "ICE"
@@ -57932,7 +57932,7 @@
  },
  "TAKAGI": {
   "internalName": "TAKAGI",
-  "dexNumber": 468,
+  "dexNumber": 470,
   "name": "Takagi",
   "types": [
    "NORMAL"
@@ -58047,7 +58047,7 @@
  },
  "SHICHIKA": {
   "internalName": "SHICHIKA",
-  "dexNumber": 469,
+  "dexNumber": 471,
   "name": "Shichika",
   "types": [
    "FIGHTING",
@@ -58178,7 +58178,7 @@
  },
  "TOGAME": {
   "internalName": "TOGAME",
-  "dexNumber": 470,
+  "dexNumber": 472,
   "name": "Togame",
   "types": [
    "NORMAL"
@@ -58302,7 +58302,7 @@
  },
  "KAZANE": {
   "internalName": "KAZANE",
-  "dexNumber": 471,
+  "dexNumber": 473,
   "name": "Kazane",
   "types": [
    "WATER"
@@ -58416,7 +58416,7 @@
  },
  "NON": {
   "internalName": "NON",
-  "dexNumber": 472,
+  "dexNumber": 474,
   "name": "Non",
   "types": [
    "NORMAL",
@@ -58547,7 +58547,7 @@
  },
  "NOZOMIKEIJO": {
   "internalName": "NOZOMIKEIJO",
-  "dexNumber": 473,
+  "dexNumber": 475,
   "name": "NozomiKeijo",
   "types": [
    "FLYING",
@@ -58678,7 +58678,7 @@
  },
  "SAYAKA": {
   "internalName": "SAYAKA",
-  "dexNumber": 474,
+  "dexNumber": 476,
   "name": "Sayaka",
   "types": [
    "ELECTRIC",
@@ -58794,7 +58794,7 @@
  },
  "CHAIN": {
   "internalName": "CHAIN",
-  "dexNumber": 475,
+  "dexNumber": 477,
   "name": "Chain",
   "types": [
    "GHOST",
@@ -58924,7 +58924,7 @@
  },
  "LEONARDOWATCH": {
   "internalName": "LEONARDOWATCH",
-  "dexNumber": 476,
+  "dexNumber": 478,
   "name": "LeonardoWatch",
   "types": [
    "PSYCHIC"
@@ -59054,7 +59054,7 @@
  },
  "MARY": {
   "internalName": "MARY",
-  "dexNumber": 477,
+  "dexNumber": 479,
   "name": "Mary",
   "types": [
    "FAIRY"
@@ -59168,7 +59168,7 @@
  },
  "WILLIAMKEKKAI": {
   "internalName": "WILLIAMKEKKAI",
-  "dexNumber": 478,
+  "dexNumber": 480,
   "name": "WilliamKekkai",
   "types": [
    "FIRE"
@@ -59282,7 +59282,7 @@
  },
  "ZAPP": {
   "internalName": "ZAPP",
-  "dexNumber": 479,
+  "dexNumber": 481,
   "name": "Zapp",
   "types": [
    "FIGHTING"
@@ -59396,7 +59396,7 @@
  },
  "AKOKISS": {
   "internalName": "AKOKISS",
-  "dexNumber": 480,
+  "dexNumber": 482,
   "name": "AkoKiss",
   "types": [
    "NORMAL"
@@ -59510,7 +59510,7 @@
  },
  "RIKOKISS": {
   "internalName": "RIKOKISS",
-  "dexNumber": 481,
+  "dexNumber": 483,
   "name": "RikoKiss",
   "types": [
    "NORMAL"
@@ -59624,7 +59624,7 @@
  },
  "AQUA": {
   "internalName": "AQUA",
-  "dexNumber": 482,
+  "dexNumber": 484,
   "name": "Aqua",
   "types": [
    "WATER",
@@ -59744,7 +59744,7 @@
  },
  "KAZUMA": {
   "internalName": "KAZUMA",
-  "dexNumber": 483,
+  "dexNumber": 485,
   "name": "Kazuma",
   "types": [
    "NORMAL"
@@ -59873,7 +59873,7 @@
  },
  "KOMEKKO": {
   "internalName": "KOMEKKO",
-  "dexNumber": 484,
+  "dexNumber": 486,
   "name": "Komekko",
   "types": [
    "PSYCHIC",
@@ -60003,7 +60003,7 @@
  },
  "LALATINA": {
   "internalName": "LALATINA",
-  "dexNumber": 485,
+  "dexNumber": 487,
   "name": "Lalatina",
   "types": [
    "STEEL"
@@ -60127,7 +60127,7 @@
  },
  "MEGUMIN": {
   "internalName": "MEGUMIN",
-  "dexNumber": 486,
+  "dexNumber": 488,
   "name": "Megumin",
   "types": [
    "FIRE"
@@ -60246,7 +60246,7 @@
  },
  "WIZ": {
   "internalName": "WIZ",
-  "dexNumber": 487,
+  "dexNumber": 489,
   "name": "Wiz",
   "types": [
    "ICE",
@@ -60371,7 +60371,7 @@
  },
  "YUNYUN": {
   "internalName": "YUNYUN",
-  "dexNumber": 488,
+  "dexNumber": 490,
   "name": "Yunyun",
   "types": [
    "PSYCHIC",
@@ -60486,7 +60486,7 @@
  },
  "EUCLIWOOD": {
   "internalName": "EUCLIWOOD",
-  "dexNumber": 489,
+  "dexNumber": 491,
   "name": "Eucliwood",
   "types": [
    "GHOST",
@@ -60616,7 +60616,7 @@
  },
  "KOTOURASAN": {
   "internalName": "KOTOURASAN",
-  "dexNumber": 490,
+  "dexNumber": 492,
   "name": "Kotoura-san",
   "types": [
    "PSYCHIC"
@@ -60730,7 +60730,7 @@
  },
  "IKOMA": {
   "internalName": "IKOMA",
-  "dexNumber": 491,
+  "dexNumber": 493,
   "name": "Ikoma",
   "types": [
    "STEEL"
@@ -60859,7 +60859,7 @@
  },
  "MUMEI": {
   "internalName": "MUMEI",
-  "dexNumber": 492,
+  "dexNumber": 494,
   "name": "Mumei",
   "types": [
    "STEEL",
@@ -60974,7 +60974,7 @@
  },
  "DAIKI": {
   "internalName": "DAIKI",
-  "dexNumber": 493,
+  "dexNumber": 495,
   "name": "Daiki",
   "types": [
    "DARK"
@@ -61088,7 +61088,7 @@
  },
  "MOMOI": {
   "internalName": "MOMOI",
-  "dexNumber": 494,
+  "dexNumber": 496,
   "name": "Momoi",
   "types": [
    "NORMAL"
@@ -61202,7 +61202,7 @@
  },
  "RIKO": {
   "internalName": "RIKO",
-  "dexNumber": 495,
+  "dexNumber": 497,
   "name": "Riko",
   "types": [
    "NORMAL"
@@ -61316,7 +61316,7 @@
  },
  "RYOUTA": {
   "internalName": "RYOUTA",
-  "dexNumber": 496,
+  "dexNumber": 498,
   "name": "Ryouta",
   "types": [
    "FIGHTING",
@@ -61446,7 +61446,7 @@
  },
  "TETSUYA": {
   "internalName": "TETSUYA",
-  "dexNumber": 497,
+  "dexNumber": 499,
   "name": "Tetsuya",
   "types": [
    "GHOST",
@@ -61571,7 +61571,7 @@
  },
  "KENGO": {
   "internalName": "KENGO",
-  "dexNumber": 498,
+  "dexNumber": 500,
   "name": "Kengo",
   "types": [
    "FIGHTING",
@@ -61686,7 +61686,7 @@
  },
  "KYOUSUKE": {
   "internalName": "KYOUSUKE",
-  "dexNumber": 499,
+  "dexNumber": 501,
   "name": "Kyousuke",
   "types": [
    "NORMAL"
@@ -61815,7 +61815,7 @@
  },
  "MASATO": {
   "internalName": "MASATO",
-  "dexNumber": 500,
+  "dexNumber": 502,
   "name": "Masato",
   "types": [
    "FIGHTING",
@@ -61945,7 +61945,7 @@
  },
  "MIOLITTLE": {
   "internalName": "MIOLITTLE",
-  "dexNumber": 501,
+  "dexNumber": 503,
   "name": "MioLittle",
   "types": [
    "NORMAL"
@@ -62059,7 +62059,7 @@
  },
  "RIKI": {
   "internalName": "RIKI",
-  "dexNumber": 502,
+  "dexNumber": 504,
   "name": "Riki",
   "types": [
    "NORMAL"
@@ -62183,7 +62183,7 @@
  },
  "SASAMI": {
   "internalName": "SASAMI",
-  "dexNumber": 503,
+  "dexNumber": 505,
   "name": "Sasami",
   "types": [
    "NORMAL",
@@ -62298,7 +62298,7 @@
  },
  "AKATSUKI": {
   "internalName": "AKATSUKI",
-  "dexNumber": 504,
+  "dexNumber": 506,
   "name": "Akatsuki",
   "types": [
    "DARK"
@@ -62413,7 +62413,7 @@
  },
  "ELI": {
   "internalName": "ELI",
-  "dexNumber": 505,
+  "dexNumber": 507,
   "name": "Eli",
   "types": [
    "ICE"
@@ -62543,7 +62543,7 @@
  },
  "HANAYO": {
   "internalName": "HANAYO",
-  "dexNumber": 506,
+  "dexNumber": 508,
   "name": "Hanayo",
   "types": [
    "BUG"
@@ -62673,7 +62673,7 @@
  },
  "HONOKA": {
   "internalName": "HONOKA",
-  "dexNumber": 507,
+  "dexNumber": 509,
   "name": "Honoka",
   "types": [
    "FIRE"
@@ -62788,7 +62788,7 @@
  },
  "KOTOMI": {
   "internalName": "KOTOMI",
-  "dexNumber": 508,
+  "dexNumber": 510,
   "name": "Kotomi",
   "types": [
    "GROUND"
@@ -62903,7 +62903,7 @@
  },
  "MAKI": {
   "internalName": "MAKI",
-  "dexNumber": 509,
+  "dexNumber": 511,
   "name": "Maki",
   "types": [
    "FIRE"
@@ -63033,7 +63033,7 @@
  },
  "NICO": {
   "internalName": "NICO",
-  "dexNumber": 510,
+  "dexNumber": 512,
   "name": "Nico",
   "types": [
    "FAIRY"
@@ -63163,7 +63163,7 @@
  },
  "NOZOMI": {
   "internalName": "NOZOMI",
-  "dexNumber": 511,
+  "dexNumber": 513,
   "name": "Nozomi",
   "types": [
    "PSYCHIC"
@@ -63277,7 +63277,7 @@
  },
  "RINLOVE": {
   "internalName": "RINLOVE",
-  "dexNumber": 512,
+  "dexNumber": 514,
   "name": "RinLove",
   "types": [
    "ROCK"
@@ -63391,7 +63391,7 @@
  },
  "UMI": {
   "internalName": "UMI",
-  "dexNumber": 513,
+  "dexNumber": 515,
   "name": "Umi",
   "types": [
    "WATER"
@@ -63505,7 +63505,7 @@
  },
  "AKIRALUCKY": {
   "internalName": "AKIRALUCKY",
-  "dexNumber": 514,
+  "dexNumber": 516,
   "name": "AkiraLucky",
   "types": [
    "NORMAL"
@@ -63619,7 +63619,7 @@
  },
  "KAGAMI": {
   "internalName": "KAGAMI",
-  "dexNumber": 515,
+  "dexNumber": 517,
   "name": "Kagami",
   "types": [
    "NORMAL"
@@ -63733,7 +63733,7 @@
  },
  "KONATA": {
   "internalName": "KONATA",
-  "dexNumber": 516,
+  "dexNumber": 518,
   "name": "Konata",
   "types": [
    "PSYCHIC"
@@ -63862,7 +63862,7 @@
  },
  "SINBAD": {
   "internalName": "SINBAD",
-  "dexNumber": 517,
+  "dexNumber": 519,
   "name": "Sinbad",
   "types": [
    "WATER",
@@ -63978,7 +63978,7 @@
  },
  "MOMO": {
   "internalName": "MOMO",
-  "dexNumber": 518,
+  "dexNumber": 520,
   "name": "Momo",
   "types": [
    "FAIRY"
@@ -64093,7 +64093,7 @@
  },
  "SHAMIKO": {
   "internalName": "SHAMIKO",
-  "dexNumber": 519,
+  "dexNumber": 521,
   "name": "Shamiko",
   "types": [
    "DARK"
@@ -64208,7 +64208,7 @@
  },
  "MIYUKI": {
   "internalName": "MIYUKI",
-  "dexNumber": 520,
+  "dexNumber": 522,
   "name": "Miyuki",
   "types": [
    "ICE",
@@ -64324,7 +64324,7 @@
  },
  "TATSUYA": {
   "internalName": "TATSUYA",
-  "dexNumber": 521,
+  "dexNumber": 523,
   "name": "Tatsuya",
   "types": [
    "PSYCHIC"
@@ -64439,7 +64439,7 @@
  },
  "HOMURA": {
   "internalName": "HOMURA",
-  "dexNumber": 522,
+  "dexNumber": 524,
   "name": "Homura",
   "types": [
    "DARK",
@@ -64570,7 +64570,7 @@
  },
  "MADOKA": {
   "internalName": "MADOKA",
-  "dexNumber": 523,
+  "dexNumber": 525,
   "name": "Madoka",
   "types": [
    "FAIRY"
@@ -64700,7 +64700,7 @@
  },
  "AINE": {
   "internalName": "AINE",
-  "dexNumber": 524,
+  "dexNumber": 526,
   "name": "Aine",
   "types": [
    "FAIRY",
@@ -64831,7 +64831,7 @@
  },
  "HAYURU": {
   "internalName": "HAYURU",
-  "dexNumber": 525,
+  "dexNumber": 527,
   "name": "Hayuru",
   "types": [
    "ICE",
@@ -64962,7 +64962,7 @@
  },
  "YURISHIA": {
   "internalName": "YURISHIA",
-  "dexNumber": 526,
+  "dexNumber": 528,
   "name": "Yurishia",
   "types": [
    "GHOST",
@@ -65078,7 +65078,7 @@
  },
  "MEDAKA": {
   "internalName": "MEDAKA",
-  "dexNumber": 527,
+  "dexNumber": 529,
   "name": "Medaka",
   "types": [
    "FIGHTING"
@@ -65193,7 +65193,7 @@
  },
  "MISOGIBOX": {
   "internalName": "MISOGIBOX",
-  "dexNumber": 528,
+  "dexNumber": 530,
   "name": "MisogiBox",
   "types": [
    "FIGHTING",
@@ -65309,7 +65309,7 @@
  },
  "JOE": {
   "internalName": "JOE",
-  "dexNumber": 529,
+  "dexNumber": 531,
   "name": "Joe",
   "types": [
    "FIGHTING",
@@ -65440,7 +65440,7 @@
  },
  "YUNO": {
   "internalName": "YUNO",
-  "dexNumber": 530,
+  "dexNumber": 532,
   "name": "Yuno",
   "types": [
    "PSYCHIC"
@@ -65570,7 +65570,7 @@
  },
  "HOMI": {
   "internalName": "HOMI",
-  "dexNumber": 531,
+  "dexNumber": 533,
   "name": "Homi",
   "types": [
    "GRASS"
@@ -65685,7 +65685,7 @@
  },
  "REN": {
   "internalName": "REN",
-  "dexNumber": 532,
+  "dexNumber": 534,
   "name": "Ren",
   "types": [
    "FIRE"
@@ -65815,7 +65815,7 @@
  },
  "YUE": {
   "internalName": "YUE",
-  "dexNumber": 533,
+  "dexNumber": 535,
   "name": "Yue",
   "types": [
    "ICE"
@@ -65945,7 +65945,7 @@
  },
  "YUIKO": {
   "internalName": "YUIKO",
-  "dexNumber": 534,
+  "dexNumber": 536,
   "name": "Yuiko",
   "types": [
    "ELECTRIC"
@@ -66070,7 +66070,7 @@
  },
  "ELMA": {
   "internalName": "ELMA",
-  "dexNumber": 535,
+  "dexNumber": 537,
   "name": "Elma",
   "types": [
    "WATER",
@@ -66201,7 +66201,7 @@
  },
  "ILULU": {
   "internalName": "ILULU",
-  "dexNumber": 536,
+  "dexNumber": 538,
   "name": "Ilulu",
   "types": [
    "DARK",
@@ -66332,7 +66332,7 @@
  },
  "KANNA": {
   "internalName": "KANNA",
-  "dexNumber": 537,
+  "dexNumber": 539,
   "name": "Kanna",
   "types": [
    "DRAGON",
@@ -66463,7 +66463,7 @@
  },
  "LUCOA": {
   "internalName": "LUCOA",
-  "dexNumber": 538,
+  "dexNumber": 540,
   "name": "Lucoa",
   "types": [
    "GROUND",
@@ -66579,7 +66579,7 @@
  },
  "SAIKAWA": {
   "internalName": "SAIKAWA",
-  "dexNumber": 539,
+  "dexNumber": 541,
   "name": "Saikawa",
   "types": [
    "NORMAL"
@@ -66709,7 +66709,7 @@
  },
  "TOHRU": {
   "internalName": "TOHRU",
-  "dexNumber": 540,
+  "dexNumber": 542,
   "name": "Tohru",
   "types": [
    "DRAGON",
@@ -66840,7 +66840,7 @@
  },
  "KOTOHA": {
   "internalName": "KOTOHA",
-  "dexNumber": 541,
+  "dexNumber": 543,
   "name": "Kotoha",
   "types": [
    "NORMAL",
@@ -66971,7 +66971,7 @@
  },
  "SAKI": {
   "internalName": "SAKI",
-  "dexNumber": 542,
+  "dexNumber": 544,
   "name": "Saki",
   "types": [
    "NORMAL"
@@ -67101,7 +67101,7 @@
  },
  "YUICOLORS": {
   "internalName": "YUICOLORS",
-  "dexNumber": 543,
+  "dexNumber": 545,
   "name": "YuiColors",
   "types": [
    "NORMAL"
@@ -67231,7 +67231,7 @@
  },
  "REIGEN": {
   "internalName": "REIGEN",
-  "dexNumber": 544,
+  "dexNumber": 546,
   "name": "Reigen",
   "types": [
    "PSYCHIC",
@@ -67362,7 +67362,7 @@
  },
  "SHIGEO": {
   "internalName": "SHIGEO",
-  "dexNumber": 545,
+  "dexNumber": 547,
   "name": "Shigeo",
   "types": [
    "PSYCHIC"
@@ -67492,7 +67492,7 @@
  },
  "IZAYOI": {
   "internalName": "IZAYOI",
-  "dexNumber": 546,
+  "dexNumber": 548,
   "name": "Izayoi",
   "types": [
    "DARK"
@@ -67607,7 +67607,7 @@
  },
  "KUROUSAGI": {
   "internalName": "KUROUSAGI",
-  "dexNumber": 547,
+  "dexNumber": 549,
   "name": "Kurousagi",
   "types": [
    "NORMAL"
@@ -67722,7 +67722,7 @@
  },
  "ARARAGI": {
   "internalName": "ARARAGI",
-  "dexNumber": 548,
+  "dexNumber": 550,
   "name": "Araragi",
   "types": [
    "DARK",
@@ -67838,7 +67838,7 @@
  },
  "HACHIKUJI": {
   "internalName": "HACHIKUJI",
-  "dexNumber": 549,
+  "dexNumber": 551,
   "name": "Hachikuji",
   "types": [
    "GHOST",
@@ -67954,7 +67954,7 @@
  },
  "HANEKAWA": {
   "internalName": "HANEKAWA",
-  "dexNumber": 550,
+  "dexNumber": 552,
   "name": "Hanekawa",
   "types": [
    "NORMAL"
@@ -68069,7 +68069,7 @@
  },
  "BLACKHANEKAWA": {
   "internalName": "BLACKHANEKAWA",
-  "dexNumber": 551,
+  "dexNumber": 553,
   "name": "BlackHanekawa",
   "types": [
    "NORMAL",
@@ -68200,7 +68200,7 @@
  },
  "HITAGI": {
   "internalName": "HITAGI",
-  "dexNumber": 552,
+  "dexNumber": 554,
   "name": "Hitagi",
   "types": [
    "STEEL"
@@ -68330,7 +68330,7 @@
  },
  "KAIKI": {
   "internalName": "KAIKI",
-  "dexNumber": 553,
+  "dexNumber": 555,
   "name": "Kaiki",
   "types": [
    "DARK"
@@ -68460,7 +68460,7 @@
  },
  "NADEKO": {
   "internalName": "NADEKO",
-  "dexNumber": 554,
+  "dexNumber": 556,
   "name": "Nadeko",
   "types": [
    "POISON"
@@ -68574,7 +68574,7 @@
  },
  "ONONOKI": {
   "internalName": "ONONOKI",
-  "dexNumber": 555,
+  "dexNumber": 557,
   "name": "Ononoki",
   "types": [
    "FIGHTING"
@@ -68703,7 +68703,7 @@
  },
  "SHINOBU": {
   "internalName": "SHINOBU",
-  "dexNumber": 556,
+  "dexNumber": 558,
   "name": "Shinobu",
   "types": [
    "DARK"
@@ -68833,7 +68833,7 @@
  },
  "KISSSHOT": {
   "internalName": "KISSSHOT",
-  "dexNumber": 557,
+  "dexNumber": 559,
   "name": "KissShot",
   "types": [
    "DARK",
@@ -68964,7 +68964,7 @@
  },
  "KISSSHOT2": {
   "internalName": "KISSSHOT2",
-  "dexNumber": 558,
+  "dexNumber": 560,
   "name": "KissShot2",
   "types": [
    "DARK",
@@ -69095,7 +69095,7 @@
  },
  "KUSURIURI": {
   "internalName": "KUSURIURI",
-  "dexNumber": 559,
+  "dexNumber": 561,
   "name": "Kusuriuri",
   "types": [
    "POISON",
@@ -69226,7 +69226,7 @@
  },
  "CENTOREA": {
   "internalName": "CENTOREA",
-  "dexNumber": 560,
+  "dexNumber": 562,
   "name": "Centorea",
   "types": [
    "GROUND"
@@ -69356,7 +69356,7 @@
  },
  "MIIA": {
   "internalName": "MIIA",
-  "dexNumber": 561,
+  "dexNumber": 563,
   "name": "Miia",
   "types": [
    "POISON"
@@ -69471,7 +69471,7 @@
  },
  "PAPI": {
   "internalName": "PAPI",
-  "dexNumber": 562,
+  "dexNumber": 564,
   "name": "Papi",
   "types": [
    "FLYING"
@@ -69585,7 +69585,7 @@
  },
  "RACHNERA": {
   "internalName": "RACHNERA",
-  "dexNumber": 563,
+  "dexNumber": 565,
   "name": "Rachnera",
   "types": [
    "BUG"
@@ -69714,7 +69714,7 @@
  },
  "SUU": {
   "internalName": "SUU",
-  "dexNumber": 564,
+  "dexNumber": 566,
   "name": "Suu",
   "types": [
    "WATER",
@@ -69830,7 +69830,7 @@
  },
  "NANA": {
   "internalName": "NANA",
-  "dexNumber": 565,
+  "dexNumber": 567,
   "name": "Nana",
   "types": [
    "NORMAL"
@@ -69960,7 +69960,7 @@
  },
  "MAI": {
   "internalName": "MAI",
-  "dexNumber": 566,
+  "dexNumber": 568,
   "name": "Mai",
   "types": [
    "ICE"
@@ -70089,7 +70089,7 @@
  },
  "REINA": {
   "internalName": "REINA",
-  "dexNumber": 567,
+  "dexNumber": 569,
   "name": "Reina",
   "types": [
    "GHOST",
@@ -70204,7 +70204,7 @@
  },
  "SUCY": {
   "internalName": "SUCY",
-  "dexNumber": 568,
+  "dexNumber": 570,
   "name": "Sucy",
   "types": [
    "POISON",
@@ -70335,7 +70335,7 @@
  },
  "HAJIMENANBAKA": {
   "internalName": "HAJIMENANBAKA",
-  "dexNumber": 569,
+  "dexNumber": 571,
   "name": "HajimeNanbaka",
   "types": [
    "NORMAL"
@@ -70450,7 +70450,7 @@
  },
  "JUUGO": {
   "internalName": "JUUGO",
-  "dexNumber": 570,
+  "dexNumber": 572,
   "name": "Juugo",
   "types": [
    "FIGHTING",
@@ -70580,7 +70580,7 @@
  },
  "AZUKI": {
   "internalName": "AZUKI",
-  "dexNumber": 571,
+  "dexNumber": 573,
   "name": "Azuki",
   "types": [
    "NORMAL"
@@ -70704,7 +70704,7 @@
  },
  "CHOCOLA": {
   "internalName": "CHOCOLA",
-  "dexNumber": 572,
+  "dexNumber": 574,
   "name": "Chocola",
   "types": [
    "NORMAL"
@@ -70819,7 +70819,7 @@
  },
  "CINNAMON": {
   "internalName": "CINNAMON",
-  "dexNumber": 573,
+  "dexNumber": 575,
   "name": "Cinnamon",
   "types": [
    "FIGHTING"
@@ -70934,8 +70934,8 @@
  },
  "CINNAMON2": {
   "internalName": "CINNAMON2",
-  "dexNumber": 574,
-  "name": "Cinnamon2",
+  "dexNumber": 576,
+  "name": "Cinnamon",
   "types": [
    "FIGHTING"
   ],
@@ -71049,7 +71049,7 @@
  },
  "COCONUT": {
   "internalName": "COCONUT",
-  "dexNumber": 575,
+  "dexNumber": 577,
   "name": "Coconut",
   "types": [
    "FAIRY"
@@ -71164,7 +71164,7 @@
  },
  "MAPLE": {
   "internalName": "MAPLE",
-  "dexNumber": 576,
+  "dexNumber": 578,
   "name": "Maple",
   "types": [
    "FAIRY"
@@ -71279,8 +71279,8 @@
  },
  "MAPLE2": {
   "internalName": "MAPLE2",
-  "dexNumber": 577,
-  "name": "Maple2",
+  "dexNumber": 579,
+  "name": "Maple",
   "types": [
    "FAIRY"
   ],
@@ -71394,7 +71394,7 @@
  },
  "SHIGURE": {
   "internalName": "SHIGURE",
-  "dexNumber": 578,
+  "dexNumber": 580,
   "name": "Shigure",
   "types": [
    "NORMAL"
@@ -71509,7 +71509,7 @@
  },
  "VANILLA": {
   "internalName": "VANILLA",
-  "dexNumber": 579,
+  "dexNumber": 581,
   "name": "Vanilla",
   "types": [
    "NORMAL"
@@ -71639,7 +71639,7 @@
  },
  "BLANC": {
   "internalName": "BLANC",
-  "dexNumber": 580,
+  "dexNumber": 582,
   "name": "Blanc",
   "types": [
    "ICE"
@@ -71769,7 +71769,7 @@
  },
  "WHITEHEART": {
   "internalName": "WHITEHEART",
-  "dexNumber": 581,
+  "dexNumber": 583,
   "name": "WhiteHeart",
   "types": [
    "ICE",
@@ -71885,7 +71885,7 @@
  },
  "COMPA": {
   "internalName": "COMPA",
-  "dexNumber": 582,
+  "dexNumber": 584,
   "name": "Compa",
   "types": [
    "NORMAL"
@@ -72015,7 +72015,7 @@
  },
  "HISTOIRE": {
   "internalName": "HISTOIRE",
-  "dexNumber": 583,
+  "dexNumber": 585,
   "name": "Histoire",
   "types": [
    "FAIRY"
@@ -72130,7 +72130,7 @@
  },
  "IF": {
   "internalName": "IF",
-  "dexNumber": 584,
+  "dexNumber": 586,
   "name": "If",
   "types": [
    "FIGHTING"
@@ -72245,7 +72245,7 @@
  },
  "PLUTIA": {
   "internalName": "PLUTIA",
-  "dexNumber": 585,
+  "dexNumber": 587,
   "name": "Plutia",
   "types": [
    "PSYCHIC"
@@ -72375,7 +72375,7 @@
  },
  "IRISHEART": {
   "internalName": "IRISHEART",
-  "dexNumber": 586,
+  "dexNumber": 588,
   "name": "IrisHeart",
   "types": [
    "DARK",
@@ -72491,7 +72491,7 @@
  },
  "MAGES": {
   "internalName": "MAGES",
-  "dexNumber": 587,
+  "dexNumber": 589,
   "name": "Mages",
   "types": [
    "FIRE",
@@ -72621,7 +72621,7 @@
  },
  "NEPGEAR": {
   "internalName": "NEPGEAR",
-  "dexNumber": 588,
+  "dexNumber": 590,
   "name": "Nepgear",
   "types": [
    "ELECTRIC",
@@ -72752,7 +72752,7 @@
  },
  "PURPLESISTER": {
   "internalName": "PURPLESISTER",
-  "dexNumber": 589,
+  "dexNumber": 591,
   "name": "PurpleSister",
   "types": [
    "ELECTRIC",
@@ -72883,7 +72883,7 @@
  },
  "NEPTUNE": {
   "internalName": "NEPTUNE",
-  "dexNumber": 590,
+  "dexNumber": 592,
   "name": "Neptune",
   "types": [
    "FAIRY"
@@ -73012,7 +73012,7 @@
  },
  "PURPLEHEART": {
   "internalName": "PURPLEHEART",
-  "dexNumber": 591,
+  "dexNumber": 593,
   "name": "PurpleHeart",
   "types": [
    "FAIRY"
@@ -73141,7 +73141,7 @@
  },
  "NOIRE": {
   "internalName": "NOIRE",
-  "dexNumber": 592,
+  "dexNumber": 594,
   "name": "Noire",
   "types": [
    "DARK",
@@ -73272,7 +73272,7 @@
  },
  "BLACKHEART": {
   "internalName": "BLACKHEART",
-  "dexNumber": 593,
+  "dexNumber": 595,
   "name": "BlackHeart",
   "types": [
    "DARK",
@@ -73388,7 +73388,7 @@
  },
  "PEASHY": {
   "internalName": "PEASHY",
-  "dexNumber": 594,
+  "dexNumber": 596,
   "name": "Peashy",
   "types": [
    "ELECTRIC"
@@ -73518,7 +73518,7 @@
  },
  "YELLOWHEART": {
   "internalName": "YELLOWHEART",
-  "dexNumber": 595,
+  "dexNumber": 597,
   "name": "YellowHeart",
   "types": [
    "ELECTRIC",
@@ -73634,7 +73634,7 @@
  },
  "RAMNEP": {
   "internalName": "RAMNEP",
-  "dexNumber": 596,
+  "dexNumber": 598,
   "name": "RamNep",
   "types": [
    "WATER",
@@ -73750,7 +73750,7 @@
  },
  "WHITESISTERRAM": {
   "internalName": "WHITESISTERRAM",
-  "dexNumber": 597,
+  "dexNumber": 599,
   "name": "WhiteSisterRam",
   "types": [
    "WATER",
@@ -73865,7 +73865,7 @@
  },
  "ROM": {
   "internalName": "ROM",
-  "dexNumber": 598,
+  "dexNumber": 600,
   "name": "Rom",
   "types": [
    "WATER",
@@ -73995,7 +73995,7 @@
  },
  "WHITESISTERROM": {
   "internalName": "WHITESISTERROM",
-  "dexNumber": 599,
+  "dexNumber": 601,
   "name": "WhiteSisterRom",
   "types": [
    "WATER",
@@ -74126,7 +74126,7 @@
  },
  "UNI": {
   "internalName": "UNI",
-  "dexNumber": 600,
+  "dexNumber": 602,
   "name": "Uni",
   "types": [
    "DARK",
@@ -74257,7 +74257,7 @@
  },
  "BLACKSISTER": {
   "internalName": "BLACKSISTER",
-  "dexNumber": 601,
+  "dexNumber": 603,
   "name": "BlackSister",
   "types": [
    "DARK",
@@ -74388,7 +74388,7 @@
  },
  "VERT": {
   "internalName": "VERT",
-  "dexNumber": 602,
+  "dexNumber": 604,
   "name": "Vert",
   "types": [
    "GRASS",
@@ -74513,7 +74513,7 @@
  },
  "GREENHEART": {
   "internalName": "GREENHEART",
-  "dexNumber": 603,
+  "dexNumber": 605,
   "name": "GreenHeart",
   "types": [
    "GRASS",
@@ -74643,7 +74643,7 @@
  },
  "AKO": {
   "internalName": "AKO",
-  "dexNumber": 604,
+  "dexNumber": 606,
   "name": "Ako",
   "types": [
    "PSYCHIC",
@@ -74758,7 +74758,7 @@
  },
  "2B": {
   "internalName": "2B",
-  "dexNumber": 605,
+  "dexNumber": 607,
   "name": "2b",
   "types": [
    "DARK",
@@ -74884,7 +74884,7 @@
  },
  "9S": {
   "internalName": "9S",
-  "dexNumber": 606,
+  "dexNumber": 608,
   "name": "9s",
   "types": [
    "ELECTRIC"
@@ -74999,7 +74999,7 @@
  },
  "EMIL": {
   "internalName": "EMIL",
-  "dexNumber": 607,
+  "dexNumber": 609,
   "name": "Emil",
   "types": [
    "STEEL"
@@ -75114,7 +75114,7 @@
  },
  "KAINE": {
   "internalName": "KAINE",
-  "dexNumber": 608,
+  "dexNumber": 610,
   "name": "Kaine",
   "types": [
    "DARK"
@@ -75229,7 +75229,7 @@
  },
  "HIZUNA": {
   "internalName": "HIZUNA",
-  "dexNumber": 609,
+  "dexNumber": 611,
   "name": "Hizuna",
   "types": [
    "FIGHTING"
@@ -75359,7 +75359,7 @@
  },
  "JIBRIL": {
   "internalName": "JIBRIL",
-  "dexNumber": 610,
+  "dexNumber": 612,
   "name": "Jibril",
   "types": [
    "FLYING",
@@ -75475,7 +75475,7 @@
  },
  "SHUVI": {
   "internalName": "SHUVI",
-  "dexNumber": 611,
+  "dexNumber": 613,
   "name": "Shuvi",
   "types": [
    "STEEL",
@@ -75606,7 +75606,7 @@
  },
  "SHIRO": {
   "internalName": "SHIRO",
-  "dexNumber": 612,
+  "dexNumber": 614,
   "name": "Shiro",
   "types": [
    "PSYCHIC",
@@ -75737,7 +75737,7 @@
  },
  "RENGE": {
   "internalName": "RENGE",
-  "dexNumber": 613,
+  "dexNumber": 615,
   "name": "Renge",
   "types": [
    "NORMAL"
@@ -75852,7 +75852,7 @@
  },
  "YATO": {
   "internalName": "YATO",
-  "dexNumber": 614,
+  "dexNumber": 616,
   "name": "Yato",
   "types": [
    "DARK",
@@ -75978,7 +75978,7 @@
  },
  "SAITAMA": {
   "internalName": "SAITAMA",
-  "dexNumber": 615,
+  "dexNumber": 617,
   "name": "Saitama",
   "types": [
    "FIGHTING"
@@ -76102,7 +76102,7 @@
  },
  "SATORU": {
   "internalName": "SATORU",
-  "dexNumber": 616,
+  "dexNumber": 618,
   "name": "Satoru",
   "types": [
    "NORMAL"
@@ -76232,7 +76232,7 @@
  },
  "TATSUMAKI": {
   "internalName": "TATSUMAKI",
-  "dexNumber": 617,
+  "dexNumber": 619,
   "name": "Tatsumaki",
   "types": [
    "PSYCHIC"
@@ -76357,7 +76357,7 @@
  },
  "AYASE": {
   "internalName": "AYASE",
-  "dexNumber": 618,
+  "dexNumber": 620,
   "name": "Ayase",
   "types": [
    "DARK"
@@ -76487,7 +76487,7 @@
  },
  "KANAKO": {
   "internalName": "KANAKO",
-  "dexNumber": 619,
+  "dexNumber": 621,
   "name": "Kanako",
   "types": [
    "FIGHTING"
@@ -76617,7 +76617,7 @@
  },
  "KIRINO": {
   "internalName": "KIRINO",
-  "dexNumber": 620,
+  "dexNumber": 622,
   "name": "Kirino",
   "types": [
    "FAIRY"
@@ -76747,7 +76747,7 @@
  },
  "KURONEKO": {
   "internalName": "KURONEKO",
-  "dexNumber": 621,
+  "dexNumber": 623,
   "name": "Kuroneko",
   "types": [
    "DARK"
@@ -76872,7 +76872,7 @@
  },
  "PETRALKA": {
   "internalName": "PETRALKA",
-  "dexNumber": 622,
+  "dexNumber": 624,
   "name": "Petralka",
   "types": [
    "ELECTRIC",
@@ -76988,7 +76988,7 @@
  },
  "AINZ": {
   "internalName": "AINZ",
-  "dexNumber": 623,
+  "dexNumber": 625,
   "name": "Ainz",
   "types": [
    "DARK"
@@ -77118,7 +77118,7 @@
  },
  "ALBEDOOVERLORD": {
   "internalName": "ALBEDOOVERLORD",
-  "dexNumber": 624,
+  "dexNumber": 626,
   "name": "AlbedoOverLord",
   "types": [
    "DARK",
@@ -77239,7 +77239,7 @@
  },
  "MOMONGA": {
   "internalName": "MOMONGA",
-  "dexNumber": 625,
+  "dexNumber": 627,
   "name": "Momonga",
   "types": [
    "DARK",
@@ -77365,7 +77365,7 @@
  },
  "SHALTEAR": {
   "internalName": "SHALTEAR",
-  "dexNumber": 626,
+  "dexNumber": 628,
   "name": "Shaltear",
   "types": [
    "DARK",
@@ -77491,7 +77491,7 @@
  },
  "DVA": {
   "internalName": "DVA",
-  "dexNumber": 627,
+  "dexNumber": 629,
   "name": "Dva",
   "types": [
    "FIRE"
@@ -77621,7 +77621,7 @@
  },
  "KRUL": {
   "internalName": "KRUL",
-  "dexNumber": 628,
+  "dexNumber": 630,
   "name": "Krul",
   "types": [
    "GHOST",
@@ -77752,7 +77752,7 @@
  },
  "SHINOA": {
   "internalName": "SHINOA",
-  "dexNumber": 629,
+  "dexNumber": 631,
   "name": "Shinoa",
   "types": [
    "PSYCHIC"
@@ -77882,7 +77882,7 @@
  },
  "PANTY": {
   "internalName": "PANTY",
-  "dexNumber": 630,
+  "dexNumber": 632,
   "name": "Panty",
   "types": [
    "FAIRY"
@@ -77997,7 +77997,7 @@
  },
  "STOCKING": {
   "internalName": "STOCKING",
-  "dexNumber": 631,
+  "dexNumber": 633,
   "name": "Stocking",
   "types": [
    "GHOST",
@@ -78128,7 +78128,7 @@
  },
  "ISLA": {
   "internalName": "ISLA",
-  "dexNumber": 632,
+  "dexNumber": 634,
   "name": "Isla",
   "types": [
    "STEEL"
@@ -78258,7 +78258,7 @@
  },
  "CHRISTINA": {
   "internalName": "CHRISTINA",
-  "dexNumber": 633,
+  "dexNumber": 635,
   "name": "Christina",
   "types": [
    "STEEL",
@@ -78388,7 +78388,7 @@
  },
  "ERIKO": {
   "internalName": "ERIKO",
-  "dexNumber": 634,
+  "dexNumber": 636,
   "name": "Eriko",
   "types": [
    "DARK",
@@ -78518,7 +78518,7 @@
  },
  "HATSUNE": {
   "internalName": "HATSUNE",
-  "dexNumber": 635,
+  "dexNumber": 637,
   "name": "Hatsune",
   "types": [
    "FAIRY"
@@ -78647,7 +78647,7 @@
  },
  "ILYA": {
   "internalName": "ILYA",
-  "dexNumber": 636,
+  "dexNumber": 638,
   "name": "Ilya",
   "types": [
    "DARK",
@@ -78762,7 +78762,7 @@
  },
  "IO": {
   "internalName": "IO",
-  "dexNumber": 637,
+  "dexNumber": 639,
   "name": "Io",
   "types": [
    "PSYCHIC"
@@ -78891,7 +78891,7 @@
  },
  "KARYL": {
   "internalName": "KARYL",
-  "dexNumber": 638,
+  "dexNumber": 640,
   "name": "Karyl",
   "types": [
    "DARK",
@@ -79016,7 +79016,7 @@
  },
  "KOKORO": {
   "internalName": "KOKORO",
-  "dexNumber": 639,
+  "dexNumber": 641,
   "name": "Kokoro",
   "types": [
    "FIGHTING"
@@ -79145,7 +79145,7 @@
  },
  "KUKA": {
   "internalName": "KUKA",
-  "dexNumber": 640,
+  "dexNumber": 642,
   "name": "Kuka",
   "types": [
    "DARK",
@@ -79275,7 +79275,7 @@
  },
  "KYOUKA": {
   "internalName": "KYOUKA",
-  "dexNumber": 641,
+  "dexNumber": 643,
   "name": "Kyouka",
   "types": [
    "WATER",
@@ -79400,7 +79400,7 @@
  },
  "MAHO": {
   "internalName": "MAHO",
-  "dexNumber": 642,
+  "dexNumber": 644,
   "name": "Maho",
   "types": [
    "FAIRY",
@@ -79530,7 +79530,7 @@
  },
  "MIMI": {
   "internalName": "MIMI",
-  "dexNumber": 643,
+  "dexNumber": 645,
   "name": "Mimi",
   "types": [
    "NORMAL"
@@ -79659,7 +79659,7 @@
  },
  "MISOGI": {
   "internalName": "MISOGI",
-  "dexNumber": 644,
+  "dexNumber": 646,
   "name": "Misogi",
   "types": [
    "FIGHTING"
@@ -79788,7 +79788,7 @@
  },
  "PECORINE": {
   "internalName": "PECORINE",
-  "dexNumber": 645,
+  "dexNumber": 647,
   "name": "Pecorine",
   "types": [
    "FIGHTING",
@@ -79918,7 +79918,7 @@
  },
  "SAREN": {
   "internalName": "SAREN",
-  "dexNumber": 646,
+  "dexNumber": 648,
   "name": "Saren",
   "types": [
    "NORMAL"
@@ -80047,7 +80047,7 @@
  },
  "TAMAKI": {
   "internalName": "TAMAKI",
-  "dexNumber": 647,
+  "dexNumber": 649,
   "name": "Tamaki",
   "types": [
    "BUG"
@@ -80176,7 +80176,7 @@
  },
  "YUKARI": {
   "internalName": "YUKARI",
-  "dexNumber": 648,
+  "dexNumber": 650,
   "name": "Yukari",
   "types": [
    "GRASS"
@@ -80305,7 +80305,7 @@
  },
  "IKKI": {
   "internalName": "IKKI",
-  "dexNumber": 649,
+  "dexNumber": 651,
   "name": "Ikki",
   "types": [
    "NORMAL"
@@ -80434,7 +80434,7 @@
  },
  "STELLA": {
   "internalName": "STELLA",
-  "dexNumber": 650,
+  "dexNumber": 652,
   "name": "Stella",
   "types": [
    "FIRE",
@@ -80549,7 +80549,7 @@
  },
  "KEYARU": {
   "internalName": "KEYARU",
-  "dexNumber": 651,
+  "dexNumber": 653,
   "name": "Keyaru",
   "types": [
    "DARK"
@@ -80663,7 +80663,7 @@
  },
  "BEATRICE": {
   "internalName": "BEATRICE",
-  "dexNumber": 652,
+  "dexNumber": 654,
   "name": "Beatrice",
   "types": [
    "PSYCHIC",
@@ -80783,7 +80783,7 @@
  },
  "ECHIDNA": {
   "internalName": "ECHIDNA",
-  "dexNumber": 653,
+  "dexNumber": 655,
   "name": "Echidna",
   "types": [
    "DARK"
@@ -80897,7 +80897,7 @@
  },
  "EMILIA": {
   "internalName": "EMILIA",
-  "dexNumber": 654,
+  "dexNumber": 656,
   "name": "Emilia",
   "types": [
    "ICE",
@@ -81017,7 +81017,7 @@
  },
  "PETRA": {
   "internalName": "PETRA",
-  "dexNumber": 655,
+  "dexNumber": 657,
   "name": "Petra",
   "types": [
    "NORMAL"
@@ -81131,7 +81131,7 @@
  },
  "RAM": {
   "internalName": "RAM",
-  "dexNumber": 656,
+  "dexNumber": 658,
   "name": "Ram",
   "types": [
    "PSYCHIC"
@@ -81245,7 +81245,7 @@
  },
  "REM": {
   "internalName": "REM",
-  "dexNumber": 657,
+  "dexNumber": 659,
   "name": "Rem",
   "types": [
    "FIGHTING"
@@ -81370,7 +81370,7 @@
  },
  "KONA": {
   "internalName": "KONA",
-  "dexNumber": 658,
+  "dexNumber": 660,
   "name": "Kona",
   "types": [
    "PSYCHIC"
@@ -81499,7 +81499,7 @@
  },
  "NASHETANIA": {
   "internalName": "NASHETANIA",
-  "dexNumber": 659,
+  "dexNumber": 661,
   "name": "Nashetania",
   "types": [
    "PSYCHIC"
@@ -81629,7 +81629,7 @@
  },
  "REL": {
   "internalName": "REL",
-  "dexNumber": 660,
+  "dexNumber": 662,
   "name": "Re=L",
   "types": [
    "PSYCHIC",
@@ -81760,7 +81760,7 @@
  },
  "RUMIA": {
   "internalName": "RUMIA",
-  "dexNumber": 661,
+  "dexNumber": 663,
   "name": "Rumia",
   "types": [
    "FIGHTING"
@@ -81889,7 +81889,7 @@
  },
  "SISTINE": {
   "internalName": "SISTINE",
-  "dexNumber": 662,
+  "dexNumber": 664,
   "name": "Sistine",
   "types": [
    "PSYCHIC",
@@ -82019,7 +82019,7 @@
  },
  "ERIRI": {
   "internalName": "ERIRI",
-  "dexNumber": 663,
+  "dexNumber": 665,
   "name": "Eriri",
   "types": [
    "NORMAL"
@@ -82133,7 +82133,7 @@
  },
  "MEGUMIBORING": {
   "internalName": "MEGUMIBORING",
-  "dexNumber": 664,
+  "dexNumber": 666,
   "name": "MegumiBoring",
   "types": [
    "NORMAL"
@@ -82263,7 +82263,7 @@
  },
  "UTAHA": {
   "internalName": "UTAHA",
-  "dexNumber": 665,
+  "dexNumber": 667,
   "name": "Utaha",
   "types": [
    "DARK"
@@ -82377,7 +82377,7 @@
  },
  "PHILPHIE": {
   "internalName": "PHILPHIE",
-  "dexNumber": 666,
+  "dexNumber": 668,
   "name": "Philphie",
   "types": [
    "STEEL"
@@ -82507,7 +82507,7 @@
  },
  "MASHIRO": {
   "internalName": "MASHIRO",
-  "dexNumber": 667,
+  "dexNumber": 669,
   "name": "Mashiro",
   "types": [
    "PSYCHIC"
@@ -82622,7 +82622,7 @@
  },
  "MUGEN": {
   "internalName": "MUGEN",
-  "dexNumber": 668,
+  "dexNumber": 670,
   "name": "Mugen",
   "types": [
    "FIGHTING"
@@ -82737,7 +82737,7 @@
  },
  "KOTONOHA": {
   "internalName": "KOTONOHA",
-  "dexNumber": 669,
+  "dexNumber": 671,
   "name": "Kotonoha",
   "types": [
    "NORMAL",
@@ -82867,7 +82867,7 @@
  },
  "SEKAI": {
   "internalName": "SEKAI",
-  "dexNumber": 670,
+  "dexNumber": 672,
   "name": "Sekai",
   "types": [
    "NORMAL",
@@ -82997,7 +82997,7 @@
  },
  "KOTOMISEITOKAI": {
   "internalName": "KOTOMISEITOKAI",
-  "dexNumber": 671,
+  "dexNumber": 673,
   "name": "KotomiSeitokai",
   "types": [
    "FIGHTING"
@@ -83111,7 +83111,7 @@
  },
  "RANKO": {
   "internalName": "RANKO",
-  "dexNumber": 672,
+  "dexNumber": 674,
   "name": "Ranko",
   "types": [
    "FIRE"
@@ -83240,7 +83240,7 @@
  },
  "SUZU": {
   "internalName": "SUZU",
-  "dexNumber": 673,
+  "dexNumber": 675,
   "name": "Suzu",
   "types": [
    "GRASS"
@@ -83354,7 +83354,7 @@
  },
  "CHRIS": {
   "internalName": "CHRIS",
-  "dexNumber": 674,
+  "dexNumber": 676,
   "name": "Chris",
   "types": [
    "ICE",
@@ -83470,7 +83470,7 @@
  },
  "HIBIKI": {
   "internalName": "HIBIKI",
-  "dexNumber": 675,
+  "dexNumber": 677,
   "name": "Hibiki",
   "types": [
    "FIRE",
@@ -83601,7 +83601,7 @@
  },
  "KIRIKA": {
   "internalName": "KIRIKA",
-  "dexNumber": 676,
+  "dexNumber": 678,
   "name": "Kirika",
   "types": [
    "STEEL",
@@ -83716,7 +83716,7 @@
  },
  "SHIRABE": {
   "internalName": "SHIRABE",
-  "dexNumber": 677,
+  "dexNumber": 679,
   "name": "Shirabe",
   "types": [
    "POISON",
@@ -83847,7 +83847,7 @@
  },
  "ALICESENTOUIN": {
   "internalName": "ALICESENTOUIN",
-  "dexNumber": 678,
+  "dexNumber": 680,
   "name": "AliceSentouin",
   "types": [
    "FAIRY"
@@ -83977,7 +83977,7 @@
  },
  "SNOW": {
   "internalName": "SNOW",
-  "dexNumber": 679,
+  "dexNumber": 681,
   "name": "Snow",
   "types": [
    "ICE"
@@ -84106,7 +84106,7 @@
  },
  "SHANA": {
   "internalName": "SHANA",
-  "dexNumber": 680,
+  "dexNumber": 682,
   "name": "Shana",
   "types": [
    "FIRE",
@@ -84236,7 +84236,7 @@
  },
  "RAFTALIA": {
   "internalName": "RAFTALIA",
-  "dexNumber": 681,
+  "dexNumber": 683,
   "name": "Raftalia",
   "types": [
    "FIGHTING"
@@ -84350,8 +84350,8 @@
  },
  "RAFTALIA2": {
   "internalName": "RAFTALIA2",
-  "dexNumber": 682,
-  "name": "Raftalia2",
+  "dexNumber": 684,
+  "name": "Raftalia",
   "types": [
    "FIGHTING",
    "STEEL"
@@ -84480,7 +84480,7 @@
  },
  "CERBERUS": {
   "internalName": "CERBERUS",
-  "dexNumber": 683,
+  "dexNumber": 685,
   "name": "Cerberus",
   "types": [
    "FIRE",
@@ -84595,7 +84595,7 @@
  },
  "BASARA": {
   "internalName": "BASARA",
-  "dexNumber": 684,
+  "dexNumber": 686,
   "name": "Basara",
   "types": [
    "FIGHTING"
@@ -84709,7 +84709,7 @@
  },
  "CHISATO": {
   "internalName": "CHISATO",
-  "dexNumber": 685,
+  "dexNumber": 687,
   "name": "Chisato",
   "types": [
    "FIRE",
@@ -84839,7 +84839,7 @@
  },
  "MARIA": {
   "internalName": "MARIA",
-  "dexNumber": 686,
+  "dexNumber": 688,
   "name": "Maria",
   "types": [
    "DARK"
@@ -84969,7 +84969,7 @@
  },
  "MIO": {
   "internalName": "MIO",
-  "dexNumber": 687,
+  "dexNumber": 689,
   "name": "Mio",
   "types": [
    "DARK",
@@ -85085,7 +85085,7 @@
  },
  "YUKI": {
   "internalName": "YUKI",
-  "dexNumber": 688,
+  "dexNumber": 690,
   "name": "Yuki",
   "types": [
    "ICE",
@@ -85216,7 +85216,7 @@
  },
  "CHTHOLLY": {
   "internalName": "CHTHOLLY",
-  "dexNumber": 689,
+  "dexNumber": 691,
   "name": "Chtholly",
   "types": [
    "FAIRY"
@@ -85331,7 +85331,7 @@
  },
  "LEVIATHAN": {
   "internalName": "LEVIATHAN",
-  "dexNumber": 690,
+  "dexNumber": 692,
   "name": "Leviathan",
   "types": [
    "WATER"
@@ -85461,7 +85461,7 @@
  },
  "HOLO": {
   "internalName": "HOLO",
-  "dexNumber": 691,
+  "dexNumber": 693,
   "name": "Holo",
   "types": [
    "GRASS"
@@ -85591,7 +85591,7 @@
  },
  "KURISU": {
   "internalName": "KURISU",
-  "dexNumber": 692,
+  "dexNumber": 694,
   "name": "Kurisu",
   "types": [
    "PSYCHIC"
@@ -85720,7 +85720,7 @@
  },
  "LESKINEN": {
   "internalName": "LESKINEN",
-  "dexNumber": 693,
+  "dexNumber": 695,
   "name": "Leskinen",
   "types": [
    "PSYCHIC",
@@ -85835,7 +85835,7 @@
  },
  "MAHO2": {
   "internalName": "MAHO2",
-  "dexNumber": 694,
+  "dexNumber": 696,
   "name": "Maho",
   "types": [
    "PSYCHIC",
@@ -85966,7 +85966,7 @@
  },
  "MAYURI": {
   "internalName": "MAYURI",
-  "dexNumber": 695,
+  "dexNumber": 697,
   "name": "Mayuri",
   "types": [
    "NORMAL"
@@ -86096,7 +86096,7 @@
  },
  "RINTARO": {
   "internalName": "RINTARO",
-  "dexNumber": 696,
+  "dexNumber": 698,
   "name": "Rintaro",
   "types": [
    "ELECTRIC",
@@ -86226,7 +86226,7 @@
  },
  "KOJOU": {
   "internalName": "KOJOU",
-  "dexNumber": 697,
+  "dexNumber": 699,
   "name": "Kojou",
   "types": [
    "DARK",
@@ -86356,7 +86356,7 @@
  },
  "YUKINA": {
   "internalName": "YUKINA",
-  "dexNumber": 698,
+  "dexNumber": 700,
   "name": "Yukina",
   "types": [
    "STEEL"
@@ -86470,7 +86470,7 @@
  },
  "SUPERSONICO": {
   "internalName": "SUPERSONICO",
-  "dexNumber": 699,
+  "dexNumber": 701,
   "name": "SuperSonico",
   "types": [
    "ELECTRIC"
@@ -86599,7 +86599,7 @@
  },
  "MIKURU": {
   "internalName": "MIKURU",
-  "dexNumber": 700,
+  "dexNumber": 702,
   "name": "Mikuru",
   "types": [
    "FAIRY",
@@ -86714,7 +86714,7 @@
  },
  "NAGATO": {
   "internalName": "NAGATO",
-  "dexNumber": 701,
+  "dexNumber": 703,
   "name": "Nagato",
   "types": [
    "PSYCHIC",
@@ -86845,7 +86845,7 @@
  },
  "SUZUMIYA": {
   "internalName": "SUZUMIYA",
-  "dexNumber": 702,
+  "dexNumber": 704,
   "name": "Suzumiya",
   "types": [
    "PSYCHIC"
@@ -86975,7 +86975,7 @@
  },
  "ADMINISTRATOR": {
   "internalName": "ADMINISTRATOR",
-  "dexNumber": 703,
+  "dexNumber": 705,
   "name": "Administrator",
   "types": [
    "PSYCHIC",
@@ -87105,7 +87105,7 @@
  },
  "ALICE": {
   "internalName": "ALICE",
-  "dexNumber": 704,
+  "dexNumber": 706,
   "name": "Alice",
   "types": [
    "STEEL"
@@ -87235,8 +87235,8 @@
  },
  "ALICE2": {
   "internalName": "ALICE2",
-  "dexNumber": 705,
-  "name": "Alice2",
+  "dexNumber": 707,
+  "name": "Alice",
   "types": [
    "STEEL"
   ],
@@ -87365,7 +87365,7 @@
  },
  "ARGO": {
   "internalName": "ARGO",
-  "dexNumber": 706,
+  "dexNumber": 708,
   "name": "Argo",
   "types": [
    "NORMAL"
@@ -87495,7 +87495,7 @@
  },
  "ASUNA": {
   "internalName": "ASUNA",
-  "dexNumber": 707,
+  "dexNumber": 709,
   "name": "Asuna",
   "types": [
    "FIGHTING"
@@ -87619,8 +87619,8 @@
  },
  "ASUNA2": {
   "internalName": "ASUNA2",
-  "dexNumber": 708,
-  "name": "Asuna2",
+  "dexNumber": 710,
+  "name": "Asuna",
   "types": [
    "FIGHTING",
    "FAIRY"
@@ -87745,7 +87745,7 @@
  },
  "DEATHGUN": {
   "internalName": "DEATHGUN",
-  "dexNumber": 709,
+  "dexNumber": 711,
   "name": "DeathGun",
   "types": [
    "GHOST",
@@ -87861,7 +87861,7 @@
  },
  "EUGEO": {
   "internalName": "EUGEO",
-  "dexNumber": 710,
+  "dexNumber": 712,
   "name": "Eugeo",
   "types": [
    "ICE"
@@ -87976,8 +87976,8 @@
  },
  "EUGEO2": {
   "internalName": "EUGEO2",
-  "dexNumber": 711,
-  "name": "Eugeo2",
+  "dexNumber": 713,
+  "name": "Eugeo",
   "types": [
    "ICE"
   ],
@@ -88091,7 +88091,7 @@
  },
  "FUKA": {
   "internalName": "FUKA",
-  "dexNumber": 712,
+  "dexNumber": 714,
   "name": "Fuka",
   "types": [
    "FLYING"
@@ -88206,7 +88206,7 @@
  },
  "KIRITO": {
   "internalName": "KIRITO",
-  "dexNumber": 713,
+  "dexNumber": 715,
   "name": "Kirito",
   "types": [
    "DARK"
@@ -88331,8 +88331,8 @@
  },
  "KIRITO2": {
   "internalName": "KIRITO2",
-  "dexNumber": 714,
-  "name": "Kirito2",
+  "dexNumber": 716,
+  "name": "Kirito",
   "types": [
    "DARK",
    "STEEL"
@@ -88462,8 +88462,8 @@
  },
  "KIRITO3": {
   "internalName": "KIRITO3",
-  "dexNumber": 715,
-  "name": "Kirito3",
+  "dexNumber": 717,
+  "name": "Kirito",
   "types": [
    "DARK",
    "STEEL"
@@ -88593,7 +88593,7 @@
  },
  "KUREHA": {
   "internalName": "KUREHA",
-  "dexNumber": 716,
+  "dexNumber": 718,
   "name": "Kureha",
   "types": [
    "PSYCHIC"
@@ -88717,7 +88717,7 @@
  },
  "LEAFA": {
   "internalName": "LEAFA",
-  "dexNumber": 717,
+  "dexNumber": 719,
   "name": "Leafa",
   "types": [
    "GRASS",
@@ -88842,7 +88842,7 @@
  },
  "SUGUHA": {
   "internalName": "SUGUHA",
-  "dexNumber": 718,
+  "dexNumber": 720,
   "name": "Suguha",
   "types": [
    "GRASS",
@@ -88972,7 +88972,7 @@
  },
  "LIZ": {
   "internalName": "LIZ",
-  "dexNumber": 719,
+  "dexNumber": 721,
   "name": "Liz",
   "types": [
    "FIRE",
@@ -89087,7 +89087,7 @@
  },
  "LLENN": {
   "internalName": "LLENN",
-  "dexNumber": 720,
+  "dexNumber": 722,
   "name": "LLENN",
   "types": [
    "ROCK"
@@ -89201,7 +89201,7 @@
  },
  "LUX": {
   "internalName": "LUX",
-  "dexNumber": 721,
+  "dexNumber": 723,
   "name": "Lux",
   "types": [
    "FAIRY"
@@ -89316,7 +89316,7 @@
  },
  "PHILIA": {
   "internalName": "PHILIA",
-  "dexNumber": 722,
+  "dexNumber": 724,
   "name": "Philia",
   "types": [
    "DARK"
@@ -89430,7 +89430,7 @@
  },
  "PITOHUI": {
   "internalName": "PITOHUI",
-  "dexNumber": 723,
+  "dexNumber": 725,
   "name": "Pitohui",
   "types": [
    "DARK",
@@ -89560,7 +89560,7 @@
  },
  "PREMIERE": {
   "internalName": "PREMIERE",
-  "dexNumber": 724,
+  "dexNumber": 726,
   "name": "Premiere",
   "types": [
    "FAIRY",
@@ -89675,7 +89675,7 @@
  },
  "RAIN": {
   "internalName": "RAIN",
-  "dexNumber": 725,
+  "dexNumber": 727,
   "name": "Rain",
   "types": [
    "GROUND"
@@ -89799,8 +89799,8 @@
  },
  "RAIN2": {
   "internalName": "RAIN2",
-  "dexNumber": 726,
-  "name": "Rain2",
+  "dexNumber": 728,
+  "name": "Rain",
   "types": [
    "GROUND",
    "FAIRY"
@@ -89924,7 +89924,7 @@
  },
  "SACHI": {
   "internalName": "SACHI",
-  "dexNumber": 727,
+  "dexNumber": 729,
   "name": "Sachi",
   "types": [
    "NORMAL"
@@ -90053,7 +90053,7 @@
  },
  "SELKA": {
   "internalName": "SELKA",
-  "dexNumber": 728,
+  "dexNumber": 730,
   "name": "Selka",
   "types": [
    "NORMAL"
@@ -90182,7 +90182,7 @@
  },
  "SEVEN": {
   "internalName": "SEVEN",
-  "dexNumber": 729,
+  "dexNumber": 731,
   "name": "Seven",
   "types": [
    "FAIRY",
@@ -90312,7 +90312,7 @@
  },
  "SILICA": {
   "internalName": "SILICA",
-  "dexNumber": 730,
+  "dexNumber": 732,
   "name": "Silica",
   "types": [
    "FLYING",
@@ -90442,8 +90442,8 @@
  },
  "SILICA2": {
   "internalName": "SILICA2",
-  "dexNumber": 731,
-  "name": "Silica2",
+  "dexNumber": 733,
+  "name": "Silica",
   "types": [
    "FLYING",
    "DRAGON"
@@ -90573,7 +90573,7 @@
  },
  "SINON": {
   "internalName": "SINON",
-  "dexNumber": 732,
+  "dexNumber": 734,
   "name": "Sinon",
   "types": [
    "ICE",
@@ -90704,8 +90704,8 @@
  },
  "SINON2": {
   "internalName": "SINON2",
-  "dexNumber": 733,
-  "name": "Sinon2",
+  "dexNumber": 735,
+  "name": "Sinon",
   "types": [
    "ICE",
    "STEEL"
@@ -90835,7 +90835,7 @@
  },
  "STREA": {
   "internalName": "STREA",
-  "dexNumber": 734,
+  "dexNumber": 736,
   "name": "Strea",
   "types": [
    "FAIRY"
@@ -90965,7 +90965,7 @@
  },
  "YUI": {
   "internalName": "YUI",
-  "dexNumber": 735,
+  "dexNumber": 737,
   "name": "Yui",
   "types": [
    "PSYCHIC"
@@ -91080,7 +91080,7 @@
  },
  "YUI2": {
   "internalName": "YUI2",
-  "dexNumber": 736,
+  "dexNumber": 738,
   "name": "Yui2",
   "types": [
    "PSYCHIC",
@@ -91195,7 +91195,7 @@
  },
  "YUUKI": {
   "internalName": "YUUKI",
-  "dexNumber": 737,
+  "dexNumber": 739,
   "name": "Yuuki",
   "types": [
    "FIGHTING"
@@ -91324,7 +91324,7 @@
  },
  "YUNA": {
   "internalName": "YUNA",
-  "dexNumber": 738,
+  "dexNumber": 740,
   "name": "Yuna",
   "types": [
    "ICE",
@@ -91454,7 +91454,7 @@
  },
  "SENPAI": {
   "internalName": "SENPAI",
-  "dexNumber": 739,
+  "dexNumber": 741,
   "name": "Senpai",
   "types": [
    "NORMAL"
@@ -91569,7 +91569,7 @@
  },
  "KAMINA": {
   "internalName": "KAMINA",
-  "dexNumber": 740,
+  "dexNumber": 742,
   "name": "Kamina",
   "types": [
    "FIRE"
@@ -91684,7 +91684,7 @@
  },
  "YOKO": {
   "internalName": "YOKO",
-  "dexNumber": 741,
+  "dexNumber": 743,
   "name": "Yoko",
   "types": [
    "FIRE",
@@ -91814,7 +91814,7 @@
  },
  "MILIM": {
   "internalName": "MILIM",
-  "dexNumber": 742,
+  "dexNumber": 744,
   "name": "Milim",
   "types": [
    "DRAGON",
@@ -91935,7 +91935,7 @@
  },
  "RIMURU": {
   "internalName": "RIMURU",
-  "dexNumber": 743,
+  "dexNumber": 745,
   "name": "Rimuru",
   "types": [
    "WATER"
@@ -92050,7 +92050,7 @@
  },
  "SHION": {
   "internalName": "SHION",
-  "dexNumber": 744,
+  "dexNumber": 746,
   "name": "Shion",
   "types": [
    "DARK",
@@ -92176,7 +92176,7 @@
  },
  "SHUNA": {
   "internalName": "SHUNA",
-  "dexNumber": 745,
+  "dexNumber": 747,
   "name": "Shuna",
   "types": [
    "FAIRY"
@@ -92291,7 +92291,7 @@
  },
  "ENDORSI": {
   "internalName": "ENDORSI",
-  "dexNumber": 746,
+  "dexNumber": 748,
   "name": "Endorsi",
   "types": [
    "WATER"
@@ -92405,7 +92405,7 @@
  },
  "YURIHA": {
   "internalName": "YURIHA",
-  "dexNumber": 747,
+  "dexNumber": 749,
   "name": "Yuriha",
   "types": [
    "ICE",
@@ -92521,7 +92521,7 @@
  },
  "ACCELERATOR": {
   "internalName": "ACCELERATOR",
-  "dexNumber": 748,
+  "dexNumber": 750,
   "name": "Accelerator",
   "types": [
    "PSYCHIC"
@@ -92651,7 +92651,7 @@
  },
  "INDEX": {
   "internalName": "INDEX",
-  "dexNumber": 749,
+  "dexNumber": 751,
   "name": "Index",
   "types": [
    "NORMAL"
@@ -92766,7 +92766,7 @@
  },
  "LASTORDER": {
   "internalName": "LASTORDER",
-  "dexNumber": 750,
+  "dexNumber": 752,
   "name": "LastOrder",
   "types": [
    "ELECTRIC"
@@ -92881,7 +92881,7 @@
  },
  "MISAKA": {
   "internalName": "MISAKA",
-  "dexNumber": 751,
+  "dexNumber": 753,
   "name": "Misaka",
   "types": [
    "ELECTRIC",
@@ -93006,7 +93006,7 @@
  },
  "SHIRAI": {
   "internalName": "SHIRAI",
-  "dexNumber": 752,
+  "dexNumber": 754,
   "name": "Shirai",
   "types": [
    "PSYCHIC"
@@ -93125,7 +93125,7 @@
  },
  "DARKNESS": {
   "internalName": "DARKNESS",
-  "dexNumber": 753,
+  "dexNumber": 755,
   "name": "Darkness",
   "types": [
    "STEEL",
@@ -93250,7 +93250,7 @@
  },
  "KOTEGAWA": {
   "internalName": "KOTEGAWA",
-  "dexNumber": 754,
+  "dexNumber": 756,
   "name": "Kotegawa",
   "types": [
    "NORMAL"
@@ -93364,7 +93364,7 @@
  },
  "LALA": {
   "internalName": "LALA",
-  "dexNumber": 755,
+  "dexNumber": 757,
   "name": "Lala",
   "types": [
    "ELECTRIC",
@@ -93480,7 +93480,7 @@
  },
  "MEA": {
   "internalName": "MEA",
-  "dexNumber": 756,
+  "dexNumber": 758,
   "name": "Mea",
   "types": [
    "GRASS"
@@ -93600,7 +93600,7 @@
  },
  "MIKAN": {
   "internalName": "MIKAN",
-  "dexNumber": 757,
+  "dexNumber": 759,
   "name": "Mikan",
   "types": [
    "NORMAL"
@@ -93729,7 +93729,7 @@
  },
  "MOMOTOLOVERU": {
   "internalName": "MOMOTOLOVERU",
-  "dexNumber": 758,
+  "dexNumber": 760,
   "name": "MomoToLoveRu",
   "types": [
    "GRASS",
@@ -93844,7 +93844,7 @@
  },
  "NANATOLOVERU": {
   "internalName": "NANATOLOVERU",
-  "dexNumber": 759,
+  "dexNumber": 761,
   "name": "NanaToLoveRu",
   "types": [
    "WATER",
@@ -93975,7 +93975,7 @@
  },
  "RUN": {
   "internalName": "RUN",
-  "dexNumber": 760,
+  "dexNumber": 762,
   "name": "Run",
   "types": [
    "BUG"
@@ -94105,7 +94105,7 @@
  },
  "SAIRENJI": {
   "internalName": "SAIRENJI",
-  "dexNumber": 761,
+  "dexNumber": 763,
   "name": "Sairenji",
   "types": [
    "NORMAL"
@@ -94220,7 +94220,7 @@
  },
  "TEARJU": {
   "internalName": "TEARJU",
-  "dexNumber": 762,
+  "dexNumber": 764,
   "name": "Tearju",
   "types": [
    "PSYCHIC"
@@ -94335,7 +94335,7 @@
  },
  "TAIGA2": {
   "internalName": "TAIGA2",
-  "dexNumber": 763,
+  "dexNumber": 765,
   "name": "Taiga",
   "types": [
    "FIGHTING"
@@ -94460,7 +94460,7 @@
  },
  "ARATA": {
   "internalName": "ARATA",
-  "dexNumber": 764,
+  "dexNumber": 766,
   "name": "Arata",
   "types": [
    "FIRE"
@@ -94575,7 +94575,7 @@
  },
  "YUITRINITY": {
   "internalName": "YUITRINITY",
-  "dexNumber": 765,
+  "dexNumber": 767,
   "name": "YuiTrinity",
   "types": [
    "PSYCHIC"
@@ -94705,7 +94705,7 @@
  },
  "AKIHA": {
   "internalName": "AKIHA",
-  "dexNumber": 766,
+  "dexNumber": 768,
   "name": "Akiha",
   "types": [
    "DARK",
@@ -94835,7 +94835,7 @@
  },
  "ARCUEID": {
   "internalName": "ARCUEID",
-  "dexNumber": 767,
+  "dexNumber": 769,
   "name": "Arcueid",
   "types": [
    "DARK",
@@ -94950,7 +94950,7 @@
  },
  "CIEL": {
   "internalName": "CIEL",
-  "dexNumber": 768,
+  "dexNumber": 770,
   "name": "Ciel",
   "types": [
    "FIGHTING"
@@ -95079,7 +95079,7 @@
  },
  "HISUI": {
   "internalName": "HISUI",
-  "dexNumber": 769,
+  "dexNumber": 771,
   "name": "Hisui",
   "types": [
    "NORMAL"
@@ -95193,7 +95193,7 @@
  },
  "KOHAKU": {
   "internalName": "KOHAKU",
-  "dexNumber": 770,
+  "dexNumber": 772,
   "name": "Kohaku",
   "types": [
    "GRASS"
@@ -95322,7 +95322,7 @@
  },
  "NEKOARC": {
   "internalName": "NEKOARC",
-  "dexNumber": 771,
+  "dexNumber": 773,
   "name": "NekoArc",
   "types": [
    "FAIRY",
@@ -95433,12 +95433,12 @@
   "enemyY": 17,
   "evo": "",
   "role": "Speedster",
-  "series": "Tsukihime",
+  "series": "Legendary",
   "legendary": true
  },
  "TOHNOSHIKI": {
   "internalName": "TOHNOSHIKI",
-  "dexNumber": 772,
+  "dexNumber": 774,
   "name": "TohnoShiki",
   "types": [
    "GHOST"
@@ -95567,7 +95567,7 @@
  },
  "TSUKI": {
   "internalName": "TSUKI",
-  "dexNumber": 773,
+  "dexNumber": 775,
   "name": "Tsuki",
   "types": [
    "NORMAL"
@@ -95681,7 +95681,7 @@
  },
  "UZAKICHAN": {
   "internalName": "UZAKICHAN",
-  "dexNumber": 774,
+  "dexNumber": 776,
   "name": "Uzaki-chan",
   "types": [
    "NORMAL"
@@ -95810,7 +95810,7 @@
  },
  "MIYUWAKE": {
   "internalName": "MIYUWAKE",
-  "dexNumber": 775,
+  "dexNumber": 777,
   "name": "MiyuWake",
   "types": [
    "FAIRY"
@@ -95939,7 +95939,7 @@
  },
  "ADELE": {
   "internalName": "ADELE",
-  "dexNumber": 776,
+  "dexNumber": 778,
   "name": "Adele",
   "types": [
    "NORMAL"
@@ -96068,7 +96068,7 @@
  },
  "HANA": {
   "internalName": "HANA",
-  "dexNumber": 777,
+  "dexNumber": 779,
   "name": "Hana",
   "types": [
    "FAIRY"
@@ -96198,7 +96198,7 @@
  },
  "HINATA": {
   "internalName": "HINATA",
-  "dexNumber": 778,
+  "dexNumber": 780,
   "name": "Hinata",
   "types": [
    "FAIRY"
@@ -96312,7 +96312,7 @@
  },
  "KANON": {
   "internalName": "KANON",
-  "dexNumber": 779,
+  "dexNumber": 781,
   "name": "Kanon",
   "types": [
    "FAIRY"
@@ -96427,7 +96427,7 @@
  },
  "KOYORI": {
   "internalName": "KOYORI",
-  "dexNumber": 780,
+  "dexNumber": 782,
   "name": "Koyori",
   "types": [
    "FAIRY"
@@ -96542,7 +96542,7 @@
  },
  "MIYAKO": {
   "internalName": "MIYAKO",
-  "dexNumber": 781,
+  "dexNumber": 783,
   "name": "Miyako",
   "types": [
    "POISON"
@@ -96656,7 +96656,7 @@
  },
  "NOA": {
   "internalName": "NOA",
-  "dexNumber": 782,
+  "dexNumber": 784,
   "name": "Noa",
   "types": [
    "FAIRY"
@@ -96781,7 +96781,7 @@
  },
  "HARUKA": {
   "internalName": "HARUKA",
-  "dexNumber": 783,
+  "dexNumber": 785,
   "name": "Haruka",
   "types": [
    "NORMAL"
@@ -96911,7 +96911,7 @@
  },
  "NAO": {
   "internalName": "NAO",
-  "dexNumber": 784,
+  "dexNumber": 786,
   "name": "Nao",
   "types": [
    "NORMAL"
@@ -97041,7 +97041,7 @@
  },
  "SORA": {
   "internalName": "SORA",
-  "dexNumber": 785,
+  "dexNumber": 787,
   "name": "Sora",
   "types": [
    "NORMAL"
@@ -97155,7 +97155,7 @@
  },
  "TANYA": {
   "internalName": "TANYA",
-  "dexNumber": 786,
+  "dexNumber": 788,
   "name": "Tanya",
   "types": [
    "FLYING"
@@ -97284,7 +97284,7 @@
  },
  "ZERO": {
   "internalName": "ZERO",
-  "dexNumber": 787,
+  "dexNumber": 789,
   "name": "Zero",
   "types": [
    "DARK",
@@ -97399,7 +97399,7 @@
  },
  "CHARLOTTE": {
   "internalName": "CHARLOTTE",
-  "dexNumber": 788,
+  "dexNumber": 790,
   "name": "Charlotte",
   "types": [
    "ICE"
@@ -97513,7 +97513,7 @@
  },
  "HENRIETTA": {
   "internalName": "HENRIETTA",
-  "dexNumber": 789,
+  "dexNumber": 791,
   "name": "Henrietta",
   "types": [
    "WATER"
@@ -97627,7 +97627,7 @@
  },
  "LOUISE": {
   "internalName": "LOUISE",
-  "dexNumber": 790,
+  "dexNumber": 792,
   "name": "Louise",
   "types": [
    "FIRE"
@@ -97756,7 +97756,7 @@
  },
  "SIESTA": {
   "internalName": "SIESTA",
-  "dexNumber": 791,
+  "dexNumber": 793,
   "name": "Siesta",
   "types": [
    "NORMAL"
@@ -97870,7 +97870,7 @@
  },
  "JIN": {
   "internalName": "JIN",
-  "dexNumber": 792,
+  "dexNumber": 794,
   "name": "Jin",
   "types": [
    "STEEL",
@@ -97985,7 +97985,7 @@
  },
  "SAKURAZOMBIE": {
   "internalName": "SAKURAZOMBIE",
-  "dexNumber": 793,
+  "dexNumber": 795,
   "name": "SakuraZombie",
   "types": [
    "GHOST",
@@ -98100,7 +98100,7 @@
  },
  "YUGIRI": {
   "internalName": "YUGIRI",
-  "dexNumber": 794,
+  "dexNumber": 796,
   "name": "Yugiri",
   "types": [
    "GHOST",
@@ -98230,7 +98230,7 @@
  },
  "AE86": {
   "internalName": "AE86",
-  "dexNumber": 795,
+  "dexNumber": 797,
   "name": "AE86",
   "types": [
    "STEEL"
@@ -98360,7 +98360,7 @@
  },
  "ELHERMANO": {
   "internalName": "ELHERMANO",
-  "dexNumber": 796,
+  "dexNumber": 798,
   "name": "ELHERMANO",
   "types": [
    "FIRE",
@@ -98476,7 +98476,7 @@
  },
  "GUOBA": {
   "internalName": "GUOBA",
-  "dexNumber": 797,
+  "dexNumber": 799,
   "name": "Guoba",
   "types": [
    "FIRE"
@@ -98606,7 +98606,7 @@
  },
  "ILLYABEAST": {
   "internalName": "ILLYABEAST",
-  "dexNumber": 798,
+  "dexNumber": 800,
   "name": "IllyaBeast",
   "types": [
    "PSYCHIC",
@@ -98737,7 +98737,7 @@
  },
  "MEKAELI": {
   "internalName": "MEKAELI",
-  "dexNumber": 799,
+  "dexNumber": 801,
   "name": "MekaEli",
   "types": [
    "STEEL",
@@ -98868,7 +98868,7 @@
  },
  "MEKAELIMK2": {
   "internalName": "MEKAELIMK2",
-  "dexNumber": 800,
+  "dexNumber": 802,
   "name": "MekaEliMK2",
   "types": [
    "STEEL",
@@ -98984,7 +98984,7 @@
  },
  "TAMAMOMAID": {
   "internalName": "TAMAMOMAID",
-  "dexNumber": 801,
+  "dexNumber": 803,
   "name": "TamamoMaid",
   "types": [
    "FIRE",
@@ -99115,7 +99115,7 @@
  },
  "BUFFEDDAWEI": {
   "internalName": "BUFFEDDAWEI",
-  "dexNumber": 802,
+  "dexNumber": 804,
   "name": "Buffed Da Wei",
   "types": [
    "FAIRY",
@@ -99244,7 +99244,7 @@
  },
  "OBERON": {
   "internalName": "OBERON",
-  "dexNumber": 805,
+  "dexNumber": 279,
   "name": "Oberon",
   "types": [
    "BUG"
@@ -99344,7 +99344,7 @@
   "kind": "Fairy King",
   "dex": "The king of the fairies, who rules the Brittish forest with a carefree smile. From Fate. A Special Attacker Pokémon.",
   "height": 1.6,
-  "weight": 38.0,
+  "weight": 38,
   "playerY": -7,
   "enemyY": 3,
   "evo": "",
@@ -99354,7 +99354,7 @@
  },
  "OBERON2": {
   "internalName": "OBERON2",
-  "dexNumber": 806,
+  "dexNumber": 280,
   "name": "Oberon",
   "types": [
    "BUG",
@@ -99455,7 +99455,7 @@
   "kind": "Fairy King",
   "dex": "Its darker, true form that hides beneath the smile. It toys with its prey through illusions and curses. From Fate. A Special Attacker Pokémon.",
   "height": 1.8,
-  "weight": 42.0,
+  "weight": 42,
   "playerY": -7,
   "enemyY": 3,
   "evo": "",

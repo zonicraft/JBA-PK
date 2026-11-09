@@ -2,16 +2,27 @@ the tips on the starting room are not correct and the pc doesnt work
 some items dont have icons
 bike icon instead of skateboard
 on miss mushrooms the player still mentions the 1st pokemon in the party instead of the starter choosen
-remove the underground entrances, its not needed
 
 some places are not using the correct fight backgrounds
 can you add more trainer variety? grab assets from the essential project and change some of the already placed npcs
 
 special music for some battles
 
-no oberon on nels team need to add the pokemon, will be in heracles place
+change how cries work
 
-place legendaries
+summer stone
+
+limit islands explorable zones
+
+the map position for the island 7 is not correct so the teleport doesnt work properly
+
+island 7 has a mart that sshould not have
+
+island 3 has an empty cave lets remove it three island path
+
+berry forest doesnt have a fade animation to enter
+
+the vermillion ferry tp should put the player 2 tiles up
 
 place remaining mega stones
 
@@ -26,8 +37,6 @@ pokemall doesnt have the correct npcs
 the islands dont have the correct pokecenter interiors
 
 theres innacessible routes on the map
-
-missing right side of the map (tsunami lore)
 
 theres routes with trainers missing 20 and 19, islands and a bunch more cerulean cave and league
 

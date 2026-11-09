@@ -327,7 +327,8 @@ function ledgeJump(p, d) {
   if (!m || !(dx || dy)) return false;
   const nx = p.x + dx, ny = p.y + dy, lx = nx + dx, ly = ny + dy;
   if (lx < 0 || ly < 0 || lx >= m.w || ly >= m.h) return false;
-  if (terrainTagAt(nx, ny) !== 1 || m.tsId !== 1) return false;
+  if (terrainTagAt(nx, ny) !== 1 || ![1, 6].includes(m.tsId)) return false;   // outdoor + cave (Tanoby Key) tilesets
+  if (dx && m.tsId !== 1) return false;                                              // cave ledges are down-only
   // sideways hops only over vertical ledge walls (the tile above or below is a ledge too)
   if (dx && terrainTagAt(nx, ny - 1) !== 1 && terrainTagAt(nx, ny + 1) !== 1) return false;
   // ...and each vertical wall only one way: you hop towards the side where the cliff face is drawn: tiles 1205/1206/1214 left to right, tiles 1202/1203/1210 right to left

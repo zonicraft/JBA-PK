@@ -609,7 +609,7 @@ function* runBattle(B) {
 function* evolveScene(list) {
   for (const p of list) {
     const to = evoTarget(p); if (!to) continue;
-    const oldKey = String(D.SP[p.sym].id).padStart(3, '0'), newKey = String(D.SP[to].id).padStart(3, '0');
+    const oldKey = sprKey(D.SP[p.sym]), newKey = sprKey(D.SP[to]);
     for (let w = 0; w < 120 && !(img('battlers', oldKey) && img('battlers', newKey)); w++) yield;   // sprites missing from the manifest load lazily: wait for them
     let oldIm = img('battlers', oldKey), newIm = img('battlers', newKey) || oldIm;
     const S = { k: 0, im: oldIm, white: 0 };

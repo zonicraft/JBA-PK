@@ -15,7 +15,7 @@ function dexList() {
 const DEX_BASE = '#585850', DEX_SHADOW = '#a8b8b8', DEX_ROWS = 10;
 function dexPic(n, x, y) { const im = img('pictures', 'pokedex/' + n); if (im) ctx.drawImage(im, x, y); return im; }
 function dexSprite(sym, cx, cy, size) {
-  const sp = D.SP[sym], key = String(sp.id).padStart(3, '0'), im = img('battlers', key); if (!im) return;
+  const sp = D.SP[sym], key = sprKey(sp), im = img('battlers', key); if (!im) return;
   drawFitted(im, cx - size / 2, cy - size / 2, size, size, key);
 }
 // squares of the region map where a species can be found (from the encounter tables + MapPosition/MapSize metadata)
@@ -54,7 +54,7 @@ function dexDrawArea(e, sp) {
 }
 function dexDrawForms(e, sp) {
   dexPic('bg_forms', 0, 0);
-  const f = img('battlers', String(sp.id).padStart(3, '0')), b = img('battlers', String(sp.id).padStart(3, '0') + 'b');
+  const f = img('battlers', sprKey(sp)), b = img('battlers', sprKeyBack(sp));
   if (f) drawFitted(f, 130 - 88, 158 - 88, 176, 176, String(sp.id));
   if (b) drawFitted(b, 382 - 88, 256 - 176, 176, 176, String(sp.id) + 'b');
   drawIcon({ sym: e.sym }, 50, 288, false);
