@@ -95428,6 +95428,122 @@
   "series": "Tsukihime",
   "legendary": true
  },
+ "NIOMUS": {
+  "internalName": "NIOMUS",
+  "dexNumber": 824,
+  "name": "Niomus",
+  "types": [
+   "FLYING",
+   "GRASS"
+  ],
+  "baseStats": {
+   "HP": 90,
+   "Attack": 85,
+   "Defense": 90,
+   "Speed": 110,
+   "SpAtk": 125,
+   "SpDef": 100
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Slow",
+  "baseExp": 306,
+  "catchRate": 3,
+  "baseHappiness": 0,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 3,
+   "SpDef": 0
+  },
+  "abilities": [
+   "CHLOROPHYLL"
+  ],
+  "hiddenAbility": "SAPSIPPER",
+  "levelUpMoves": [
+   {
+    "level": 1,
+    "move": "GUST",
+    "moveName": "Gust"
+   },
+   {
+    "level": 1,
+    "move": "MAGICALLEAF",
+    "moveName": "Magical Leaf"
+   },
+   {
+    "level": 4,
+    "move": "AIRCUTTER",
+    "moveName": "Air Cutter"
+   },
+   {
+    "level": 10,
+    "move": "REST",
+    "moveName": "Rest"
+   },
+   {
+    "level": 16,
+    "move": "OBLIVIONWING",
+    "moveName": "Oblivion Wing"
+   },
+   {
+    "level": 21,
+    "move": "APPLEACID",
+    "moveName": "Apple Acid"
+   },
+   {
+    "level": 27,
+    "move": "FLASHCANNON",
+    "moveName": "Flash Cannon"
+   },
+   {
+    "level": 33,
+    "move": "CALMMIND",
+    "moveName": "Calm Mind"
+   },
+   {
+    "level": 39,
+    "move": "TAILWIND",
+    "moveName": "Tailwind"
+   },
+   {
+    "level": 45,
+    "move": "SECRETSWORD",
+    "moveName": "Secret Sword"
+   },
+   {
+    "level": 51,
+    "move": "ENERGYBALL",
+    "moveName": "Energy Ball"
+   },
+   {
+    "level": 56,
+    "move": "EARTHPOWER",
+    "moveName": "Earth Power"
+   },
+   {
+    "level": 62,
+    "move": "AEROBLAST",
+    "moveName": "Aeroblast"
+   },
+   {
+    "level": 68,
+    "move": "HURRICANE",
+    "moveName": "Hurricane"
+   }
+  ],
+  "kind": "Crimson Sovereign",
+  "dex": "A legendary winged girl who sleeps among the oldest trees. When the wind turns, her crimson wings unfurl and the whole forest answers her.",
+  "height": 1.5,
+  "weight": 42,
+  "playerY": -7,
+  "enemyY": 17,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "MagsTheOC",
+  "legendary": true
+ },
  "TOHNOSHIKI": {
   "internalName": "TOHNOSHIKI",
   "dexNumber": 791,
@@ -99107,7 +99223,7 @@
  },
  "BUFFEDDAWEI": {
   "internalName": "BUFFEDDAWEI",
-  "dexNumber": 824,
+  "dexNumber": 900,
   "name": "Buffed Da Wei",
   "types": [
    "FAIRY",
@@ -101428,7 +101544,7 @@
  },
  "JORGE": {
   "internalName": "JORGE",
-  "dexNumber": 825,
+  "dexNumber": 901,
   "name": "Jorge",
   "types": [
    "FIGHTING",
@@ -101513,7 +101629,7 @@
  },
  "GOKU": {
   "internalName": "GOKU",
-  "dexNumber": 826,
+  "dexNumber": 902,
   "name": "Goku",
   "types": [
    "FIGHTING",

@@ -14,11 +14,7 @@ change the capture rate so its easier to capture the earlier pokemon and harder 
 
 all the trainers have to have their pokemon checked, unless they are in an interior, for those you have to ask, they should always use pokemon from their route and routes nearby
 
-theres routes with trainers missing 20 and 19, islands and a bunch more cerulean cave and league
-
 check the mansion and quest to buy it maybe scrap
-
-add niomus and change eves place
 
 check dialogue
 
@@ -28,23 +24,26 @@ playtest of the game :)
 
 real pc and mobile release
 
-remove the dotted hole maps ou usar para alguma coisa
-
-remove the grass from map 299 should not have wild encounters on the map
-
-Routes with no trainers (all have wild encounters):
-
-
-Caves, towers and dungeons:
-
-Rock Tunnel, Pokémon Tower (5 floors), Victory Road, Altering Cave.
-Also Green Path, Pattern Bush, Canyon Entrance, Sevault Canyon, Berry Forest, Bond Bridge, Ruin Valley and Kindle Road.
-
 Island towns and areas (Two Island through Seven Island):
 
-Two, Three, Four, Five, Six and Seven Island; Resort Gorgeous; Treasure Beach; Five Isle Meadow;
+Two, Three, Four,  Six and Seven Island; 
+
 
 
 
 done
-Route  8, 12, 13, 14, 15, 19, 20, 22 and 23. The Route 28 maps (349, 1083, 1084) too.
+Victory Road,
+Rock Tunnel,
+Green Path
+Pattern Bush,
+Canyon Entrance,
+Sevault Canyon
+Berry Forest
+Bond Bridge
+Ruin Valley
+Kindle Road
+gym 8
+Five,
+rocket hideout on 5 island
+Treasure Beach
+Resort Gorgeous; 

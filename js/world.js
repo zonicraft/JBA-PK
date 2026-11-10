@@ -328,13 +328,13 @@ function ledgeJump(p, d) {
   const nx = p.x + dx, ny = p.y + dy, lx = nx + dx, ly = ny + dy;
   if (lx < 0 || ly < 0 || lx >= m.w || ly >= m.h) return false;
   if (terrainTagAt(nx, ny) !== 1 || ![1, 6].includes(m.tsId)) return false;   // outdoor + cave (Tanoby Key) tilesets
-  if (dx && m.tsId !== 1) return false;                                              // cave ledges are down-only
+  if (dx && m.tsId !== 1 && m.tsId !== 6) return false;                              // cave ledges are down-only (the Dotted Hole, tileset 6, also has a sideways wall)
   // sideways hops only over vertical ledge walls (the tile above or below is a ledge too)
   if (dx && terrainTagAt(nx, ny - 1) !== 1 && terrainTagAt(nx, ny + 1) !== 1) return false;
   // ...and each vertical wall only one way: you hop towards the side where the cliff face is drawn: tiles 1205/1206/1214 left to right, tiles 1202/1203/1210 right to left
   if (dx) {
     let ids = []; for (let z = 0; z < 3; z++) ids.push(m.data[nx + ny * m.w + z * m.w * m.h]);
-    const R = [1205, 1206, 1214, 1285, 1286, 1294], Lf = [1202, 1203, 1210, 1282, 1283, 1290];   // second set: the grey Mt. Ember cliff variant
+    const R = [1205, 1206, 1214, 1285, 1286, 1294], Lf = [1202, 1203, 1210, 1282, 1283, 1290].concat(m.tsId === 6 ? [1161] : []);   // second set: the grey Mt. Ember cliff variant
     if (dx > 0 ? !ids.some(t => R.includes(t)) : !ids.some(t => Lf.includes(t))) return false;
   }
   if (!p.passableTile(lx, ly, { 2: 8, 4: 6, 6: 4 }[d])) return false;

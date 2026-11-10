@@ -860,6 +860,16 @@ class Interp {
       }
       playSE('PC_close'); return;
     }
+    if (s.startsWith('pbShowBraille(')) {      // Dotted Hole door: opened with the Katana (Braille puzzle replaced)
+      if (!(G.items.KATANA > 0)) { yield* showMessage('The dots seem to spell something, but you cannot read them.\nPerhaps something sharp would help...'); return; }
+      yield* showMessage('The dots look like they spell "CUT".', { noWait: false });
+      yield* showMessage('Would you like to cut the door open?', { noWait: true });
+      const i = yield* showChoices(['Yes', 'No'], 2);
+      if (i !== 0) return;
+      yield* showMessage('\\PN used the Manyullyn Katana!', { noWait: true }); playSE('Cut'); for (let k = 0; k < 40; k++) yield; G.msg = null;
+      if (this.ev) { G.selfsw[selfKey(evMapId(this.ev), this.ev.id, 'A')] = true; G.refresh = true; }
+      return;
+    }
     if (s === 'pbCaveEntrance' || s === 'pbCaveExit') return;
     if (typeof worldScript === 'function' && (yield* worldScript(this, s))) return;
     console.warn('unhandled script:', s);

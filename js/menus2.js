@@ -515,6 +515,16 @@ const CHEAT_CITIES = [
   ['CINNABAR ISLAND', 264, 20, 12],
   ['INDIGO PLATEAU', 317, 13, 7],
 ];
+function* cheatTeleportXY() {   // type map id, then x and y (blank x/y = map centre)
+  const ms = yield* promptName('Map ID?', String(G.mapId || ''), 4); const id = parseInt(ms, 10);
+  if (!(id >= 0) || !window.MAPS || !window.MAPS[id]) { if (ms !== null && ms !== undefined && String(ms).trim() !== '') yield* uiMessage('Map ' + ms + ' does not exist.'); return; }
+  const m = window.MAPS[id];
+  const xs = yield* promptName('X? (0-' + (m.w - 1) + ')', '', 3), ys = yield* promptName('Y? (0-' + (m.h - 1) + ')', '', 3);
+  let x = parseInt(xs, 10), y = parseInt(ys, 10);
+  if (!(x >= 0)) x = m.w >> 1; if (!(y >= 0)) y = m.h >> 1;
+  x = Math.min(m.w - 1, x); y = Math.min(m.h - 1, y);
+  G.teleReq = { map: id, x, y };
+}
 function* cheatTeleport() {   // opens the town map; picking a city + confirming sets G.teleReq, and openPause runs the transfer
   yield* townMapScreen({ teleport: true });
 }
@@ -522,7 +532,7 @@ function* cheatTeleport() {   // opens the town map; picking a city + confirming
 function cheatsEnabled() { try { return /[?&#]cheats=(1|true|on)\b/i.test(location.href); } catch (e) { return false; } }
 function* cheatsMenu() {
   if (!cheatsEnabled()) return;
-  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'TELEPORT TO CITY', 'GIVE ITEM', 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'), 'FILL PC WITH ALL', 'CANCEL'];
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'TELEPORT TO CITY', 'GIVE ITEM', 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'), 'FILL PC WITH ALL', 'TELEPORT TO MAP ID', 'CANCEL'];
   const CANCEL = labels.length - 1;
   let idx = 0;
   while (true) {
@@ -551,6 +561,7 @@ function* cheatsMenu() {
     else if (r === 6) { yield* cheatTeleport(); if (G.teleReq) return; }
     else if (r === 7) { yield* cheatGiveItem(); }
     else if (r === 9) { yield* cheatFillPC(); }
+    else if (r === 10) { yield* cheatTeleportXY(); if (G.teleReq) return; }
     else if (r === 8) { G.noclip = !G.noclip; labels[8] = 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'); sfx('ok'); }
   }
 }
