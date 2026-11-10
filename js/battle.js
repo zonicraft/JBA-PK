@@ -448,7 +448,7 @@ function* throwBall(key) {
   const bid = { POKEBALL: 0, GREATBALL: 1, SAFARIBALL: 2, ULTRABALL: 3, MASTERBALL: 4 }[key] || 0;   // Essentials $BallTypes numbering (picture ball_0N)
   // ---- catch roll (kept as before) ----
   const sh = D.SP[foe.sym], stat = foe.status === 'SLP' || foe.status === 'FRZ' ? 2 : foe.status ? 1.5 : 1;
-  const a = Math.min(255, ((3 * foe.maxhp - 2 * foe.hp) * Math.max(sh.catch, 120) * mul) / (3 * foe.maxhp) * stat * 1.5);   // forgiving catch rate
+  const a = Math.min(255, ((3 * foe.maxhp - 2 * foe.hp) * sh.catch * mul) / (3 * foe.maxhp) * stat * 1.5);   // species catch rate (set per species by how early it is found: easy early, hard late); the x1.5 stays forgiving
   let shakes = 0;
   if (key === 'MASTERBALL' || a >= 255) shakes = 4;
   else { const bb = Math.floor(1048560 / Math.floor(Math.sqrt(Math.floor(Math.sqrt(16711680 / a))))); for (let i = 0; i < 4; i++) { if (rnd(65536) < bb) shakes++; else break; } }

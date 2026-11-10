@@ -17,7 +17,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 64,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -147,7 +147,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -276,7 +276,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -401,7 +401,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 62,
-  "catchRate": 30,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -531,7 +531,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -661,7 +661,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -785,7 +785,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -910,7 +910,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -1029,7 +1029,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -1144,7 +1144,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -1264,7 +1264,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -1389,7 +1389,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -1518,7 +1518,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -1632,7 +1632,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -1751,7 +1751,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -1865,7 +1865,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -1996,7 +1996,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -2121,7 +2121,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -2247,7 +2247,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 1,
@@ -2372,7 +2372,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -2497,7 +2497,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -2626,7 +2626,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -2756,7 +2756,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -2882,7 +2882,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -3012,7 +3012,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -3141,7 +3141,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -3270,7 +3270,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -3384,7 +3384,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -3513,7 +3513,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -3643,7 +3643,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -3759,7 +3759,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -3885,7 +3885,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -4011,7 +4011,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -4141,7 +4141,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -4256,7 +4256,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -4371,7 +4371,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -4486,7 +4486,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -4611,7 +4611,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -4740,7 +4740,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -4865,7 +4865,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -4995,7 +4995,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -5109,7 +5109,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -5234,7 +5234,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -5358,7 +5358,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -5472,7 +5472,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -5596,7 +5596,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -5722,7 +5722,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -5837,7 +5837,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -5958,7 +5958,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -6084,7 +6084,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -6210,7 +6210,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -6325,7 +6325,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -6441,7 +6441,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -6572,7 +6572,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -6697,7 +6697,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -6823,7 +6823,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -6944,7 +6944,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 236,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -7060,7 +7060,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -7186,7 +7186,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -7307,7 +7307,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -7427,7 +7427,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -7543,7 +7543,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -7659,7 +7659,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -7779,7 +7779,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -7905,7 +7905,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -8026,7 +8026,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -8152,7 +8152,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -8282,7 +8282,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -8413,7 +8413,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -8537,7 +8537,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -8662,7 +8662,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -8776,7 +8776,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -8901,7 +8901,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -9016,7 +9016,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -9132,7 +9132,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -9257,7 +9257,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -9373,7 +9373,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -9498,7 +9498,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -9623,7 +9623,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -9738,7 +9738,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -9868,7 +9868,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -9988,7 +9988,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -10103,7 +10103,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -10233,7 +10233,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 62,
-  "catchRate": 190,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -10348,7 +10348,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 2,
@@ -10474,7 +10474,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -10589,7 +10589,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -10704,7 +10704,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -10820,7 +10820,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -10935,7 +10935,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -11051,7 +11051,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -11167,7 +11167,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -11291,7 +11291,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -11410,7 +11410,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -11525,7 +11525,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -11656,7 +11656,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -11787,7 +11787,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 236,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -11902,7 +11902,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -12022,7 +12022,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -12143,7 +12143,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -12257,7 +12257,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 25,
+  "catchRate": 201,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -12372,7 +12372,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 118,
-  "catchRate": 25,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -12487,7 +12487,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -12611,7 +12611,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -12737,7 +12737,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -12863,7 +12863,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -12978,7 +12978,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -13103,7 +13103,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -13223,7 +13223,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -13338,7 +13338,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -13453,7 +13453,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -13569,7 +13569,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -13685,7 +13685,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -13800,7 +13800,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -13915,7 +13915,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -14046,7 +14046,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -14172,7 +14172,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -14303,7 +14303,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -14429,7 +14429,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 30,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -14555,7 +14555,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 118,
-  "catchRate": 25,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -14681,7 +14681,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -14797,7 +14797,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 118,
-  "catchRate": 25,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -14927,7 +14927,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -15043,7 +15043,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -15168,7 +15168,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -15282,7 +15282,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -15396,7 +15396,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -15511,7 +15511,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -15636,7 +15636,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -15766,7 +15766,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -15896,7 +15896,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 2,
@@ -16011,7 +16011,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -16141,7 +16141,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -16267,7 +16267,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 208,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -16391,7 +16391,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 184,
-  "catchRate": 45,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -16520,7 +16520,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -16650,7 +16650,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 70,
   "evYield": {
    "HP": 1,
@@ -16781,7 +16781,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -16911,7 +16911,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -17026,7 +17026,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -17156,7 +17156,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -17287,7 +17287,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -17402,7 +17402,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -17527,7 +17527,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -17652,7 +17652,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -17767,7 +17767,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -17882,7 +17882,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -17996,7 +17996,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -18111,7 +18111,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 208,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -18225,7 +18225,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -18340,7 +18340,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -18470,7 +18470,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -18600,7 +18600,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -18729,7 +18729,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -18858,7 +18858,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -18972,7 +18972,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -19102,7 +19102,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -19231,7 +19231,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -19360,7 +19360,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -19489,7 +19489,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -19619,7 +19619,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -19750,7 +19750,7 @@
   "gender": "Genderless",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 123,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -19880,7 +19880,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -20011,7 +20011,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -20142,7 +20142,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -20272,7 +20272,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -20387,7 +20387,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -20503,7 +20503,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -20634,7 +20634,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -20764,7 +20764,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -20894,7 +20894,7 @@
   "gender": "Genderless",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 2,
@@ -21025,7 +21025,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 208,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -21155,7 +21155,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -21285,7 +21285,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -21416,7 +21416,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -21547,7 +21547,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -21677,7 +21677,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -21808,7 +21808,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -21938,7 +21938,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -22068,7 +22068,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -22193,7 +22193,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -22437,7 +22437,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -22568,7 +22568,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -22698,7 +22698,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -22829,7 +22829,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -22945,7 +22945,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -23076,7 +23076,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 2,
@@ -23191,7 +23191,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 123,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -23322,7 +23322,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -23453,7 +23453,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -23568,7 +23568,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -23683,7 +23683,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -24453,7 +24453,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -24568,7 +24568,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -24698,7 +24698,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -24814,7 +24814,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -24929,7 +24929,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -25044,7 +25044,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -25158,7 +25158,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -25287,7 +25287,7 @@
   "gender": "Genderless",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -25418,7 +25418,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -25542,7 +25542,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -25672,7 +25672,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -25788,7 +25788,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -25918,7 +25918,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -26049,7 +26049,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -26165,7 +26165,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -26296,7 +26296,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -26412,7 +26412,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 118,
-  "catchRate": 25,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -26542,7 +26542,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -26672,7 +26672,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -26803,7 +26803,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -26934,7 +26934,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -27064,7 +27064,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 2,
@@ -27179,7 +27179,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -27295,7 +27295,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -27426,7 +27426,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -27542,7 +27542,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -27658,7 +27658,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 247,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -27789,7 +27789,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -27905,7 +27905,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -28021,7 +28021,7 @@
   "gender": "Female50Percent",
   "growthRate": "Fast",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -28136,7 +28136,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -28252,7 +28252,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -28383,7 +28383,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -28498,7 +28498,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 2,
@@ -28614,7 +28614,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -28745,7 +28745,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -28869,7 +28869,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 175,
-  "catchRate": 60,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -28983,7 +28983,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -29113,7 +29113,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -29228,7 +29228,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -29358,7 +29358,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -29473,7 +29473,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -29604,7 +29604,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -29734,7 +29734,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -29864,7 +29864,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -29978,7 +29978,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -30093,7 +30093,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -30224,7 +30224,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -30339,7 +30339,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -30469,7 +30469,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -30583,7 +30583,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -30713,7 +30713,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -30843,7 +30843,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 118,
-  "catchRate": 25,
+  "catchRate": 45,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -30973,7 +30973,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -31103,7 +31103,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -31218,7 +31218,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -31348,7 +31348,7 @@
   "gender": "FemaleOneEighth",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -31463,7 +31463,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -31578,7 +31578,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -31693,7 +31693,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -31823,7 +31823,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 118,
-  "catchRate": 25,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -31938,7 +31938,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -32052,7 +32052,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -32181,7 +32181,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 247,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -32296,7 +32296,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -32426,7 +32426,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 236,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -32557,7 +32557,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -32688,7 +32688,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -32804,7 +32804,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 90,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -32920,7 +32920,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -33035,7 +33035,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -33150,7 +33150,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -33280,7 +33280,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -33405,7 +33405,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 208,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -33519,7 +33519,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -33634,7 +33634,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -33750,7 +33750,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -33866,7 +33866,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -33982,7 +33982,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -34113,7 +34113,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -34239,7 +34239,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -34363,7 +34363,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -34477,7 +34477,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -34607,7 +34607,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -34722,7 +34722,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -34837,7 +34837,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -34953,7 +34953,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -35069,7 +35069,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -35183,7 +35183,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -35313,7 +35313,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -35443,7 +35443,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -35574,7 +35574,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -35704,7 +35704,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -35818,7 +35818,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -35948,7 +35948,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -36077,7 +36077,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -36207,7 +36207,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 247,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -36321,7 +36321,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -36435,7 +36435,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -36550,7 +36550,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -36680,7 +36680,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fluctuating",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -36795,7 +36795,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -36926,7 +36926,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -37041,7 +37041,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 255,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -37171,7 +37171,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -37302,7 +37302,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -37432,7 +37432,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -37563,7 +37563,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -37694,7 +37694,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -37825,7 +37825,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -37955,7 +37955,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -38080,7 +38080,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 208,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -38210,7 +38210,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -38339,7 +38339,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -38469,7 +38469,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -38600,7 +38600,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -38714,7 +38714,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -38828,7 +38828,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -38953,7 +38953,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -39083,7 +39083,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -39199,7 +39199,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fluctuating",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -39330,7 +39330,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -39461,7 +39461,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -39576,7 +39576,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -39691,7 +39691,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -39807,7 +39807,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -39938,7 +39938,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -40053,7 +40053,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -40168,7 +40168,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -40299,7 +40299,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -40415,7 +40415,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -40531,7 +40531,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -40662,7 +40662,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -40792,7 +40792,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -40921,7 +40921,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -41050,7 +41050,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 35,
   "evYield": {
    "HP": 1,
@@ -41165,7 +41165,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -41294,7 +41294,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -41423,7 +41423,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -41547,7 +41547,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -41676,7 +41676,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -41790,7 +41790,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -41915,7 +41915,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -42045,7 +42045,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -42176,7 +42176,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -42306,7 +42306,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -42421,7 +42421,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -42551,7 +42551,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -42680,7 +42680,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -42795,7 +42795,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -42910,7 +42910,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -43040,7 +43040,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -43170,7 +43170,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -43299,7 +43299,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -43415,7 +43415,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -43539,7 +43539,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -43654,7 +43654,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -43769,7 +43769,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -43884,7 +43884,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -43999,7 +43999,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -44114,7 +44114,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -44244,7 +44244,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -44359,7 +44359,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -44473,7 +44473,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -44604,7 +44604,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -44729,7 +44729,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -44844,7 +44844,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -44970,7 +44970,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -45095,7 +45095,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -45225,7 +45225,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -45464,7 +45464,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -45593,7 +45593,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -45707,7 +45707,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -45822,7 +45822,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -45951,7 +45951,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46075,7 +46075,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46200,7 +46200,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46329,7 +46329,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46453,7 +46453,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46583,7 +46583,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46698,7 +46698,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46827,7 +46827,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -46941,7 +46941,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -47056,7 +47056,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 90,
   "evYield": {
    "HP": 0,
@@ -47185,7 +47185,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 90,
   "evYield": {
    "HP": 0,
@@ -47299,7 +47299,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -47413,7 +47413,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -47537,7 +47537,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -47667,7 +47667,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -47796,7 +47796,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -47910,7 +47910,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48034,7 +48034,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 236,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48149,7 +48149,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48278,7 +48278,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48407,7 +48407,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48521,7 +48521,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48650,7 +48650,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48779,7 +48779,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -48908,7 +48908,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49022,7 +49022,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49137,7 +49137,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49266,7 +49266,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49395,7 +49395,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49511,7 +49511,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49627,7 +49627,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49742,7 +49742,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49866,7 +49866,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -49996,7 +49996,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -50127,7 +50127,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 123,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -50257,7 +50257,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -50378,7 +50378,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -50508,7 +50508,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -50637,7 +50637,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -50766,7 +50766,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 220,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -50895,7 +50895,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -51024,7 +51024,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -51154,7 +51154,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -51283,7 +51283,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -51413,7 +51413,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -51543,7 +51543,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -51672,7 +51672,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -51788,7 +51788,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -51918,7 +51918,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -52048,7 +52048,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -52163,7 +52163,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -52292,7 +52292,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -52407,7 +52407,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -52538,7 +52538,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -52653,7 +52653,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -52768,7 +52768,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fluctuating",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -52894,7 +52894,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -53025,7 +53025,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -53150,7 +53150,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -53264,7 +53264,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -53395,7 +53395,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -53511,7 +53511,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -53637,7 +53637,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -53752,7 +53752,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -53877,7 +53877,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -53992,7 +53992,7 @@
   "gender": "Genderless",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -54122,7 +54122,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -54253,7 +54253,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -54369,7 +54369,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -54500,7 +54500,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -54630,7 +54630,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -54745,7 +54745,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -54860,7 +54860,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -54990,7 +54990,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -55119,7 +55119,7 @@
   "gender": "Genderless",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -55248,7 +55248,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -55378,7 +55378,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -55508,7 +55508,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -55629,7 +55629,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -55758,7 +55758,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -55887,7 +55887,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -56012,7 +56012,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -56133,7 +56133,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 228,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -56264,7 +56264,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -56380,7 +56380,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -56504,7 +56504,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -56620,7 +56620,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Erratic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -56735,7 +56735,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -56850,7 +56850,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -56965,7 +56965,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -57079,7 +57079,7 @@
   "gender": "Female50Percent",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -57208,7 +57208,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -57339,7 +57339,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -57454,7 +57454,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 239,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -57584,7 +57584,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -57699,7 +57699,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -57828,7 +57828,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -57942,7 +57942,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -58058,7 +58058,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -58188,7 +58188,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -58312,7 +58312,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -58427,7 +58427,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -58558,7 +58558,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 50,
   "evYield": {
    "HP": 3,
@@ -58689,7 +58689,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -58805,7 +58805,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -58934,7 +58934,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -59064,7 +59064,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -59178,7 +59178,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -59292,7 +59292,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -59406,7 +59406,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -59520,7 +59520,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -59635,7 +59635,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 208,
   "baseHappiness": 140,
   "evYield": {
    "HP": 0,
@@ -59754,7 +59754,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -59884,7 +59884,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -60013,7 +60013,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -60137,7 +60137,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 239,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -60257,7 +60257,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -60382,7 +60382,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -60497,7 +60497,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -60626,7 +60626,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 3,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -60740,7 +60740,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -60870,7 +60870,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -60984,7 +60984,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -61098,7 +61098,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -61212,7 +61212,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -61327,7 +61327,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -61457,7 +61457,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -61582,7 +61582,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -61696,7 +61696,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -61826,7 +61826,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 70,
   "evYield": {
    "HP": 3,
@@ -61955,7 +61955,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -62069,7 +62069,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -62194,7 +62194,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -62308,7 +62308,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -62423,7 +62423,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -62553,7 +62553,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 45,
+  "catchRate": 96,
   "baseHappiness": 45,
   "evYield": {
    "HP": 0,
@@ -62683,7 +62683,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -62798,7 +62798,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -62913,7 +62913,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -63043,7 +63043,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -63173,7 +63173,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 63,
-  "catchRate": 190,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -63287,7 +63287,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -63401,7 +63401,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -63515,7 +63515,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -63629,7 +63629,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -63743,7 +63743,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -63873,7 +63873,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -63988,7 +63988,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -64103,7 +64103,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -64219,7 +64219,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -64334,7 +64334,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -64450,7 +64450,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -64580,7 +64580,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -64711,7 +64711,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -64842,7 +64842,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -64973,7 +64973,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -65088,7 +65088,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -65204,7 +65204,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -65320,7 +65320,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -65450,7 +65450,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -65580,7 +65580,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -65695,7 +65695,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -65825,7 +65825,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -65955,7 +65955,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -66081,7 +66081,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -66212,7 +66212,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -66343,7 +66343,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -66474,7 +66474,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -66589,7 +66589,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -66720,7 +66720,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -66851,7 +66851,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 123,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -66981,7 +66981,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -67111,7 +67111,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -67242,7 +67242,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -67372,7 +67372,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -67502,7 +67502,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -67617,7 +67617,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -67733,7 +67733,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 220,
   "baseHappiness": 70,
   "evYield": {
    "HP": 1,
@@ -67849,7 +67849,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -67964,7 +67964,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -68080,7 +68080,7 @@
   "gender": "Female50Percent",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -68210,7 +68210,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -68340,7 +68340,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -68470,7 +68470,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -68584,7 +68584,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 2,
@@ -68713,7 +68713,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -68844,7 +68844,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -68975,7 +68975,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -69106,7 +69106,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -69236,7 +69236,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -69366,7 +69366,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -69481,7 +69481,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -69595,7 +69595,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -69725,7 +69725,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -69840,7 +69840,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -69970,7 +69970,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -70100,7 +70100,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -70215,7 +70215,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -70345,7 +70345,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -70461,7 +70461,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -70590,7 +70590,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -70714,7 +70714,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -70829,7 +70829,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -70944,7 +70944,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -71059,7 +71059,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -71174,7 +71174,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 71,
+  "catchRate": 247,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -71289,7 +71289,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -71404,7 +71404,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 130,
-  "catchRate": 100,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -71519,7 +71519,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -71649,7 +71649,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -71780,7 +71780,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -71895,7 +71895,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -72025,7 +72025,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -72140,7 +72140,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -72255,7 +72255,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -72386,7 +72386,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -72502,7 +72502,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -72632,7 +72632,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 247,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -72763,7 +72763,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -72893,7 +72893,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -73022,7 +73022,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -73152,7 +73152,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -73283,7 +73283,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -73398,7 +73398,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -73529,7 +73529,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -73645,7 +73645,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -73760,7 +73760,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -73875,7 +73875,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -74005,7 +74005,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -74136,7 +74136,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 247,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -74267,7 +74267,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -74398,7 +74398,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -74523,7 +74523,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -74653,7 +74653,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -74768,7 +74768,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -74893,7 +74893,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -75008,7 +75008,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -75123,7 +75123,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -75369,7 +75369,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -75485,7 +75485,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -75616,7 +75616,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -75746,7 +75746,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -75862,7 +75862,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -75987,7 +75987,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -76111,7 +76111,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -76241,7 +76241,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -76366,7 +76366,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -76496,7 +76496,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -76626,7 +76626,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -76756,7 +76756,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -76882,7 +76882,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -76997,7 +76997,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -77128,7 +77128,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -77249,7 +77249,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -77375,7 +77375,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -77500,7 +77500,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -77631,7 +77631,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -77761,7 +77761,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -77891,7 +77891,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -78007,7 +78007,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -78137,7 +78137,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -78268,7 +78268,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -78398,7 +78398,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -78527,7 +78527,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -78657,7 +78657,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -78771,7 +78771,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -78901,7 +78901,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -79025,7 +79025,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -79155,7 +79155,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -79285,7 +79285,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 90,
   "evYield": {
    "HP": 0,
@@ -79410,7 +79410,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 90,
   "evYield": {
    "HP": 0,
@@ -79539,7 +79539,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -79668,7 +79668,7 @@
   "gender": "Genderless",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -79798,7 +79798,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 90,
   "evYield": {
    "HP": 0,
@@ -79927,7 +79927,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -80056,7 +80056,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -80185,7 +80185,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -80314,7 +80314,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -80444,7 +80444,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 216,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -80558,7 +80558,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -80673,7 +80673,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -80792,7 +80792,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -80907,7 +80907,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -81026,7 +81026,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -81140,7 +81140,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -81254,7 +81254,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -81379,7 +81379,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -81508,7 +81508,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -81639,7 +81639,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -81769,7 +81769,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -81899,7 +81899,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82028,7 +82028,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82142,7 +82142,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82272,7 +82272,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82386,7 +82386,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82516,7 +82516,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82631,7 +82631,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82747,7 +82747,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -82877,7 +82877,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -83006,7 +83006,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -83120,7 +83120,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -83249,7 +83249,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -83364,7 +83364,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -83480,7 +83480,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -83611,7 +83611,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -83726,7 +83726,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -83856,7 +83856,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -83986,7 +83986,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84116,7 +84116,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84245,7 +84245,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84360,7 +84360,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84490,7 +84490,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84604,7 +84604,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84719,7 +84719,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84848,7 +84848,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -84979,7 +84979,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -85095,7 +85095,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -85225,7 +85225,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -85340,7 +85340,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -85470,7 +85470,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -85600,7 +85600,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -85730,7 +85730,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -85845,7 +85845,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -85975,7 +85975,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -86106,7 +86106,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 204,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -86236,7 +86236,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -86365,7 +86365,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -86479,7 +86479,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -86609,7 +86609,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 123,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -86724,7 +86724,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 169,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -86854,7 +86854,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -86985,7 +86985,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -87114,7 +87114,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -87244,7 +87244,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -87374,7 +87374,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 35,
   "evYield": {
    "HP": 0,
@@ -87504,7 +87504,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -87629,7 +87629,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -87755,7 +87755,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 162,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -87870,7 +87870,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -87985,7 +87985,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -88100,7 +88100,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -88215,7 +88215,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -88341,7 +88341,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -88472,7 +88472,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 118,
-  "catchRate": 25,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -88602,7 +88602,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -88727,7 +88727,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 236,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -88852,7 +88852,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -88982,7 +88982,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -89096,7 +89096,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -89210,7 +89210,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 100,
   "evYield": {
    "HP": 0,
@@ -89325,7 +89325,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -89440,7 +89440,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -89570,7 +89570,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -89684,7 +89684,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -89809,7 +89809,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -89933,7 +89933,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -90062,7 +90062,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -90192,7 +90192,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 247,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -90322,7 +90322,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 247,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -90452,7 +90452,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 72,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -90583,7 +90583,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 247,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -90714,7 +90714,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -90844,7 +90844,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -90974,7 +90974,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 32,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -91089,7 +91089,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 71,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -91203,7 +91203,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -91333,7 +91333,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -91462,7 +91462,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -91577,7 +91577,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -91693,7 +91693,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -91823,7 +91823,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 185,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -91943,7 +91943,7 @@
   "gender": "Genderless",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -92059,7 +92059,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -92184,7 +92184,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -92299,7 +92299,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 208,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -92414,7 +92414,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 111,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -92529,7 +92529,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -92659,7 +92659,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -92774,7 +92774,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -92890,7 +92890,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -93014,7 +93014,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -93134,7 +93134,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -93258,7 +93258,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -93373,7 +93373,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -93488,7 +93488,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -93608,7 +93608,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -93738,7 +93738,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -93853,7 +93853,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -93983,7 +93983,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -94113,7 +94113,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -94228,7 +94228,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -94343,7 +94343,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -94468,7 +94468,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -94583,7 +94583,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -94714,7 +94714,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -94844,7 +94844,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -94958,7 +94958,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -95087,7 +95087,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 88,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -95201,7 +95201,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -95331,7 +95331,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Fast",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 3,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -95562,7 +95562,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -95691,7 +95691,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -95805,7 +95805,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 193,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -95934,7 +95934,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -96063,7 +96063,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -96192,7 +96192,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -96322,7 +96322,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -96436,7 +96436,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -96551,7 +96551,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 76,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -96666,7 +96666,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 127,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -96780,7 +96780,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -96905,7 +96905,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -97035,7 +97035,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 212,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -97165,7 +97165,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -97279,7 +97279,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 103,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -97409,7 +97409,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -97523,7 +97523,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 119,
   "baseHappiness": 70,
   "evYield": {
    "HP": 0,
@@ -97637,7 +97637,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 255,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -97751,7 +97751,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 96,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -97880,7 +97880,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 61,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -97995,7 +97995,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -98110,7 +98110,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 228,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -98225,7 +98225,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
-  "catchRate": 35,
+  "catchRate": 84,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -99240,7 +99240,7 @@
   "gender": "Genderless",
   "growthRate": "Slow",
   "baseExp": 300,
-  "catchRate": 0,
+  "catchRate": 45,
   "baseHappiness": 0,
   "evYield": {
    "HP": 0,
@@ -99479,7 +99479,7 @@
   "gender": "AlwaysMale",
   "growthRate": "Medium",
   "baseExp": 240,
-  "catchRate": 25,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -99589,7 +99589,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 170,
-  "catchRate": 45,
+  "catchRate": 204,
   "baseHappiness": 50,
   "evYield": {
    "HP": 1,
@@ -99695,7 +99695,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 170,
-  "catchRate": 45,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -99802,7 +99802,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 180,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -99908,7 +99908,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 64,
-  "catchRate": 120,
+  "catchRate": 228,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100101,7 +100101,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 58,
-  "catchRate": 190,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100182,7 +100182,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Parabolic",
   "baseExp": 140,
-  "catchRate": 90,
+  "catchRate": 169,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100380,7 +100380,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 64,
-  "catchRate": 120,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100467,7 +100467,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 230,
-  "catchRate": 45,
+  "catchRate": 61,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100564,7 +100564,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 230,
-  "catchRate": 45,
+  "catchRate": 88,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100661,7 +100661,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 100,
-  "catchRate": 90,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100748,7 +100748,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 210,
-  "catchRate": 45,
+  "catchRate": 3,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,
@@ -100844,7 +100844,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 160,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 2,
@@ -100941,7 +100941,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 200,
-  "catchRate": 45,
+  "catchRate": 201,
   "baseHappiness": 50,
   "evYield": {
    "HP": 2,
@@ -101038,7 +101038,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 240,
-  "catchRate": 25,
+  "catchRate": 45,
   "baseHappiness": 50,
   "evYield": {
    "HP": 2,
@@ -101145,7 +101145,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 180,
-  "catchRate": 45,
+  "catchRate": 255,
   "baseHappiness": 50,
   "evYield": {
    "HP": 1,
@@ -101358,7 +101358,7 @@
   "gender": "AlwaysFemale",
   "growthRate": "Medium",
   "baseExp": 180,
-  "catchRate": 45,
+  "catchRate": 3,
   "baseHappiness": 50,
   "evYield": {
    "HP": 0,

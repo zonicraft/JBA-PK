@@ -8,10 +8,6 @@ special music for some battles
 
 maybe mega marian
 
-repopulate all the wild encounters of the accessable maps, taking into consideration water typing for water encounters and levels for which evolutions you can use, starters and legendaries dont appear in the wild and these have to only be found on these: kyouka route 21 grass, megumin viridian forest, kanna on route 7, senko six island grass. all the pokemon need to be findable
-
-change the capture rate so its easier to capture the earlier pokemon and harder to capture the later game pokemon
-
 all the trainers have to have their pokemon checked, unless they are in an interior, for those you have to ask, they should always use pokemon from their route and routes nearby
 
 check the mansion and quest to buy it maybe scrap
@@ -23,27 +19,3 @@ portuguese version
 playtest of the game :)
 
 real pc and mobile release
-
-Island towns and areas (Two Island through Seven Island):
-
-Two, Three, Four,  Six and Seven Island; 
-
-
-
-
-done
-Victory Road,
-Rock Tunnel,
-Green Path
-Pattern Bush,
-Canyon Entrance,
-Sevault Canyon
-Berry Forest
-Bond Bridge
-Ruin Valley
-Kindle Road
-gym 8
-Five,
-rocket hideout on 5 island
-Treasure Beach
-Resort Gorgeous; 

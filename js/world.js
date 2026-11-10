@@ -157,11 +157,8 @@ function edgeConnection() {
   G.main = new Interp([[201, 0, [0, cn.to, x, y, p.dir, 0]], [0, 0, []]], null);
 }
 
-// ---- wild encounters (PBS/encounters.txt, Land only, equal-ish slot weights)
-const ENC = {
-  // Route 7: Kanna is a rare (5%) wild encounter
-  169: { chance: 0.1, land: [['BAKI', 24, 27, 19], ['TAKAO', 24, 27, 19], ['ELICHANHALLOWEEN', 24, 27, 19], ['ANASTASIA', 24, 27, 19], ['MIRAJANE', 24, 27, 19], ['KANNA', 24, 27, 5]] },
-  5: { chance: 0.1, land: [['DAVINCI', 2, 3, 20], ['KUKA', 2, 3, 20], ['ARU', 2, 3, 20], ['CHINO', 2, 3, 20], ['YUITRINITY', 2, 3, 20]] },
+// ---- wild encounters (data/pbs.js ENCOUNTERS: Land/Cave 12 slots, Water 5 slots, rods uniform)
+const ENC = {   // per-map overrides; empty now: every table, including the 5% / 10% special spots (Kanna, Kyouka, Megumin, Senko), lives in ENCOUNTERS (data/pbs.js)
 };
 // water you can fish in: terrain tags 5-7, or any water autotile (the sea / pond / fountain tiles of a tileset carry no tag in some places)
 function isWaterAt(x, y) {
@@ -245,7 +242,7 @@ function wildTable(mapId) {
   const e = window.ENCOUNTERS && ENCOUNTERS[mapId]; if (!e) return null;
   const kind = e.Land && e.Land.length ? 'Land' : (e.Cave && e.Cave.length ? 'Cave' : null); if (!kind) return null;
   const dens = (e.dens && e.dens[kind === 'Land' ? 0 : 1]) || 25;
-  return { chance: dens / 250, kind, land: e[kind].map((s, i) => [s[0], s[1], s[2], LAND_W[i] || 1]) };
+  return { chance: dens / 250, kind, land: e[kind].map((s, i) => [s[0], s[1], s[2], e.equal ? 1 : (LAND_W[i] || 1)]) };   // e.equal: every slot equally likely (the Kyouka / Megumin / Kanna / Senko areas)
 }
 const WATER_W = [60, 30, 5, 4, 1];
 function checkWild(x, y) {
