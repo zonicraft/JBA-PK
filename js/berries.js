@@ -48,7 +48,7 @@ function* berryChoose(pred, text) {
   yield; while (G.uiGen) yield;
   return r;
 }
-function* confirmMsg(text) { yield* showMessage(text, { noWait: true }); const i = yield* showChoices(['Yes', 'No'], 2); return i === 0; }
+function* confirmMsg(text) { yield* showMessage(text, { noWait: true }); const i = yield* showChoices([__('Yes'), __('No')], 2); return i === 0; }
 function* berryPlantScript(it) {
   const ev = it.ev; if (!ev) return;
   let d = berryGet(ev) || [0, 0, false, 0, 0, 0];
@@ -61,34 +61,34 @@ function* berryPlantScript(it) {
       if (!k) return;
       G.items[k]--; if (G.items[k] <= 0) delete G.items[k];
       berrySet(ev, [1, k, false, Math.floor(Date.now() / 1000), 0, 0]); berrySync(ev);
-      yield* showMessage('\\PN planted a ' + nm(k) + ' in the soft loamy soil.');
+      yield* showMessage(__('\\PN planted a {0} in the soft loamy soil.', nm(k)));
       return;
     }
-    case 1: yield* showMessage('A ' + nm(berry) + ' was planted here.'); break;
-    case 2: yield* showMessage('The ' + nm(berry) + ' has sprouted.'); break;
-    case 3: yield* showMessage('The ' + nm(berry) + ' plant is growing bigger.'); break;
-    case 4: yield* showMessage('This ' + nm(berry) + ' plant is ' + ['in bloom!', 'blooming cutely!', 'blooming prettily!', 'blooming very beautifully!', 'in fabulous bloom!'][Math.min(4, d[4])]); break;
+    case 1: yield* showMessage(__('A {0} was planted here.', nm(berry))); break;
+    case 2: yield* showMessage(__('The {0} has sprouted.', nm(berry))); break;
+    case 3: yield* showMessage(__('The {0} plant is growing bigger.', nm(berry))); break;
+    case 4: yield* showMessage(__('This {0} plant is {1}', nm(berry), ['in bloom!', 'blooming cutely!', 'blooming prettily!', 'blooming very beautifully!', 'in fabulous bloom!'][Math.min(4, d[4])])); break;
     case 5: {
       const v = berryVals(berry); let n = v[2];
       if (d[4] > 0) n = Math.floor(((v[3] - v[2]) * (d[4] - 1) + Math.floor(Math.random() * (1 + v[3] - v[2]))) / 4) + v[2];
       const inf = itemInfo(berry), iname = n > 1 ? inf.plural : inf.name;
-      const msg = n > 1 ? 'There are ' + n + ' \\c[1]' + iname + '\\c[0]!\nWant to pick them?' : 'There is 1 \\c[1]' + iname + '\\c[0]!\nWant to pick it?';
+      const msg = n > 1 ? __('There are {0} \\c[1]{1}\\c[0]!\nWant to pick them?', n, iname) : __('There is 1 \\c[1]{0}\\c[0]!\nWant to pick it?', iname);
       if (!(yield* confirmMsg(msg))) return;
       G.items[berry] = (G.items[berry] || 0) + n; playME('frlg_berry');
-      yield* showMessage(n > 1 ? 'You picked the ' + n + ' \\c[1]' + iname + '\\c[0].' : 'You picked the \\c[1]' + iname + '\\c[0].');
-      yield* showMessage('\\PN put the \\c[1]' + iname + '\\c[0]\nin the \\c[1]Berries\\c[0] Pocket.');
-      yield* showMessage('The soil returned to its soft and loamy state.');
+      yield* showMessage(n > 1 ? __('You picked the {0} \\c[1]{1}\\c[0].', n, iname) : __('You picked the \\c[1]{0}\\c[0].', iname));
+      yield* showMessage(__('\\PN put the \\c[1]{0}\\c[0]\nin the \\c[1]Berries\\c[0] Pocket.', iname));
+      yield* showMessage(__('The soil returned to its soft and loamy state.'));
       berrySet(ev, [0, 0, false, 0, 0, 0]); ev.gfx = ev.page ? ev.page.gfx.name : ''; ev.dirFix = ev.page ? ev.page.dirfix : false;
       return;
     }
   }
   if (d[0] >= 1 && d[0] <= 4) {
     const can = BERRY_WATERERS.find(k => (G.items[k] || 0) > 0);
-    if (can && (yield* confirmMsg('Want to sprinkle some water with the ' + nm(can) + '?'))) {
+    if (can && (yield* confirmMsg(__('Want to sprinkle some water with the {0}?', nm(can))))) {
       if (d[2] === false) { d[4]++; d[2] = true; }
       berrySet(ev, d); berrySync(ev);
-      yield* showMessage('\\PN watered the plant.');
-      yield* showMessage('The plant seemed to be delighted.');
+      yield* showMessage(__('\\PN watered the plant.'));
+      yield* showMessage(__('The plant seemed to be delighted.'));
     }
   }
 }

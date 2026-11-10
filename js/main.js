@@ -1,6 +1,7 @@
 'use strict';
 // Boot: load assets, show a title card, start the intro on the first key press.
 (async function boot() {
+  I18N.set(I18N.want);   // language chosen in Options (or ?lang=xx)
   G.inMainMenu = true; applyTouch();   // keep the on-screen controller hidden while loading, so only the menu shows
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH);
   G.player = new PlayerChr();

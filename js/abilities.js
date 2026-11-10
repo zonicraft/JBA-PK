@@ -44,7 +44,7 @@ function abilType(c) {
 function* abilProtean(c) {
   const ua = abilOf(c.us); if (ua !== 'PROTEAN' || c.o.called || c.type === 'QMARKS') return;
   const t = pokeTypes(c.user); if (t.length === 1 && t[0] === c.type) return;
-  c.user.btTypes = [c.type]; yield* bmsg(mname(c.us) + '\'s Protean made it the ' + c.type + ' type!', { hold: 8 });
+  c.user.btTypes = [c.type]; yield* bmsg(__('{0}\'s Protean made it the {1} type!', mname(c.us), c.type), { hold: 8 });
 }
 function abilPrio(s, md) {
   const a = abilOf(s); if (!a) return 0;
@@ -95,9 +95,9 @@ function abilDmgMul(c, crit, eff, phys) {
     case 'TECHNICIAN': if (c.pow <= 60) m *= 1.5; break;
     case 'IRONFIST': if (hasFlag(md, 'j')) m *= 1.2; break;
     case 'TOUGHCLAWS': if (contact) m *= 1.3; break;
-    case 'STRONGJAW': if (BITE_MOVES.includes(md.name)) m *= 1.5; break;
-    case 'MEGALAUNCHER': if (PULSE_MOVES.includes(md.name)) m *= 1.5; break;
-    case 'RECKLESS': if ((fx.recoil || fx.recoilMax || md.fn === '10B') && md.name !== 'Struggle') m *= 1.2; break;
+    case 'STRONGJAW': if (BITE_MOVES.includes(md.ename || md.name)) m *= 1.5; break;
+    case 'MEGALAUNCHER': if (PULSE_MOVES.includes(md.ename || md.name)) m *= 1.5; break;
+    case 'RECKLESS': if ((fx.recoil || fx.recoilMax || md.fn === '10B') && (md.ename || md.name) !== 'Struggle') m *= 1.2; break;
     case 'SANDFORCE': if (wx() === 'SAND' && ['ROCK', 'GROUND', 'STEEL'].includes(t)) m *= 1.3; break;
     case 'SOLARPOWER': if (wx() === 'SUN' && !phys) m *= 1.5; break;
     case 'FLAREBOOST': if (user.status === 'BRN' && !phys) m *= 1.5; break;
@@ -134,33 +134,33 @@ function abilDmgMul(c, crit, eff, phys) {
 // ---------------------------------------------------------------- immunities / blocks before a move lands
 function* abilBlocks(c) {
   const { us, ts, md, fx, user, tgt, T, S } = c, ta = tAb(c), ua = abilOf(us), isSt = md.cat === 'Status';
-  const imm = function* (msg) { yield* bmsg(msg || 'It doesn\'t affect ' + mnameL(ts) + '...'); return true; };
-  if ((ta === 'DAZZLING' || ta === 'QUEENLYMAJESTY') && (md.prio || 0) + abilPrio(us, md) > 0) { yield* bmsg(mname(ts) + '\'s ' + abName(ta) + ' blocked ' + md.name + '!'); return true; }
+  const imm = function* (msg) { yield* bmsg(msg || __('It doesn\'t affect {0}...', mnameL(ts))); return true; };
+  if ((ta === 'DAZZLING' || ta === 'QUEENLYMAJESTY') && (md.prio || 0) + abilPrio(us, md) > 0) { yield* bmsg(__('{0}\'s {1} blocked {2}!', mname(ts), abName(ta), md.name)); return true; }
   if (ua === 'PRANKSTER' && isSt && pokeTypes(tgt).includes('DARK')) return yield* imm();
-  if (isSt && ['016', '0BA', '0BC', '0B7', '0B9', '0BB'].includes(md.fn) && (ta === 'AROMAVEIL' || (ta === 'OBLIVIOUS' && ['016', '0BA'].includes(md.fn)))) { yield* bmsg(mname(ts) + '\'s ' + abName(ta) + ' prevents it!'); return true; }
-  if (isSt && ta === 'MAGICBOUNCE' && !c.o.coated && !fx.noCoat) { yield* bmsg(mname(ts) + '\'s Magic Bounce bounced ' + md.name + ' back!'); yield* doMove(ts, md, { slot: null, mi: -1, called: true, coated: true }); return true; }
+  if (isSt && ['016', '0BA', '0BC', '0B7', '0B9', '0BB'].includes(md.fn) && (ta === 'AROMAVEIL' || (ta === 'OBLIVIOUS' && ['016', '0BA'].includes(md.fn)))) { yield* bmsg(__('{0}\'s {1} prevents it!', mname(ts), abName(ta))); return true; }
+  if (isSt && ta === 'MAGICBOUNCE' && !c.o.coated && !fx.noCoat) { yield* bmsg(__('{0}\'s Magic Bounce bounced {1} back!', mname(ts), md.name)); yield* doMove(ts, md, { slot: null, mi: -1, called: true, coated: true }); return true; }
   const t = c.type; if (t === 'QMARKS') return false;
-  const heal = (msg) => function* () { if (tgt.hp < tgt.maxhp) yield* healItem(ts, Math.floor(tgt.maxhp / 4), mname(ts) + ' restored its HP!'); };
+  const heal = (msg) => function* () { if (tgt.hp < tgt.maxhp) yield* healItem(ts, Math.floor(tgt.maxhp / 4), __('{0} restored its HP!', mname(ts))); };
   const ABS = { WATERABSORB: ['WATER', 'heal'], DRYSKIN: ['WATER', 'heal'], VOLTABSORB: ['ELECTRIC', 'heal'], LIGHTNINGROD: ['ELECTRIC', [4, 1]], MOTORDRIVE: ['ELECTRIC', [3, 1]], STORMDRAIN: ['WATER', [4, 1]], SAPSIPPER: ['GRASS', [1, 1]], FLASHFIRE: ['FIRE', 'flash'] };
   const ab = ABS[ta];
   if (ab && ab[0] === t) {
-    yield* bmsg(mname(ts) + '\'s ' + abName(ta) + ' made ' + md.name + ' useless!');
-    if (ab[1] === 'heal') { if (tgt.hp < tgt.maxhp) yield* healItem(ts, Math.floor(tgt.maxhp / 4), mname(ts) + ' restored its HP!'); }
-    else if (ab[1] === 'flash') { T.flashFire = true; yield* bmsg(mname(ts) + '\'s Fire-type moves are powered up!'); }
+    yield* bmsg(__('{0}\'s {1} made {2} useless!', mname(ts), abName(ta), md.name));
+    if (ab[1] === 'heal') { if (tgt.hp < tgt.maxhp) yield* healItem(ts, Math.floor(tgt.maxhp / 4), __('{0} restored its HP!', mname(ts))); }
+    else if (ab[1] === 'flash') { T.flashFire = true; yield* bmsg(__('{0}\'s Fire-type moves are powered up!', mname(ts))); }
     else yield* changeStage(ts, ab[1][0], ab[1][1]);
     return true;
   }
-  if (ta === 'SOUNDPROOF' && hasFlag(md, 'k')) { yield* bmsg(mname(ts) + '\'s Soundproof blocks ' + md.name + '!'); return true; }
-  if (ta === 'BULLETPROOF' && BALL_MOVES.includes(md.name)) { yield* bmsg(mname(ts) + '\'s Bulletproof blocks ' + md.name + '!'); return true; }
-  if (ta === 'OVERCOAT' && POWDER_MOVES.includes(md.name)) return yield* imm();
-  if (!isSt && ta === 'WONDERGUARD' && effOf(c) <= 1 && !fx.fixed) { yield* bmsg(mname(ts) + '\'s Wonder Guard protects it!'); return true; }
-  if (fx.acc === 'ohko' && ta === 'STURDY') { yield* bmsg(mname(ts) + ' was protected by Sturdy!'); return true; }
+  if (ta === 'SOUNDPROOF' && hasFlag(md, 'k')) { yield* bmsg(__('{0}\'s Soundproof blocks {1}!', mname(ts), md.name)); return true; }
+  if (ta === 'BULLETPROOF' && BALL_MOVES.includes(md.ename || md.name)) { yield* bmsg(__('{0}\'s Bulletproof blocks {1}!', mname(ts), md.name)); return true; }
+  if (ta === 'OVERCOAT' && POWDER_MOVES.includes(md.ename || md.name)) return yield* imm();
+  if (!isSt && ta === 'WONDERGUARD' && effOf(c) <= 1 && !fx.fixed) { yield* bmsg(__('{0}\'s Wonder Guard protects it!', mname(ts))); return true; }
+  if (fx.acc === 'ohko' && ta === 'STURDY') { yield* bmsg(__('{0} was protected by Sturdy!', mname(ts))); return true; }
   return false;
 }
 function* abilSurvive(c, r) {   // Disguise / Sturdy while damage is being dealt
   const { ts, tgt } = c, ta = tAb(c);
-  if (ta === 'DISGUISE' && !tgt.dgBroken) { tgt.dgBroken = true; r.dmg = Math.max(1, Math.floor(tgt.maxhp / 8)); yield* bmsg(mname(ts) + '\'s disguise served it as a decoy!'); return true; }
-  if (ta === 'STURDY' && tgt.hp >= tgt.maxhp && r.dmg >= tgt.hp) { r.dmg = tgt.hp - 1; yield* bmsg(mname(ts) + ' endured the hit using Sturdy!'); return true; }
+  if (ta === 'DISGUISE' && !tgt.dgBroken) { tgt.dgBroken = true; r.dmg = Math.max(1, Math.floor(tgt.maxhp / 8)); yield* bmsg(__('{0}\'s disguise served it as a decoy!', mname(ts))); return true; }
+  if (ta === 'STURDY' && tgt.hp >= tgt.maxhp && r.dmg >= tgt.hp) { r.dmg = tgt.hp - 1; yield* bmsg(__('{0} endured the hit using Sturdy!', mname(ts))); return true; }
   return false;
 }
 
@@ -169,7 +169,7 @@ function* abilStatBlock(s, stat) {
   const ab = abilOf(s), B = B_(), mb = B.lastCtx && B.lastCtx.us !== s && isMold(B.lastCtx.us);
   if (mb || !ab) return false;
   const blocked = ['CLEARBODY', 'WHITESMOKE', 'FULLMETALBODY'].includes(ab) || (ab === 'HYPERCUTTER' && stat === 1) || (ab === 'BIGPECKS' && stat === 2) || (ab === 'KEENEYE' && stat === 6) || (ab === 'FLOWERVEIL' && pokeTypes(sideMon(s)).includes('GRASS'));
-  if (blocked) { yield* bmsg(mname(s) + '\'s ' + abName(ab) + ' prevents stat loss!'); return true; }
+  if (blocked) { yield* bmsg(__('{0}\'s {1} prevents stat loss!', mname(s), abName(ab))); return true; }
   return false;
 }
 function* abilStatDropped(s) {
@@ -182,8 +182,8 @@ function abilStatusBlock(s, status) {
   if (B.lastCtx && B.lastCtx.ts === s && isMold(B.lastCtx.us) && MB_IGNORED.has(ab)) return null;
   const word = { PSN: 'poisoning', PAR: 'paralysis', SLP: 'sleep', FRZ: 'freezing', BRN: 'burns' }[status];
   const own = { PSN: ['IMMUNITY'], PAR: ['LIMBER'], SLP: ['INSOMNIA', 'VITALSPIRIT', 'SWEETVEIL'], FRZ: ['MAGMAARMOR'], BRN: ['WATERVEIL', 'WATERBUBBLE'] }[status] || [];
-  if (own.includes(ab) || (ab === 'LEAFGUARD' && wx() === 'SUN') || (ab === 'FLOWERVEIL' && pokeTypes(sideMon(s)).includes('GRASS'))) return mname(s) + '\'s ' + abName(ab) + ' prevents ' + word + '!';
-  if (ab === 'COMATOSE') return 'It doesn\'t affect ' + mnameL(s) + '...';
+  if (own.includes(ab) || (ab === 'LEAFGUARD' && wx() === 'SUN') || (ab === 'FLOWERVEIL' && pokeTypes(sideMon(s)).includes('GRASS'))) return __('{0}\'s {1} prevents {2}!', mname(s), abName(ab), word);
+  if (ab === 'COMATOSE') return __('It doesn\'t affect {0}...', mnameL(s));
   return null;
 }
 function* abilStatusGot(s, status) {
@@ -203,8 +203,8 @@ function* abilAfterHit(c) {
     if (ua === 'BEASTBOOST' && user.hp > 0) { let bi = 1; for (let i = 2; i <= 5; i++) if (user.stats[i] > user.stats[bi]) bi = i; yield* say(us, ua); yield* changeStage(us, bi, 1); }
     for (const s of [0, 1]) if (abilOf(s) === 'SOULHEART' && sideMon(s).hp > 0) { yield* say(s, 'SOULHEART'); yield* changeStage(s, 4, 1); }
     const damp = [0, 1].some(s => abilOf(s) === 'DAMP');
-    if (ta === 'AFTERMATH' && contact && !damp && user.hp > 0 && abilOf(us) !== 'MAGICGUARD') { user.hp = Math.max(0, user.hp - Math.max(1, Math.floor(user.maxhp / 4))); yield* animHp(us, user.hp); yield* bmsg(mname(us) + ' was hurt by ' + mnameL(ts) + '\'s Aftermath!'); }
-    if (ta === 'INNARDSOUT' && user.hp > 0 && abilOf(us) !== 'MAGICGUARD') { user.hp = Math.max(0, user.hp - c.done); yield* animHp(us, user.hp); yield* bmsg(mname(us) + ' was hurt by ' + mnameL(ts) + '\'s Innards Out!'); }
+    if (ta === 'AFTERMATH' && contact && !damp && user.hp > 0 && abilOf(us) !== 'MAGICGUARD') { user.hp = Math.max(0, user.hp - Math.max(1, Math.floor(user.maxhp / 4))); yield* animHp(us, user.hp); yield* bmsg(__('{0} was hurt by {1}\'s Aftermath!', mname(us), mnameL(ts))); }
+    if (ta === 'INNARDSOUT' && user.hp > 0 && abilOf(us) !== 'MAGICGUARD') { user.hp = Math.max(0, user.hp - c.done); yield* animHp(us, user.hp); yield* bmsg(__('{0} was hurt by {1}\'s Innards Out!', mname(us), mnameL(ts))); }
     return;
   }
   if (contact && user.hp > 0) {
@@ -212,28 +212,28 @@ function* abilAfterHit(c) {
     else if (ta === 'POISONPOINT' && rnd(100) < 30 && !user.status) { yield* say(ts, ta); yield* inflict(us, 'PSN'); }
     else if (ta === 'FLAMEBODY' && rnd(100) < 30 && !user.status) { yield* say(ts, ta); yield* inflict(us, 'BRN'); }
     else if (ta === 'EFFECTSPORE' && rnd(100) < 30 && !user.status && !pokeTypes(user).includes('GRASS') && ua !== 'OVERCOAT') { yield* say(ts, ta); yield* inflict(us, ['PSN', 'PAR', 'SLP'][rnd(3)]); }
-    else if (ta === 'CUTECHARM' && rnd(100) < 30 && !S.attract && user.gender !== 2 && tgt.gender !== 2 && user.gender !== tgt.gender) { yield* say(ts, ta); S.attract = true; yield* bmsg(mname(us) + ' fell in love with ' + mnameL(ts) + '!'); }
+    else if (ta === 'CUTECHARM' && rnd(100) < 30 && !S.attract && user.gender !== 2 && tgt.gender !== 2 && user.gender !== tgt.gender) { yield* say(ts, ta); S.attract = true; yield* bmsg(__('{0} fell in love with {1}!', mname(us), mnameL(ts))); }
     if ((ta === 'ROUGHSKIN' || ta === 'IRONBARBS') && abilOf(us) !== 'MAGICGUARD') { yield* say(ts, ta); user.hp = Math.max(0, user.hp - Math.max(1, Math.floor(user.maxhp / 8))); yield* animHp(us, user.hp); }
     if (ta === 'GOOEY') { yield* say(ts, ta); yield* changeStage(us, 3, -1, true); }
-    if (ta === 'MUMMY' && ua !== 'MUMMY') { S.ability = 'MUMMY'; yield* bmsg(mname(us) + '\'s ability became Mummy!'); }
-    if (ta === 'PICKPOCKET' && !tgt.item && user.item && abilOf(us) !== 'STICKYHOLD') { noteItem(user); tgt.item = user.item; user.item = null; yield* bmsg(mname(ts) + ' stole ' + mnameL(us) + '\'s ' + itemName(tgt.item) + '!'); }
+    if (ta === 'MUMMY' && ua !== 'MUMMY') { S.ability = 'MUMMY'; yield* bmsg(__('{0}\'s ability became Mummy!', mname(us))); }
+    if (ta === 'PICKPOCKET' && !tgt.item && user.item && abilOf(us) !== 'STICKYHOLD') { noteItem(user); tgt.item = user.item; user.item = null; yield* bmsg(__('{0} stole {1}\'s {2}!', mname(ts), mnameL(us), itemName(tgt.item))); }
     if (ua === 'POISONTOUCH' && rnd(100) < 30 && !tgt.status && !c.sheer) yield* inflict(ts, 'PSN');
   }
-  if (ua === 'MAGICIAN' && !user.item && tgt.item && abilOf(ts) !== 'STICKYHOLD' && !c.o.called) { noteItem(tgt); user.item = tgt.item; tgt.item = null; yield* bmsg(mname(us) + ' stole ' + mnameL(ts) + '\'s ' + itemName(user.item) + '!'); }
+  if (ua === 'MAGICIAN' && !user.item && tgt.item && abilOf(ts) !== 'STICKYHOLD' && !c.o.called) { noteItem(tgt); user.item = tgt.item; tgt.item = null; yield* bmsg(__('{0} stole {1}\'s {2}!', mname(us), mnameL(ts), itemName(user.item))); }
   if (ua === 'STENCH' && !hasSec(c) && !c.sheer && rnd(10) === 0) T.flinch = true;
-  if (ta === 'CURSEDBODY' && rnd(100) < 30 && c.slot && !S.disabled) { S.disabled = { key: c.slot.id, turns: 4 }; yield* say(ts, ta); yield* bmsg(mname(us) + '\'s ' + md.name + ' was disabled!'); }
+  if (ta === 'CURSEDBODY' && rnd(100) < 30 && c.slot && !S.disabled) { S.disabled = { key: c.slot.id, turns: 4 }; yield* say(ts, ta); yield* bmsg(__('{0}\'s {1} was disabled!', mname(us), md.name)); }
   if (!dmg) return;
   if (ta === 'STAMINA') { yield* say(ts, ta); yield* changeStage(ts, 2, 1); }
   if (ta === 'WEAKARMOR' && md.cat === 'Physical') { yield* say(ts, ta); yield* changeStage(ts, 2, -1); yield* changeStage(ts, 3, 2); }
   if (ta === 'WATERCOMPACTION' && c.type === 'WATER') { yield* say(ts, ta); yield* changeStage(ts, 2, 2); }
-  if (ta === 'ANGERPOINT' && c.crit && T.st[1] < 6) { yield* say(ts, ta); T.st[1] = 6; yield* bmsg(mname(ts) + ' maxed its Attack!'); }
+  if (ta === 'ANGERPOINT' && c.crit && T.st[1] < 6) { yield* say(ts, ta); T.st[1] = 6; yield* bmsg(__('{0} maxed its Attack!', mname(ts))); }
   if (ta === 'JUSTIFIED' && c.type === 'DARK') { yield* say(ts, ta); yield* changeStage(ts, 1, 1); }
   if (ta === 'RATTLED' && ['BUG', 'GHOST', 'DARK'].includes(c.type)) { yield* say(ts, ta); yield* changeStage(ts, 3, 1); }
   if (ta === 'COTTONDOWN') { yield* say(ts, ta); yield* changeStage(us, 3, -1, true); }
-  if (ta === 'COLORCHANGE' && c.type !== 'QMARKS' && pokeTypes(tgt).join() !== c.type) { tgt.btTypes = [c.type]; yield* bmsg(mname(ts) + '\'s Color Change made it the ' + c.type + ' type!'); }
+  if (ta === 'COLORCHANGE' && c.type !== 'QMARKS' && pokeTypes(tgt).join() !== c.type) { tgt.btTypes = [c.type]; yield* bmsg(__('{0}\'s Color Change made it the {1} type!', mname(ts), c.type)); }
   if (c.before > tgt.maxhp / 2 && tgt.hp <= tgt.maxhp / 2) {
     if (ta === 'BERSERK') { yield* say(ts, ta); yield* changeStage(ts, 4, 1); }
-    if ((ta === 'EMERGENCYEXIT' || ta === 'WIMPOUT') && livingOthers(ts).length && B.kind !== 'wild' || (ts === 0 && (ta === 'EMERGENCYEXIT' || ta === 'WIMPOUT') && livingOthers(ts).length)) { yield* bmsg(mname(ts) + '\'s ' + abName(ta) + ' activated!'); yield* switchOut(ts); }
+    if ((ta === 'EMERGENCYEXIT' || ta === 'WIMPOUT') && livingOthers(ts).length && B.kind !== 'wild' || (ts === 0 && (ta === 'EMERGENCYEXIT' || ta === 'WIMPOUT') && livingOthers(ts).length)) { yield* bmsg(__('{0}\'s {1} activated!', mname(ts), abName(ta))); yield* switchOut(ts); }
   }
 }
 
@@ -245,7 +245,7 @@ function* transformInto(us, ts) {
   if (user.tfBak || tgt.tfBak) return false;
   saveStats(user); user.tfBak = { moves: user.moves }; user.stats = [user.stats[0], ...tgt.stats.slice(1)];
   user.moves = tgt.moves.map(m => Object.assign({}, m, { pp: Math.min(5, D.MV[m.id].pp || 5), ppup: 0 })); user.btTypes = pokeTypes(tgt).slice(); S.st = T.st.slice(); S.lock = null; S.ability = abilOf(ts);
-  yield* bmsg(mname(us) + ' transformed into ' + mnameL(ts) + '!'); return true;
+  yield* bmsg(__('{0} transformed into {1}!', mname(us), mnameL(ts))); return true;
 }
 function* abilSwitchIn(s) {
   const B = B_(), m = sideMon(s), S = B.S[s], foe = 1 - s, fm = sideMon(foe), ab = abilOf(s); S.hadItem = !!m.item;
@@ -261,26 +261,26 @@ function* abilSwitchIn(s) {
     case 'INTIMIDATE':
       yield* say(s, ab);
       if (B.S[foe].sub > 0) break;
-      if (['INNERFOCUS', 'OBLIVIOUS', 'OWNTEMPO', 'SCRAPPY'].includes(abilOf(foe))) { yield* bmsg(mname(foe) + '\'s ' + abName(abilOf(foe)) + ' prevents it from being intimidated!'); break; }
+      if (['INNERFOCUS', 'OBLIVIOUS', 'OWNTEMPO', 'SCRAPPY'].includes(abilOf(foe))) { yield* bmsg(__('{0}\'s {1} prevents it from being intimidated!', mname(foe), abName(abilOf(foe)))); break; }
       yield* changeStage(foe, 1, -1, true); break;
     case 'DOWNLOAD': yield* say(s, ab); yield* changeStage(s, fm.stats[2] * stageMul(B.S[foe].st[2]) < fm.stats[5] * stageMul(B.S[foe].st[5]) ? 1 : 4, 1); break;
-    case 'TRACE': { const fa = abilOf(foe); if (fa && !UNTRACEABLE.includes(fa) && !S.traced) { S.traced = true; S.ability = fa; yield* bmsg(mname(s) + ' traced ' + mnameL(foe) + '\'s ' + abName(fa) + '!'); yield* abilSwitchIn(s); } break; }
+    case 'TRACE': { const fa = abilOf(foe); if (fa && !UNTRACEABLE.includes(fa) && !S.traced) { S.traced = true; S.ability = fa; yield* bmsg(__('{0} traced {1}\'s {2}!', mname(s), mnameL(foe), abName(fa))); yield* abilSwitchIn(s); } break; }
     case 'IMPOSTER': yield* transformInto(s, foe); break;
-    case 'FOREWARN': { const mv = fm.moves.map(x => D.MV[x.id]).sort((a, b) => (b.pow || 0) - (a.pow || 0))[0]; if (mv) yield* bmsg(mname(s) + '\'s Forewarn alerted it to ' + mnameL(foe) + '\'s ' + mv.name + '!'); break; }
-    case 'FRISK': if (fm.item) yield* bmsg(mname(s) + ' frisked ' + mnameL(foe) + ' and found its ' + itemName(fm.item) + '!'); break;
-    case 'ANTICIPATION': if (fm.moves.some(x => { const d = D.MV[x.id]; return d.pow > 0 && (typeMul(d.type, pokeTypes(m)) > 1 || d.fn === '070'); })) yield* bmsg(mname(s) + ' shuddered!'); break;
-    case 'PRESSURE': yield* bmsg(mname(s) + ' is exerting its pressure!'); break;
-    case 'UNNERVE': yield* bmsg(mname(foe) + ' is too nervous to eat Berries!'); break;
-    case 'MOLDBREAKER': yield* bmsg(mname(s) + ' breaks the mold!'); break;
-    case 'TERAVOLT': yield* bmsg(mname(s) + ' is radiating a bursting aura!'); break;
-    case 'TURBOBLAZE': yield* bmsg(mname(s) + ' is radiating a blazing aura!'); break;
-    case 'DARKAURA': yield* bmsg(mname(s) + ' is radiating a dark aura!'); break;
-    case 'FAIRYAURA': yield* bmsg(mname(s) + ' is radiating a fairy aura!'); break;
-    case 'AURABREAK': yield* bmsg(mname(s) + ' reversed all other Pokémon\'s auras!'); break;
-    case 'AIRLOCK': case 'CLOUDNINE': yield* bmsg('The effects of the weather disappeared.'); break;
-    case 'NEUTRALIZINGGAS': yield* bmsg('Neutralizing gas filled the area!'); break;
-    case 'SLOWSTART': yield* bmsg(mname(s) + ' can\'t get it going!'); break;
-    case 'COMATOSE': yield* bmsg(mname(s) + ' is drowsing!'); break;
+    case 'FOREWARN': { const mv = fm.moves.map(x => D.MV[x.id]).sort((a, b) => (b.pow || 0) - (a.pow || 0))[0]; if (mv) yield* bmsg(__('{0}\'s Forewarn alerted it to {1}\'s {2}!', mname(s), mnameL(foe), mv.name)); break; }
+    case 'FRISK': if (fm.item) yield* bmsg(__('{0} frisked {1} and found its {2}!', mname(s), mnameL(foe), itemName(fm.item))); break;
+    case 'ANTICIPATION': if (fm.moves.some(x => { const d = D.MV[x.id]; return d.pow > 0 && (typeMul(d.type, pokeTypes(m)) > 1 || d.fn === '070'); })) yield* bmsg(__('{0} shuddered!', mname(s))); break;
+    case 'PRESSURE': yield* bmsg(__('{0} is exerting its pressure!', mname(s))); break;
+    case 'UNNERVE': yield* bmsg(__('{0} is too nervous to eat Berries!', mname(foe))); break;
+    case 'MOLDBREAKER': yield* bmsg(__('{0} breaks the mold!', mname(s))); break;
+    case 'TERAVOLT': yield* bmsg(__('{0} is radiating a bursting aura!', mname(s))); break;
+    case 'TURBOBLAZE': yield* bmsg(__('{0} is radiating a blazing aura!', mname(s))); break;
+    case 'DARKAURA': yield* bmsg(__('{0} is radiating a dark aura!', mname(s))); break;
+    case 'FAIRYAURA': yield* bmsg(__('{0} is radiating a fairy aura!', mname(s))); break;
+    case 'AURABREAK': yield* bmsg(__('{0} reversed all other Pokémon\'s auras!', mname(s))); break;
+    case 'AIRLOCK': case 'CLOUDNINE': yield* bmsg(__('The effects of the weather disappeared.')); break;
+    case 'NEUTRALIZINGGAS': yield* bmsg(__('Neutralizing gas filled the area!')); break;
+    case 'SLOWSTART': yield* bmsg(__('{0} can\'t get it going!', mname(s))); break;
+    case 'COMATOSE': yield* bmsg(__('{0} is drowsing!', mname(s))); break;
   }
 }
 function* abilSwitchOut(s) {
@@ -294,26 +294,26 @@ function* abilEndTurn(s) {
   const hurt = function* (frac, msg) { if (abilOf(s) === 'MAGICGUARD') return; m.hp = Math.max(0, m.hp - Math.max(1, Math.floor(m.maxhp * frac))); sfx('hit'); sprOf(s).shk = 10; yield* animHp(s, m.hp); yield* bmsg(msg); };
   switch (ab) {
     case 'SPEEDBOOST': if (S.age > 0 || true) { yield* say(s, ab); yield* changeStage(s, 3, 1); } break;
-    case 'RAINDISH': if (w === 'RAIN') yield* heal(1 / 16, mname(s) + '\'s Rain Dish restored a little HP!'); break;
-    case 'ICEBODY': if (w === 'HAIL') yield* heal(1 / 16, mname(s) + '\'s Ice Body restored a little HP!'); break;
-    case 'DRYSKIN': if (w === 'RAIN') yield* heal(1 / 8, mname(s) + '\'s Dry Skin restored a little HP!'); else if (w === 'SUN') yield* hurt(1 / 8, mname(s) + ' was hurt by its Dry Skin!'); break;
-    case 'SOLARPOWER': if (w === 'SUN') yield* hurt(1 / 8, mname(s) + ' was hurt by its Solar Power!'); break;
-    case 'HYDRATION': if (w === 'RAIN' && m.status) { m.status = null; yield* bmsg(mname(s) + '\'s Hydration cured its status problem!'); } break;
-    case 'BADDREAMS': if (o.hp > 0 && o.status === 'SLP' && abilOf(1 - s) !== 'MAGICGUARD') { o.hp = Math.max(0, o.hp - Math.max(1, Math.floor(o.maxhp / 8))); yield* animHp(1 - s, o.hp); yield* bmsg(mname(1 - s) + ' is tormented by the Bad Dreams!'); } break;
+    case 'RAINDISH': if (w === 'RAIN') yield* heal(1 / 16, __('{0}\'s Rain Dish restored a little HP!', mname(s))); break;
+    case 'ICEBODY': if (w === 'HAIL') yield* heal(1 / 16, __('{0}\'s Ice Body restored a little HP!', mname(s))); break;
+    case 'DRYSKIN': if (w === 'RAIN') yield* heal(1 / 8, __('{0}\'s Dry Skin restored a little HP!', mname(s))); else if (w === 'SUN') yield* hurt(1 / 8, __('{0} was hurt by its Dry Skin!', mname(s))); break;
+    case 'SOLARPOWER': if (w === 'SUN') yield* hurt(1 / 8, __('{0} was hurt by its Solar Power!', mname(s))); break;
+    case 'HYDRATION': if (w === 'RAIN' && m.status) { m.status = null; yield* bmsg(__('{0}\'s Hydration cured its status problem!', mname(s))); } break;
+    case 'BADDREAMS': if (o.hp > 0 && o.status === 'SLP' && abilOf(1 - s) !== 'MAGICGUARD') { o.hp = Math.max(0, o.hp - Math.max(1, Math.floor(o.maxhp / 8))); yield* animHp(1 - s, o.hp); yield* bmsg(__('{0} is tormented by the Bad Dreams!', mname(1 - s))); } break;
     case 'MOODY': { const up = []; for (let i = 1; i <= 7; i++) if (S.st[i] < 6) up.push(i); if (up.length) { const u = up[rnd(up.length)]; yield* say(s, ab); yield* changeStage(s, u, 2); const dn = []; for (let i = 1; i <= 5; i++) if (i !== u && S.st[i] > -6) dn.push(i); if (dn.length) yield* changeStage(s, dn[rnd(dn.length)], -1); } break; }
-    case 'HARVEST': if (!m.item && isBerry(S.lastItem) && (w === 'SUN' || rnd(2) === 0)) { m.item = S.lastItem; S.lastItem = null; yield* bmsg(mname(s) + ' harvested one ' + itemName(m.item) + '!'); } break;
-    case 'SLOWSTART': if (S.age === 4) yield* bmsg(mname(s) + ' got its act together!'); break;
+    case 'HARVEST': if (!m.item && isBerry(S.lastItem) && (w === 'SUN' || rnd(2) === 0)) { m.item = S.lastItem; S.lastItem = null; yield* bmsg(__('{0} harvested one {1}!', mname(s), itemName(m.item))); } break;
+    case 'SLOWSTART': if (S.age === 4) yield* bmsg(__('{0} got its act together!', mname(s))); break;
     case 'FORECAST': m.btTypes = [{ SUN: 'FIRE', RAIN: 'WATER', HAIL: 'ICE' }[w] || 'NORMAL']; break;
   }
 }
 function* abilDancer(us, md) {
-  const t = 1 - us; if (!DANCE_MOVES.includes(md.name) || abilOf(t) !== 'DANCER' || sideMon(t).hp <= 0 || sideMon(us).hp <= 0) return;
+  const t = 1 - us; if (!DANCE_MOVES.includes(md.ename || md.name) || abilOf(t) !== 'DANCER' || sideMon(t).hp <= 0 || sideMon(us).hp <= 0) return;
   yield* say(t, 'DANCER'); yield* doMove(t, md, { slot: null, mi: -1, called: true });
 }
 function* abilAfterBattle() {   // Pickup / Honey Gather: found items after a won battle
   for (const p of G.party) {
     if (!p || p.hp <= 0 || p.item) continue;
-    if (p.ability === 'PICKUP' && rnd(10) === 0) { const pool = ['POTION', 'ANTIDOTE', 'PARALYZEHEAL', 'AWAKENING', 'ORANBERRY', 'SUPERPOTION', 'REPEL', 'ETHER'].filter(k => D.IT[k]); if (pool.length) { const k = pool[rnd(pool.length)]; p.item = k; yield* bmsg(pokeName(p) + ' picked up one ' + itemName(k) + '!', { pause: true }); } }
-    else if (p.ability === 'HONEYGATHER' && rnd(20) === 0 && D.IT.HONEY) { p.item = 'HONEY'; yield* bmsg(pokeName(p) + ' gathered some Honey!', { pause: true }); }
+    if (p.ability === 'PICKUP' && rnd(10) === 0) { const pool = ['POTION', 'ANTIDOTE', 'PARALYZEHEAL', 'AWAKENING', 'ORANBERRY', 'SUPERPOTION', 'REPEL', 'ETHER'].filter(k => D.IT[k]); if (pool.length) { const k = pool[rnd(pool.length)]; p.item = k; yield* bmsg(__('{0} picked up one {1}!', pokeName(p), itemName(k)), { pause: true }); } }
+    else if (p.ability === 'HONEYGATHER' && rnd(20) === 0 && D.IT.HONEY) { p.item = 'HONEY'; yield* bmsg(__('{0} gathered some Honey!', pokeName(p)), { pause: true }); }
   }
 }

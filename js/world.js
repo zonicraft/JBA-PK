@@ -1,4 +1,5 @@
 'use strict';
+const NOT_LEGENDARY = ['KINGPROTEA'];   // scripted wild fights that keep the normal wild music
 // ===================================================================
 //  World systems: map connections, wild encounters, Poké Mart,
 //  Poké Center, berry plants, cut trees, emote balloons
@@ -297,20 +298,20 @@ function drawBalloons() {
 
 // ---- cut trees (this game's world setup unlocks the field moves from the start)
 function* cutTreeCheck() {
-  if (!(G.items.KATANA > 0)) { yield* showMessage('This tree looks like it can be cut down!\nBut you need something sharp.'); return false; }
-  yield* showMessage('This tree looks like it can be cut down!');
-  yield* showMessage('Would you like to cut it?', { noWait: true });
-  const i = yield* showChoices(['Yes', 'No'], 2);
+  if (!(G.items.KATANA > 0)) { yield* showMessage(__('This tree looks like it can be cut down!\nBut you need something sharp.')); return false; }
+  yield* showMessage(__('This tree looks like it can be cut down!'));
+  yield* showMessage(__('Would you like to cut it?'), { noWait: true });
+  const i = yield* showChoices([__('Yes'), __('No')], 2);
   if (i !== 0) return false;
-  yield* showMessage('\\PN used the Manyullyn Katana!', { noWait: true }); playSE('Cut'); for (let k = 0; k < 40; k++) yield; G.msg = null;
+  yield* showMessage(__('\\PN used the Manyullyn Katana!'), { noWait: true }); playSE('Cut'); for (let k = 0; k < 40; k++) yield; G.msg = null;
   return true;
 }
 
 function* rockSmashCheck() {           // rocks are broken with the Pickaxe key item
-  if (!(G.items && G.items.PICKAXE > 0)) { yield* showMessage("It's a rugged rock.\nYou would need a pickaxe to break it."); return false; }
-  yield* showMessage('This rock appears to be breakable.');
-  yield* showMessage('Would you like to use the Pickaxe?', { noWait: true });
-  const i = yield* showChoices(['Yes', 'No'], 2);
+  if (!(G.items && G.items.PICKAXE > 0)) { yield* showMessage(__('It\'s a rugged rock.\nYou would need a pickaxe to break it.')); return false; }
+  yield* showMessage(__('This rock appears to be breakable.'));
+  yield* showMessage(__('Would you like to use the Pickaxe?'), { noWait: true });
+  const i = yield* showChoices([__('Yes'), __('No')], 2);
   if (i !== 0) return false;
   playSE('Rock Smash'); for (let k = 0; k < 30; k++) yield;
   return true;
@@ -382,7 +383,7 @@ function* seviiFerryUI(cur) {
   return yield* withDraw(draw, (function* () {
     const dests = [];
     for (let n = 0; n <= 7; n++) if (n !== cur && (n === 0 || seviiAllowed(n))) dests.push(n);
-    yield* uiMessage('Welcome aboard the Seagallop Ferry! Where would you like to sail?', { noWait: true });
+    yield* uiMessage(__('Welcome aboard the Seagallop Ferry! Where would you like to sail?'), { noWait: true });
     const labels = dests.map(n => SEV_ISLANDS[n]).concat(['CANCEL']);
     const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0, max: 8 });
     G.uiMsg = null;
@@ -393,7 +394,7 @@ function* worldScript(it, s) {
   let m;
   if (s === 'pbSeviiFerry') {
     const cur = SEV_MAP_ISLAND[G.mapId] || 0;
-    if (!(G.items && G.items.SEVIIPASS > 0)) { yield* showMessage('Welcome to the Seagallop Ferry Service!\nOur ferries only carry passengers who hold an \\c[1]Island Pass\\c[0].'); return true; }
+    if (!(G.items && G.items.SEVIIPASS > 0)) { yield* showMessage(__('Welcome to the Seagallop Ferry Service!\nOur ferries only carry passengers who hold an \\c[1]Island Pass\\c[0].')); return true; }
     G.uiGen = seviiFerryUI(cur); yield;
     const r = G.ferryReq; G.ferryReq = null; if (!r) return true;
     const [mid, x, y, d] = SEV_LANDING[r.to];
@@ -402,7 +403,7 @@ function* worldScript(it, s) {
     yield* it.transfer([0, mid, x, y, d, 1]);
     if (r.to > 0) G.switches['sev' + r.to] = true;
     tone([0, 0, 0, 0], 20); while (G.tone.left > 0) yield;
-    yield* showMessage('We have arrived at ' + SEV_ISLANDS[r.to] + '!\nThank you for sailing with us.');
+    yield* showMessage(__('We have arrived at {0}!\nThank you for sailing with us.', SEV_ISLANDS[r.to]));
     return true;
   }
   if (s === 'pbDayCareMan' || s === 'pbDayCareHeal') {          // the old folk turn to face the player, then back to where they were
@@ -410,7 +411,7 @@ function* worldScript(it, s) {
     try { return yield* worldScriptDayCare(s); } finally { if (ev) ev.dir = d0; }
   }
   if (s === 'pbDexAward') { G.switches = G.switches || {}; G.switches.dexAward = true; playME('Item_get'); return true; }
-  if (s === 'pbWallTownMap') { playSE('GUI_sel_decision'); yield* showMessage('It\'s a map of the region.'); G.uiGen = townMapScreen({ view: true }); yield; return true; }
+  if (s === 'pbWallTownMap') { playSE('GUI_sel_decision'); yield* showMessage(__('It\'s a map of the region.')); G.uiGen = townMapScreen({ view: true }); yield; return true; }
   if (s.startsWith('Kernel.pbExclaim')) {
     const mm = s.match(/events\[(\d+)\]/), te = mm ? G.events[+mm[1]] : null;
     if (te && te !== G.player) faceEvent(G.player, te);   // the player turns towards the trainer who spotted them
@@ -444,19 +445,19 @@ function* worldScript(it, s) {
   if (s === 'pbAutoSave') { try { writeSave(); } catch (x) { } return true; }
   if (s === 'pbHallOfFame') { G.uiGen = hallOfFameScene(); yield; return true; }
   if (s === 'pbPokeCenterPC') {
-    playSE('PC_open'); yield* showMessage('\\PN booted up the PC.');
+    playSE('PC_open'); yield* showMessage(__('\\PN booted up the PC.'));
     while (true) {
-      yield* showMessage('Which PC should be accessed?', { noWait: true });
-      const i = yield* showChoices(["Geso's PC", G.name + "'s PC", 'Hall of Fame', 'Log off'], 4);
+      yield* showMessage(__('Which PC should be accessed?'), { noWait: true });
+      const i = yield* showChoices([__('Geso\'s PC'), __('{0}\'s PC', G.name), __('Hall of Fame'), __('Log off')], 4);
       if (i === 0) { G.uiGen = pcSession(); yield; }
       else if (i === 2) { G.uiGen = hallOfFameViewer(); yield; }
       else if (i === 1) {
         let c = 0;
         while (true) {
-          yield* showMessage('What do you want to do?', { noWait: true });
-          c = yield* showChoices(['Item Storage', 'Mailbox', 'Turn Off'], 3);
+          yield* showMessage(__('What do you want to do?'), { noWait: true });
+          c = yield* showChoices([__('Item Storage'), __('Mailbox'), __('Turn Off')], 3);
           if (c === 0) { G.uiGen = pcItemStorage(); yield; }
-          else if (c === 1) yield* showMessage("There's no Mail here.");
+          else if (c === 1) yield* showMessage(__('There\'s no Mail here.'));
           else break;
         }
       } else break;
@@ -465,7 +466,7 @@ function* worldScript(it, s) {
   }
   if (s === 'pbPushThisBoulder') {          // Seafoam boulders: shoved one tile in the direction the player is facing (no Strength in this build)
     const e = it.ev, pl = G.player; if (!e || e.moving) return true;
-    if (!(G.items && G.items.DOLLY > 0)) { yield* showMessage('A heavy boulder.\nYou would need a dolly to move it.'); return true; }
+    if (!(G.items && G.items.DOLLY > 0)) { yield* showMessage(__('A heavy boulder.\nYou would need a dolly to move it.')); return true; }
     const d = pl.dir, [dx, dy] = dirVec[d]; if (e.x !== pl.x + dx || e.y !== pl.y + dy) return true;
     const nx = e.x + dx, ny = e.y + dy;
     const free = e.passableTile(e.x, e.y, d) && e.passableTile(nx, ny, opp[d]) && !(G.chars.some(c => c !== e && !c.erased && c.x === nx && c.y === ny && (c.isPlayer || c.gname !== '' || c.tile > 0)));
@@ -480,11 +481,11 @@ function* worldScript(it, s) {
   }
   if ((m = s.match(/^pbPickBerry\(:(\w+),(\d+)\)/))) {
     const n = +m[2], nm = n > 1 ? itemInfo(m[1]).plural : itemName(m[1]);
-    yield* showMessage('There are ' + n + ' \\c[1]' + nm + '\\c[0]!\nWant to pick them?', { noWait: true });
-    const i = yield* showChoices(['Yes', 'No'], 2);
+    yield* showMessage(__('There are {0} \\c[1]{1}\\c[0]!\nWant to pick them?', n, nm), { noWait: true });
+    const i = yield* showChoices([__('Yes'), __('No')], 2);
     if (i === 0) {
       G.items[m[1]] = (G.items[m[1]] || 0) + n; playME('frlg_berry');
-      yield* showMessage('You picked the ' + n + ' \\c[1]' + nm + '\\c[0].');
+      yield* showMessage(__('You picked the {0} \\c[1]{1}\\c[0].', n, nm));
       if (it.ev) { G.selfsw[selfKey(evMapId(it.ev), it.ev.id, 'A')] = true; G.refresh = true; }
     }
     return true;
@@ -498,7 +499,7 @@ function* worldScript(it, s) {
   if (s === 'pbBerryPlant') { yield* berryPlantScript(it); return true; }
   if (s === 'pbSurfAsk') {                   // action button on water once the boat has been lent
     const rod = G.items && G.items.OLDROD, opts = rod ? ['Navigate', 'Fish', 'Cancel'] : ['Navigate', 'Cancel'];
-    yield* showMessage(rod ? 'The water is calm.\nNavigate or fish?' : 'The water is calm.\nDo you want to navigate?', { noWait: true });
+    yield* showMessage(rod ? __('The water is calm.\nNavigate or fish?') : __('The water is calm.\nDo you want to navigate?'), { noWait: true });
     const c = opts[yield* showChoices(opts, opts.length)];
     if (c === 'Fish') return yield* worldScript(it, 'pbFish("OldRod")');
     if (c === 'Navigate') return yield* worldScript(it, 'pbSurfStart');
@@ -506,32 +507,32 @@ function* worldScript(it, s) {
   }
   if (s === 'pbSurfStart') {                 // board the boat and sail one tile out
     const pl = G.player, [fx, fy] = dirVec[pl.dir];
-    if (G.surfing) { yield* showMessage('You are already on the boat.'); return true; }
-    if (!isWaterAt(pl.x + fx, pl.y + fy)) { yield* showMessage("There's no water to sail on here."); return true; }
+    if (G.surfing) { yield* showMessage(__('You are already on the boat.')); return true; }
+    if (!isWaterAt(pl.x + fx, pl.y + fy)) { yield* showMessage(__('There\'s no water to sail on here.')); return true; }
     G.biking = false; G.surfing = true; pl.speed = 4; pl.sheetOverride = 'base_surf';
     if (pl.moveDir(pl.dir, false)) { while (pl.moving) yield; }
     return true;
   }
   if (s === 'pbFishAsk') {                   // action button on water with a rod in the bag
-    yield* showMessage('The water is calm.\nWant to fish here?', { noWait: true });
-    const i = yield* showChoices(['Yes', 'No'], 2);
+    yield* showMessage(__('The water is calm.\nWant to fish here?'), { noWait: true });
+    const i = yield* showChoices([__('Yes'), __('No')], 2);
     if (i === 0) return yield* worldScript(it, 'pbFish("OldRod")');
     return true;
   }
   if ((m = s.match(/^pbFish\("(\w+)"\)/))) {          // field use of a fishing rod: needs water in front of the player
     const pl = G.player, [fx, fy] = dirVec[pl.dir]; const wx = pl.x + fx, wy = pl.y + fy;
-    if (!isWaterAt(wx, wy)) { yield* showMessage("There's no water to fish in here."); return true; }
-    if (G.surfing) { yield* showMessage("You can't fish from the boat."); return true; }
+    if (!isWaterAt(wx, wy)) { yield* showMessage(__('There\'s no water to fish in here.')); return true; }
+    if (G.surfing) { yield* showMessage(__('You can\'t fish from the boat.')); return true; }
     const e = window.ENCOUNTERS && ENCOUNTERS[G.mapId], tbl = e && ((e[m[1]] && e[m[1]].length ? e[m[1]] : null) || (e.Water && e.Water.length ? e.Water : null));
     const pose = n => { pl.sheetOverride = 'boy_fish_offset'; pl.basePattern = n; pl.pattern = n; };
     if (G.biking) { G.biking = false; pl.sheetOverride = null; pl.speed = 3; }          // fishing is done on foot
     pl.fishing = true; pl.turn(pl.dir);
     for (let n = 3; n >= 0; n--) { pose(n); for (let i = 0; i < 5; i++) yield; }           // cast: rod raised (3) -> swung out over the water (0)
     const reel = function* () { for (let n = 0; n <= 3; n++) { pose(n); for (let i = 0; i < 5; i++) yield; } pl.fishing = false; pl.sheetOverride = null; pl.basePattern = 0; pl.pattern = 0; };
-    yield* showMessage('\\PN cast the line...'); for (let i = 0; i < 50; i++) yield;
-    if (!tbl || Math.random() < 0.2) { yield* reel(); yield* showMessage('Not even a nibble...'); return true; }
+    yield* showMessage(__('\\PN cast the line...')); for (let i = 0; i < 50; i++) yield;
+    if (!tbl || Math.random() < 0.2) { yield* reel(); yield* showMessage(__('Not even a nibble...')); return true; }
     yield* exclaim(pl); for (let k = 0; k < 4; k++) { pose(k % 2 ? 0 : 1); for (let i = 0; i < 4; i++) yield; }   // the rod tugs on the bite
-    yield* showMessage('Oh! A bite!'); yield* reel();
+    yield* showMessage(__('Oh! A bite!')); yield* reel();
     const pk = tbl[Math.floor(Math.random() * tbl.length)], lv = pk[1] + Math.floor(Math.random() * (pk[2] - pk[1] + 1));
     yield* runWildBattle(pk[0], lv);
     if (G.battleResult === 'lose') yield* blackout(); else if (G.map && G.map.bgm) playBGM(G.map.bgm);
@@ -539,18 +540,18 @@ function* worldScript(it, s) {
   }
   if ((m = s.match(/^pbWildBattle\(:(\w+),(\d+)\)/))) {
     it.evMap = G.mapId;   // a whiteout moves the player to another map, so remember where this event lives
-    yield* runWildBattle(m[1], +m[2]);
+    yield* runWildBattle(m[1], +m[2], NOT_LEGENDARY.includes(m[1]) ? undefined : 'oras_legendary');   // scripted wild fights = the legendary fights (except the species in NOT_LEGENDARY)
     if (G.battleResult === 'lose') yield* blackout();
     else if (G.map && G.map.bgm) playBGM(G.map.bgm);
     return true;
   }
   if (s === 'pbRepelEnd') {
-    yield* showMessage("Repel's effect wore off...");
+    yield* showMessage(__('Repel\'s effect wore off...'));
     const k = G.repelItem; const nm = k && itemInfo(k).name;
     if (k && (G.items[k] || 0) > 0) {
-      yield* showMessage('Do you want to use another ' + nm + '?', { noWait: true });
-      const i = yield* showChoices(['Yes', 'No'], 2);
-      if (i === 0) { consume(k); G.repel = REPEL_STEPS[k]; G.repelItem = k; playSE('GUI_sel_decision'); yield* showMessage('\\PN used the ' + nm + '!'); }
+      yield* showMessage(__('Do you want to use another {0}?', nm), { noWait: true });
+      const i = yield* showChoices([__('Yes'), __('No')], 2);
+      if (i === 0) { consume(k); G.repel = REPEL_STEPS[k]; G.repelItem = k; playSE('GUI_sel_decision'); yield* showMessage(__('\\PN used the {0}!', nm)); }
     }
     return true;
   }
@@ -568,7 +569,7 @@ function faceEvent(a, b) { const dx = b.x - a.x, dy = b.y - a.y; a.turn(Math.abs
 function* blackout() {
   G.party.forEach(healMon);
   const pc = G.healPoint && window.MAPS[G.healPoint.map] ? G.healPoint : null, h = pc || { map: 3, x: 22, y: 5, dir: 2 };
-  yield* showMessage(pc ? '\\PN scurried to a Poké Center, protecting the exhausted Pokémon from further harm...' : '\\PN scurried back home, protecting the exhausted Pokémon from further harm...');
+  yield* showMessage(pc ? __('\\PN scurried to a Poké Center, protecting the exhausted Pokémon from further harm...') : __('\\PN scurried back home, protecting the exhausted Pokémon from further harm...'));
   tone([-255, -255, -255, 0], 8); for (let k = 0; k < 10; k++) yield;
   enterMap(h.map, h.x, h.y, h.dir); yield; tone([0, 0, 0, 0], 8);
 }
@@ -578,15 +579,15 @@ function martPrice(k) { const p = itemInfo(k).price || 0; return G.items.TIAGOVI
 function drawMart(S) {
   pic('bag/bg_1', 0, 0);
   skinBox('skin_choice_1', 8, 8, 172, 56);
-  txt('MONEY', 24, 18, { size: 20 }); txt('$' + G.money, 164, 36, { align: 'right', size: 24 });
-  txt(S.mode === 'buy' ? 'BUY' : 'SELL', 94, 190, { col: COL.light, shadow: '#585858', align: 'center', size: 24 });
+  txt(__('MONEY'), 24, 18, { size: 20 }); txt('$' + G.money, 164, 36, { align: 'right', size: 24 });
+  txt(S.mode === 'buy' ? __('BUY') : __('SELL'), 94, 190, { col: COL.light, shadow: '#585858', align: 'center', size: 24 });
   const pk = S.list, rows = 8;
   if (S.scroll > 0) { const ua = UI('uparrow'); if (ua) ctx.drawImage(ua, (Math.floor(G.frame / 4) % 8) * 28, 0, 28, 40, 440, 0, 28, 40); }
   for (let r = 0; r < rows; r++) {
     const i = S.scroll + r, y = 12 + r * 32;
     if (i > pk.length) break;
     if (i === S.idx) { const cu = UI('bag/cursor'); if (cu) ctx.drawImage(cu, 0, 0, 282, 68, 194, y - 18, 262, 68); }
-    if (i === pk.length) { txt('CANCEL', 212, y + 6, { size: 24 }); continue; }
+    if (i === pk.length) { txt(__('CANCEL'), 212, y + 6, { size: 24 }); continue; }
     const k = pk[i];
     txt(itemLabel(k), 212, y + 6, { size: 22 });
     txt('$' + (S.mode === 'buy' ? martPrice(k) : Math.floor((itemInfo(k).price || 0) / 2)), 440, y + 6, { align: 'right', size: 22 });
@@ -596,8 +597,8 @@ function drawMart(S) {
   if (cur) {
     drawItemIcon(cur, 24, SH - 72);
     wrap(itemInfo(cur).desc, 400, 22).slice(0, 3).forEach((l, i) => txt(l, 84, 288 + i * 26, { col: COL.light, size: 22 }));
-    if (S.mode === 'sell') txt('In bag: ×' + (G.items[cur] || 0), 24, 72, { size: 20 });
-  } else txt('Quit shopping.', 84, 290, { col: COL.light, size: 22 });
+    if (S.mode === 'sell') txt(__('In bag: ×{0}', (G.items[cur] || 0)), 24, 72, { size: 20 });
+  } else txt(__('Quit shopping.'), 84, 290, { col: COL.light, size: 22 });
   if (S.qty) {
     skinBox('skin_choice_1', 236, 134, 244, 56);
     txt('×' + S.qty.n, 258, 148, { size: 26 }); txt('$' + S.qty.total, 462, 148, { align: 'right', size: 26 });
@@ -632,42 +633,42 @@ function* martScreen(items) {
         const k = S.list[S.idx]; sfx('ok');
         if (S.mode === 'buy') {
           const price = martPrice(k);
-          if (price > G.money) { yield* uiMessage("You don't have enough money."); continue; }
+          if (price > G.money) { yield* uiMessage(__('You don\'t have enough money.')); continue; }
           const have = G.items[k] || 0; const max = Math.max(1, Math.min(99 - have, Math.floor(G.money / price)));
-          if (have >= 99) { yield* uiMessage("You can't carry any more."); continue; }
+          if (have >= 99) { yield* uiMessage(__('You can\'t carry any more.')); continue; }
           const q = yield* pickQty(max, price); if (!q) continue;
-          yield* uiMessage(itemName(k) + ', and you want ' + q + '. That will be $' + (q * price) + '. OK?', { noWait: true });
+          yield* uiMessage(__('{0}, and you want {1}. That will be ${2}. OK?', itemName(k), q, (q * price)), { noWait: true });
           const yes = yield* yesNo(); G.uiMsg = null;
           if (!yes) continue;
           G.money -= q * price; G.items[k] = have + q; playSE('ItemGet');
-          yield* uiMessage('Here you are! Thank you!');
+          yield* uiMessage(__('Here you are! Thank you!'));
         } else {
           const unit = Math.floor((itemInfo(k).price || 0) / 2), have = G.items[k] || 0;
           const q = yield* pickQty(have, unit); if (!q) continue;
-          yield* uiMessage('I can pay $' + (q * unit) + '. Would that be OK?', { noWait: true });
+          yield* uiMessage(__('I can pay ${0}. Would that be OK?', (q * unit)), { noWait: true });
           const yes = yield* yesNo(); G.uiMsg = null;
           if (!yes) continue;
           G.items[k] = have - q; if (G.items[k] <= 0) { delete G.items[k]; S.list = S.list.filter(x => x !== k); S.idx = Math.min(S.idx, S.list.length); }
           G.money += q * unit; playSE('ItemGet');
-          yield* uiMessage('Turned over the ' + itemName(k) + ' and received $' + (q * unit) + '.');
+          yield* uiMessage(__('Turned over the {0} and received ${1}.', itemName(k), (q * unit)));
         }
       }
       S.shown = false;
     };
     sfx('open');
     while (true) {
-      yield* uiMessage('Welcome! How may I help you?', { noWait: true });
-      const c = yield* choiceWindow(['BUY', 'SELL', 'QUIT'], { x: 6, y: 6 });
+      yield* uiMessage(__('Welcome! How may I help you?'), { noWait: true });
+      const c = yield* choiceWindow([__('BUY'), __('SELL'), __('QUIT')], { x: 6, y: 6 });
       G.uiMsg = null;
       if (c < 0 || c === 2) break;
       if (c === 0) { S.mode = 'buy'; S.list = items; yield* browse(); }
       else {
         S.mode = 'sell'; S.list = Object.keys(G.items).filter(k => G.items[k] > 0 && itemInfo(k).pocket !== 8 && (itemInfo(k).price || 0) > 0);
-        if (!S.list.length) { yield* uiMessage("You don't have anything I can buy."); continue; }
+        if (!S.list.length) { yield* uiMessage(__('You don\'t have anything I can buy.')); continue; }
         yield* browse();
       }
     }
-    yield* uiMessage('Please come again!', { noWait: true }); for (let i = 0; i < 24; i++) yield; G.uiMsg = null;
+    yield* uiMessage(__('Please come again!'), { noWait: true }); for (let i = 0; i < 24; i++) yield; G.uiMsg = null;
   })());
 }
 
@@ -677,7 +678,7 @@ function locationSign(prev, id) {
   G.loc = null;
   if (!prev || prev === id || !window.MAPNAME || !window.SHOWAREA || !SHOWAREA.includes(id)) return;
   const name = MAPNAME[id]; if (!name || MAPNAME[prev] === name) return;
-  G.loc = { name, y: null, frames: 0 };
+  G.loc = { name: tr(name), y: null, frames: 0 };
 }
 function drawLocation() {
   const L = G.loc; if (!L) return;
@@ -697,36 +698,36 @@ function dcLevelsAfter(d) {                                     // dry run: how 
 }
 function* worldScriptDayCare(s) {
   if (s === 'pbDayCareHeal') {
-    yield* showMessage('Oh my, your Pokémon look tired. Let granny take a look at them, dear.');
+    yield* showMessage(__('Oh my, your Pokémon look tired. Let granny take a look at them, dear.'));
     const n = Math.max(1, G.party.length);
     for (let i = 1; i <= n; i++) { playSE('ballshake'); for (let k = 0; k < 16; k++) yield; }
     G.party.forEach(healMon); playME('Pkmn healing');
-    yield* showMessage('There, all better! Your Pokémon are in perfect health.'); return true;
+    yield* showMessage(__('There, all better! Your Pokémon are in perfect health.')); return true;
   }
   if (s !== 'pbDayCareMan') return false;
   const d = G.daycare;
   if (!d) {
-    yield* showMessage("I'm the Day Care Man. I can raise a Pokémon for you while you're out adventuring.");
-    yield* showMessage('Would you like me to raise one of your Pokémon?', { noWait: true });
-    if ((yield* showChoices(['Yes', 'No'], 2)) !== 0) { yield* showMessage('Fine, fine. Come back if you change your mind.'); return true; }
-    if (G.party.length < 2) { yield* showMessage("Hmm... you only have one Pokémon with you. If I take it, you'll have nobody to travel with!"); return true; }
-    yield* showMessage('Which Pokémon should I raise?');
+    yield* showMessage(__('I\'m the Day Care Man. I can raise a Pokémon for you while you\'re out adventuring.'));
+    yield* showMessage(__('Would you like me to raise one of your Pokémon?'), { noWait: true });
+    if ((yield* showChoices([__('Yes'), __('No')], 2)) !== 0) { yield* showMessage(__('Fine, fine. Come back if you change your mind.')); return true; }
+    if (G.party.length < 2) { yield* showMessage(__('Hmm... you only have one Pokémon with you. If I take it, you\'ll have nobody to travel with!')); return true; }
+    yield* showMessage(__('Which Pokémon should I raise?'));
     G.temp.dcPick = -1;
     G.uiGen = (function* () { G.temp.dcPick = yield* partyScreen({ mode: 'choose', text: 'Which Pokémon should I raise?' }); })(); yield;
     const i = G.temp.dcPick;
-    if (i == null || i < 0) { yield* showMessage('Fine, fine. Come back if you change your mind.'); return true; }
+    if (i == null || i < 0) { yield* showMessage(__('Fine, fine. Come back if you change your mind.')); return true; }
     const mon = G.party[i];
-    if (G.party.filter((q, j) => j !== i && q.hp > 0).length === 0) { yield* showMessage("If I take " + pokeName(mon) + ", you'd have no Pokémon able to battle!"); return true; }
+    if (G.party.filter((q, j) => j !== i && q.hp > 0).length === 0) { yield* showMessage(__('If I take {0}, you\'d have no Pokémon able to battle!', pokeName(mon))); return true; }
     G.party.splice(i, 1); G.daycare = { mon, t0: G.playFrames };
-    yield* showMessage("All right, I'll raise " + pokeName(mon) + '. The longer you leave it with me, the stronger it will get!');
-    yield* showMessage('Come back whenever you want it back.'); return true;
+    yield* showMessage(__('All right, I\'ll raise {0}. The longer you leave it with me, the stronger it will get!', pokeName(mon)));
+    yield* showMessage(__('Come back whenever you want it back.')); return true;
   }
   const mon = d.mon, lv = d.mon.lvl, gain = dcLevelsAfter(d);
-  yield* showMessage('Ah, ' + G.name + '! Your ' + pokeName(mon) + ' is doing great.');
-  yield* showMessage(gain > 0 ? 'It has grown by ' + gain + ' level' + (gain > 1 ? 's' : '') + ' since you left it with me!' : "It hasn't grown much yet. Give it a little more time.");
-  yield* showMessage('Do you want to take ' + pokeName(mon) + ' back?', { noWait: true });
-  if ((yield* showChoices(['Take it back', 'Leave it'], 2)) !== 0) { yield* showMessage("All right, I'll keep looking after it."); return true; }
-  if (G.party.length >= 6) { yield* showMessage('Your party is full! Make some room first.'); return true; }
+  yield* showMessage(__('Ah, {0}! Your {1} is doing great.', G.name, pokeName(mon)));
+  yield* showMessage(gain > 0 ? __('It has grown by {0} level{1} since you left it with me!', gain, (gain > 1 ? 's' : '')) : __('It hasn\'t grown much yet. Give it a little more time.'));
+  yield* showMessage(__('Do you want to take {0} back?', pokeName(mon)), { noWait: true });
+  if ((yield* showChoices([__('Take it back'), __('Leave it')], 2)) !== 0) { yield* showMessage(__('All right, I\'ll keep looking after it.')); return true; }
+  if (G.party.length >= 6) { yield* showMessage(__('Your party is full! Make some room first.')); return true; }
   const res = gainExp(mon, dcGain()); const learn = [];
   for (const r of res) for (const mv of r.learn) learn.push(mv);
   for (const id of learn) {                                    // the day care keeps the four newest moves
@@ -737,6 +738,6 @@ function* worldScriptDayCare(s) {
   mon.evoCheck = false; mon.hp = Math.min(mon.maxhp, Math.max(1, mon.hp));
   G.daycare = null; G.party.push(mon);
   playME('Item_get');
-  yield* showMessage(G.name + ' took back ' + pokeName(mon) + (mon.lvl > lv ? ', now Lv. ' + mon.lvl + '!' : '.'));
+  yield* showMessage((mon.lvl > lv ? __('{0} took back {1}, now Lv. {2}!', G.name, pokeName(mon), mon.lvl) : __('{0} took back {1}.', G.name, pokeName(mon))));
   return true;
 }

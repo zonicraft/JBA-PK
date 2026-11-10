@@ -78,7 +78,7 @@ function mkPoke(sym, lvl, o = {}) {
 }
 const makeMon = (sym, lvl) => mkPoke(sym, lvl);
 function healMon(p) { p.hp = p.maxhp; p.status = null; p.sleep = 0; p.moves.forEach(m => m.pp = maxPP(m)); }
-function pokeName(p) { return p.nick || p.name; }
+function pokeName(p) { return p.nick || (D.SP[p.sym] ? D.SP[p.sym].name : p.name); }
 function pokeTypes(p) { return D.SP[p.sym].types; }
 function expToNext(p) { return p.lvl >= MAXLEVEL ? 0 : expFor(D.SP[p.sym].growth, p.lvl + 1) - p.exp; }
 

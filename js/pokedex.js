@@ -52,9 +52,9 @@ function dexDrawArea(e, sp) {
     if ((j + 1) % W === 0 || !has(j + 1)) ctx.fillRect(x + 16, y, 2, 16);
   }
   dexPic('overlay_area', 0, 0);
-  if (!pts.some(Boolean)) { dexPic('overlay_areanone', 108, 188); txt('Area unknown', SW / 2, SH / 2 + 8, { align: 'center', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); }
-  txt('Kanto', 414, 52, { align: 'center', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
-  txt(sp.name + "'s area", SW / 2, 360, { align: 'center', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+  if (!pts.some(Boolean)) { dexPic('overlay_areanone', 108, 188); txt(__('Area unknown'), SW / 2, SH / 2 + 8, { align: 'center', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); }
+  txt(__('Kanto'), 414, 52, { align: 'center', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+  txt(__('{0}\'s area', sp.name), SW / 2, 360, { align: 'center', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
 }
 function dexDrawForms(e, sp) {
   dexPic('bg_forms', 0, 0);
@@ -77,18 +77,18 @@ function* pokedexEntry(list, index) {
     const owned = dexOwned(e.sym);
     dexSprite(e.sym, 104, 136, 176);
     txt(String(e.num).padStart(3, '0') + ' ' + sp.name, 246, 42, { base: '#f8f8f8', shadow: '#000', size: 22 });
-    txt('Height', 314, 158, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt('Weight', 314, 190, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+    txt(__('Height'), 314, 158, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt(__('Weight'), 314, 190, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
     if (owned) {
-      txt((sp.kind || '???') + ' Pokémon', 246, 74, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+      { const kt = __('{0} Pokémon', (sp.kind || '???')); let ks = 22; while (ks > 14 && txtW(kt, ks) > 250) ks--; txt(kt, 246, 74, { base: DEX_BASE, shadow: DEX_SHADOW, size: ks }); }
       txt((sp.height || 0).toFixed(1) + ' m', 470, 158, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
-      txt((sp.weight || 0).toFixed(1) + ' kg', 482, 190, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+      txt(__('{0} kg', (sp.weight || 0).toFixed(1)), 482, 190, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
       wrap(sp.dex || '', 432, 24).slice(0, 4).forEach((l, i) => txt(l, 40, 246 + i * 32, { base: DEX_BASE, shadow: DEX_SHADOW, size: 24 }));
       dexPic('icon_own', 212, 40);
       const ti = img('pictures', 'pokedex/icon_types');
       if (ti) { sp.types.forEach((t, k) => ctx.drawImage(ti, 0, typeIndex(t) * 32, 96, 32, 296 + 100 * k, 110, 96, 32)); }
     } else {
-      txt('????? Pokémon', 246, 74, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
-      txt('????.? m', 470, 158, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt('????.? kg', 482, 190, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+      txt(__('????? Pokémon'), 246, 74, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+      txt('????.? m', 470, 158, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt(__('????.? kg'), 482, 190, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
     }
     ctx.restore();
   };
@@ -112,10 +112,10 @@ function* pokedexScreen() {
   const draw = () => {
     dexPic('bg_list', 0, 0); ctx.save(); ctx.translate(0, 4);
     const e = list[idx];
-    txt('Pokédex', SW / 2, 2, { align: 'center', base: '#f8f8f8', shadow: '#000', size: 22 });
+    txt(__('Pokédex'), SW / 2, 2, { align: 'center', base: '#f8f8f8', shadow: '#000', size: 22 });
     if (e && dexSeen(e.sym)) { dexSprite(e.sym, 112, 196, 176); txt(e.name, 112, 52, { align: 'center', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); }
-    txt('Seen:', 42, 308, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt(String(seen), 182, 308, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
-    txt('Owned:', 42, 340, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt(String(owned), 182, 340, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+    txt(__('Seen:'), 42, 308, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt(String(seen), 182, 308, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
+    txt(__('Owned:'), 42, 340, { base: DEX_BASE, shadow: DEX_SHADOW, size: 22 }); txt(String(owned), 182, 340, { align: 'right', base: DEX_BASE, shadow: DEX_SHADOW, size: 22 });
     // list
     const cu = img('pictures', 'pokedex/cursor_list');
     for (let r = 0; r < DEX_ROWS; r++) {

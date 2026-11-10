@@ -129,7 +129,7 @@ function* trText(label, def, opts = {}) {
   G.modal = true;
   const box = document.getElementById('nameBox'), inp = document.getElementById('nameInput'), okb = document.getElementById('nameOk');
   const old = { w: inp.style.width, fs: inp.style.fontSize, ta: inp.style.textAlign, ml: inp.maxLength };
-  document.getElementById('nameLabel').textContent = label; inp.value = def || ''; inp.maxLength = 4000; inp.readOnly = !!opts.readonly;
+  document.getElementById('nameLabel').textContent = tr(label); inp.value = def || ''; inp.maxLength = 4000; inp.readOnly = !!opts.readonly;
   inp.style.width = '92%'; inp.style.minWidth = '300px'; inp.style.fontSize = '15px'; inp.style.textAlign = 'left'; inp.placeholder = opts.placeholder || '';
   const card = box.querySelector('.card'); const extra = [];
   let res = 0;   // 0 waiting, 1 ok, 2 cancel
@@ -159,7 +159,7 @@ function* trStart() {      // returns the chosen Pokémon or null
   pcInit(); yield* fadeTo(1, 8); const pick = yield* pcStorageScreen(3); yield* fadeTo(0, 8);
   if (!pick || !pick.mon) return null; const m = pick.mon;
   if (m.cheat) { yield* trSay("This Pokémon was made with cheats and can't be traded."); return null; }
-  if (m.item) { yield* trSay(pokeName(m) + ' is holding an item. Take the item first - only Pokémon without a held item can be traded.'); return null; }
+  if (m.item) { yield* trSay(__('{0} is holding an item. Take the item first - only Pokémon without a held item can be traded.', pokeName(m))); return null; }
   if (typeof dexHidden === 'function' && dexHidden(m.sym)) { yield* trSay("This Pokémon can't be traded."); return null; }
   if (pick.where === 'party' && (G.party.length <= 1 || G.party.filter(q => q !== m && q.hp > 0).length < 1)) { yield* trSay('You need at least one other healthy Pokémon in your party.'); return null; }
   return m;
@@ -167,11 +167,11 @@ function* trStart() {      // returns the chosen Pokémon or null
 function* trOutgoing(m) {      // makes (or re-shows) the outgoing code
   if (!G.tradePending) {
     if (m.cheat) { yield* trSay("This Pokémon was made with cheats and can't be traded."); return false; }
-    if (m.item) { yield* trSay(pokeName(m) + ' is holding an item. Take the item first.'); return false; }
+    if (m.item) { yield* trSay(__('{0} is holding an item. Take the item first.', pokeName(m))); return false; }
     if (!trClockOk()) { yield* trSay("Your device's clock seems to have been set back. Fix the clock to trade."); return false; }
     const loc = trLocate(m); if (!loc) { yield* trSay('That Pokémon is no longer available.'); return false; }
     if (loc.party && (G.party.length <= 1 || G.party.filter(q => q !== m && q.hp > 0).length < 1)) { yield* trSay('You need at least one other healthy Pokémon in your party.'); return false; }
-    if (!(yield* trYes('Make the outgoing code for ' + trLabel(m) + '? It leaves your save now and you cannot take it back.'))) return false;
+    if (!(yield* trYes(__('Make the outgoing code for {0}? It leaves your save now and you cannot take it back.', trLabel(m))))) return false;
     const prev = G.tradePending; loc.remove(); G.tradePending = { tid: trHex(trRandBytes(10)), p: trPack(m), name: trLabel(m), t: Date.now() };
     let saved = false; try { saved = writeSave() !== false; } catch (e) { }
     if (!saved) { loc.undo(); G.tradePending = prev; yield* trSay("The game couldn't be saved, so the trade was cancelled and nothing was lost. Free some browser storage and try again."); return false; }
@@ -179,20 +179,20 @@ function* trOutgoing(m) {      // makes (or re-shows) the outgoing code
   const pd = G.tradePending, now = Date.now();      // every time it is shown the code is sealed again with the current time, and it is valid for TR_LIFE ms
   const code = pd.p ? trSeal({ v: 1, t: pd.tid, f: G.name || '???', d: now, p: pd.p }) : pd.code;
   trCopy(code);
-  yield* trText('Outgoing code (made at ' + trClock(now) + ', valid for 1 minute - copied, send it now)', code, { readonly: true });
+  yield* trText(__('Outgoing code (made at {0}, valid for 1 minute - copied, send it now)', trClock(now)), code, { readonly: true });
   return true;
 }
 function* trIncoming() {
   const pend = G.tradePending; if (!pend) { yield* trSay('You need your outgoing code first. Make it, then enter your friend\'s code.'); return false; }
   const raw = yield* trText("Incoming code (your friend's code)", '', { placeholder: 'JBA1-...' }); if (!raw || !raw.trim()) return false;
   const d = trOpen(raw); if (!d || d.v !== 1 || !d.t || typeof d.t !== 'string') { yield* trSay("This code isn't valid. It may be mistyped, cut short, or edited."); return false; }
-  if (typeof d.d !== 'number' || Date.now() - d.d > TR_LIFE || d.d - Date.now() > TR_LIFE) { yield* trSay('This code has expired' + (typeof d.d === 'number' ? ' (made at ' + trClock(d.d) + ')' : '') + '. Codes only last 1 minute. Ask your friend to show a new one.'); return false; }
+  if (typeof d.d !== 'number' || Date.now() - d.d > TR_LIFE || d.d - Date.now() > TR_LIFE) { yield* trSay(__('This code has expired{0}. Codes only last 1 minute. Ask your friend to show a new one.', (typeof d.d === 'number' ? ' (made at ' + trClock(d.d) + ')' : ''))); return false; }
   if (d.t === pend.tid) { yield* trSay("That's your own outgoing code! Enter your friend's code."); return false; }
   if (G.tradeSeen[d.t]) { yield* trSay('This code was already used on this save.'); return false; }
-  const mon = trUnpack(d.p); if (typeof mon === 'string') { yield* trSay("This code isn't valid (" + mon + ').'); return false; }
-  const cap = trCap(); if (mon.lvl > cap) { yield* trSay('This Pokémon is too strong for your badges (max Lv. ' + cap + '). Try again after your next badge.'); return false; }
+  const mon = trUnpack(d.p); if (typeof mon === 'string') { yield* trSay(__('This code isn\'t valid ({0}).', mon)); return false; }
+  const cap = trCap(); if (mon.lvl > cap) { yield* trSay(__('This Pokémon is too strong for your badges (max Lv. {0}). Try again after your next badge.', cap)); return false; }
   const from = trTxt(d.f, 16) && d.f ? d.f : 'someone';
-  if (!(yield* trYes('Trade ' + pend.name + ' for ' + trLabel(mon) + ' from ' + from + '?'))) return false;
+  if (!(yield* trYes(__('Trade {0} for {1} from {2}?', pend.name, trLabel(mon), from)))) return false;
   if (Date.now() - d.d > TR_LIFE) { yield* trSay('This code expired while you were deciding. Ask your friend to show a new one.'); return false; }
   const wasOwned = G.owned && G.owned[mon.sym], wasSeen = G.seen && G.seen[mon.sym];
   let where = 'party';
@@ -208,7 +208,7 @@ function* trIncoming() {
     yield* trSay("The game couldn't be saved, so the trade was cancelled. Free some browser storage and try again."); return false;
   }
   try { playME('Item_get'); } catch (e) { }
-  yield* trSay('The trade is complete! You received ' + pokeName(mon) + ' from ' + from + '. It was added to your ' + where + '.');
+  yield* trSay(__('The trade is complete! You received {0} from {1}. It was added to your {2}.', pokeName(mon), from, where));
   return true;
 }
 function* trMenu(m) {      // m: the Pokémon chosen (null when resuming a trade whose outgoing code already exists)
@@ -217,13 +217,13 @@ function* trMenu(m) {      // m: the Pokémon chosen (null when resuming a trade
     const pend = G.tradePending, what = pend ? pend.name : trLabel(m);
     const labels = ['Outgoing code', 'Incoming code', pend ? 'Give up trade' : 'Back'];
     cmd = yield* pcMenuList(labels, [
-      pend ? 'Show the code to send to your friend.' : 'Make the code that sends ' + what + ' to your friend.',
+      pend ? 'Show the code to send to your friend.' : __('Make the code that sends {0} to your friend.', what),
       pend ? "Enter your friend's code to finish the trade." : 'Needs your outgoing code first.',
-      pend ? 'Stop waiting. ' + what + ' is already gone, so only do this if your friend has it.' : 'Choose another Pokémon.'], Math.max(cmd, 0));
+      pend ? __('Stop waiting. {0} is already gone, so only do this if your friend has it.', what) : 'Choose another Pokémon.'], Math.max(cmd, 0));
     if (cmd < 0 || (cmd === 2 && !pend)) return;
     if (cmd === 0) { yield* trOutgoing(m); }
     else if (cmd === 1) { if (yield* trIncoming()) return; }
-    else if (yield* trYes('Give up this trade? ' + what + ' will not come back.')) { G.tradeSeen[pend.tid] = 1; G.tradePending = null; try { writeSave(); } catch (e) { } return; }
+    else if (yield* trYes(__('Give up this trade? {0} will not come back.', what))) { G.tradeSeen[pend.tid] = 1; G.tradePending = null; try { writeSave(); } catch (e) { } return; }
   }
 }
 function* pcTrade() {
@@ -231,7 +231,7 @@ function* pcTrade() {
   while (true) {
     const pend = G.tradePending;
     cmd = yield* pcMenuList([pend ? 'Continue trade' : 'Start trade', 'Exit'],
-      [pend ? 'Your trade of ' + pend.name + ' is waiting for your friend\'s code.' : 'Pick a Pokémon, then swap trade codes with a friend.', 'Go back to the previous menu.'], Math.max(cmd, 0));
+      [pend ? __('Your trade of {0} is waiting for your friend\'s code.', pend.name) : 'Pick a Pokémon, then swap trade codes with a friend.', 'Go back to the previous menu.'], Math.max(cmd, 0));
     if (cmd < 0 || cmd === 1) break;
     if (pend) yield* trMenu(null); else { const m = yield* trStart(); if (m) yield* trMenu(m); }
   }

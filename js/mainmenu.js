@@ -201,7 +201,9 @@ const MM_CSS = `
 `;
 
 function mmEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-function mmBadges(save) { return MM_BADGE_SWITCHES.filter(k => save.switches && save.switches[k]).length + ((save.items && save.items.SAPPHIRE > 0) ? 1 : 0); }
+// same eight badge items as the trainer card (engine.js BADGE_ITEMS): an item in the bag, or its switch
+const MM_BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['PRIMOGEMS', 980], ['SAPPHIRE']];
+function mmBadges(save) { return MM_BADGE_ITEMS.filter(b => (save.items && save.items[b[0]] > 0) || (b[1] && save.switches && save.switches[b[1]])).length; }
 
 // reads one slot: { n, empty } | { n, broken } | { n, save }
 function mmSlot(n) {
@@ -246,6 +248,7 @@ class MainMenu {
       '<div class="set-row" data-f data-adj="sfx"><span class="lbl">Sound effects</span><span class="ctl"><input type="range" min="0" max="20" step="1" data-range="sfx"><output data-out="sfx"></output></span></div>' +
       '<div class="set-row" data-f data-adj="speed" data-act="cycle" data-k="speed"><span class="lbl">Game speed</span><span class="seg">' + (typeof SPEEDS !== 'undefined' ? SPEEDS : [1, 1.5, 2, 3]).map(v => '<button data-act="set" data-k="speed" data-v="' + v + '">' + v + 'x</button>').join('') + '</span></div>' +
       '<div class="set-row" data-f data-adj="bars" data-act="toggle" data-k="bars"><span class="lbl">Side bars<small>Backdrop image around the game screen</small></span><span class="seg"><button data-act="set" data-k="bars" data-v="1">Image</button><button data-act="set" data-k="bars" data-v="0">Black</button></span></div>' +
+      '<div class="set-row" data-f data-adj="lang" data-act="lang"><span class="lbl">Language</span><span class="seg"><button data-act="lang" data-v="-1">◀</button><button class="on" data-langname data-act="lang" data-v="1"></button><button data-act="lang" data-v="1">▶</button></span></div>' +
       '<div class="set-row" data-f data-act="fs"><span class="lbl">Fullscreen</span><span class="mm-mini">' + MM_ICON.full + ' Toggle</span></div>' +
       '</div></section>' +
       // controls
@@ -289,7 +292,7 @@ class MainMenu {
     let best = null; for (const s of mmAllSlots()) if (s.save && (!best || (s.save.t || 0) > (best.save.t || 0))) best = s;
     if (!best) return;
     const sv = best.save;
-    box.innerHTML = '<button class="mm-btn primary mm-cont" data-f data-act="continue" data-n="' + best.n + '"><span class="who"><span class="tag">CONTINUE · SLOT ' + best.n + '</span><div class="nm">' + mmEsc(sv.name) + '</div><div class="meta"><span>' + mmEsc(mapNameOf(sv.map)) + '</span><span>' + fmtTime(sv.playFrames || 0) + ' h</span><span>' + mmBadges(sv) + (mmBadges(sv) === 1 ? ' badge' : ' badges') + '</span></div></span><span class="ic">' + MM_ICON.play + '</span></button>';
+    box.innerHTML = '<button class="mm-btn primary mm-cont" data-f data-act="continue" data-n="' + best.n + '"><span class="who"><span class="tag">' + mmEsc(__('CONTINUE · SLOT {0}', best.n)) + '</span><div class="nm">' + mmEsc(sv.name) + '</div><div class="meta"><span>' + mmEsc(mapNameOf(sv.map)) + '</span><span>' + fmtTime(sv.playFrames || 0) + ' h</span><span>' + mmEsc(mmBadges(sv) === 1 ? __('{0} badge', mmBadges(sv)) : __('{0} badges', mmBadges(sv))) + '</span></div></span><span class="ic">' + MM_ICON.play + '</span></button>';
     this.paint(box);
   }
   renderSlots() {
@@ -304,7 +307,7 @@ class MainMenu {
       const party = (sv.party || []).slice(0, 6).map(p => '<canvas class="pi" width="64" height="64" data-sym="' + mmEsc(p.sym) + '"></canvas>').join('');
       return '<div class="slot"' + st + '><button class="slot-main" data-f data-act="open" data-n="' + n + '"><div class="s-top">' + no + '<span class="s-time">' + MM_ICON.clock + fmtTime(sv.playFrames || 0) + '</span></div>' +
         '<div class="s-body"><div class="s-info"><div class="s-name">' + mmEsc(sv.name) + '</div><div class="s-loc">' + MM_ICON.pin + '<span>' + mmEsc(mapNameOf(sv.map)) + '</span></div><div class="pips" title="' + b + ' badges">' + pips + '</div></div></div>' +
-        '<div class="party">' + party + '</div><div class="s-last">' + (n === lastN ? 'Last played · ' : 'Saved ') + mmDate(sv.t) + '</div></button>' +
+        '<div class="party">' + party + '</div><div class="s-last">' + mmEsc(n === lastN ? __('Last played · {0}', mmDate(sv.t)) : __('Saved {0}', mmDate(sv.t))) + '</div></button>' +
         '<div class="s-tools"><button class="tool" data-f data-act="export" data-n="' + n + '" title="Export to a file" aria-label="Export slot ' + n + '">' + MM_ICON.down + '</button><button class="tool danger" data-f data-act="delete" data-n="' + n + '" title="Delete" aria-label="Delete slot ' + n + '">' + MM_ICON.trash + '</button></div></div>';
     }).join('');
     this.paint(grid);
@@ -377,8 +380,9 @@ class MainMenu {
       case 'fs': sfx('ok'); toggleFullscreen(); break;
       case 'toggle': this.adjust(d.k, 0); break;
       case 'cycle': this.adjust('speed', 1); break;
+      case 'lang': this.adjust('lang', d.v ? +d.v : 1); break;
       case 'set': this.setSetting(d.k, +d.v); break;
-      case 'export': { const r = exportSaveFile(+d.n); sfx(r ? 'ok' : 'buzzer'); this.toast(r === null ? 'Nothing to export.' : r === false ? 'That save is damaged and could not be exported.' : 'Exported ' + r); break; }
+      case 'export': { const r = exportSaveFile(+d.n); sfx(r ? 'ok' : 'buzzer'); this.toast(r === null ? 'Nothing to export.' : r === false ? 'That save is damaged and could not be exported.' : __('Exported {0}', r)); break; }
       case 'import': sfx('ok'); this.importInto(+d.n); break;
       case 'delete': sfx('ok'); this.confirmDelete(+d.n); break;
       case 'dlg-yes': this.closeDlg(true); break;
@@ -391,6 +395,7 @@ class MainMenu {
     if (k === 'music' || k === 'sfx') { this.setVol(k, Math.max(0, Math.min(20, Math.round(SET[k] * 20) + dir)) / 20); if (k === 'sfx') sfx('cursor'); }
     else if (k === 'speed') { const sp = typeof SPEEDS !== 'undefined' ? SPEEDS : [1, 1.5, 2, 3]; const i = sp.indexOf(SET.speed); this.setSetting('speed', sp[Math.max(0, Math.min(sp.length - 1, dir ? i + dir : (i + 1) % sp.length))]); }
     else if (k === 'bars' || k === 'touch') this.setSetting(k, SET[k] ? 0 : 1);
+    else if (k === 'lang') { I18N.next(dir || 1); sfx('cursor'); this.sync(); this.renderHomeContinue(); }
   }
   setVol(k, v) { SET[k] = v; if (k === 'music') applyVolumes(); saveSettings(); this.sync(); }
   setSetting(k, v) {
@@ -402,6 +407,7 @@ class MainMenu {
     const r = this.root; if (!r) return;
     for (const k of ['music', 'sfx']) { const i = r.querySelector('[data-range="' + k + '"]'); if (i) i.value = Math.round(SET[k] * 20); const o = r.querySelector('[data-out="' + k + '"]'); if (o) o.textContent = Math.round(SET[k] * 100) + '%'; }
     r.querySelectorAll('.seg [data-k]').forEach(b => b.classList.toggle('on', +b.dataset.v === +SET[b.dataset.k]));
+    r.querySelectorAll('[data-langname]').forEach(b => { b.textContent = I18N.name(I18N.cur); });
     r.querySelectorAll('[data-sw="touch"]').forEach(s => s.classList.toggle('on', !!SET.touch));
   }
 
@@ -410,14 +416,14 @@ class MainMenu {
     const text = await pickSaveFile(); if (text === null || this.done) return;
     let data = null; try { const j = JSON.parse(text); data = j && j.save ? j.save : j; } catch (e) { }
     if (!validSaveData(data)) { sfx('buzzer'); return this.toast("That file isn't a valid JBA Pokémon save."); }
-    const put = () => { try { localStorage.setItem(slotKey(n), JSON.stringify(data)); } catch (e) { return this.toast('The save could not be stored in this browser.'); } sfx('save'); this.renderSlots(); this.setFocus(this.root.querySelector('.slot-main[data-n="' + n + '"]')); this.toast(data.name + "'s save imported into slot " + n + '.'); };
-    if (hasSave(n)) this.confirm({ title: 'Replace slot ' + n + '?', text: 'This slot already holds a save. Importing replaces it.', yes: 'Replace', danger: true }, put); else put();
+    const put = () => { try { localStorage.setItem(slotKey(n), JSON.stringify(data)); } catch (e) { return this.toast('The save could not be stored in this browser.'); } sfx('save'); this.renderSlots(); this.setFocus(this.root.querySelector('.slot-main[data-n="' + n + '"]')); this.toast(__("{0}'s save imported into slot {1}.", data.name, n)); };
+    if (hasSave(n)) this.confirm({ title: __('Replace slot {0}?', n), text: __('This slot already holds a save. Importing replaces it.'), yes: __('Replace'), danger: true }, put); else put();
   }
   confirmDelete(n) {
     const s = mmSlot(n), who = s.save ? s.save.name + "'s" : 'this';
-    this.confirm({ title: 'Delete slot ' + n + '?', text: 'Delete ' + who + ' save for good? Export it first if you want a backup.', yes: 'Delete', danger: true }, () => {
+    this.confirm({ title: __('Delete slot {0}?', n), text: __('Delete {0} save for good? Export it first if you want a backup.', who), yes: __('Delete'), danger: true }, () => {
       try { localStorage.removeItem(slotKey(n)); if (this.lastSlot() === n) localStorage.removeItem(LAST_SLOT_KEY); } catch (e) { }
-      sfx('back'); this.renderSlots(); this.setFocus(this.root.querySelector('.slot-main[data-n="' + n + '"]')); this.toast('Slot ' + n + ' deleted.');
+      sfx('back'); this.renderSlots(); this.setFocus(this.root.querySelector('.slot-main[data-n="' + n + '"]')); this.toast(__('Slot {0} deleted.', n));
     });
   }
   confirm(o, onYes) {

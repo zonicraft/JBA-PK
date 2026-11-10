@@ -107,3 +107,9 @@ starts in map ID at tile (X, Y), with variables set (id:value) and switches on.
 NOTES
 -----
 See todo.txt for the current list of fixes and ideas.
+
+LANGUAGES / TRANSLATION
+-----------------------
+All the text of the game can be translated. The language files are in the lang/ folder; read lang/README.txt for how to translate and
+how to add a language. Players pick the language in Settings on the title screen or in Options in the game
+(index.html?lang=pt also works). tools/extract_lang.py regenerates the files after the game text changes.

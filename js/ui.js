@@ -10,17 +10,17 @@ const COL = {
   black: ['#303030', '#b8b8b8'],
 };
 function txt(s, x, y, o = {}) {
-  s = String(s); const size = o.size || 24; y += Math.round(size * 0.75) + 1;
+  s = tr(String(s)); const size = o.size || 24; y += Math.round(size * 0.75) + 1;
   ctx.font = size + 'px ' + (o.font || FONT); ctx.textBaseline = 'alphabetic'; ctx.textAlign = o.align || 'left';
   const c = o.col || COL.dark; const base = o.base || c[0], sh = o.shadow || c[1];
   if (o.shadow !== null) { ctx.fillStyle = sh; ctx.fillText(s, x + 2, y + 2); }
   ctx.fillStyle = base; ctx.fillText(s, x, y);
   ctx.textAlign = 'left';
 }
-function txtW(s, size = 24) { ctx.font = size + 'px ' + FONT; return ctx.measureText(String(s)).width; }
+function txtW(s, size = 24) { ctx.font = size + 'px ' + FONT; return ctx.measureText(tr(String(s))).width; }
 function wrap(s, maxW, size = 24) {
   ctx.font = size + 'px ' + FONT; const out = [];
-  for (const para of String(s).split('\n')) {
+  for (const para of tr(String(s)).split('\n')) {
     let line = '';
     for (const w of para.split(' ')) {
       const t = line ? line + ' ' + w : w;
@@ -112,6 +112,7 @@ function drawUiMsg() {
 }
 // small command window (Window_CommandPokemon-like). Returns index or -1. opts: x,y,w, anchor right/bottom
 function* choiceWindow(labels, o = {}) {
+  labels = labels.map(l => typeof l === 'string' ? tr(l) : l);
   const rowH = 32, vis = o.max ? Math.min(o.max, labels.length) : labels.length;     // o.max: rows shown at once, the list scrolls
   const w = o.w || Math.max(...labels.map(l => txtW(l, 26))) + 64, h = vis * rowH + 32;
   const x = o.x !== undefined ? o.x : SW - w, y = o.y !== undefined ? o.y : (SH - 96 - h);
@@ -143,7 +144,7 @@ function drawPopup() {
     if (p.more[1]) { const cx = p.x + p.w - 22, cy = p.y + p.h - 12; ctx.beginPath(); ctx.moveTo(cx - 6, cy - 6); ctx.lineTo(cx + 6, cy - 6); ctx.lineTo(cx, cy); ctx.fill(); }
   }
 }
-function* yesNo(x, y) { const r = yield* choiceWindow(['YES', 'NO'], { x: x ?? SW - 120, y: y ?? SH - 96 - 96 }); return r === 0; }
+function* yesNo(x, y) { const r = yield* choiceWindow([__('YES'), __('NO')], { x: x ?? SW - 120, y: y ?? SH - 96 - 96 }); return r === 0; }
 // HP bar helpers (Essentials colours: >50% green, >20% yellow, else red). bar rows of overlay_hp = 3 colours.
 function hpColorRow(cur, max) { const f = cur / max; return f > 0.5 ? 0 : f > 0.2 ? 1 : 2; }
 function drawHpFill(sheetName, rowH, x, y, w, cur, max, hBar) {

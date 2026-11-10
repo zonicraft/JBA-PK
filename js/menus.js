@@ -38,7 +38,7 @@ function drawPartyScreen(S) {
   const cx = SW - 112 - 0, cy = SH - 48 - 0;
   const sel = S.idx === 6;
   const c = UI(sel ? 'party/icon_cancel_sel' : 'party/icon_cancel'); if (c) ctx.drawImage(c, cx, cy);
-  txt('EXIT', cx + 56, cy + 12, { col: COL.light, shadow: '#383838', size: 26, align: 'center' });
+  txt(__('EXIT'), cx + 56, cy + 12, { col: COL.light, shadow: '#383838', size: 26, align: 'center' });
   // message window
   txt(S.text || '', 42, SH - 64 + 2, { base: '#404040', shadow: '#b8b8b8', size: 26 });
 }
@@ -75,31 +75,31 @@ function* partyScreen(o = {}) {
       if (S.mode === 'choose') { if (o.valid && !o.valid(p)) { sfx('buzzer'); continue; } return S.idx; }
       if (S.mode === 'item') { const r = yield* o.use(p, S.idx, S); if (r) return S.idx; S.text = 'Choose a Pokémon.'; continue; }
       if (S.mode === 'battle') {
-        const c = yield* choiceWindow(['SWITCH IN', 'SUMMARY', 'CANCEL'], { y: SH - 96 - 3 * 32 - 32 });
+        const c = yield* choiceWindow([__('SWITCH IN'), __('SUMMARY'), __('CANCEL')], { y: SH - 96 - 3 * 32 - 32 });
         if (c === 0) {
-          if (p.hp <= 0) { yield* uiMessage('There\'s no energy left to battle with!'); continue; }
-          if (o.activeIdx === S.idx) { yield* uiMessage(pokeName(p) + ' is already in battle!'); continue; }
+          if (p.hp <= 0) { yield* uiMessage(__('There\'s no energy left to battle with!')); continue; }
+          if (o.activeIdx === S.idx) { yield* uiMessage(__('{0} is already in battle!', pokeName(p))); continue; }
           return S.idx;
         }
         if (c === 1) { const r = yield* summaryScreen(S.party, S.idx); S.idx = r; }
         continue;
       }
       // field menu
-      const c = yield* choiceWindow(['SUMMARY', 'SWITCH', 'ITEM', 'CANCEL'], { y: SH - 96 - 4 * 32 - 32 });
+      const c = yield* choiceWindow([__('SUMMARY'), __('SWITCH'), __('ITEM'), __('CANCEL')], { y: SH - 96 - 4 * 32 - 32 });
       if (c === 0) { S.idx = yield* summaryScreen(S.party, S.idx); }
       else if (c === 1) { if (S.party.length > 1) { S.swap = S.idx; S.text = 'Move to where?'; } }
       else if (c === 2) {
-        const ic = yield* choiceWindow(['USE', 'GIVE', 'TAKE', 'CANCEL'], { y: SH - 96 - 4 * 32 - 32 });
+        const ic = yield* choiceWindow([__('USE'), __('GIVE'), __('TAKE'), __('CANCEL')], { y: SH - 96 - 4 * 32 - 32 });
         if (ic === 1) {
           const key = yield* bagScreen({ mode: 'give' });
           if (key) {
             const old = p.item; p.item = key; G.items[key]--; if (!G.items[key]) delete G.items[key];
             if (old) G.items[old] = (G.items[old] || 0) + 1;
-            yield* uiMessage(pokeName(p) + ' is now holding the ' + itemName(key) + '.');
+            yield* uiMessage(__('{0} is now holding the {1}.', pokeName(p), itemName(key)));
           }
         } else if (ic === 2) {
-          if (!p.item) yield* uiMessage(pokeName(p) + ' isn\'t holding anything.');
-          else { G.items[p.item] = (G.items[p.item] || 0) + 1; yield* uiMessage('Received the ' + itemName(p.item) + ' from ' + pokeName(p) + '.'); p.item = null; }
+          if (!p.item) yield* uiMessage(__('{0} isn\'t holding anything.', pokeName(p)));
+          else { G.items[p.item] = (G.items[p.item] || 0) + 1; yield* uiMessage(__('Received the {0} from {1}.', itemName(p.item), pokeName(p))); p.item = null; }
         } else if (ic === 0) {
           const key = yield* bagScreen({ mode: 'party' });
           if (key) { yield* useItemOn(key, p, S); }
@@ -141,12 +141,11 @@ function drawSummary(S) {
     const w = p.lvl >= MAXLEVEL ? 128 : Math.floor(128 * (p.exp - a) / Math.max(1, b - a));
     if (UI('summary/overlay_exp')) ctx.drawImage(UI('summary/overlay_exp'), 0, 0, w, 6, 362, 372, w, 6);
   } else if (S.page === 2) {
-    const nat = NATURES[p.nature][0];
+    const nat = tr(NATURES[p.nature][0]);
     const lines = [];
     lines.push(`<c1>${nat}</c1> nature.`);
-    lines.push(`Met at Lv. ${p.metLvl}.`); lines.push(`${p.met}.`);
-    const text = [`${nat.toUpperCase()}`, 'nature.', `Met at Lv. ${p.metLvl}.`, p.met + '.'];
-    Dk(nat + ' nature.', 238, 112 + 6, { size: 24 }); Dk('Met at Lv. ' + p.metLvl + ' at', 238, 144 + 6, { size: 24 }); Dk(p.met + '.', 238, 176 + 6, { size: 24 });
+    lines.push(__('Met at Lv. {0}.', p.metLvl)); lines.push(`${p.met}.`);
+        Dk(__('{0} nature.', nat), 238, 112 + 6, { size: 24 }); Dk(__('Met at Lv. {0} at', p.metLvl), 238, 144 + 6, { size: 24 }); Dk(p.met + '.', 238, 176 + 6, { size: 24 });
     const hp = p.happy; wrap(hp > 200 ? 'It adores its Trainer!' : hp > 100 ? 'It seems to like you.' : 'It is still getting used to you.', 222, 22).forEach((l, i) => Dk(l, 238, 240 + 6 + i * 32, { size: 22 }));
   } else if (S.page === 3) {
     // HP + stats

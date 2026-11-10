@@ -16,43 +16,43 @@ function* useItemOn(key, p, S) {
   const name = pokeName(p);
   { const ti = itemInfo(key); if (ti.pocket === 4 && ti.move && D.MV[ti.move]) {   // TM / TR: teach the move (compatibility is by type)
     const mid = ti.move, mn = D.MV[mid].name;
-    if (p.moves.some(m => m.id === mid)) { yield* uiMessage(name + ' already knows ' + mn + '.'); return false; }
-    if (D.MV[mid].type !== 'NORMAL' && !pokeTypes(p).includes(D.MV[mid].type)) { yield* uiMessage(name + ' can\'t learn ' + mn + '.'); return false; }   // TM rule: the move\'s type must match one of the Pokémon\'s types (Normal moves are open to all)
-    yield* uiMessage('Booted up ' + ti.name + '. It contained ' + mn + '.');
+    if (p.moves.some(m => m.id === mid)) { yield* uiMessage(__('{0} already knows {1}.', name, mn)); return false; }
+    if (D.MV[mid].type !== 'NORMAL' && !pokeTypes(p).includes(D.MV[mid].type)) { yield* uiMessage(__('{0} can\'t learn {1}.', name, mn)); return false; }   // TM rule: the move\'s type must match one of the Pokémon\'s types (Normal moves are open to all)
+    yield* uiMessage(__('Booted up {0}. It contained {1}.', ti.name, mn));
     yield* learnMoveField(p, mid);
     if (!p.moves.some(m => m.id === mid)) return false;
     if (/^TR/.test(key)) consume(key);   // TRs are single-use, TMs are reusable
     return true;
   } }
   if (key in REVIVE) {
-    if (p.hp > 0) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    if (p.hp > 0) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
     p.hp = Math.max(1, Math.floor(p.maxhp * REVIVE[key])); p.status = null; consume(key); sfx('item');
-    yield* uiMessage(name + ' was revived!'); return true;
+    yield* uiMessage(__('{0} was revived!', name)); return true;
   }
   if (key === 'RARECANDY') {
-    if (p.lvl >= MAXLEVEL) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    if (p.lvl >= MAXLEVEL) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
     const r = gainExp(p, expFor(D.SP[p.sym].growth, p.lvl + 1) - p.exp); consume(key); sfx('exp');
-    yield* uiMessage(name + ' grew to Lv. ' + p.lvl + '!'); return true;
+    yield* uiMessage(__('{0} grew to Lv. {1}!', name, p.lvl)); return true;
   }
-  if (p.hp <= 0) { yield* uiMessage('It won\'t have any effect.'); return false; }
+  if (p.hp <= 0) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
   if (key in VITAMIN) {   // +10 EVs, capped at 100 per stat by vitamins
     const [si, sn] = VITAMIN[key];
-    if (p.evs[si] >= 100) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    if (p.evs[si] >= 100) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
     p.evs[si] = Math.min(100, p.evs[si] + 10); refreshStats(p); consume(key); sfx('item');
-    yield* uiMessage(name + '\'s ' + sn + ' rose.'); return true;
+    yield* uiMessage(__('{0}\'s {1} rose.', name, sn)); return true;
   }
   if (key === 'PPUP' || key === 'PPMAX') {   // choose a move: +1 (or +3) PP Up level, each adds 20% of the base PP
     const labels = p.moves.map(m => D.MV[m.id].name + '  ' + m.pp + '/' + maxPP(m)).concat(['Cancel']);
     const c = yield* choiceWindow(labels, { x: 150, y: 90 });
     if (c < 0 || c >= p.moves.length) return false;
     const m = p.moves[c], mn = D.MV[m.id].name;
-    if ((m.ppup || 0) >= 3 || D.MV[m.id].pp < 5) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    if ((m.ppup || 0) >= 3 || D.MV[m.id].pp < 5) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
     const before = maxPP(m); m.ppup = key === 'PPMAX' ? 3 : (m.ppup || 0) + 1; m.pp += maxPP(m) - before;
-    consume(key); sfx('item'); yield* uiMessage(mn + '\'s maximum PP rose.'); return true;
+    consume(key); sfx('item'); yield* uiMessage(__('{0}\'s maximum PP rose.', mn)); return true;
   }
   if (key === 'SUMMERSTONE' || key === 'CASUALSTONE') {
     const to = stoneTarget(key, p.sym);
-    if (!to) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    if (!to) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
     p.forceEvo = to; yield* evolveScene([p]); p.forceEvo = null;
     if (p.sym === to) { consume(key); return true; }
     return false;   // evolution cancelled: the stone is kept
@@ -62,16 +62,16 @@ function* useItemOn(key, p, S) {
     if (p.hp < p.maxhp) {
       const amt = Math.min(HEAL_HP[key], p.maxhp - p.hp), end = p.hp + amt;
       sfx('item'); while (p.hp < end) { p.hp = Math.min(end, p.hp + Math.max(1, Math.ceil(p.maxhp / 60))); yield; }
-      yield* uiMessage(name + '\'s HP was restored by ' + amt + ' points.'); did = true;
+      yield* uiMessage(__('{0}\'s HP was restored by {1} points.', name, amt)); did = true;
     }
   }
   if (key in CURE && p.status && CURE[key].includes(p.status)) {
-    p.status = null; p.sleep = 0; if (!did) sfx('item'); yield* uiMessage(name + ' was cured.'); did = true;
+    p.status = null; p.sleep = 0; if (!did) sfx('item'); yield* uiMessage(__('{0} was cured.', name)); did = true;
   }
   if (/^(ETHER|MAXETHER)$/.test(key)) {
-    const m = p.moves.find(mv => mv.pp < maxPP(mv)); if (m) { m.pp = Math.min(maxPP(m), m.pp + (key === 'ETHER' ? 10 : 99)); yield* uiMessage('PP was restored.'); did = true; }
+    const m = p.moves.find(mv => mv.pp < maxPP(mv)); if (m) { m.pp = Math.min(maxPP(m), m.pp + (key === 'ETHER' ? 10 : 99)); yield* uiMessage(__('PP was restored.')); did = true; }
   }
-  if (!did) { yield* uiMessage('It won\'t have any effect.'); return false; }
+  if (!did) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
   consume(key); return true;
 }
 
@@ -94,7 +94,7 @@ function drawBag(S) {
     const i = first + r, y = 12 + r * 32;
     if (i > pk.length) break;
     if (i === S.idx) { const cu = UI(S.move ? 'bag/cursor_swap' : 'bag/cursor'); if (cu) ctx.drawImage(cu, 0, 0, 282, 68, 194, y - 18, 262, 68); }
-    if (i === pk.length) { txt('CLOSE', 212, y + 6, { size: 24 }); continue; }
+    if (i === pk.length) { txt(__('CLOSE'), 212, y + 6, { size: 24 }); continue; }
     const k = pk[i], it = itemInfo(k);
     txt(itemLabel(k), 212, y + 6, { size: 22 });
     if (it.pocket !== 8 && G.items[k] !== undefined) txt('×' + G.items[k], 440, y + 6, { align: 'right', size: 22 });
@@ -103,7 +103,7 @@ function drawBag(S) {
   // item icon + description
   const cur = S.idx < pk.length ? pk[S.idx] : null;
   if (cur) { drawItemIcon(cur, 24, SH - 72); wrap(itemInfo(cur).desc, 400, 22).slice(0, 3).forEach((l, i) => txt(l, 84, 288 + i * 26, { col: COL.light, size: 22 })); }
-  else txt('Close the Bag.', 84, 290, { col: COL.light, size: 22 });
+  else txt(__('Close the Bag.'), 84, 290, { col: COL.light, size: 22 });
   if (S.hint) txt(S.hint, 8, 4, { col: COL.light, size: 20 });
 }
 function* bagScreen(o = {}) {
@@ -127,12 +127,12 @@ function* bagScreen(o = {}) {
       if (!ok()) continue;
       if (S.idx >= pk.length) { sfx('back'); return null; }
       const key = pk[S.idx], it = itemInfo(key); sfx('ok');
-      if (o.filter) { if (o.filter(key)) return key; yield* uiMessage("That won't fit in this plot."); continue; }
-      if (o.mode === 'give') { if (it.pocket === 8) { yield* uiMessage("The " + it.name + " can't be held."); continue; } return key; }
-      if (o.mode === 'party') { if (isMedicine(key)) return key; yield* uiMessage('It can\'t be used on a Pokémon.'); continue; }
+      if (o.filter) { if (o.filter(key)) return key; yield* uiMessage(__('That won\'t fit in this plot.')); continue; }
+      if (o.mode === 'give') { if (it.pocket === 8) { yield* uiMessage(__('The {0} can\'t be held.', it.name)); continue; } return key; }
+      if (o.mode === 'party') { if (isMedicine(key)) return key; yield* uiMessage(__('It can\'t be used on a Pokémon.')); continue; }
       if (o.mode === 'battle') {
         if ((isMedicine(key) && !(key in VITAMIN) && key !== 'PPUP' && key !== 'PPMAX') || it.pocket === 3 || key in BATTLE_ITEMS) return key;
-        yield* uiMessage('It can\'t be used in battle.'); continue;
+        yield* uiMessage(__('It can\'t be used in battle.')); continue;
       }
       // field menu
       const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS || (it.pocket === 4 && it.move)) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
@@ -140,11 +140,11 @@ function* bagScreen(o = {}) {
       const choice = c < 0 ? 'CANCEL' : opts[c];
       if (choice === 'USE') {
         if (key in REPEL_STEPS) {
-          if (G.repel > 0) yield* uiMessage('But the effects of a Repel lingered from earlier.');
+          if (G.repel > 0) yield* uiMessage(__('But the effects of a Repel lingered from earlier.'));
           else {
             G.repel = REPEL_STEPS[key]; G.repelItem = key; consume(key); sfx('item');
             S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length; if (S.scroll > S.idx) S.scroll = S.idx;
-            yield* uiMessage(G.name + ' used the ' + it.name + '!');
+            yield* uiMessage(__('{0} used the {1}!', G.name, it.name));
           }
           continue;
         }
@@ -152,7 +152,7 @@ function* bagScreen(o = {}) {
         if (key === 'BOAT') { G.fishReq = 'Boat'; return null; }
         if (key === 'PORTABLETELEPORTER') { CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; });   // everything before Cinnabar was visited by the time Einsteves hands it over
           yield* townMapScreen({ teleport: true, player: true }); if (G.teleReq) return null; continue; }
-        if (key === 'BICYCLE') { if (G.biking) { G.biking = false; G.bikeMsg = G.name + ' got off the Skateboard.'; } else if (bikeAllowed()) { G.biking = true; G.bikeMsg = G.name + ' got on the Skateboard.'; } else G.bikeMsg = 'You can\'t use the Skateboard here.'; return null; }
+        if (key === 'BICYCLE') { if (G.biking) { G.biking = false; G.bikeMsg = __('{0} got off the Skateboard.', G.name); } else if (bikeAllowed()) { G.biking = true; G.bikeMsg = __('{0} got on the Skateboard.', G.name); } else G.bikeMsg = 'You can\'t use the Skateboard here.'; return null; }
         if (isMedicine(key) || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || (it.pocket === 4 && it.move)) {
           const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i) => useItemOn(key, p) });
           S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
@@ -163,12 +163,12 @@ function* bagScreen(o = {}) {
           const p = G.party[gi], old = p.item; p.item = key; G.items[key]--; if (!G.items[key]) delete G.items[key];
           if (old) G.items[old] = (G.items[old] || 0) + 1;
           S.pockets = bagPockets(); S.idx = Math.min(S.idx, Math.max(0, S.pockets[S.pocket].length)); if (S.scroll > S.idx) S.scroll = S.idx;
-          yield* uiMessage(pokeName(p) + (old ? ' swapped its ' + itemName(old) + ' for the ' + itemName(key) + '.' : ' is now holding the ' + itemName(key) + '.'));
+          yield* uiMessage(old ? __('{0} swapped its {1} for the {2}.', pokeName(p), itemName(old), itemName(key)) : __('{0} is now holding the {1}.', pokeName(p), itemName(key)));
         }
       } else if (choice === 'TOSS') {
-        if (it.pocket === 8) { yield* uiMessage('That\'s too important to toss out!'); continue; }
-        const ok2 = yield* (function* () { G.uiMsg = null; yield* uiMessage('Toss out the ' + it.name + '?', { noWait: true }); const r = yield* yesNo(); G.uiMsg = null; return r; })();
-        if (ok2) { consume(key); S.pockets = bagPockets(); S.idx = Math.min(S.idx, S.pockets[S.pocket].length); if (S.scroll > S.idx) S.scroll = S.idx; yield* uiMessage('Threw away the ' + it.name + '.'); }
+        if (it.pocket === 8) { yield* uiMessage(__('That\'s too important to toss out!')); continue; }
+        const ok2 = yield* (function* () { G.uiMsg = null; yield* uiMessage(__('Toss out the {0}?', it.name), { noWait: true }); const r = yield* yesNo(); G.uiMsg = null; return r; })();
+        if (ok2) { consume(key); S.pockets = bagPockets(); S.idx = Math.min(S.idx, S.pockets[S.pocket].length); if (S.scroll > S.idx) S.scroll = S.idx; yield* uiMessage(__('Threw away the {0}.', it.name)); }
       }
     }
   })());
@@ -194,14 +194,14 @@ function drawTrainerCard() {
   row(1, 'Money', '$' + G.money);
   row(2, 'Pokédex', String(owned));
   row(3, 'Time', fmtTime(G.playFrames));
-  row(4, 'Hall of Fame', hof ? 'Champion' + (hof > 1 ? ' x' + hof : '') : 'Not yet');
-  txt('ID No. ' + String(G.trainerId).padStart(5, '0'), 399, 67, { size: 18, align: 'center', col: COL.light });
+  row(4, 'Hall of Fame', hof ? __('Champion{0}', (hof > 1 ? ' x' + hof : '')) : 'Not yet');
+  txt(__('ID No. {0}', String(G.trainerId).padStart(5, '0')), 399, 67, { size: 18, align: 'center', col: COL.light });
   const im = img('faces', 'facemain'); if (im) ctx.drawImage(im, 0, 0, 96, 96, 350, 108, 96, 96);
   // gold star next to the name = Champion, next to the Pokédex count = completed Pokédex (given by Nuno)
   if (hof) starShape(38 + txtW('Name', 22) + 22, 79, 10, '#f8d030');
   if (dexDone) starShape(38 + txtW('Pokédex', 22) + 22, 175, 10, '#f8d030');
-  if (hof) txt('CHAMPION', 399, 208, { size: 18, align: 'center', col: COL.light });
-  if (dexDone) txt('DEX COMPLETE', 399, hof ? 227 : 208, { size: 16, align: 'center', col: COL.light });
+  if (hof) txt(__('CHAMPION'), 399, 208, { size: 18, align: 'center', col: COL.light });
+  if (dexDone) txt(__('DEX COMPLETE'), 399, hof ? 227 : 208, { size: 16, align: 'center', col: COL.light });
   const ic = img('ui', 'trainercard/icon_badges');
   if (ic) BADGE_ITEMS.forEach((b, k) => { if (G.items[b[0]] > 0 || (b[1] && getSwitch(b[1]))) ctx.drawImage(ic, k * 32, 0, 32, 32, 72 + k * 48, 310, 32, 32); });
 }
@@ -217,7 +217,7 @@ function drawHofEntry(e, title, shown, sub) {
   txt(title, SW / 2, 18, { size: 28, align: 'center' });
   const fim = img('faces', 'facemain'); if (fim) ctx.drawImage(fim, 0, 0, 96, 96, 26, 54, 64, 64);
   txt(e.name, 102, 56, { size: 26 });
-  txt('ID No. ' + String(e.id).padStart(5, '0') + '    Play time ' + fmtTime(e.time), 102, 86, { size: 20, col: COL.dark });
+  txt(__('ID No. {0}    Play time {1}', String(e.id).padStart(5, '0'), fmtTime(e.time)), 102, 86, { size: 20, col: COL.dark });
   if (sub) txt(sub, SW - 28, 56, { size: 20, align: 'right', col: COL.dark });
   const cw = 152, ch = 104;
   e.party.forEach((p, i) => {
@@ -226,7 +226,7 @@ function drawHofEntry(e, title, shown, sub) {
     ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(cx, cy, cw, ch);
     const im = sp && img('battlers', sprKey(sp)); if (im) drawFitted(im, cx + 6, cy + 2, cw - 12, 72, String(sp.id)); else drawIcon(p, cx + cw / 2 - 32, cy + 10);
     txt(p.name, cx + cw / 2, cy + 74, { size: 22, align: 'center' });
-    txt('Lv. ' + p.lvl, cx + cw / 2, cy + 90, { size: 18, align: 'center', col: COL.dark });
+    txt(__('Lv. {0}', p.lvl), cx + cw / 2, cy + 90, { size: 18, align: 'center', col: COL.dark });
   });
   drawUiMsg();
 }
@@ -235,24 +235,24 @@ function* hallOfFameScene() {
   playBGM('frlg_halloffame');
   yield* fadeTo(1, 10);
   let shown = 0;
-  yield* withDraw(() => drawHofEntry(e, 'HALL OF FAME', shown, 'Entry No. ' + G.hof.length), (function* () {
+  yield* withDraw(() => drawHofEntry(e, 'HALL OF FAME', shown, __('Entry No. {0}', G.hof.length)), (function* () {
     yield* fadeTo(0, 12);
     for (let i = 1; i <= e.party.length; i++) { shown = i; sfx('ok'); for (let k = 0; k < 36; k++) yield; }
     for (let k = 0; k < 30; k++) yield;
-    yield* uiMessage('Welcome to the Hall of Fame!');
-    yield* uiMessage(e.name + ' and the party have been recorded.');
+    yield* uiMessage(__('Welcome to the Hall of Fame!'));
+    yield* uiMessage(__('{0} and the party have been recorded.', e.name));
     yield* fadeTo(1, 12);
   })());
   tone([-255, -255, -255, 0], 0); G.fade = 0;   // hand over to the map's own tone fade (the event fades the new map back in)
 }
 function* hallOfFameViewer() {
   const list = (G.hof || []).slice().reverse();
-  if (!list.length) { yield* withDraw(drawUiMsg, uiMessage('There are no Hall of Fame records yet.')); return; }
+  if (!list.length) { yield* withDraw(drawUiMsg, uiMessage(__('There are no Hall of Fame records yet.'))); return; }
   let i = 0;
   const fmtD = t => { try { return new Date(t).toLocaleDateString(); } catch (x) { return ''; } };
   yield* withDraw(() => {
     const e = list[i]; drawHofEntry(e, 'HALL OF FAME', 6, fmtD(e.t));
-    txt('No. ' + (list.length - i) + ' / ' + list.length + (list.length > 1 ? '    ◀ ▶ browse' : ''), SW / 2, SH - 44, { size: 20, align: 'center', col: COL.dark });
+    txt(__('No. {0} / {1}{2}', (list.length - i), list.length, (list.length > 1 ? '    ◀ ▶ browse' : '')), SW / 2, SH - 44, { size: 20, align: 'center', col: COL.dark });
   }, (function* () {
     while (true) {
       yield;
@@ -266,20 +266,21 @@ function* hallOfFameViewer() {
 // ------------------------------------------------------------ Options
 function* optionsScreen() {
   const S = { idx: 0, touch: SET.touch };   // S.touch = pending value: turning controls OFF only takes effect on Close
-  const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Side Bars', 'bars'], ['On-Screen Controls', 'touch'], ['Close', null]];
+  const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Side Bars', 'bars'], ['On-Screen Controls', 'touch'], ['Language', 'lang'], ['Close', null]];
   const draw = () => {
-    pic('loadbg', 0, 0); skinBox('skin_choice_1', 24, 24, SW - 48, 300);
-    txt('OPTIONS', 52, 38, { size: 28 });
+    pic('loadbg', 0, 0); skinBox('skin_choice_1', 24, 24, SW - 48, 340);
+    txt(__('OPTIONS'), 52, 38, { size: 28 });
     items.forEach(([l, k], i) => {
       const y = 80 + i * 36; txt(l, 70, y, { size: 26 }); if (i === S.idx) pic('selarrow', 46, y - 2);
       if (k === 'music' || k === 'sfx') {
         ctx.fillStyle = '#b8c0c8'; ctx.fillRect(280, y + 6, 130, 14); ctx.fillStyle = '#3a78d8'; ctx.fillRect(280, y + 6, 130 * SET[k], 14);
         ctx.strokeStyle = '#485058'; ctx.strokeRect(280.5, y + 6.5, 129, 13); txt(Math.round(SET[k] * 100) + '%', 420, y, { size: 22 });
       } else if (k === 'speed') txt('◀ ' + SET.speed + 'x ▶', 280, y, { size: 26 });
-      else if (k === 'bars') txt('◀ ' + (SET.bars ? 'Image' : 'Black') + ' ▶', 280, y, { size: 26 });
-      else if (k === 'touch') txt('◀ ' + (S.touch ? 'On' : 'Off') + ' ▶', 280, y, { size: 26 });
+      else if (k === 'bars') txt('◀ ' + (SET.bars ? __('Image') : __('Black')) + ' ▶', 280, y, { size: 26 });
+      else if (k === 'touch') txt('◀ ' + (S.touch ? __('On') : __('Off')) + ' ▶', 280, y, { size: 26 });
+      else if (k === 'lang') txt('◀ ' + I18N.name(I18N.cur) + ' ▶', 280, y, { size: 26 });
     });
-    txt('Left/Right: change   X: back', 52, 294, { size: 20, col: COL.dark });
+    txt(__('Left/Right: change   X: back'), 52, 334, { size: 20, col: COL.dark });
   };
   return yield* withDraw(draw, (function* () {
     while (true) {
@@ -294,6 +295,7 @@ function* optionsScreen() {
         else if (k === 'speed') { let i = SPEEDS.indexOf(SET.speed); i = Math.max(0, Math.min(SPEEDS.length - 1, i + dl)); SET.speed = SPEEDS[i]; sfx('cursor'); }
         else if (k === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
         else if (k === 'touch') { S.touch = S.touch ? 0 : 1; if (S.touch) { SET.touch = 1; applyTouch(); } sfx('cursor'); }
+        else if (k === 'lang') { I18N.next(dl); sfx('cursor'); }
       }
       if (ok() && items[S.idx][1] === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
       if (ok() && items[S.idx][1] === 'touch') { S.touch = S.touch ? 0 : 1; if (S.touch) { SET.touch = 1; applyTouch(); } sfx('cursor'); }
@@ -335,22 +337,22 @@ function mapNameOf(id) { return MAPNAMES[id] || (window.MAPNAME && MAPNAME[id]) 
 function* saveGame() {
   const draw = () => { drawUiMsg(); drawPopup(); drawSaveInfo(); };
   return yield* withDraw(draw, (function* () {
-    yield* uiMessage('Would you like to save the game?', { noWait: true });
+    yield* uiMessage(__('Would you like to save the game?'), { noWait: true });
     const yes = yield* yesNo(); G.uiMsg = null;
     if (!yes) return false;
     if (hasSave()) {
-      yield* uiMessage('Slot ' + curSlot() + ' already has a saved file. Is it OK to overwrite it?', { noWait: true });
+      yield* uiMessage(__('Slot {0} already has a saved file. Is it OK to overwrite it?', curSlot()), { noWait: true });
       const y2 = yield* yesNo(); G.uiMsg = null; if (!y2) return false;
     }
-    yield* uiMessage('Saving... Don\'t turn off the power.', { noWait: true }); yield* wait(40);
+    yield* uiMessage(__('Saving... Don\'t turn off the power.'), { noWait: true }); yield* wait(40);
     const done = writeSave(); sfx('save');
-    yield* uiMessage(done ? G.name + ' saved the game!' : 'The game could not be saved.');
+    yield* uiMessage(done ? __('{0} saved the game!', G.name) : __('The game could not be saved.'));
     return done;
   })());
 }
 function drawSaveInfo() {
   skinBox('skin_choice_1', 0, 0, 290, 160);
-  const rows = [['Player', G.name], ['Badges', String(badgeCount())], ['Time', fmtTime(G.playFrames)], ['Location', mapNameOf(G.mapId)]];
+  const rows = [['Player', G.name], ['Badges', String(badgeCount())], ['Time', fmtTime(G.playFrames)], ['Location', tr(mapNameOf(G.mapId))]];
   rows.forEach(([a, b], i) => { txt(a, 22, 18 + i * 34, { size: 22 }); txt(b, 270, 18 + i * 34, { size: 22, align: 'right', col: COL.blue }); });
 }
 
@@ -367,7 +369,7 @@ function* townMapScreen(o = {}) {
   const here = sev ? [sev[1], sev[2]] : (window.MAPPOS && MAPPOS[G.mapId]) || TMAP_HOME[mapNameOf(G.mapId)] || [13, 13]; let reg = hereReg, cx = here[0], cy = here[1];
   const ptName = (x, y) => {
     if (reg > 0) { const ps = (window.SEVPTS && SEVPTS[reg]) || []; let b = null, bd = 99; for (const q of ps) { const d = Math.abs(q[0] - x) + Math.abs(q[1] - y); if (d < bd) { bd = d; b = q; } } return b && bd <= 1 ? b[2] + (b[3] ? ' - ' + b[3] : '') : ''; }
-    const p = TPOINTS.find(q => q[0] === x && q[1] === y); return p ? p[2] + (p[3] ? ' - ' + p[3] : '') : '';
+    const p = TPOINTS.find(q => q[0] === x && q[1] === y); return p ? tr(p[2]) + (p[3] ? ' - ' + tr(p[3]) : '') : '';
   };
   const gotoRegion = r => { reg = r; if (r === hereReg) { cx = here[0]; cy = here[1]; } else if (r === 0) { cx = 13; cy = 13; } else { const p = (SEVPTS[r] || [[10, 10]])[0]; cx = p[0]; cy = p[1]; } sfx('open'); };
   const draw = () => {
@@ -377,8 +379,8 @@ function* townMapScreen(o = {}) {
     const pl = UI('map/mapPlayer000'); if (pl && reg === hereReg) ctx.drawImage(pl, 16 + here[0] * 16 - 8, 32 + here[1] * 16 - 8);
     const cu = UI('map/mapCursor'); if (cu) ctx.drawImage(cu, (Math.floor(G.frame / 14) % 2) * 32, 0, 32, 32, 16 + cx * 16 - 8, 32 + cy * 16 - 8, 32, 32);
     const nm = ptName(cx, cy); txt(nm, 24, 362, { col: COL.light, shadow: '#383838', size: 22 });
-    txt(reg > 0 ? 'Sevii Islands (' + reg + '/3)' : o.teleport && !o.regular ? (o.player ? 'Teleporter: choose a city' : 'Teleport: choose a city') : mapNameOf(G.mapId), 24, 6, { col: COL.light, shadow: '#383838', size: 22 });
-    if (hasPass) { const hint = ((G.padOn || G.touchIn) ? 'RB' : 'C') + ': ' + (reg === 0 ? 'Sevii Islands' : reg < 3 ? 'Next page' : 'Kanto'); txt(hint, SW - 24 - txtW(hint, 22), 362, { col: COL.light, shadow: '#383838', size: 22 }); }
+    txt(reg > 0 ? __('Sevii Islands ({0}/3)', reg) : o.teleport && !o.regular ? (o.player ? __('Teleporter: choose a city') : __('Teleport: choose a city')) : tr(mapNameOf(G.mapId)), 24, 6, { col: COL.light, shadow: '#383838', size: 22 });
+    if (hasPass) { const hint = ((G.padOn || G.touchIn) ? __('RB') : 'C') + ': ' + (reg === 0 ? __('Sevii Islands') : reg < 3 ? __('Next page') : __('Kanto')); txt(hint, SW - 24 - txtW(hint, 22), 362, { col: COL.light, shadow: '#383838', size: 22 }); }
     drawUiMsg(); drawPopup();
   };
   return yield* withDraw(draw, (function* () {
@@ -393,9 +395,9 @@ function* townMapScreen(o = {}) {
       if (o.teleport && reg > 0 && ok()) {          // Sevii pages: teleport to an island town (needs the island to have been visited when using the Portable Teleporter)
         let t = SEV_TELE.find(q => q[0] === reg && q[1] === cx && q[2] === cy);
         if (!t) { const nm = ptName(cx, cy).split(' - ')[0].toLowerCase(); t = SEV_TELE.find(q => q[0] === reg && q[3].toLowerCase() === nm); }   // a named dot also works when the cursor is a tile off
-        if (!t || (o.player && !(G.switches['sev' + t[4]] || SEV_MAP_ISLAND[G.mapId] === t[4]))) { sfx('buzzer'); if (o.player && t) { yield* uiMessage('The teleporter did not react.'); } continue; }
+        if (!t || (o.player && !(G.switches['sev' + t[4]] || SEV_MAP_ISLAND[G.mapId] === t[4]))) { sfx('buzzer'); if (o.player && t) { yield* uiMessage(__('The teleporter did not react.')); } continue; }
         sfx('ok');
-        yield* uiMessage((o.player ? 'The teleporter reacts. Teleport to ' : 'Teleport to ') + t[3] + '?', { noWait: true });
+        yield* uiMessage(o.player ? __('The teleporter reacts. Teleport to {0}?', t[3]) : __('Teleport to {0}?', t[3]), { noWait: true });
         const yes = yield* yesNo(); G.uiMsg = null;
         if (yes) { G.teleReq = { map: t[5], x: t[6], y: t[7] }; return; }
         continue;
@@ -403,10 +405,10 @@ function* townMapScreen(o = {}) {
       if (o.teleport && reg === 0 && ok()) {
         const pt = TPOINTS.find(q => q[0] === cx && q[1] === cy);
         const dest = pt && CHEAT_CITIES.find(c => c[0] === pt[2].toUpperCase() && window.MAPS && window.MAPS[c[1]]);
-        if (!dest) { sfx('buzzer'); if (o.player && pt) { yield* uiMessage('The teleporter did not react.'); } continue; }
-        if (o.player && !(G.switches['city' + dest[1]] || G.mapId === dest[1])) { sfx('buzzer'); yield* uiMessage('The teleporter did not react.'); continue; }
+        if (!dest) { sfx('buzzer'); if (o.player && pt) { yield* uiMessage(__('The teleporter did not react.')); } continue; }
+        if (o.player && !(G.switches['city' + dest[1]] || G.mapId === dest[1])) { sfx('buzzer'); yield* uiMessage(__('The teleporter did not react.')); continue; }
         sfx('ok');
-        yield* uiMessage((o.player ? 'The teleporter reacts. Teleport to ' : 'Teleport to ') + pt[2] + '?', { noWait: true });
+        yield* uiMessage(o.player ? __('The teleporter reacts. Teleport to {0}?', pt[2]) : __('Teleport to {0}?', pt[2]), { noWait: true });
         const yes = yield* yesNo(); G.uiMsg = null;
         if (yes) { G.teleReq = { map: dest[1], x: dest[2], y: dest[3] }; return; }
         continue;
@@ -419,16 +421,16 @@ function* townMapScreen(o = {}) {
 // ------------------------------------------------------------ Cheats menu (debug helpers, sits under BAG in the pause menu)
 function* learnMoveField(p, id) {   // field version of learnMove (uses the same forget screen as battle)
   const md = D.MV[id]; if (!md || p.moves.some(m => m.id === id)) return;
-  if (p.moves.length < 4) { p.moves.push(newMoveSlot(id)); sfx('Pkmn_move_learnt'); yield* uiMessage(pokeName(p) + ' learned ' + md.name + '!'); return; }
+  if (p.moves.length < 4) { p.moves.push(newMoveSlot(id)); sfx('Pkmn_move_learnt'); yield* uiMessage(__('{0} learned {1}!', pokeName(p), md.name)); return; }
   while (true) {
-    yield* uiMessage(pokeName(p) + ' wants to learn ' + md.name + ', but ' + pokeName(p) + ' already knows four moves.');
-    yield* uiMessage('Delete a move to make room for ' + md.name + '?', { noWait: true });
+    yield* uiMessage(__('{0} wants to learn {1}, but {2} already knows four moves.', pokeName(p), md.name, pokeName(p)));
+    yield* uiMessage(__('Delete a move to make room for {0}?', md.name), { noWait: true });
     const yes = yield* yesNo(); G.uiMsg = null;
-    if (!yes) { yield* uiMessage(pokeName(p) + ' did not learn ' + md.name + '.'); return; }
+    if (!yes) { yield* uiMessage(__('{0} did not learn {1}.', pokeName(p), md.name)); return; }
     const r = yield* forgetScreen(p, id); if (r < 0) continue;
     const old = D.MV[p.moves[r].id].name; p.moves[r] = newMoveSlot(id);
-    yield* uiMessage('1, 2, and... ... ... Poof!'); yield* uiMessage(pokeName(p) + ' forgot ' + old + '. And...');
-    sfx('Pkmn_move_learnt'); yield* uiMessage(pokeName(p) + ' learned ' + md.name + '!'); return;
+    yield* uiMessage(__('1, 2, and... ... ... Poof!')); yield* uiMessage(__('{0} forgot {1}. And...', pokeName(p), old));
+    sfx('Pkmn_move_learnt'); yield* uiMessage(__('{0} learned {1}!', pokeName(p), md.name)); return;
   }
 }
 function* cheatGivePokemon() {
@@ -438,19 +440,19 @@ function* cheatGivePokemon() {
   let hits = all.filter(k => D.SP[k].name.toLowerCase() === key || k.toLowerCase() === key);
   if (!hits.length) hits = all.filter(k => D.SP[k].name.toLowerCase().startsWith(key));
   if (!hits.length) hits = all.filter(k => D.SP[k].name.toLowerCase().includes(key));
-  if (!hits.length) { yield* uiMessage('No Pokémon found for "' + q + '".'); return; }
+  if (!hits.length) { yield* uiMessage(__('No Pokémon found for "{0}".', q)); return; }
   if (hits.length > 1) {
     const shown = hits.slice(0, 8), labels = shown.map(k => D.SP[k].name).concat(['CANCEL']);
     const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0 });
     if (c < 0 || c >= shown.length) return; hits = [shown[c]];
   }
   const sym = hits[0];
-  const lv = yield* promptName('Level? (1-' + MAXLEVEL + ')', '5', 3);
+  const lv = yield* promptName(__('Level? (1-{0})', MAXLEVEL), '5', 3);
   const lvl = Math.max(1, Math.min(MAXLEVEL, parseInt(lv, 10) || 5));
   const mon = mkPoke(sym, lvl); mon.cheat = true;      // cheat-made Pokémon are tagged and can't be traded
   G.owned = G.owned || {}; G.owned[sym] = true; dexMarkSeen(sym);
-  if (G.party.length < 6) { G.party.push(mon); sfx('item'); yield* uiMessage('Got ' + pokeName(mon) + ' (Lv. ' + lvl + ')! Added to your party.'); }
-  else { pcAdd(mon); sfx('item'); yield* uiMessage(pokeName(mon) + ' (Lv. ' + lvl + ') was sent to the PC because your party is full.'); }
+  if (G.party.length < 6) { G.party.push(mon); sfx('item'); yield* uiMessage(__('Got {0} (Lv. {1})! Added to your party.', pokeName(mon), lvl)); }
+  else { pcAdd(mon); sfx('item'); yield* uiMessage(__('{0} (Lv. {1}) was sent to the PC because your party is full.', pokeName(mon), lvl)); }
 }
 function* cheatFillPC() {
   // one of every species (no Megas) into the PC, skipping ones already stored; also completes the Pokédex
@@ -464,7 +466,7 @@ function* cheatFillPC() {
     if (pcAdd(Object.assign(mkPoke(sym, 5), { cheat: true }))) added++; else full = true;
   }
   sfx('item');
-  yield* uiMessage(full ? 'The PC filled up after ' + added + ' Pokémon. Pokédex is complete anyway.' : 'Added ' + added + ' Pokémon to the PC. Pokédex complete!');
+  yield* uiMessage(full ? __('The PC filled up after {0} Pokémon. Pokédex is complete anyway.', added) : __('Added {0} Pokémon to the PC. Pokédex complete!', added));
 }
 function* cheatGiveMove() {
   const start = Math.min(G.cheatPartyIdx || 0, Math.max(0, G.party.length - 1));
@@ -478,13 +480,13 @@ function* cheatGiveMove() {
   let hits = all.filter(k => nm(k) === key || k.toLowerCase() === key.replace(/ /g, ''));
   if (!hits.length) hits = all.filter(k => nm(k).startsWith(key));
   if (!hits.length) hits = all.filter(k => nm(k).includes(key));
-  if (!hits.length) { yield* uiMessage('No move found for "' + q + '".'); return; }
+  if (!hits.length) { yield* uiMessage(__('No move found for "{0}".', q)); return; }
   if (hits.length > 1) {
     const shown = hits.slice(0, 8), labels = shown.map(k => D.MV[k].name).concat(['CANCEL']);
     const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0 });
     if (c < 0 || c >= shown.length) return; hits = [shown[c]];
   }
-  if (p.moves.some(m => m.id === hits[0])) { yield* uiMessage(pokeName(p) + ' already knows ' + D.MV[hits[0]].name + '.'); return; }
+  if (p.moves.some(m => m.id === hits[0])) { yield* uiMessage(__('{0} already knows {1}.', pokeName(p), D.MV[hits[0]].name)); return; }
   yield* learnMoveField(p, hits[0]);
   if (p.moves.some(m => m.id === hits[0])) p.cheat = true;      // a cheated move also makes it untradable
 }
@@ -496,7 +498,7 @@ function* cheatGiveItem() {            // type (part of) an item name, pick from
   let hits = all.filter(k => nm(k) === key || k.toLowerCase() === key.replace(/ /g, ''));
   if (!hits.length) hits = all.filter(k => nm(k).startsWith(key));
   if (!hits.length) hits = all.filter(k => nm(k).includes(key));
-  if (!hits.length) { yield* uiMessage('No item found for "' + q + '".'); return; }
+  if (!hits.length) { yield* uiMessage(__('No item found for "{0}".', q)); return; }
   if (hits.length > 1) {
     const shown = hits.slice(0, 8), labels = shown.map(k => D.IT[k].name).concat(['CANCEL']);
     const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0 });
@@ -506,7 +508,7 @@ function* cheatGiveItem() {            // type (part of) an item name, pick from
   const n = Math.max(1, Math.min(999, parseInt(qs, 10) || 1));
   G.items[k] = Math.min(999, (G.items[k] || 0) + n); sfx('item');
   if (k === 'BOAT') { setSwitch(153, true); setSwitch(941, true); }   // same flags as GIVE BOAT
-  yield* uiMessage('Got ' + n + ' ' + (n > 1 && D.IT[k].plural ? D.IT[k].plural : D.IT[k].name) + '!');
+  yield* uiMessage(__('Got {0} {1}!', n, (n > 1 && D.IT[k].plural ? D.IT[k].plural : D.IT[k].name)));
 }
 // Teleport cheat: [label, map id, x, y] where (x, y) is the tile just below the city's Poké Center door (Pallet: below the player's house door).
 const CHEAT_CITIES = [
@@ -517,7 +519,7 @@ const CHEAT_CITIES = [
 ];
 function* cheatTeleportXY() {   // type map id, then x and y (blank x/y = map centre)
   const ms = yield* promptName('Map ID?', String(G.mapId || ''), 4); const id = parseInt(ms, 10);
-  if (!(id >= 0) || !window.MAPS || !window.MAPS[id]) { if (ms !== null && ms !== undefined && String(ms).trim() !== '') yield* uiMessage('Map ' + ms + ' does not exist.'); return; }
+  if (!(id >= 0) || !window.MAPS || !window.MAPS[id]) { if (ms !== null && ms !== undefined && String(ms).trim() !== '') yield* uiMessage(__('Map {0} does not exist.', ms)); return; }
   const m = window.MAPS[id];
   const xs = yield* promptName('X? (0-' + (m.w - 1) + ')', '', 3), ys = yield* promptName('Y? (0-' + (m.h - 1) + ')', '', 3);
   let x = parseInt(xs, 10), y = parseInt(ys, 10);
@@ -546,9 +548,9 @@ function* cheatsMenu() {
         if (i < 0) break;
         G.cheatLvIdx = i;
         const p = G.party[i];
-        if (p.lvl >= MAXLEVEL) { yield* uiMessage(pokeName(p) + ' is already at the maximum level.'); continue; }
+        if (p.lvl >= MAXLEVEL) { yield* uiMessage(__('{0} is already at the maximum level.', pokeName(p))); continue; }
         p.cheat = true; const res = gainExp(p, expFor(D.SP[p.sym].growth, p.lvl + 1) - p.exp); sfx('exp');
-        yield* uiMessage(pokeName(p) + ' grew to Lv. ' + p.lvl + '!');
+        yield* uiMessage(__('{0} grew to Lv. {1}!', pokeName(p), p.lvl));
         for (const lv of res) for (const mv of lv.learn) yield* learnMoveField(p, mv);
         if (evoTarget(p)) { p.evoCheck = false; yield* evolveScene([p]); }
         if (p.hp > 0) p.hp = Math.min(p.maxhp, p.hp + 1);
@@ -556,8 +558,8 @@ function* cheatsMenu() {
     } else if (r === 1) { yield* cheatGivePokemon(); }
     else if (r === 2) { yield* cheatGiveMove(); }
     else if (r === 3) { yield* pcSession(); }
-    else if (r === 4) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage('Got $10000! You now have $' + G.money + '.'); }
-    else if (r === 5) { G.party.forEach(healMon); sfx('item'); yield* uiMessage('Your party was fully healed.'); }
+    else if (r === 4) { G.money = Math.min(999999, G.money + 10000); sfx('item'); yield* uiMessage(__('Got $10000! You now have ${0}.', G.money)); }
+    else if (r === 5) { G.party.forEach(healMon); sfx('item'); yield* uiMessage(__('Your party was fully healed.')); }
     else if (r === 6) { yield* cheatTeleport(); if (G.teleReq) return; }
     else if (r === 7) { yield* cheatGiveItem(); }
     else if (r === 9) { yield* cheatFillPC(); }
@@ -590,7 +592,7 @@ function* pauseMenu() {
       sfx('ok'); const act = list[idx][1]; G.pauseIdx = idx;
       if (act === 'exit') return;
       if (act === 'title') {
-        yield* uiMessage('Return to the main menu?\nUnsaved progress will be lost.', { noWait: true });
+        yield* uiMessage(__('Return to the main menu?\nUnsaved progress will be lost.'), { noWait: true });
         const yes = yield* yesNo(); G.uiMsg = null;
         if (yes) { location.reload(); while (true) yield; }
         continue;
@@ -666,15 +668,15 @@ function* pcMenuList(lines, descs, idx0 = 0) {
 function pcAbleCount() { return G.party.filter(p => p.hp > 0).length; }
 function* pcSession() {
   pcInit();
-  yield* withDraw(() => { drawUiMsg(); }, uiMessage('The Pokémon Storage System was opened.', { noWait: false }));
+  yield* withDraw(() => { drawUiMsg(); }, uiMessage(__('The Pokémon Storage System was opened.'), { noWait: false }));
   let cmd = 0;
   while (true) {
     cmd = yield* pcMenuList(['Organize Boxes', 'Withdraw Pokémon', 'Deposit Pokémon', 'Trade Pokémon', 'See ya!'],
       ['Organize the Pokémon in Boxes and in your party.', 'Move Pokémon stored in Boxes to your party.', 'Store Pokémon in your party in Boxes.', 'Trade Pokémon with friends using trade codes.', 'Return to the previous menu.'], Math.max(cmd, 0));
     if (cmd < 0 || cmd === 4) break;
     if (cmd === 3) { yield* pcTrade(); continue; }
-    if (cmd === 1 && G.party.length >= 6) { yield* withDraw(drawUiMsg, uiMessage('Your party is full!')); continue; }
-    if (cmd === 2 && pcAbleCount() <= 1) { yield* withDraw(drawUiMsg, uiMessage("Can't deposit the last Pokémon!")); continue; }
+    if (cmd === 1 && G.party.length >= 6) { yield* withDraw(drawUiMsg, uiMessage(__('Your party is full!'))); continue; }
+    if (cmd === 2 && pcAbleCount() <= 1) { yield* withDraw(drawUiMsg, uiMessage(__('Can\'t deposit the last Pokémon!'))); continue; }
     yield* fadeTo(1, 8);
     yield* pcStorageScreen(cmd);
     yield* fadeTo(0, 8);
@@ -690,7 +692,7 @@ function* pcItemPick(title, keys) {
     pic('loadbg', 0, 0);
     skinBox('skin_choice_1', 150, 8, SW - 158, 8 * 32 + 24);
     for (let r = 0; r < 8; r++) { const i = scroll + r; if (i > keys.length) break; const y = 22 + r * 32;
-      if (i === keys.length) { txt('CANCEL', 190, y + 4, { size: 24 }); } else { txt(itemInfo(keys[i]).name, 190, y + 4, { size: 24 }); txt('×' + G.pcItems[keys[i]], 480, y + 4, { align: 'right', size: 22 }); }
+      if (i === keys.length) { txt(__('CANCEL'), 190, y + 4, { size: 24 }); } else { txt(itemInfo(keys[i]).name, 190, y + 4, { size: 24 }); txt('×' + G.pcItems[keys[i]], 480, y + 4, { align: 'right', size: 22 }); }
       if (i === idx) pic('selarrow', 166, y + 2); }
     pic('battle/overlay_message', 0, SH - 96);
     const k = keys[idx]; if (k) { drawItemIcon(k, 12, SH - 80); wrap(itemInfo(k).desc, 400, 24).slice(0, 3).forEach((l, i) => txt(l, 76, SH - 96 + 20 + i * 26, { base: '#404040', shadow: '#b8b8b8', size: 24 })); }
@@ -727,10 +729,10 @@ function* pcItemStorage() {
     if (cmd === 1) {
       const key = yield* bagScreen({ mode: 'give' }); if (!key) continue;
       const it = itemInfo(key);
-      if (it.pocket === 8) { yield* say('The ' + it.name + " can't be stored at the PC."); continue; }
-      let q = G.items[key]; if (q > 1) q = yield* pcQty(q, 'How many ' + it.name + ' do you want to deposit?'); if (!q) continue;
+      if (it.pocket === 8) { yield* say(__('The {0} can\'t be stored at the PC.', it.name)); continue; }
+      let q = G.items[key]; if (q > 1) q = yield* pcQty(q, __('How many {0} do you want to deposit?', it.name)); if (!q) continue;
       G.items[key] -= q; if (G.items[key] <= 0) delete G.items[key]; G.pcItems[key] = (G.pcItems[key] || 0) + q;
-      yield* say('Deposited ' + q + ' ' + it.name + '.');
+      yield* say(__('Deposited {0} {1}.', q, it.name));
     } else {
       const keys = Object.keys(G.pcItems).filter(k => G.pcItems[k] > 0);
       if (!keys.length) { yield* say('There are no items.'); continue; }
@@ -741,15 +743,15 @@ function* pcItemStorage() {
         if (cmd === 0) {
           if ((G.items[key] || 0) >= 99) { yield* say("There's no more room in the Bag."); continue; }
           q = Math.min(q, 99 - (G.items[key] || 0));
-          if (q > 1) q = yield* pcQty(q, 'How many ' + it.name + ' do you want to withdraw?'); if (!q) continue;
+          if (q > 1) q = yield* pcQty(q, __('How many {0} do you want to withdraw?', it.name)); if (!q) continue;
           G.pcItems[key] -= q; if (G.pcItems[key] <= 0) delete G.pcItems[key]; G.items[key] = (G.items[key] || 0) + q;
-          yield* say('Withdrew ' + q + ' ' + it.name + '.');
+          yield* say(__('Withdrew {0} {1}.', q, it.name));
         } else {
-          if (q > 1) q = yield* pcQty(q, 'How many ' + it.name + ' do you want to toss?'); if (!q) continue;
-          const yes = (yield* withDraw(drawUiMsg, (function* () { yield* uiMessage('Is it OK to throw away ' + q + ' ' + it.name + '?', { noWait: true }); const r = yield* yesNo(); G.uiMsg = null; return r; })()));
+          if (q > 1) q = yield* pcQty(q, __('How many {0} do you want to toss?', it.name)); if (!q) continue;
+          const yes = (yield* withDraw(drawUiMsg, (function* () { yield* uiMessage(__('Is it OK to throw away {0} {1}?', q, it.name), { noWait: true }); const r = yield* yesNo(); G.uiMsg = null; return r; })()));
           if (!yes) continue;
           G.pcItems[key] -= q; if (G.pcItems[key] <= 0) delete G.pcItems[key];
-          yield* say('Threw away ' + q + ' ' + it.name + '.');
+          yield* say(__('Threw away {0} {1}.', q, it.name));
         }
       }
     }
@@ -778,7 +780,7 @@ function* pcStorageScreen(command) {
     if (st.slide) { drawBox(st.slide.from, st.slide.fx); drawBox(st.slide.to, st.slide.tx); } else drawBox(PC.cur, st.boxX);
     const om = pcImg('overlay_main'); if (om) ctx.drawImage(om, 0, 0);
     const bt = ['#f8f8f8', '#505050'];
-    txt('Party: ' + G.party.length, 270, 334, { align: 'center', base: bt[0], shadow: bt[1], size: 22 }); txt('Exit', 446, 334, { align: 'center', base: bt[0], shadow: bt[1], size: 22 });
+    txt(__('Party: {0}', G.party.length), 270, 334, { align: 'center', base: bt[0], shadow: bt[1], size: 22 }); txt(__('Exit'), 446, 334, { align: 'center', base: bt[0], shadow: bt[1], size: 22 });
     const m = selMon();
     if (m) {
       const base = '#585850', sh = '#a8b8b8', sp = D.SP[m.sym];
@@ -788,14 +790,14 @@ function* pcStorageScreen(command) {
       pcDrawMarks(m, 70, 240);
       txt(m.lvl, 28, 240, { base, shadow: sh, size: 22 });
       const ab = D.AB && D.AB[m.ability]; txt(ab ? ab.name : (m.ability || 'No ability'), 86, 312, { align: 'center', base: ab || m.ability ? base : '#d0d0d0', shadow: ab || m.ability ? sh : '#e0e0e0', size: 22 });
-      txt(m.item ? ((typeof itemInfo === 'function' && itemInfo(m.item).name) || itemName(m.item)) : 'No item', 86, 348, { align: 'center', base: m.item ? base : '#d0d0d0', shadow: m.item ? sh : '#e0e0e0', size: 22 });
+      txt(m.item ? ((typeof itemInfo === 'function' && itemInfo(m.item).name) || itemName(m.item)) : __('No item'), 86, 348, { align: 'center', base: m.item ? base : '#d0d0d0', shadow: m.item ? sh : '#e0e0e0', size: 22 });
       sp.types.forEach((t, i) => drawTypeIcon(t, sp.types.length === 1 ? 52 : 18 + 70 * i, 272));
       const bim = img('battlers', sprKey(sp)); if (bim) drawFitted(bim, 10, 66, 160, 136, String(sp.id));
     }
     // party tab
     if (st.partyY < SH) {
       const op = pcImg('overlay_party'); if (op) ctx.drawImage(op, 182, st.partyY);
-      txt('Back', 182 + 86, st.partyY + 248, { align: 'center', base: '#f8f8f8', shadow: '#505050', size: 22 });
+      txt(__('Back'), 182 + 86, st.partyY + 248, { align: 'center', base: '#f8f8f8', shadow: '#505050', size: 22 });
       G.party.forEach((p, i) => { if (st.held && st.held === p) return; drawIcon(p, 182 + 18 + 72 * (i % 2), st.partyY + 2 + 16 * (i % 2) + 64 * Math.floor(i / 2), false); });
     }
     // hand
@@ -809,10 +811,10 @@ function* pcStorageScreen(command) {
     if (st.mark) {
       const mb = pcImg('overlay_marking'); if (mb) ctx.drawImage(mb, 292, 68);
       for (let i = 0; i < 6; i++) pcDrawMark(st.mark.marks[i] ? 1 : 0, i, 336 + 58 * (i % 3), 106 + 50 * Math.floor(i / 3));
-      txt('OK', 402, 216, { align: 'center', base: '#f8f8f8', shadow: '#505050', size: 22 }); txt('Cancel', 402, 280, { align: 'center', base: '#f8f8f8', shadow: '#505050', size: 22 });
+      txt(__('OK'), 402, 216, { align: 'center', base: '#f8f8f8', shadow: '#505050', size: 22 }); txt(__('Cancel'), 402, 280, { align: 'center', base: '#f8f8f8', shadow: '#505050', size: 22 });
       const ax = [162, 191, 220, 162, 191, 220, 184, 184][st.mark.idx] * 2, ay = [24, 24, 24, 49, 49, 49, 77, 109][st.mark.idx] * 2;
       const ph = pcImg('cursor_point_' + ((st.hand % 40 < 20) ? 1 : 2)); if (ph) ctx.drawImage(ph, ax, ay);
-      pcWin(180, SH - 64, SW - 180, 64); txt('Mark your Pokémon.', 200, SH - 64 + 16 + 4, { size: 26 });
+      pcWin(180, SH - 64, SW - 180, 64); txt(__('Mark your Pokémon.'), 200, SH - 64 + 16 + 4, { size: 26 });
     }
     // popups
     const P = st.popup;
@@ -897,7 +899,7 @@ function* pcStorageScreen(command) {
       const nm = pokeName(mon); st.relMon = mon;
       if (st.held) st.held = null; else if (box === -1) G.party.splice(i, 1); else curBox().mons[i] = null;
       for (st.rel = 1; st.rel <= 30; st.rel++) yield; st.rel = 0; st.relMon = null;
-      yield* display(nm + ' was released.'); yield* display('Bye-bye, ' + nm + '!');
+      yield* display(__('{0} was released.', nm)); yield* display(__('Bye-bye, {0}!', nm));
       st.partySel = Math.min(st.partySel, Math.max(0, G.party.length - 1));
     },
   };
@@ -925,10 +927,10 @@ function* pcStorageScreen(command) {
     const mon = monAt(box, i); if (!mon) return;
     if (mon.item) {
       const nm = itemName(mon.item);
-      if (yield* confirm('Take this ' + nm + '?')) { G.items[mon.item] = (G.items[mon.item] || 0) + 1; mon.item = null; yield* display('Took the ' + nm + '.'); }
+      if (yield* confirm(__('Take this {0}?', nm))) { G.items[mon.item] = (G.items[mon.item] || 0) + 1; mon.item = null; yield* display(__('Took the {0}.', nm)); }
     } else {
       const key = yield* bagScreen({ mode: 'give' });
-      if (key) { mon.item = key; G.items[key]--; if (!G.items[key]) delete G.items[key]; yield* display(itemName(key) + ' is now being held.'); }
+      if (key) { mon.item = key; G.items[key]--; if (!G.items[key]) delete G.items[key]; yield* display(__('{0} is now being held.', itemName(key))); }
     }
   };
   const summary = function* (box, i) { const list = st.held ? [st.held] : box === -1 ? G.party : [curBox().mons[i]]; const idx = st.held ? 0 : box === -1 ? i : 0; const keep = G.uiPopup; yield* summaryScreen(list, idx); };
@@ -936,7 +938,7 @@ function* pcStorageScreen(command) {
     const c = yield* showCommands('What do you want to do?', ['Jump', 'Wallpaper', 'Name', 'Cancel']);
     if (c === 0) { const names = PC.boxes.map(b => b.name); const d = yield* chooseList('Jump to which Box?', names, PC.cur); if (d >= 0 && d !== PC.cur) yield* slideBox(d, d > PC.cur ? 1 : -1); }
     else if (c === 1) {
-      const names = []; for (let i = 0; i < WALLPAPER_N; i++) names.push('Wallpaper ' + (i + 1));
+      const names = []; for (let i = 0; i < WALLPAPER_N; i++) names.push(__('Wallpaper {0}', (i + 1)));
       const w = yield* chooseList('Pick the wallpaper.', names, curBox().bg); if (w >= 0) curBox().bg = w;
     } else if (c === 2) {
       const nm = yield* promptName('Box name?', curBox().name, 12); if (nm) curBox().name = nm;
@@ -981,7 +983,7 @@ function* pcStorageScreen(command) {
         {
           const names = command === 3 ? ['Trade', 'Summary', 'Cancel'] : command === 1 ? ['Withdraw', 'Summary', 'Mark', 'Release', 'Cancel']
             : st.held ? [mon ? 'Shift' : 'Place', 'Summary', 'Item', 'Mark', 'Release', 'Cancel'] : ['Move', 'Summary', 'Withdraw', 'Item', 'Mark', 'Release', 'Cancel'];
-          const c = yield* showCommands(pokeName(st.held || mon) + ' is selected.', names); const name = names[c];
+          const c = yield* showCommands(__('{0} is selected.', pokeName(st.held || mon)), names); const name = names[c];
           if (name === 'Trade') { picked = { where: 'box', mon }; break; }
           else if (name === 'Move') yield* act.hold(0, st.sel);
           else if (name === 'Shift') yield* act.swap(0, st.sel);
@@ -1017,7 +1019,7 @@ function* pcStorageScreen(command) {
           if (!mon && !st.held) continue;
           const names = command === 3 ? ['Trade', 'Summary', 'Cancel'] : command === 2 ? ['Store', 'Summary', 'Mark', 'Release', 'Cancel']
             : st.held ? [mon ? 'Shift' : 'Place', 'Summary', 'Item', 'Mark', 'Release', 'Cancel'] : ['Move', 'Summary', 'Store', 'Item', 'Mark', 'Release', 'Cancel'];
-          const c = yield* showCommands(pokeName(st.held || mon) + ' is selected.', names); const name = names[c];
+          const c = yield* showCommands(__('{0} is selected.', pokeName(st.held || mon)), names); const name = names[c];
           if (name === 'Trade') { picked = { where: 'party', mon }; break; }
           else if (name === 'Move') yield* act.hold(-1, st.partySel);
           else if (name === 'Shift') yield* act.swap(-1, st.partySel);

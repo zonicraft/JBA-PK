@@ -591,7 +591,7 @@ function layoutText(tokens, maxW) {
 }
 // message state machine used by the interpreter
 function* showMessage(raw, opts = {}) {
-  const P = prepText(raw);
+  const P = prepText(tr(raw));
   const startColor = P.bubble === 'b' ? '#2a58d8' : P.bubble === 'r' ? '#d83030' : COLORS[0];
   const hasFace = !!P.face && img('faces', P.face);
   const maxW = hasFace ? 360 : 460;
@@ -611,6 +611,7 @@ function* showMessage(raw, opts = {}) {
   G.msg = null;
 }
 function* showChoices(labels, cancelType) {
+  labels = labels.map(l => typeof l === 'string' ? tr(l) : l);
   const c = G.choice = { labels, idx: 0 }; keys.pressed = {};
   while (true) {
     yield;
@@ -626,7 +627,7 @@ function* showChoices(labels, cancelType) {
 function* promptName(label, def, max) {
   G.modal = true;
   const box = document.getElementById('nameBox'), inp = document.getElementById('nameInput');
-  document.getElementById('nameLabel').textContent = label; inp.value = def || ''; inp.maxLength = max || 10;
+  document.getElementById('nameLabel').textContent = tr(label); document.getElementById('nameOk').textContent = __('OK'); inp.value = def || ''; inp.maxLength = max || 10;
   box.style.display = 'flex'; let ok = false;
   const done = () => { ok = true; };
   const btn = document.getElementById('nameOk'); btn.onclick = done;
@@ -669,7 +670,7 @@ class Interp {
         }
         case 102: {
           let idx;
-          if (p[0].includes('Adventure') && p[0].includes('Controls')) { idx = yield* showChoices(['Controls', 'No info needed'], 2); if (idx === 1) idx = 2; }   // the "Adventure" help page was removed
+          if (p[0].includes('Adventure') && p[0].includes('Controls')) { idx = yield* showChoices([__('Controls'), __('No info needed')], 2); if (idx === 1) idx = 2; }   // the "Adventure" help page was removed
           else idx = yield* showChoices(p[0], p[1]);
           G.dexPic = null;
           let j = i + 1;
@@ -779,7 +780,7 @@ class Interp {
   *transfer(p) {
     const [, mid, x, y, dir, fade] = p; G.keepDir = true;
     if (!window.MAPS[mid]) {
-      yield* showMessage('(That part of the game is not in this test build yet.)');
+      yield* showMessage(__('(That part of the game is not in this test build yet.)'));
       tone([0, 0, 0, 0], 8); G.player.moving = false;
       const d = dir || opp[G.player.dir]; const [dx, dy] = dirVec[opp[G.player.dir]];
       G.player.setPos(G.player.x + dx, G.player.y + dy); G.player.turn(G.player.dir);
@@ -799,7 +800,7 @@ class Interp {
     let m;
     if ((m = s.match(/^pbToneChangeAll\(Tone\.new\((-?\d+),(-?\d+),(-?\d+),(-?\d+)\),(\d+)\)/))) { tone([+m[1], +m[2], +m[3], +m[4]], +m[5]); return; }
     if (s === 'pbEventScreen(ButtonEventScene)') {
-      yield* showMessage('Move: arrow keys or WASD.\nConfirm / talk: Z, Enter or Space.\nCancel: X. Hold X or Shift to run (once you own running shoes).'); return;
+      yield* showMessage(__('Move: arrow keys or WASD.\nConfirm / talk: Z, Enter or Space.\nCancel: X. Hold X or Shift to run (once you own running shoes).')); return;
     }
     if (s.startsWith('pbChangePlayer')) { return; }
     if ((m = s.match(/^pbPlaceNear\((\d+),(-?\d+),(-?\d+)(?:,(\d))?\)/))) { const pe = G.events[+m[1]]; if (pe) { pe.setPos(G.player.x + +m[2], G.player.y + +m[3]); if (m[4]) pe.dir = +m[4]; } return; }   // put an event next to the player (used by the Celadon arrival scene)
@@ -825,7 +826,7 @@ class Interp {
       if (e) { const dx = e.x - pl.x, dy = e.y - pl.y; pl.turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 4) : (dy > 0 ? 2 : 8)); }
       return;
     }
-    if ((m = s.match(/^pbAddPokemon\(:(\w+),(\d+)\)/))) { const mon = makeMon(symOf(m[1]), +m[2]); if (!G.party.length && !G.starterName) G.starterName = mon.name; if (G.party.length >= 6) { pcAdd(mon); G.owned = G.owned || {}; G.owned[mon.sym] = true; yield* showMessage(pokeName(mon) + ' was sent to the PC because your party is full.'); return; } G.party.push(mon); return; }
+    if ((m = s.match(/^pbAddPokemon\(:(\w+),(\d+)\)/))) { const mon = makeMon(symOf(m[1]), +m[2]); if (!G.party.length && !G.starterName) G.starterName = mon.name; if (G.party.length >= 6) { pcAdd(mon); G.owned = G.owned || {}; G.owned[mon.sym] = true; yield* showMessage(__('{0} was sent to the PC because your party is full.', pokeName(mon))); return; } G.party.push(mon); return; }
     if ((m = s.match(/^\$Trainer\.party\[-1\]\.pbLearnMove\(:(\w+)\)/))) {
       const mon = G.party[G.party.length - 1]; if (mon && D.MV[m[1]] && !mon.moves.some(x => x.id === m[1])) { const slot = newMoveSlot(m[1]); if (mon.moves.length < 4) mon.moves.push(slot); else mon.moves[3] = slot; }
       return;
@@ -838,7 +839,7 @@ class Interp {
     if (s.startsWith('pbMEPlay')) { return; }
     if ((m = s.match(/^Kernel\.pbReceiveItem\(:(\w+)(?:,(\d+))?\)/))) {
       const n = m[2] ? +m[2] : 1; G.items[m[1]] = (G.items[m[1]] || 0) + n; playME('Item_get');
-      yield* showMessage('\\PN found ' + (n > 1 ? n + ' ' : 'the ') + itemName(m[1]) + '!'); return;
+      yield* showMessage((n > 1 ? __('\\PN found {0} {1}!', n, itemName(m[1])) : __('\\PN found the {0}!', itemName(m[1])))); return;
     }
     if ((m = s.match(/^pbGainMoney\((\d+)\)/))) { G.money = (G.money || 0) + (+m[1]); return; }
     if ((m = s.match(/^pbAddItem\(:(\w+)(?:,(\d+))?\)/))) { G.items[m[1]] = (G.items[m[1]] || 0) + (m[2] ? +m[2] : 1); return; }
@@ -850,23 +851,23 @@ class Interp {
     if (s.startsWith('$PokemonBag.pbDeleteItem')) { return; }
     if (s.startsWith('$Trainer.pokedex')) { G.pokedex = true; return; }
     if (s === 'pbTrainerPC') {   // Jorge's PC at home: Item Storage only (it starts with a Potion in it)
-      playSE('PC_open'); yield* showMessage('\\PN booted up the PC.');
+      playSE('PC_open'); yield* showMessage(__('\\PN booted up the PC.'));
       while (true) {
-        yield* showMessage('What do you want to do?', { noWait: true });
-        const c = yield* showChoices(['Item Storage', 'Mailbox', 'Turn Off'], 3);
+        yield* showMessage(__('What do you want to do?'), { noWait: true });
+        const c = yield* showChoices([__('Item Storage'), __('Mailbox'), __('Turn Off')], 3);
         if (c === 0) { G.uiGen = pcItemStorage(); yield; }
-        else if (c === 1) yield* showMessage("There's no Mail here.");
+        else if (c === 1) yield* showMessage(__('There\'s no Mail here.'));
         else break;
       }
       playSE('PC_close'); return;
     }
     if (s.startsWith('pbShowBraille(')) {      // Dotted Hole door: opened with the Katana (Braille puzzle replaced)
-      if (!(G.items.KATANA > 0)) { yield* showMessage('The dots seem to spell something, but you cannot read them.\nPerhaps something sharp would help...'); return; }
-      yield* showMessage('The dots look like they spell "CUT".', { noWait: false });
-      yield* showMessage('Would you like to cut the door open?', { noWait: true });
-      const i = yield* showChoices(['Yes', 'No'], 2);
+      if (!(G.items.KATANA > 0)) { yield* showMessage(__('The dots seem to spell something, but you cannot read them.\nPerhaps something sharp would help...')); return; }
+      yield* showMessage(__('The dots look like they spell "CUT".'), { noWait: false });
+      yield* showMessage(__('Would you like to cut the door open?'), { noWait: true });
+      const i = yield* showChoices([__('Yes'), __('No')], 2);
       if (i !== 0) return;
-      yield* showMessage('\\PN used the Manyullyn Katana!', { noWait: true }); playSE('Cut'); for (let k = 0; k < 40; k++) yield; G.msg = null;
+      yield* showMessage(__('\\PN used the Manyullyn Katana!'), { noWait: true }); playSE('Cut'); for (let k = 0; k < 40; k++) yield; G.msg = null;
       if (this.ev) { G.selfsw[selfKey(evMapId(this.ev), this.ev.id, 'A')] = true; G.refresh = true; }
       return;
     }
