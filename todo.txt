@@ -1,37 +1,50 @@
-the tips on the starting room are not correct and the pc doesnt work
-some items dont have icons
-bike icon instead of skateboard
 on miss mushrooms the player still mentions the 1st pokemon in the party instead of the starter choosen
 
 some places are not using the correct fight backgrounds
-can you add more trainer variety? grab assets from the essential project and change some of the already placed npcs
+
+more trainer variety?
 
 special music for some battles
 
-limit islands explorable zones
+maybe mega marian
 
-ae86, eve and redhood legendary are missing
+repopulate all the wild encounters of the accessable maps, taking into consideration water typing for water encounters and levels for which evolutions you can use, starters and legendaries dont appear in the wild and these have to only be found on these: kyouka route 21 grass, megumin viridian forest, kanna on route 7, senko six island grass. all the pokemon need to be findable
 
-island 7 has a mart that should not have
+change the capture rate so its easier to capture the earlier pokemon and harder to capture the later game pokemon
 
-island 3 has an empty cave lets remove it three island path
-
-place remaining mega stones
-
-review the pokemon on routes and if all the pokemon are catchable
-
-move nekoarc to be w the legendaries
-
-pokemall doesnt have the correct npcs
+all the trainers have to have their pokemon checked, unless they are in an interior, for those you have to ask, they should always use pokemon from their route and routes nearby
 
 theres routes with trainers missing 20 and 19, islands and a bunch more cerulean cave and league
+
+check the mansion and quest to buy it maybe scrap
+
+add niomus and change eves place
 
 check dialogue
 
 portuguese version
 
-pokemon trading system
-
 playtest of the game :)
 
 real pc and mobile release
+
+remove the dotted hole maps ou usar para alguma coisa
+
+remove the grass from map 299 should not have wild encounters on the map
+
+Routes with no trainers (all have wild encounters):
+
+
+Caves, towers and dungeons:
+
+Rock Tunnel, Pokémon Tower (5 floors), Victory Road, Altering Cave.
+Also Green Path, Pattern Bush, Canyon Entrance, Sevault Canyon, Berry Forest, Bond Bridge, Ruin Valley and Kindle Road.
+
+Island towns and areas (Two Island through Seven Island):
+
+Two, Three, Four, Five, Six and Seven Island; Resort Gorgeous; Treasure Beach; Five Isle Meadow;
+
+
+
+done
+Route  8, 12, 13, 14, 15, 19, 20, 22 and 23. The Route 28 maps (349, 1083, 1084) too.

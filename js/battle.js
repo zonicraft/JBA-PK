@@ -20,7 +20,7 @@ const STATUS_FX = { '003': 'SLP', '004': 'SLP', '005': 'PSN', '006': 'PSN', '007
 const FOE_BASE = { x: 384, y: 190 }, ME_BASE = { x: 128, y: 262 };
 const BOX_FOE = { x: -16, y: 36, base: 16 }, BOX_ME = { x: SW - 260, y: SH - 192, base: 34 };
 
-function newSide() { return { st: [0, 0, 0, 0, 0, 0, 0, 0], protect: false, protectN: 0, flinch: false, gone: false }; }
+function newSide() { return { age: 0, hurt: false, moved: false, lastHit: null, recharge: false, chain: 0, echo: 0, st: [0, 0, 0, 0, 0, 0, 0, 0], protect: false, protectN: 0, flinch: false, gone: false }; }
 function bgFor(mapId) {
   if (G.surfing && G.player && typeof isWaterAt === 'function' && isWaterAt(G.player.x, G.player.y)) return 'Water';     // battles started while sailing use the water background
   const m = window.MAPS && MAPS[mapId], ts = m ? m.tileset : 1;
@@ -79,6 +79,7 @@ function expRatio(p) { if (p.lvl >= MAXLEVEL) return 1; const g = D.SP[p.sym].gr
 function* sendOut(s) {
   const B = B_(); const mon = sideMon(s); const sp = sprOf(s); const base = s === 0 ? ME_BASE : FOE_BASE;
   B.S[s] = newSide();
+  if (B.pass && B.pass.s === s) { Object.assign(B.S[s], B.pass.d); B.pass = null; }
   if (s === 0) { B.participants.add(mon); B.meExp = expRatio(mon); } else B.participants = new Set(B.me ? [B.me] : []);
   B[s === 0 ? 'meHp' : 'foeHp'] = mon.hp;
   const sx = s === 0 ? 70 : SW - 90, sy = s === 0 ? 200 : 110;
@@ -90,9 +91,12 @@ function* sendOut(s) {
   for (let i = 1; i <= 16; i++) { const t = i / 16; sp.a = Math.min(1, t * 2); sp.sc = 0.1 + 0.9 * easeOut(t); sp.tint = 1 - t; if (i === 6) B.spr.ball = null; yield; }
   sp.sc = 1; sp.a = 1; sp.tint = 0; B.spr.ball = null;
   yield* tween(B.box, { [s === 0 ? 'me' : 'foe']: 1 }, 10);
+  yield* healingWishIn(s);
+  yield* applyHazards(s);
+  if (B.started && sideMon(s).hp > 0) yield* abilSwitchIn(s);
 }
 function* recall(s) {
-  const B = B_(); const sp = sprOf(s);
+  const B = B_(); const sp = sprOf(s); btRestore(sideMon(s)); yield* abilSwitchOut(s);
   sfx('recall');
   for (let i = 1; i <= 14; i++) { const t = i / 14; sp.tint = t; sp.sc = 1 - 0.9 * t; sp.a = 1 - t; yield; }
   sp.vis = false; sp.tint = 0; sp.sc = 1; sp.a = 1;
@@ -100,40 +104,91 @@ function* recall(s) {
 }
 
 // ------------------------------------------------------------ damage / effects
-function effStat(s, idx) { const mon = sideMon(s); let v = mon.stats[idx] * stageMul(B_().S[s].st[idx]); if (idx === 3 && mon.status === 'PAR') v *= 0.5; return v; }
+function effStat(s, idx) { const mon = sideMon(s); let v = mon.stats[idx] * stageMul(B_().S[s].st[idx]); if (idx === 3) { if (mon.status === 'PAR' && abilOf(s) !== 'QUICKFEET') v *= 0.5; if (hItem(mon) === 'CHOICESCARF') v *= 1.5; if (team(s).tailwind > 0) v *= 2; v *= abilSpeedMul(s); } return v; }
 function moveTypeMul(md, tgt) { return md.type === 'QMARKS' ? 1 : typeMul(md.type, pokeTypes(tgt)); }
-function calcDamage(us, md, crit) {
-  const B = B_(), user = sideMon(us), tgt = sideMon(1 - us), ts = 1 - us;
-  const phys = md.cat === 'Physical'; const ai = phys ? 1 : 4, di = phys ? 2 : 5;
-  let as = B.S[us].st[ai], ds = B.S[ts].st[di];
-  if (crit) { as = Math.max(0, as); ds = Math.min(0, ds); }
-  const a = user.stats[ai] * stageMul(as), d = tgt.stats[di] * stageMul(ds);
-  let dmg = Math.floor(Math.floor(Math.floor(2 * user.lvl / 5 + 2) * md.pow * a / d) / 50) + 2;
-  if (crit) dmg = Math.floor(dmg * 1.5);
-  dmg = Math.floor(dmg * (85 + rnd(16)) / 100);
-  if (pokeTypes(user).includes(md.type)) dmg = Math.floor(dmg * 1.5);
-  const eff = moveTypeMul(md, tgt); dmg = Math.floor(dmg * eff);
-  if (phys && user.status === 'BRN') dmg = Math.floor(dmg / 2);
-  return { dmg: eff === 0 ? 0 : Math.max(1, dmg), eff };
+
+// ------------------------------------------------------------ held items
+const TYPE_ITEM = { CHARCOAL: 'FIRE', MYSTICWATER: 'WATER', MAGNET: 'ELECTRIC', MIRACLESEED: 'GRASS', NEVERMELTICE: 'ICE', BLACKBELT: 'FIGHTING', POISONBARB: 'POISON', SOFTSAND: 'GROUND', SHARPBEAK: 'FLYING', TWISTEDSPOON: 'PSYCHIC', SILVERPOWDER: 'BUG', HARDSTONE: 'ROCK', SPELLTAG: 'GHOST', DRAGONFANG: 'DRAGON', BLACKGLASSES: 'DARK', METALCOAT: 'STEEL', SILKSCARF: 'NORMAL',
+  FLAMEPLATE: 'FIRE', SPLASHPLATE: 'WATER', ZAPPLATE: 'ELECTRIC', MEADOWPLATE: 'GRASS', ICICLEPLATE: 'ICE', FISTPLATE: 'FIGHTING', TOXICPLATE: 'POISON', EARTHPLATE: 'GROUND', SKYPLATE: 'FLYING', MINDPLATE: 'PSYCHIC', INSECTPLATE: 'BUG', STONEPLATE: 'ROCK', SPOOKYPLATE: 'GHOST', DRACOPLATE: 'DRAGON', DREADPLATE: 'DARK', IRONPLATE: 'STEEL', PIXIEPLATE: 'FAIRY',
+  SEAINCENSE: 'WATER', WAVEINCENSE: 'WATER', ROSEINCENSE: 'GRASS', ODDINCENSE: 'PSYCHIC', ROCKINCENSE: 'ROCK' };
+const RESIST_BERRY = { OCCABERRY: 'FIRE', PASSHOBERRY: 'WATER', WACANBERRY: 'ELECTRIC', RINDOBERRY: 'GRASS', YACHEBERRY: 'ICE', CHOPLEBERRY: 'FIGHTING', KEBIABERRY: 'POISON', SHUCABERRY: 'GROUND', COBABERRY: 'FLYING', PAYAPABERRY: 'PSYCHIC', TANGABERRY: 'BUG', CHARTIBERRY: 'ROCK', KASIBBERRY: 'GHOST', HABANBERRY: 'DRAGON', COLBURBERRY: 'DARK', BABIRIBERRY: 'STEEL', ROSELIBERRY: 'FAIRY', CHILANBERRY: 'NORMAL' };
+const STATUS_BERRY = { CHERIBERRY: 'PAR', CHESTOBERRY: 'SLP', PECHABERRY: 'PSN', RAWSTBERRY: 'BRN', ASPEARBERRY: 'FRZ' };
+const PINCH_HEAL = ['FIGYBERRY', 'WIKIBERRY', 'MAGOBERRY', 'AGUAVBERRY', 'IAPAPABERRY'];
+const PINCH_STAT = { LIECHIBERRY: 1, GANLONBERRY: 2, SALACBERRY: 3, PETAYABERRY: 4, APICOTBERRY: 5 };
+const hItem = m => (m && m.item && !(m.embargo > 0) && !(G.battle && G.battle.field && G.battle.field.magicRoom > 0) && !isKlutz(m)) ? m.item : '';
+const isChoice = k => k === 'CHOICEBAND' || k === 'CHOICESPECS' || k === 'CHOICESCARF';
+function atkItem(user, md, eff) {
+  const k = hItem(user), phys = md.cat === 'Physical'; let m = 1, gem = false;
+  if (k === 'CHOICEBAND' && phys) m *= 1.5; if (k === 'CHOICESPECS' && !phys) m *= 1.5;
+  if (k === 'MUSCLEBAND' && phys) m *= 1.1; if (k === 'WISEGLASSES' && !phys) m *= 1.1;
+  if (k === 'LIFEORB') m *= 1.3; if (k === 'EXPERTBELT' && eff > 1) m *= 1.2;
+  if (TYPE_ITEM[k] && TYPE_ITEM[k] === md.type) m *= 1.2;
+  if (/GEM$/.test(k) && k.slice(0, -3) === md.type) { m *= 1.5; gem = true; }
+  return { m, gem };
 }
+function* healItem(s, amt, msg) {
+  const m = sideMon(s); if (m.hp <= 0 || m.hp >= m.maxhp) return;
+  m.hp = Math.min(m.maxhp, m.hp + Math.max(1, amt)); sfx('item'); yield* animHp(s, m.hp); yield* bmsg(msg);
+}
+// berries, herbs: checked after every move and at end of turn
+function* checkItems(s) { yield* checkItems0(s); if (B_().S[s].cheek) { B_().S[s].cheek = false; const m = sideMon(s); if (m.hp > 0 && m.hp < m.maxhp) yield* healItem(s, Math.floor(m.maxhp / 3), mname(s) + '\'s Cheek Pouch restored its health!'); } }
+function* checkItems0(s) {
+  const B = B_(), m = sideMon(s); if (!m || m.hp <= 0) return; const k = hItem(m); if (!k) return;
+  if (/BERRY$/.test(k) && abilOf(1 - s) === 'UNNERVE') return;
+  const nm = mname(s), iname = itemName(k);
+  if ((STATUS_BERRY[k] && m.status === STATUS_BERRY[k]) || (k === 'LUMBERRY' && m.status)) { B.S[s].lastItem = k; B.S[s].ate = true; B.S[s].cheek = abilOf(s) === 'CHEEKPOUCH'; m.item = null; m.status = null; sfx('item'); yield* bmsg(nm + '\'s ' + iname + ' cured its status problem!'); return; }
+  if (k === 'SITRUSBERRY' && m.hp <= m.maxhp / 2) { B.S[s].lastItem = k; B.S[s].ate = true; B.S[s].cheek = abilOf(s) === 'CHEEKPOUCH'; m.item = null; yield* healItem(s, Math.floor(m.maxhp / 4), nm + ' restored its health using its ' + iname + '!'); return; }
+  if (k === 'ORANBERRY' && m.hp <= m.maxhp / 2) { B.S[s].lastItem = k; B.S[s].ate = true; B.S[s].cheek = abilOf(s) === 'CHEEKPOUCH'; m.item = null; yield* healItem(s, 10, nm + ' restored its health using its ' + iname + '!'); return; }
+  if (PINCH_HEAL.includes(k) && m.hp <= m.maxhp * (abilOf(s) === 'GLUTTONY' ? 0.5 : 0.25)) { B.S[s].lastItem = k; B.S[s].ate = true; B.S[s].cheek = abilOf(s) === 'CHEEKPOUCH'; m.item = null; yield* healItem(s, Math.floor(m.maxhp / 3), nm + ' restored its health using its ' + iname + '!'); return; }
+  if (PINCH_STAT[k] && m.hp <= m.maxhp * (abilOf(s) === 'GLUTTONY' ? 0.5 : 0.25)) { B.S[s].lastItem = k; B.S[s].ate = true; B.S[s].cheek = abilOf(s) === 'CHEEKPOUCH'; m.item = null; yield* bmsg(nm + ' used its ' + iname + '!'); yield* changeStage(s, PINCH_STAT[k], 1); return; }
+  if (k === 'LEPPABERRY') { const sl = m.moves.find(x => x.pp <= 0); if (sl) { B.S[s].lastItem = k; B.S[s].ate = true; B.S[s].cheek = abilOf(s) === 'CHEEKPOUCH'; m.item = null; sl.pp = Math.min(D.MV[sl.id].pp || 10, 10); sfx('item'); yield* bmsg(nm + ' restored ' + D.MV[sl.id].name + '\'s PP using its ' + iname + '!'); } return; }
+  if (k === 'WHITEHERB' && B.S[s].st.some(v => v < 0)) { B.S[s].lastItem = k; B.S[s].ate = true; B.S[s].cheek = abilOf(s) === 'CHEEKPOUCH'; m.item = null; B.S[s].st = B.S[s].st.map(v => Math.max(0, v)); sfx('item'); yield* bmsg(nm + ' returned its stats to normal using its White Herb!'); }
+}
+function* afterHitItems(us, md, done, c) {
+  const B = B_(), user = sideMon(us), ts = 1 - us, tgt = sideMon(ts), uk = hItem(user), tk = hItem(tgt);
+  if (uk === 'LIFEORB' && user.hp > 0 && !(c && c.sheer) && abilOf(us) !== 'MAGICGUARD') { user.hp = Math.max(0, user.hp - Math.max(1, Math.floor(user.maxhp / 10))); sprOf(us).shk = 10; yield* animHp(us, user.hp); yield* bmsg(mname(us) + ' lost some of its HP!'); }
+  if (uk === 'SHELLBELL' && user.hp > 0 && done > 0) yield* healItem(us, Math.floor(done / 8), mname(us) + ' restored a little HP using its Shell Bell!');
+  if (tgt.hp > 0 && tk === 'ROCKYHELMET' && hasFlag(md, 'a') && user.hp > 0) { user.hp = Math.max(0, user.hp - Math.max(1, Math.floor(user.maxhp / 6))); sprOf(us).shk = 10; yield* animHp(us, user.hp); yield* bmsg(mname(us) + ' was hurt by ' + mnameL(ts) + '\'s Rocky Helmet!'); }
+  if (tgt.hp > 0) {
+    const t = md.type, bump = { ABSORBBULB: ['WATER', 4], CELLBATTERY: ['ELECTRIC', 1], LUMINOUSMOSS: ['WATER', 5], SNOWBALL: ['ICE', 1] }[tk];
+    if (bump && bump[0] === t) { tgt.item = null; yield* bmsg(mname(ts) + ' used its ' + itemName(tk) + '!'); yield* changeStage(ts, bump[1], 1); }
+    if ((uk === 'KINGSROCK' || uk === 'RAZORFANG') && rnd(10) === 0) B.S[ts].flinch = true;
+  }
+}
+
+// calcDamage / useMove / doMove live in moves.js
 function mname(s) { const B = B_(); return (s === 1 ? (B.kind === 'wild' ? 'The wild ' : 'The opposing ') : '') + pokeName(sideMon(s)); }
-function* changeStage(s, stat, delta) {
+function* changeStage(s, stat, delta, byFoe) {
   const st = B_().S[s].st, nm = mname(s);
+  if (abilOf(s) === 'SIMPLE') delta *= 2;
+  if (abilOf(s) === 'CONTRARY') delta = -delta;
+  if (delta < 0 && byFoe && (yield* abilStatBlock(s, stat))) return;
+  if (delta < 0 && byFoe && (B_().S[s].mist > 0 || team(s).mist > 0)) { yield* bmsg(nm + ' is protected by the mist!'); return; }
   if (delta > 0 && st[stat] >= 6) { yield* bmsg(nm + '\'s ' + STAGE_NAMES[stat] + ' won\'t go any higher!'); return; }
   if (delta < 0 && st[stat] <= -6) { yield* bmsg(nm + '\'s ' + STAGE_NAMES[stat] + ' won\'t go any lower!'); return; }
   st[stat] = Math.max(-6, Math.min(6, st[stat] + delta));
   const word = delta >= 3 ? 'rose drastically' : delta === 2 ? 'rose sharply' : delta === 1 ? 'rose' : delta === -1 ? 'fell' : delta === -2 ? 'harshly fell' : 'severely fell';
   if (window.ANIMS) yield* commonAnim(delta > 0 ? 'StatUp' : 'StatDown', s); else sfx(delta > 0 ? 'item' : 'buzzer');
   yield* bmsg(nm + '\'s ' + STAGE_NAMES[stat] + ' ' + word + '!');
+  if (delta < 0 && byFoe) yield* abilStatDropped(s);
 }
-function* inflict(s, status) {
+function* inflict(s, status, self) {
   const mon = sideMon(s); const ty = pokeTypes(mon);
   if (mon.status || mon.hp <= 0) return false;
-  if ((status === 'PSN' && (ty.includes('POISON') || ty.includes('STEEL'))) || (status === 'BRN' && ty.includes('FIRE')) || (status === 'FRZ' && ty.includes('ICE')) || (status === 'PAR' && ty.includes('ELECTRIC'))) return false;
+  if (status === 'FRZ' && wx() === 'SUN') return false;
+  { const why = abilStatusBlock(s, status); if (why) { if (!self) yield* bmsg(why); return false; } }
+  if (status === 'SLP' && (B_().S[0].uproar || B_().S[1].uproar)) return false;
+  if (!self) {
+    const F = field(), gr = isGrounded(s);
+    if (team(s).safeguard > 0) { yield* bmsg(mname(s) + ' is protected by Safeguard!'); return false; }
+    if (gr && F.terrain === 'MISTY') { yield* bmsg(mname(s) + ' surrounds itself with a protective mist!'); return false; }
+    if (gr && F.terrain === 'ELECTRIC' && status === 'SLP') { yield* bmsg(mname(s) + ' surrounds itself with electrified terrain!'); return false; }
+  }
+  if ((status === 'PSN' && (ty.includes('POISON') || ty.includes('STEEL')) && !(B_().lastCtx && abilOf(B_().lastCtx.us) === 'CORROSION' && B_().lastCtx.ts === s)) || (status === 'BRN' && ty.includes('FIRE')) || (status === 'FRZ' && ty.includes('ICE')) || (status === 'PAR' && ty.includes('ELECTRIC'))) return false;
   mon.status = status; if (status === 'SLP') mon.sleep = 1 + rnd(3);
   if (window.ANIMS) yield* commonAnim({ PSN: 'Poison', BRN: 'Burn', PAR: 'Paralysis', SLP: 'Sleep', FRZ: 'Frozen' }[status], s);
   const t = { PSN: ' was poisoned!', BRN: ' was burned!', PAR: ' is paralyzed! It may be unable to move!', SLP: ' fell asleep!', FRZ: ' was frozen solid!' }[status];
-  yield* bmsg(mname(s) + t); return true;
+  yield* bmsg(mname(s) + t); yield* abilStatusGot(s, status); return true;
 }
 function addFx(type, s, kind) { B_().fx.push({ t: 0, life: 22, color: TYPE_COLORS[type] || '#fff', s, kind }); }
 function* attackAnim(us, md, status) {
@@ -144,79 +199,31 @@ function* attackAnim(us, md, status) {
   else { addFx(md.type, status ? us : 1 - us, status ? 'aura' : 'burst'); yield* bwait(22); }
 }
 
-function* useMove(us, mi) {
-  const B = B_(), user = sideMon(us), tgt = sideMon(1 - us), ts = 1 - us, S = B.S[us];
-  const slot = mi === -1 ? null : user.moves[mi];
-  const md = !slot ? { name: 'Struggle', type: 'QMARKS', cat: 'Physical', pow: 50, acc: 0, fn: '0EE', eff: 0, prio: 0, target: '00' } : D.MV[slot.id];
-  if (user.status === 'SLP') { user.sleep--; if (user.sleep > 0) { yield* bmsg(mname(us) + ' is fast asleep.'); return; } user.status = null; yield* bmsg(mname(us) + ' woke up!'); }
-  if (user.status === 'FRZ') { if (rnd(5) === 0) { user.status = null; yield* bmsg(mname(us) + ' thawed out!'); } else { yield* bmsg(mname(us) + ' is frozen solid!'); return; } }
-  if (S.flinch) { S.flinch = false; yield* bmsg(mname(us) + ' flinched and couldn\'t move!'); return; }
-  if (user.status === 'PAR' && rnd(4) === 0) { yield* bmsg(mname(us) + ' is fully paralyzed! It can\'t move!'); return; }
-  if (slot) slot.pp = Math.max(0, slot.pp - 1);
-  yield* bmsg(mname(us) + ' used ' + md.name + '!', { hold: 12 });
-  if (B.scripted && us === 1) {   // scripted loss: every attack the foe makes knocks out the target in one hit
-    yield* attackAnim(us, md); tgt.hp = 0; sfx('hitsuper'); sprOf(ts).shk = 18; yield* animHp(ts, 0); return;
-  }
-  if (md.fn === '0AA') {
-    if (rnd(Math.pow(3, S.protectN)) === 0) { yield* attackAnim(us, md, true); S.protect = true; S.protectN++; yield* bmsg(mname(us) + ' protected itself!'); } else { S.protectN = 0; yield* bmsg('But it failed!'); }
-    return;
-  }
-  const isStatus = md.cat === 'Status' || md.pow === 0;
-  const fx = STAGE_FX[md.fn];
-  const onSelf = isStatus && fx && fx[0] === 'u' || md.target === '10' || md.target === '40' || md.fn === '0D5' || md.fn === '0D6';
-  if (!onSelf) {
-    if (B.S[ts].protect) { yield* bmsg(mname(ts) + ' protected itself!'); return; }
-    if (md.acc > 0) { const chance = md.acc * accMul(S.st[6]) / accMul(B.S[ts].st[7]); if (rnd(100) >= chance) { yield* bmsg(mname(us) + '\'s attack missed!'); return; } }
-  }
-  if (!isStatus) {
-    const nh = { '0BD': 2, '0BE': 2, '0BF': 3 }[md.fn] || (md.fn === '0C0' ? [2, 2, 2, 3, 3, 3, 4, 5][rnd(8)] : 1);
-    const before = tgt.hp; let hits = 0, eff1 = 1;
-    for (let hi = 0; hi < nh && tgt.hp > 0; hi++) {
-      const hmd = md.fn === '0BF' ? Object.assign({}, md, { pow: (md.pow || 10) * (hi + 1) }) : md;   // Triple Kick gets stronger each hit
-      const crit = rnd(16) === 0; const r = calcDamage(us, hmd, crit);
-      yield* attackAnim(us, md);
-      if (r.eff === 0) { yield* bmsg('It doesn\'t affect ' + mname(ts) + '...'); return; }
-      eff1 = r.eff; hits++;
-      tgt.hp = B.scripted ? Math.max(1, tgt.hp - r.dmg) : Math.max(0, tgt.hp - r.dmg);
-      sfx(r.eff > 1 ? 'hitsuper' : r.eff < 1 ? 'hitweak' : 'hit'); sprOf(ts).shk = 18;
-      yield* animHp(ts, tgt.hp);
-      if (crit) yield* bmsg('A critical hit!', { hold: 12 });
-    }
-    if (eff1 > 1) yield* bmsg('It\'s super effective!', { hold: 12 }); else if (eff1 < 1) yield* bmsg('It\'s not very effective...', { hold: 12 });
-    if (nh > 1) yield* bmsg('Hit ' + hits + ' time(s)!', { hold: 12 });
-    const done = before - tgt.hp;
-    if (md.fn === '0DD' || md.fn === '0DE') { user.hp = Math.min(user.maxhp, user.hp + Math.max(1, Math.floor(done / 2))); yield* animHp(us, user.hp); yield* bmsg(mname(ts) + ' had its energy drained!'); }
-    if (md.fn === '0EE' || md.fn === '0F0' || md.fn === '0FA') { const rec = Math.max(1, Math.floor((md.fn === '0EE' ? user.maxhp : done) / 4)); user.hp = Math.max(0, user.hp - rec); sprOf(us).shk = 10; yield* animHp(us, user.hp); yield* bmsg(mname(us) + ' is damaged by recoil!'); }
-    if (tgt.hp > 0) {
-      const chance = md.eff || 0;
-      if ((md.fn === '00F' || md.fn === '010') && rnd(100) < (chance || 30)) B.S[ts].flinch = true;
-      else if (STATUS_FX[md.fn] && rnd(100) < chance) yield* inflict(ts, STATUS_FX[md.fn]);
-      else if (fx && chance && rnd(100) < chance) for (const [stt, dl] of fx[1]) yield* changeStage(fx[0] === 'u' ? us : ts, stt, dl);
-    }
-  } else if (fx) {
-    yield* attackAnim(us, md, true);
-    for (const [stt, dl] of fx[1]) yield* changeStage(fx[0] === 'u' ? us : ts, stt, dl);
-  } else if (STATUS_FX[md.fn]) {
-    yield* attackAnim(us, md, true);
-    if (!(yield* inflict(ts, STATUS_FX[md.fn]))) yield* bmsg('But it failed!');
-  } else if (md.fn === '0D5' || md.fn === '0D6') {
-    if (user.hp >= user.maxhp) { yield* bmsg(mname(us) + '\'s HP is full!'); return; }
-    if (window.ANIMS) yield* commonAnim('HealthUp', us); else sfx('item'); user.hp = Math.min(user.maxhp, user.hp + Math.floor(user.maxhp / 2)); yield* animHp(us, user.hp); yield* bmsg(mname(us) + ' regained health!');
-  } else { yield* attackAnim(us, md, true); yield* bmsg('But nothing happened!'); }
-}
-
 // ------------------------------------------------------------ end of turn / faint / exp
 function* endOfTurn() {
   const B = B_();
   for (const s of [0, 1]) {
     const mon = sideMon(s); if (mon.hp <= 0) continue;
-    if (mon.status === 'PSN' || mon.status === 'BRN') {
+    if (mon.status === 'PSN' && abilOf(s) === 'POISONHEAL') { if (mon.hp < mon.maxhp) { yield* bmsg(mname(s) + '\'s Poison Heal!', { hold: 6 }); yield* healItem(s, Math.floor(mon.maxhp / 8), mname(s) + ' restored a little HP!'); } }
+    else if ((mon.status === 'PSN' || mon.status === 'BRN') && abilOf(s) !== 'MAGICGUARD') {
       const d = Math.max(1, Math.floor(mon.maxhp / (mon.status === 'PSN' ? 8 : 16)));
       mon.hp = Math.max(0, mon.hp - d); sfx('hit'); sprOf(s).shk = 10; yield* animHp(s, mon.hp);
       yield* bmsg(mname(s) + ' was hurt by its ' + (mon.status === 'PSN' ? 'poisoning' : 'burn') + '!');
     }
+    const ik = hItem(mon);
+    if (mon.hp > 0) {
+      if (ik === 'LEFTOVERS') yield* healItem(s, Math.floor(mon.maxhp / 16), mname(s) + ' restored a little HP using its Leftovers!');
+      if (ik === 'BLACKSLUDGE') {
+        if (pokeTypes(mon).includes('POISON')) yield* healItem(s, Math.floor(mon.maxhp / 16), mname(s) + ' restored a little HP using its Black Sludge!');
+        else { mon.hp = Math.max(0, mon.hp - Math.max(1, Math.floor(mon.maxhp / 8))); sfx('hit'); sprOf(s).shk = 10; yield* animHp(s, mon.hp); yield* bmsg(mname(s) + ' was hurt by its Black Sludge!'); }
+      }
+      if ((ik === 'FLAMEORB' || ik === 'TOXICORB') && !mon.status) yield* inflict(s, ik === 'FLAMEORB' ? 'BRN' : 'PSN', true);
+    }
+    if (mon.hp > 0) yield* volatileEnd(s);
   }
-  B.S.forEach(s => { s.protect = false; s.flinch = false; });
+  yield* fieldEnd(); yield* delayedEnd(); for (const s of [0, 1]) if (sideMon(s).hp > 0) yield* abilEndTurn(s);
+  for (const s of [0, 1]) yield* checkItems(s);
+  B.S.forEach(s => { s.protect = false; s.flinch = false; s.hurt = false; s.moved = false; s.lastHit = null; s.age++; s.coat = false; s.snatch = false; if (s.laserFocus > 0) s.laserFocus--; if (s.mist > 0) s.mist--; });
   if (B.scripted && B.foe.hp < 1) B.foe.hp = 1;
 }
 function* faint(s) {
@@ -337,9 +344,22 @@ function* gridNav(m, n) {
 }
 
 // ------------------------------------------------------------ player command phase
+function* useBattleItem(key) {   // X items, Dire Hit, Guard Spec, Poké Doll
+  const B = B_(), nm = itemName(key);
+  if (key === 'POKEDOLL') {
+    if (B.kind !== 'wild') { yield* bmsg('You can\'t run from a Trainer battle!', { pause: true }); return false; }
+    consume(key); sfx('run'); yield* bmsg(G.name + ' used the ' + nm + '!', { hold: 10 }); yield* bmsg('Got away safely!', { pause: true }); B.result = 'ran'; return true;
+  }
+  consume(key); sfx('item'); yield* bmsg(G.name + ' used the ' + nm + '!', { hold: 10 });
+  if (key === 'DIREHIT') { B.S[0].direHit = true; yield* bmsg(pokeName(B.me) + ' is getting pumped!'); }
+  else if (key === 'GUARDSPEC') { B.S[0].mist = 5; yield* bmsg('Your team became shrouded in mist!'); }
+  else yield* changeStage(0, BATTLE_ITEMS[key][0], 2);
+  return true;
+}
 function* commandPhase() {
   const B = B_(); const me = B.me; let idx = B.lastCmd;
   if (window.__forceCmd) { const c = window.__forceCmd; window.__forceCmd = null; return c; }
+  { const fm = forcedMove(0); if (fm != null && (B.S[0].twoTurn || B.S[0].lockMove)) return { type: 'move', idx: fm }; }
   while (true) {
     B.msg = null; B.menu = { type: 'cmd', idx }; B.menuText = 'What will ' + pokeName(me) + ' do?';
     while (true) { yield; yield* gridNav(B.menu, 4); if (ok()) { sfx('ok'); idx = B.menu.idx; break; } }
@@ -358,6 +378,10 @@ function* commandPhase() {
         const wantMega = B.menu.mega === 2; B.menu = null;
         if (sel === -1) break;
         if (me.moves[sel].pp <= 0) { sfx('buzzer'); yield* bmsg('There\'s no PP left for this move!', { hold: 16 }); continue; }
+        const lk = B.S[0].lock;
+        if (isChoice(hItem(me)) && lk != null && lk !== sel && me.moves[lk] && me.moves[lk].pp > 0) { sfx('buzzer'); yield* bmsg(itemName(me.item) + ' only allows ' + D.MV[me.moves[lk].id].name + ' to be used!', { hold: 16 }); continue; }
+        { const smd = D.MV[me.moves[sel].id]; if (hItem(me) === 'ASSAULTVEST' && (smd.cat === 'Status' || smd.pow === 0)) { sfx('buzzer'); yield* bmsg('The effects of the Assault Vest prevent status moves!', { hold: 16 }); continue; } }
+        { const why = moveBlockedReason(0, sel); if (why) { sfx('buzzer'); yield* bmsg(why, { hold: 16 }); continue; } }
         B.lastMove = sel; return { type: 'move', idx: sel, mega: wantMega };
       }
     } else if (idx === 1) {
@@ -367,10 +391,12 @@ function* commandPhase() {
         if (B.kind === 'trainer') { yield* bmsg('The Trainer blocked the Ball! Don\'t be a thief!', { pause: true }); continue; }
         return { type: 'ball', key };
       }
+      if (key in BATTLE_ITEMS) { if (yield* useBattleItem(key)) return { type: 'item' }; continue; }
       const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i, S) => useItemOn(key, p, S) });
       B.meHp = B.me.hp;
       if (r >= 0) return { type: 'item' };
     } else if (idx === 2) {
+      if (isTrapped(0)) { yield* bmsg(pokeName(me) + ' can\'t be switched out!', { pause: true }); continue; }
       const r = yield* partyScreen({ mode: 'battle', text: 'Choose a Pokémon.', activeIdx: B.meParty.indexOf(me) });
       if (r >= 0) return { type: 'switch', idx: r };
     } else if (idx === 3) {
@@ -400,8 +426,10 @@ function* doMega(s = 0) {
 function canFoeMega() { const B = B_(); return B.kind === 'trainer' && !B.foeMegaUsed && !!megaFor(B.foe) && B.foe.hp > 0; }
 function unMega(B) { new Set(G.party.concat(B && B.meParty || [])).forEach(p => { if (p && p.megaBase) { const hp0 = p.hp, old = p.maxhp; p.sym = p.megaBase; delete p.megaBase; refreshStats(p); p.hp = hp0 > 0 ? Math.max(1, Math.min(p.maxhp, hp0 - (old - p.maxhp))) : 0; } }); }
 function pickFoeMove() {
-  const B = B_(), foe = B.foe; const opts = foe.moves.map((m, i) => ({ m, i })).filter(o => o.m.pp > 0);
+  const B = B_(), foe = B.foe; const fm = forcedMove(1); if (fm != null) return fm;
+  const opts = foe.moves.map((m, i) => ({ m, i })).filter(o => o.m.pp > 0 && !moveBlockedReason(1, o.i));
   if (!opts.length) return -1;
+  if (isChoice(hItem(foe)) && B.S[1].lock != null && foe.moves[B.S[1].lock] && foe.moves[B.S[1].lock].pp > 0) return B.S[1].lock;
   const pool = [];
   for (const o of opts) {
     const md = D.MV[o.m.id]; let w = 2;
@@ -485,6 +513,8 @@ function* throwBall(key) {
 }
 function* tryRun() {
   const B = B_(); B.runN++;
+  if (isTrapped(0)) { yield* bmsg('Can\'t escape!', { pause: true }); return false; }
+  if (abilOf(0) === 'RUNAWAY' || hItem(B.me) === 'SMOKEBALL') { sfx('run'); yield* bmsg('Got away safely!', { pause: true }); B.result = 'ran'; return true; }
   const a = effStat(0, 3), b = effStat(1, 3);
   if (a >= b || rnd(256) < Math.floor(a * 128 / Math.max(1, b)) + 30 * B.runN) { sfx('run'); yield* bmsg('Got away safely!', { pause: true }); B.result = 'ran'; return true; }
   yield* bmsg('Can\'t escape!', { pause: true }); return false;
@@ -493,16 +523,17 @@ function* tryRun() {
 // ------------------------------------------------------------ turn loop
 function* doSwitch(idx) {
   const B = B_();
+  if (yield* pursuitCheck()) return;
   yield* bmsg(pokeName(B.me) + ', that\'s enough! Come back!', { hold: 8 });
   yield* recall(0); B.me = B.meParty[idx];
   yield* bmsg('Go! ' + pokeName(B.me) + '!', { hold: 6 }); yield* sendOut(0);
 }
 function* handleFaint(s) {
-  const B = B_(); B.S[s].gone = true;
+  const B = B_(); B.S[s].gone = true; (B.fainted = B.fainted || [])[s] = B.turn; btRestore(sideMon(s));
   yield* faint(s);
   if (s === 1) {
     if (B.kind === 'wild') { stopBGM(); playME('frlg_wildvictory'); }
-    yield* giveExp(B.foe);
+    btRestoreStats(B.me); yield* giveExp(B.foe);
     const next = B.foeParty.find(p => p.hp > 0);
     if (!next) { B.result = 'win'; return; }
     B.foe = next; dexMarkSeen(next.sym);
@@ -524,18 +555,24 @@ function* resolveTurn(cmd) {
   const B = B_(); B.turn++;
   if (cmd.mega && canMega(B.me)) yield* doMega(0);
   if (canFoeMega()) yield* doMega(1);
+  if (cmd.type === 'move') { const f = forcedMove(0); if (f != null) cmd.idx = f; }
   if (cmd.type === 'switch') yield* doSwitch(cmd.idx);
   else if (cmd.type === 'ball') { if (yield* throwBall(cmd.key)) return; }
   else if (cmd.type === 'run') { if (yield* tryRun()) return; }
   const actors = [];
   if (cmd.type === 'move') actors.push({ s: 0, mi: cmd.idx });
-  actors.push({ s: 1, mi: pickFoeMove() });
-  for (const a of actors) { const mv = a.mi === -1 ? { prio: 0 } : D.MV[sideMon(a.s).moves[a.mi].id]; a.prio = mv.prio || 0; a.spd = effStat(a.s, 3) + Math.random() * 0.5; a.mon = sideMon(a.s); }
-  actors.sort((x, y) => (y.prio - x.prio) || (y.spd - x.spd));
+  if (!B.pursued) actors.push({ s: 1, mi: pickFoeMove() }); B.pursued = false;
+  for (const a of actors) { const mv = a.mi === -1 ? { prio: 0 } : D.MV[sideMon(a.s).moves[a.mi].id]; a.prio = (mv.prio || 0) + abilPrio(a.s, mv); a.stall = abilOf(a.s) === 'STALL'; a.qc = hItem(sideMon(a.s)) === 'QUICKCLAW' && rnd(5) === 0; if (a.qc) a.prio += 0.5; a.spd = effStat(a.s, 3) + Math.random() * 0.5; a.mon = sideMon(a.s); }
+  for (const a of actors) a.md = a.mi === -1 ? STRUGGLE : D.MV[a.mon.moves[a.mi].id];
+  actors.sort((x, y) => (y.prio - x.prio) || ((x.stall ? 1 : 0) - (y.stall ? 1 : 0)) || (field().trickRoom > 0 ? x.spd - y.spd : y.spd - x.spd));
+  B.queue = actors;
   for (const a of actors) {
     if (B.result) return;
     if (sideMon(a.s) !== a.mon || sideMon(a.s).hp <= 0) continue;   // fainted (and maybe replaced) before its turn: the queued move is lost
+    if (a.qc) yield* bmsg(mname(a.s) + '\'s Quick Claw let it move first!', { hold: 8 });
+    a.done = true;
     yield* useMove(a.s, a.mi);
+    for (const s of [0, 1]) yield* checkItems(s);
     for (const s of [0, 1]) if (sideMon(s).hp <= 0 && !B.S[s].gone) { yield* handleFaint(s); if (B.result) return; }
     if (B.me.hp <= 0 || B.foe.hp <= 0) break;
   }
@@ -566,9 +603,12 @@ function* battleMain(B) {
   yield* bmsg('Go! ' + pokeName(B.me) + '!', { hold: 6 });
   yield* tween(B.spr.meTr, { x: -220 }, 14); B.spr.meTr.vis = false;
   yield* sendOut(0);
+  B.started = true;
+  for (const s of [0, 1].sort((x, y) => effStat(y, 3) - effStat(x, 3))) if (sideMon(s) && sideMon(s).hp > 0) yield* abilSwitchIn(s);
   while (!B.result) {
     const cmd = yield* commandPhase();
     if (cmd.type === 'item') {
+      if (B.result) continue;
       yield* useMove(1, pickFoeMove());
       if (B.me.hp <= 0 && !B.S[0].gone) yield* handleFaint(0);
       B.S.forEach(s => { s.protect = false; s.flinch = false; });
@@ -576,12 +616,14 @@ function* battleMain(B) {
     }
     yield* resolveTurn(cmd);
   }
+  if (B.result === 'win' || B.result === 'caught') yield* abilAfterBattle();
+  if (B.payday && (B.result === 'win' || B.result === 'caught')) { G.money += B.payday; yield* bmsg(G.name + ' picked up $' + B.payday + '!', { pause: true }); }
   if (B.result === 'win' && trainer) {
     B.spr.foeTr.vis = true; B.spr.foeTr.x = SW + 100; yield* tween(B.spr.foeTr, { x: FOE_BASE.x }, 22, easeOut);
     stopBGM(); playME('frlg_trainervictory');
     yield* bmsg(G.name + ' defeated ' + B.trainer.name + '!', { pause: true });
     if (B.endText) yield* bmsg(B.trainer.name + ': ' + B.endText, { pause: true });
-    const money = B.trainer.money * Math.max(...B.foeParty.map(p => p.lvl));
+    const money = B.trainer.money * Math.max(...B.foeParty.map(p => p.lvl)) * (B.happyHour ? 2 : 1);
     G.money += money; yield* bmsg(G.name + ' got $' + money + ' for winning!', { pause: true });
   } else if (B.result === 'scripted') {
     yield* bmsg(G.name + ' is out of usable Pokémon!', { pause: true });
@@ -600,7 +642,7 @@ function* runBattle(B) {
   playBGM(B.bgm || 'frlg_trainerbattle', 0.6);
   B.gen = battleMain(B);
   while (G.battle) yield;
-  unMega(B);
+  unMega(B); btRestoreAll(B);
   G.battleResult = (B.result === 'win' || B.result === 'caught') ? 'win' : B.result === 'ran' ? 'ran' : B.result === 'scripted' ? 'scripted' : 'lose';
   stopME(); stopBGM(); if (G.map && G.map.bgm) playBGM(G.map.bgm);
   G.keepDir = true;   // keep walking if a direction is still held when the battle ends

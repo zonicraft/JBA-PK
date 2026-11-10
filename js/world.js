@@ -234,7 +234,7 @@ function isCounter(x, y) {
   if (G.mapId === 185 && y === 3 && x >= 4 && x <= 6) return true;   // the arcade's service counter (the employee stands behind it)
   if (G.mapId === 318 && ((x === 1 && y >= 6 && y <= 7) || (x >= 11 && x <= 13 && y === 11))) return true;   // Indigo Plateau lobby: the Mart clerks and the Nurse stand behind their counters
   if (terrainTagAt(x, y) === 1) return true;
-  const w = worldAt(x, y); if (!w || ![3, 25].includes(w.m.tsId)) return false;
+  const w = worldAt(x, y); if (!w || ![3, 25, 10].includes(w.m.tsId)) return false;   // 10 = Department Store: the cashiers stand behind blocked counter tiles
   const m = w.m;
   for (let z = 2; z >= 0; z--) { const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue; const pv = m.ts.passages[tid] || 0; if (pv & 0x10) continue; return (pv & 0x0f) === 0x0f; }
   return false;

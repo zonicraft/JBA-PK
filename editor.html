@@ -91,6 +91,7 @@
     <label>Game page <input id="gameUrl" class="w" value="index.html" title="Path or URL of the game's index.html, relative to this editor (default: the same folder as the editor)"></label>
     <label>Variables <input id="tVars" class="s" placeholder="201:5,3:2" title="Set before testing: id:value, comma separated"></label>
     <label>Switches ON <input id="tSw" class="s" placeholder="12,14" title="Switch ids turned ON before testing"></label>
+    <button id="btnWiring" title="Link walking sprites to trainer classes">⚙ Wiring</button>
     <button id="btnTrainer" title="Click an empty tile first, then press this to make a trainer there">＋ Trainer here</button>
     <button id="btnTest" class="primary" disabled>▶ Test here</button>
   </header>
@@ -248,6 +249,8 @@ async function attach(h) {
     for (const k in pj) { S.species.add(k); S.spName[k] = pj[k].name; }
   } catch (e) { }
   try { const cd = await (await S.dir.getDirectoryHandle('assets')).getDirectoryHandle('characters'); for await (const [n, hd] of cd.entries()) if (hd.kind === 'file' && /^trchar.*\.png$/i.test(n)) S.trchars.push(n.replace(/\.png$/i, '')); S.trchars.sort(); } catch (e) { }
+  S.trlinks = {}; try { S.trlinks = await readJs('trlinks.js', 'TRLINKS'); } catch (e) { }
+  S.trClip = null;
   S.ids = [];
   for await (const [name, handle] of S.data.entries()) { const m = /^map(\d+)\.js$/.exec(name); if (m && handle.kind === 'file') S.ids.push(+m[1]); }
   S.ids.sort((a, b) => a - b);
@@ -302,9 +305,10 @@ async function saveMap() {
       const day2 = day, bdir2 = await S.dir.getDirectoryHandle('_editor_backups', { create: true }), pn = `pbs_${day2}.js`;
       let ex2 = true; try { await bdir2.getFileHandle(pn); } catch (e) { ex2 = false; }
       if (!ex2) { const wb = await (await bdir2.getFileHandle(pn, { create: true })).createWritable(); await wb.write(S.pbsText); await wb.close(); }
-      const t0 = S.pbsText; let i = t0.indexOf('window.TRAINERS='); i = t0.indexOf('{', i); let d = 0, str = false, j = i;
-      for (; j < t0.length; j++) { const c = t0[j]; if (str) { if (c === '\\') j++; else if (c === '"') str = false; } else if (c === '"') str = true; else if (c === '{') d++; else if (c === '}' && --d === 0) break; }
-      const nt = t0.slice(0, i) + JSON.stringify(S.pbs.TRAINERS) + t0.slice(j + 1);
+      const spliceObj = (txt, key, obj) => { let i = txt.indexOf('window.' + key + '='); i = txt.indexOf('{', i); let d = 0, str = false, j = i;
+        for (; j < txt.length; j++) { const c = txt[j]; if (str) { if (c === '\\') j++; else if (c === '"') str = false; } else if (c === '"') str = true; else if (c === '{') d++; else if (c === '}' && --d === 0) break; }
+        return txt.slice(0, i) + JSON.stringify(obj) + txt.slice(j + 1); };
+      const nt = spliceObj(spliceObj(S.pbsText, 'TRAINERS', S.pbs.TRAINERS), 'TTYPES', S.pbs.TTYPES);
       const wp = await (await S.data.getFileHandle('pbs.js')).createWritable(); await wp.write(nt); await wp.close();
       S.pbsText = nt; S.pbsDirty = false;
     }
@@ -456,6 +460,7 @@ $('#cv').addEventListener('click', e => {
   const m = curMap(); if (!m) return; const c = cellAt(e);
   if (S.tm && S.tm.draw) { tmAddTile(c); return; }
   if (S.tm) return;
+  if (e.altKey && S.trClip) { pasteTrainer(c.x, c.y); return; }
   if (c.x < 0 || c.y < 0 || c.x >= m.obj.w || c.y >= m.obj.h) return;
   S.cell = { x: c.x, y: c.y }; const ev = evAt(c.x, c.y);
   if (ev) { S.ev = ev.id; S.page = 0; S.cmdSel = -1; S.open.clear(); } else S.ev = null;
@@ -608,7 +613,7 @@ function renderEvent() {
   const ev = m.obj.events[S.ev];
   if (!ev) {
     box.append(el('div', { style: 'color:var(--dim)', textContent: S.cell ? `Tile (${S.cell.x}, ${S.cell.y}) is empty.` : 'Click an event on the map to edit it.' }));
-    if (S.cell && !evAt(S.cell.x, S.cell.y)) box.append(el('div', { className: 'field' }, [el('button', { className: 'primary', textContent: '＋ Add event here', onclick: addEvent }), el('button', { textContent: '＋ Add trainer here', onclick: tmStart })]));
+    if (S.cell && !evAt(S.cell.x, S.cell.y)) box.append(el('div', { className: 'field' }, [el('button', { className: 'primary', textContent: '＋ Add event here', onclick: addEvent }), el('button', { textContent: '＋ Add trainer here', onclick: tmStart })].concat(S.trClip ? [el('button', { className: 'primary', textContent: '📋 Paste trainer “' + S.trClip.info.name + '” here', onclick: () => pasteTrainer(S.cell.x, S.cell.y) })] : [])));
     return;
   }
   const top = el('div', { className: 'field' }); top.append(el('b', { textContent: '#' + ev.id }));
@@ -620,6 +625,7 @@ function renderEvent() {
     el('button', { textContent: 'Duplicate', onclick: () => dupEvent(ev) }),
     el('button', { textContent: 'Delete event', onclick: () => { if (confirm(`Delete event #${ev.id} "${ev.name}"?`)) { delete m.obj.events[ev.id]; S.ev = null; touch(); renderAll(); } } }));
   box.append(pos);
+  if (S.pbs) trainerPanel(ev, m, box);
   if (!ev.pages.length) ev.pages.push(NEW_PAGE());
   if (S.page >= ev.pages.length) S.page = ev.pages.length - 1;
   const tabs = el('div', { className: 'tabs' });
@@ -679,7 +685,9 @@ function addEvent() {
 }
 function dupEvent(ev) {
   const m = curMap(), id = Math.max(0, ...Object.keys(m.obj.events).map(Number)) + 1;
-  const c = JSON.parse(JSON.stringify(ev)); c.id = id; c.name = ev.name + ' copy';
+  const c = JSON.parse(JSON.stringify(ev)); c.id = id; fixEventIds(c, ev.id, id);
+  const ti = S.pbs && trainerInfo(ev);
+  if (ti) { const vr = freeVr(ti.cls, ti.name, 0); S.pbs.TRAINERS[`${ti.cls}|${ti.name}|${vr}`] = jclone(S.pbs.TRAINERS[ti.key] || { t: ti.cls, n: ti.name, p: [] }); setScript(c, Object.assign({}, ti, { vr })); S.pbsDirty = true; S.focusTr = true; } else c.name = ev.name + ' copy';
   const free = (() => { for (let d = 1; d < 4; d++) for (const [dx, dy] of [[1, 0], [0, 1], [-1, 0], [0, -1]]) { const x = ev.x + dx * d, y = ev.y + dy * d; if (x >= 0 && y >= 0 && x < m.obj.w && y < m.obj.h && !evAt(x, y)) return [x, y]; } return [ev.x, ev.y]; })();
   [c.x, c.y] = free; m.obj.events[id] = c; S.ev = id; S.cell = { x: c.x, y: c.y }; touch(); renderAll();
 }
@@ -806,8 +814,8 @@ function renderTM() {
     for (const [key, v] of Object.entries(S.pbs.TTYPES)) {
       const g = genderOf(key + ' ' + (v.name || '')); if (!t.showAll && g !== '?' && g !== t.gender) continue;
       if (q && !(key + ' ' + v.name).toLowerCase().includes(q)) continue; n++;
-      const tile = el('div', { className: 'tmtile' + (t.cls === key ? ' on' : ''), title: key, onclick: () => { t.cls = key; tmApply(); tmParts.classes(); } },
-        [v.noSprite ? el('div', { style: 'height:56px' }) : tmThumb('trainers', 'trainer' + pad3(v.id), 56, 56, false), el('div', { textContent: (nameCount[v.name] > 1 || !v.name) ? key : v.name })]);
+      const tile = el('div', { className: 'tmtile' + (t.cls === key ? ' on' : ''), title: key, onclick: () => { t.cls = key; const sp = spriteForClass(key); if (sp) { t.trchar = sp; tmParts.sprites(); } tmApply(); renderMap(); tmParts.classes(); } },
+        [v.noSprite ? el('div', { style: 'height:56px' }) : tmThumb('trainers', 'trainer' + pad3(classSpriteId(v)), 56, 56, false), el('div', { textContent: (nameCount[v.name] > 1 || !v.name) ? key : v.name })]);
       cg.append(tile);
     }
     ctitle.textContent = t.cls ? `Selected: ${t.cls} (${(S.pbs.TTYPES[t.cls] || {}).name || ''}) · ${n} shown` : `${n} classes shown`;
@@ -821,8 +829,8 @@ function renderTM() {
     sg.innerHTML = ''; const q = t.charQ.toLowerCase(); let n = 0;
     for (const f of S.trchars || []) {
       const g = genderOf(f); if (!t.showAll && g !== '?' && g !== t.gender) continue; if (q && !f.toLowerCase().includes(q)) continue; n++;
-      sg.append(el('div', { className: 'tmtile' + (t.trchar === f ? ' on' : ''), title: f, onclick: () => { t.trchar = f; tmApply(); renderMap(); tmParts.sprites(); } },
-        [tmThumb('characters', f, 32, 48, true), el('div', { textContent: f.replace(/^trchar_?/i, '') || f })]));
+      sg.append(el('div', { className: 'tmtile' + (t.trchar === f ? ' on' : ''), title: f, onclick: () => { t.trchar = f; const c = classForSprite(f); if (c) { t.cls = c; tmParts.classes(); } tmApply(); renderMap(); tmParts.sprites(); } },
+        [tmThumb('characters', f, 32, 48, true), el('div', { textContent: (classForSprite(f) ? '' : '⚠ ') + (f.replace(/^trchar_?/i, '') || f) })]));
     }
     stitle.textContent = (t.trchar ? `Selected: ${t.trchar} · ` : '') + `${n} shown`;
   };
@@ -887,6 +895,264 @@ function renderTM() {
   tmParts.classes(); tmParts.sprites(); tmParts.behaviour(); tmParts.pool();
 }
 
+// ------------------------------------------------------------------ trainer editor: edit, copy/paste, class <-> sprite wiring
+const TR_RE = /pbTrainerBattle\(\s*PBTrainers::(\w+)\s*,\s*"((?:[^"\\]|\\.)*)"\s*,\s*"((?:[^"\\]|\\.)*)"\s*,\s*(true|false)\s*,\s*(\d+)\s*\)/;
+const TR_RE_G = new RegExp(TR_RE.source, 'g');
+function scriptOf(c) { return c[0] === 111 && c[2] && c[2][0] === 12 ? [c[2], 1] : c[0] === 355 && c[2] ? [c[2], 0] : null; }
+function trainerCmds(ev) {
+  const out = [];
+  (ev.pages || []).forEach(pg => (pg.list || []).forEach(c => { const s = scriptOf(c); if (s && typeof s[0][s[1]] === 'string' && TR_RE.test(s[0][s[1]])) out.push(s); }));
+  return out;
+}
+function trainerInfo(ev) {
+  const cs = trainerCmds(ev); if (!cs.length) return null;
+  const m = TR_RE.exec(cs[0][0][cs[0][1]]); if (!m) return null;
+  const info = { cls: m[1], name: m[2], defeat: m[3], flag: m[4], vr: +m[5] }; info.key = `${info.cls}|${info.name}|${info.vr}`; return info;
+}
+function setScript(ev, i) {
+  const s = `pbTrainerBattle(PBTrainers::${i.cls},"${i.name}","${i.defeat}",${i.flag},${i.vr})`;
+  trainerCmds(ev).forEach(([p, k]) => { p[k] = p[k].replace(TR_RE, () => s); });
+}
+function freeVr(cls, name, from) { let v = from || 0; while (S.pbs.TRAINERS[`${cls}|${name}|${v}`]) v++; return v; }
+const jclone = o => JSON.parse(JSON.stringify(o));
+function fixEventIds(c, oldId, newId) {   // scripts such as Kernel.pbExclaim($game_map.events[7]) point at the event's own id
+  (c.pages || []).forEach(pg => (pg.list || []).forEach(cmd => { if (Array.isArray(cmd[2])) cmd[2] = cmd[2].map(p => typeof p === 'string' ? p.split(`events[${oldId}]`).join(`events[${newId}]`) : p); }));
+}
+// -- wiring: which walking sprite belongs to which trainer class
+function classForSprite(f) {
+  if (S.trlinks && S.trlinks[f]) return S.trlinks[f];
+  const m = /^trchar(\d+)(?:_\d+)?$/i.exec(f);
+  if (m) for (const [k, v] of Object.entries(S.pbs.TTYPES)) if (v.id === +m[1]) return k;
+  return null;
+}
+function spriteForClass(cls) {
+  for (const [f, c] of Object.entries(S.trlinks || {})) if (c === cls) return f;
+  const v = S.pbs.TTYPES[cls]; if (!v) return null; const n = 'trchar' + pad3(v.id);
+  return S.trchars.includes(n) ? n : null;
+}
+const classSpriteId = v => v.sprite != null ? v.sprite : v.id;
+async function saveLinks() {
+  try {
+    const f = await S.data.getFileHandle('trlinks.js', { create: true }), w = await f.createWritable();
+    await w.write('// Editor-only: which walking sprite (assets/characters) belongs to which trainer class. The game does not read this file.\nwindow.TRLINKS=' + JSON.stringify(S.trlinks, null, 1) + ';\n'); await w.close();
+  } catch (e) { status('Could not save data/trlinks.js: ' + e.message, 'err'); }
+}
+function wildPool(mapId, depth, water, extra) {
+  const out = new Map(), dist = tmNeighbours(mapId, depth);
+  String(extra || '').split(',').map(s => +s.trim()).filter(Boolean).forEach(i => dist.set(i, 9));
+  for (const [id, d] of dist) {
+    let list = [];
+    if (S.enc[id]) list = S.enc[id].land.map(s => s[0]);
+    else { const e = S.pbs.ENCOUNTERS[id]; if (e) ['Land', 'Cave'].concat(water ? ['Water'] : []).forEach(k => (e[k] || []).forEach(s => list.push(s[0]))); }
+    for (const sym of new Set(list)) { if (!out.has(sym)) out.set(sym, []); out.get(sym).push([id, d]); }
+  }
+  return out;
+}
+// -- pick dialog (classes / sprites)
+function pickDialog(title, items, onPick, opts = {}) {
+  const bg = el('div', { style: 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center' });
+  const bx = el('div', { style: 'background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;width:min(760px,94vw);max-height:88vh;display:flex;flex-direction:column;gap:8px' });
+  const close = () => bg.remove();
+  const q = el('input', { placeholder: 'search…', className: 'wide' }), grid = el('div', { className: 'tmgrid', style: 'max-height:none;flex:1;min-height:0;overflow:auto;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));grid-auto-rows:max-content;align-content:start;gap:6px' }), cnt = el('span', { className: 'summary' });
+  let gender = 'all', only = false;
+  const top = el('div', { className: 'field' }, [el('b', { textContent: title }), el('span', { style: 'flex:1' }), el('button', { textContent: 'Close', onclick: close })]);
+  const bar = el('div', { className: 'field' }, [q]);
+  if (opts.gender) ['all', 'm', 'f'].forEach(g => { const b = el('button', { textContent: { all: 'All', m: '♂', f: '♀' }[g], onclick: () => { gender = g; paint(); } }); bar.append(b); });
+  if (opts.unwiredToggle) { const c = el('input', { type: 'checkbox', onchange: () => { only = c.checked; paint(); } }); bar.append(el('label', {}, [c, ' ' + opts.unwiredToggle])); }
+  const paint = () => {
+    grid.innerHTML = ''; const s = q.value.toLowerCase(); let n = 0;
+    for (const it of items) {
+      if (s && !(it.id + ' ' + it.label).toLowerCase().includes(s)) continue;
+      if (gender !== 'all' && it.g !== '?' && it.g !== gender) continue;
+      if (only && !it.flag) continue; n++;
+      const t = el('div', { style: 'min-height:84px;white-space:normal;word-break:break-word', className: 'tmtile' + (it.on ? ' on' : ''), title: it.id + (it.sub ? ' · ' + it.sub : ''), onclick: () => { close(); onPick(it.id); } }, [it.thumb(), el('div', { textContent: it.label })]);
+      if (it.flag) t.append(el('div', { textContent: it.flag, style: 'color:var(--warn)' }));
+      grid.append(t);
+    }
+    cnt.textContent = n + ' shown';
+  };
+  q.oninput = paint; bx.append(top, bar, cnt, grid); bg.append(bx); bg.onclick = e => { if (e.target === bg) close(); }; document.body.append(bg); paint(); q.focus();
+}
+function classItems(cur) {
+  const nc = {}; Object.values(S.pbs.TTYPES).forEach(v => nc[v.name] = (nc[v.name] || 0) + 1);
+  return Object.entries(S.pbs.TTYPES).map(([k, v]) => ({ id: k, label: (nc[v.name] > 1 || !v.name) ? k : v.name, sub: v.name, g: genderOf(k + ' ' + (v.name || '')), on: k === cur,
+    flag: spriteForClass(k) ? '' : '⚠ no walking sprite', thumb: () => v.noSprite ? el('div', { style: 'height:56px' }) : tmThumb('trainers', 'trainer' + pad3(classSpriteId(v)), 56, 56, false) }));
+}
+function spriteItems(cur) {
+  return S.trchars.map(f => ({ id: f, label: f.replace(/^trchar_?/i, '') || f, sub: classForSprite(f) || 'no class', g: genderOf(f), on: f === cur,
+    flag: classForSprite(f) ? '' : '⚠ no class', thumb: () => tmThumb('characters', f, 32, 48, true) }));
+}
+// -- edit an existing trainer
+function trKeyUsers(key) { let n = 0; for (const m of Object.values(S.maps)) for (const e of Object.values(m.obj.events)) { const i = trainerInfo(e); if (i && i.key === key) n++; } return n; }
+function trTouch() { S.pbsDirty = true; touch(); }
+function trRekey(ev, info, patch) {
+  const nx = Object.assign({}, info, patch);
+  if (patch.cls !== undefined || patch.name !== undefined) nx.vr = freeVr(nx.cls, nx.name, 0);
+  nx.key = `${nx.cls}|${nx.name}|${nx.vr}`;
+  if (nx.key !== info.key) { const old = S.pbs.TRAINERS[info.key]; S.pbs.TRAINERS[nx.key] = Object.assign({}, jclone(old || { p: [] }), { t: nx.cls, n: nx.name }); }
+  setScript(ev, nx); trTouch(); return nx;
+}
+function setEventSprite(ev, name) {
+  const old = ((ev.pages[0] || {}).gfx || {}).name;
+  ev.pages.forEach(pg => { pg.gfx = pg.gfx || {}; if (pg.gfx.name === old) pg.gfx.name = name; });
+}
+const NATURES = ['HARDY','LONELY','BRAVE','ADAMANT','NAUGHTY','BOLD','DOCILE','RELAXED','IMPISH','LAX','TIMID','HASTY','SERIOUS','JOLLY','NAIVE','MODEST','MILD','QUIET','BASHFUL','RASH','CALM','GENTLE','SASSY','CAREFUL','QUIRKY'];
+function dlgFind(list, from, to) { for (let i = from; i < to; i++) if (list[i] && list[i][0] === 101) return i; return -1; }
+function dlgGet(list, i) { const out = [list[i][2][0] || '']; let j = i + 1; while (list[j] && list[j][0] === 401) { out.push(list[j][2][0] || ''); j++; } return out; }
+function dlgSet(list, i, lines) { let n = 1; while (list[i + n] && list[i + n][0] === 401) n++; const ind = list[i][1], first = list[i][2].slice(); first[0] = lines[0] || ''; list.splice(i, n, [101, ind, first], ...lines.slice(1).map(t => [401, ind, [t]])); }
+function trainerPanel(ev, m, box) {
+  const info = trainerInfo(ev); if (!info) return;
+  const TT = S.pbs.TTYPES[info.cls] || {}; let entry = S.pbs.TRAINERS[info.key];
+  const wrap = el('div', { className: 'box', style: 'border-color:var(--acc)' }); wrap.append(el('div', { className: 't', textContent: '🎯 Trainer' }));
+  const rer = () => { renderAll(); };
+  // class + sprite + name
+  const sprite = ((ev.pages[0] || {}).gfx || {}).name || '';
+  const head = el('div', { className: 'field' });
+  head.append(TT.noSprite ? el('div') : tmThumb('trainers', 'trainer' + pad3(classSpriteId(TT)), 64, 64, false), sprite ? tmThumb('characters', sprite, 32, 48, true) : el('div'));
+  const col = el('div', { style: 'flex:1;min-width:200px;display:grid;gap:4px' });
+  const nm = el('input', { value: info.name, onchange: () => { const v = nm.value.replace(/["\\]/g, '').trim(); if (v) { trRekey(ev, info, { name: v }); rer(); } } });
+  nm.id = 'trName';
+  col.append(el('div', { className: 'field', style: 'margin:0' }, [el('label', { textContent: 'Name' }), nm]));
+  col.append(el('div', { className: 'field', style: 'margin:0' }, [el('label', { textContent: 'Class' }), el('button', { textContent: info.cls + (TT.name ? ' · ' + TT.name : ''), onclick: () => pickDialog('Trainer class', classItems(info.cls), cls => {
+    const nx = trRekey(ev, info, { cls }); const sp = spriteForClass(cls);
+    if (sp) { setEventSprite(ev, sp); status(`Class ${cls} → walking sprite ${sp} (linked).`, 'ok'); } else status(`Class ${cls} has no walking sprite linked yet — use ⚙ Wiring to link one.`);
+    touch(); rer(); }, { gender: true }) })]));
+  col.append(el('div', { className: 'field', style: 'margin:0' }, [el('label', { textContent: 'Sprite' }), el('button', { textContent: sprite || '(none)', onclick: () => pickDialog('Walking sprite', spriteItems(sprite), f => {
+    setEventSprite(ev, f); const c = classForSprite(f); touch();
+    if (c && c !== info.cls) { trRekey(ev, info, { cls: c }); status(`Sprite ${f} belongs to class ${c} — class switched to match.`, 'ok'); } else if (!c) status(`Sprite ${f} has no trainer class yet — use ⚙ Wiring to link it.`);
+    rer(); }, { gender: true, unwiredToggle: 'only unwired' }) }), classForSprite(sprite) ? el('span', { className: 'tag', textContent: '✔ wired' + (classForSprite(sprite) !== info.cls ? ' to ' + classForSprite(sprite) : '') }) : el('span', { className: 'tag', style: 'color:var(--warn)', textContent: '⚠ sprite not wired to a class' })]));
+  head.append(col); wrap.append(head);
+  const users = trKeyUsers(info.key);
+  if (users > 1) wrap.append(el('div', { className: 'summary', style: 'color:var(--warn)', textContent: `⚠ ${users} events on loaded maps share this exact team. Changing the team changes all of them. Use “Make team unique” to give this one its own.` }));
+  // party
+  if (!entry) { entry = S.pbs.TRAINERS[info.key] = { t: info.cls, n: info.name, p: [] }; S.pbsDirty = true; }
+  const party = el('div'); const spOk = s => S.species && S.species.has(s);
+  const drawParty = () => {
+    party.innerHTML = '';
+    entry.p.forEach((p, i) => {
+      const s = el('input', { className: 'mini', style: 'width:150px', value: p[0] }); s.setAttribute('list', 'tmSpecies');
+      const lab = el('span', { className: 'tag', textContent: spName(p[0]) });
+      s.oninput = () => { p[0] = s.value.toUpperCase(); s.classList.toggle('bad', !spOk(p[0])); lab.textContent = spName(p[0]); trTouch(); };
+      s.classList.toggle('bad', !spOk(p[0]));
+      const l = el('input', { type: 'number', className: 'mini', value: p[1], min: 1, max: 100, onchange: () => { p[1] = Math.max(1, Math.min(100, +l.value || 1)); l.value = p[1]; trTouch(); } });
+      const it = el('input', { className: 'mini', style: 'width:96px', value: p[2] || '', placeholder: 'item', onchange: () => { p[2] = it.value.toUpperCase().trim(); trTouch(); } });
+      const nat = el('select', { className: 'mini', title: 'Nature', onchange: () => { p[4] = nat.value; trTouch(); } }, NATURES.map(n => el('option', { value: n, textContent: n[0] + n.slice(1).toLowerCase(), selected: (p[4] || 'SERIOUS') === n })));
+      const mv = el('input', { className: 'mini', style: 'width:230px', value: (p[3] || []).join(', '), placeholder: 'moves (blank = normal level-up moves)', title: 'Up to 4 move names, comma separated, e.g. TACKLE, GROWL. Leave blank to use its level-up moves.', onchange: () => { p[3] = mv.value.split(',').map(x => x.trim().toUpperCase().replace(/\s+/g, '')).filter(Boolean).slice(0, 4); mv.value = p[3].join(', '); trTouch(); } });
+      const row = el('div', { className: 'field' }, [el('b', { textContent: i + 1 + '.' }), s, 'Lv', l, it, lab, nat, mv]);
+      row.append(el('button', { textContent: '↑', disabled: !i, onclick: () => { entry.p.splice(i - 1, 0, entry.p.splice(i, 1)[0]); trTouch(); drawParty(); } }), el('button', { textContent: '↓', disabled: i === entry.p.length - 1, onclick: () => { entry.p.splice(i + 1, 0, entry.p.splice(i, 1)[0]); trTouch(); drawParty(); } }),
+        el('button', { textContent: '✕', onclick: () => { entry.p.splice(i, 1); trTouch(); drawParty(); } }));
+      party.append(row);
+    });
+    if (!entry.p.length) party.append(el('div', { className: 'summary', textContent: '(empty party — the game would crash on this fight)' }));
+  };
+  wrap.append(el('div', { className: 'summary', textContent: 'Team' }), party);
+  const U = S.trUI = S.trUI || { min: 5, max: 8, size: 3, depth: 1, water: false };
+  const nums = el('div', { className: 'field' });
+  const mk = (k, lab, mn, mx) => { const i = el('input', { type: 'number', className: 'mini', min: mn, max: mx, value: U[k], onchange: () => { U[k] = Math.max(mn, Math.min(mx, +i.value || mn)); i.value = U[k]; } }); return [el('label', { textContent: lab }), i]; };
+  nums.append(...mk('min', 'Lv', 1, 100), ...mk('max', '–', 1, 100), ...mk('size', 'size', 1, 6));
+  const dp = el('select', { className: 'mini', onchange: () => { U.depth = +dp.value; } }, [[0, 'this map'], [1, 'this map + neighbours'], [2, '2 steps away']].map(([v, l]) => el('option', { value: v, textContent: l, selected: U.depth === v })));
+  const wt = el('input', { type: 'checkbox', checked: U.water, onchange: () => { U.water = wt.checked; } });
+  nums.append(dp, el('label', {}, [wt, ' water']));
+  const roll = () => {
+    const pool = [...wildPool(m.id, U.depth, U.water, '').keys()]; if (!pool.length) return status('No wild Pokémon found near this map. Add Pokémon by hand.', 'err');
+    const lo = Math.min(U.min, U.max), hi = Math.max(U.min, U.max), bag = shuffle(pool), n = U.size, syms = [];
+    for (let i = 0; i < n; i++) syms.push(i < bag.length ? bag[i] : pool[Math.floor(Math.random() * pool.length)]);
+    const lv = syms.map(() => lo + Math.floor(Math.random() * (hi - lo + 1))).sort((a, b) => a - b);
+    entry.p = syms.map((s, i) => [s, lv[i], '', [], 'SERIOUS']); trTouch(); drawParty();
+  };
+  const addOne = () => { if (entry.p.length >= 6) return; const pool = [...wildPool(m.id, U.depth, U.water, '').keys()]; entry.p.push([pool.length ? pool[Math.floor(Math.random() * pool.length)] : '', U.max, '', [], 'SERIOUS']); trTouch(); drawParty(); };
+  const lvl = el('button', { textContent: 'Set all levels…', onclick: () => { const v = +prompt('Set every Pokémon to level:', U.max); if (v > 0) { entry.p.forEach(p => p[1] = Math.min(100, v)); trTouch(); drawParty(); } } });
+  wrap.append(nums, el('div', { className: 'field' }, [el('button', { className: 'primary', textContent: '🎲 Roll team', onclick: roll }), el('button', { textContent: '＋ Pokémon', onclick: addOne }), lvl]));
+  // what the NPC says before / after the fight
+  const pg0 = ev.pages[0], pg1 = ev.pages[1];
+  if (pg0) { const bi = pg0.list.findIndex(c => scriptOf(c) && /pbTrainerBattle/.test(String(scriptOf(c)[0][scriptOf(c)[1]])));
+    const di = bi < 0 ? -1 : dlgFind(pg0.list, 0, bi);
+    if (di >= 0) { const pre = (pg0.list[di][2][0] || '').startsWith('\\b') ? '\\b' : '';
+      const ta = el('textarea', { rows: 2, className: 'speech', value: dlgGet(pg0.list, di).map((x, k) => k ? x : x.replace(/^\\b/, '')).join('\n'), oninput: () => autosize(ta), onchange: () => { const ls = ta.value.split('\n'); ls[0] = pre + ls[0]; dlgSet(pg0.list, dlgFind(pg0.list, 0, pg0.list.findIndex(c => scriptOf(c) && /pbTrainerBattle/.test(String(scriptOf(c)[0][scriptOf(c)[1]])))), ls); touch(); } });
+      wrap.append(el('div', { className: 'field' }, [el('label', { textContent: 'Line before the fight (one line per text row)', style: 'width:100%' }), ta])); setTimeout(() => autosize(ta)); } }
+  if (pg1) { const ai = dlgFind(pg1.list, 0, pg1.list.length);
+    if (ai >= 0) { const pre = (pg1.list[ai][2][0] || '').startsWith('\\b') ? '\\b' : '';
+      const ta = el('textarea', { rows: 2, className: 'speech', value: dlgGet(pg1.list, ai).map((x, k) => k ? x : x.replace(/^\\b/, '')).join('\n'), oninput: () => autosize(ta), onchange: () => { const ls = ta.value.split('\n'); ls[0] = pre + ls[0]; dlgSet(pg1.list, dlgFind(pg1.list, 0, pg1.list.length), ls); touch(); } });
+      wrap.append(el('div', { className: 'field' }, [el('label', { textContent: 'Line after you beat them (when you talk to them again)', style: 'width:100%' }), ta])); setTimeout(() => autosize(ta)); } }
+  // facing / looking around
+  { const g0 = (pg0 && pg0.gfx) || {}, walking = pg0 && pg0.moveType === 5;
+    const cur = walking ? 'walk' : (pg0 && pg0.moveType === 3 ? 'around' : String(g0.dir || 2));
+    const fs = el('select', { onchange: () => { const v = fs.value; if (v === 'walk') return; ev.pages.forEach(pg => { pg.gfx = pg.gfx || {}; if (v !== 'around') pg.gfx.dir = +v; });
+      if (pg0) { if (v === 'around') { const r = []; [2, 4, 8, 6].forEach(d => r.push([FACE[d], []], [15, [40]])); r.push([0, []]); pg0.moveType = 3; pg0.route = Object.assign({ mr: 1, repeat: true, skip: false }, { list: r }); }
+        else { pg0.moveType = 0; pg0.route = Object.assign({ mr: 1, repeat: true, skip: false }, { list: [[0, []]] }); } } touch(); rer(); } },
+      [['2', '↓ faces down'], ['4', '← faces left'], ['6', '→ faces right'], ['8', '↑ faces up'], ['around', '↻ looks around'], ['walk', '🚶 walks a route (leave as is)']].map(([v, l]) => el('option', { value: v, textContent: l, selected: v === cur })));
+    wrap.append(el('div', { className: 'field' }, [el('label', { textContent: 'Facing' }), fs])); }
+  // class settings (shared by every trainer of this class)
+  if (S.pbs.TTYPES[info.cls]) { const T = S.pbs.TTYPES[info.cls];
+    const mo = el('input', { type: 'number', className: 'mini', min: 0, value: T.money || 0, onchange: () => { T.money = Math.max(0, +mo.value || 0); trTouch(); } });
+    const bg = el('input', { className: 'mini', style: 'width:170px', value: T.bgm || '', placeholder: 'battle music', onchange: () => { T.bgm = bg.value.trim(); trTouch(); } });
+    wrap.append(el('div', { className: 'field' }, [el('label', { textContent: 'Class money ×' }), mo, el('label', { textContent: 'music' }), bg, el('span', { className: 'tag', textContent: 'applies to every ' + info.cls })])); }
+  // phrases / sight
+  const df = el('textarea', { rows: 1, className: 'speech', value: info.defeat, oninput: () => { autosize(df); }, onchange: () => { const v = df.value.replace(/"/g, "'"); setScript(ev, Object.assign({}, info, { defeat: v })); info.defeat = v; trTouch(); } });
+  wrap.append(el('div', { className: 'field' }, [el('label', { textContent: 'Line when you win (in battle)', style: 'width:100%' }), df]));
+  const sm = /^Trainer\((\d+)\)$/.exec(ev.name || '');
+  const si = el('input', { type: 'number', className: 'mini', min: 1, max: 12, value: sm ? sm[1] : 4, onchange: () => { ev.name = `Trainer(${Math.max(1, +si.value || 1)})`; touch(); renderEvent(); } });
+  wrap.append(el('div', { className: 'field' }, (sm ? [el('label', { textContent: 'Sight (tiles)' }), si] : []).concat([el('span', { className: 'tag', textContent: info.key })])));
+  // copy / unique
+  wrap.append(el('div', { className: 'field' }, [
+    el('button', { className: 'primary', textContent: '📋 Copy trainer', title: 'Copies the NPC and its team. Click an empty tile on this or any other map, then Paste.', onclick: () => { S.trClip = { ev: jclone(ev), party: jclone(entry.p), info: Object.assign({}, info) }; status(`Copied “${info.name}”. Click an empty tile (any map) and press Paste — or Ctrl+V, or Alt+click the tile.`, 'ok'); renderEvent(); } }),
+    el('button', { textContent: 'Make team unique', disabled: users <= 1, title: 'Gives this NPC its own copy of the team so editing it does not change the others', onclick: () => { const vr = freeVr(info.cls, info.name, info.vr + 1); S.pbs.TRAINERS[`${info.cls}|${info.name}|${vr}`] = jclone(entry); setScript(ev, Object.assign({}, info, { vr })); trTouch(); rer(); } })]));
+  box.append(wrap); drawParty(); autosize(df);
+  if (S.focusTr) { S.focusTr = false; nm.focus(); nm.select(); }
+}
+function pasteTrainer(x, y) {
+  const c = S.trClip, m = curMap(); if (!c || !m) return status('Nothing copied yet. Select a trainer and press “Copy trainer”.', 'err');
+  if (x < 0 || y < 0 || x >= m.obj.w || y >= m.obj.h || evAt(x, y)) return status('Click an empty tile first.', 'err');
+  const id = Math.max(0, ...Object.keys(m.obj.events).map(Number)) + 1, ne = jclone(c.ev), oldId = c.ev.id;
+  ne.id = id; ne.x = x; ne.y = y; fixEventIds(ne, oldId, id);
+  const i = c.info, vr = freeVr(i.cls, i.name, 0), key = `${i.cls}|${i.name}|${vr}`;
+  S.pbs.TRAINERS[key] = { t: i.cls, n: i.name, p: jclone(c.party) }; setScript(ne, Object.assign({}, i, { vr }));
+  m.obj.events[id] = ne; S.ev = id; S.page = 0; S.cell = { x, y }; S.focusTr = true; trTouch(); renderAll();
+  status(`Pasted trainer #${id} “${i.name}” with a copy of the team. Rename it and change the Pokémon on the right, then Ctrl+S.`, 'ok');
+}
+// -- wiring manager
+function openWiring() {
+  if (!S.pbs) return status('Open the game folder first.', 'err');
+  if (!curMap()) return status('Open any map first (class changes are saved together with the map).', 'err');
+  const bg = el('div', { style: 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center' });
+  const bx = el('div', { style: 'background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;width:min(820px,95vw);max-height:90vh;display:flex;flex-direction:column;gap:8px' });
+  const close = () => { bg.remove(); renderAll(); };
+  const body = el('div', { style: 'overflow:auto;flex:1' });
+  let tab = 'sprites';
+  const paint = () => {
+    body.innerHTML = '';
+    const un = S.trchars.filter(f => !classForSprite(f)), uc = Object.keys(S.pbs.TTYPES).filter(k => !spriteForClass(k) && !S.pbs.TTYPES[k].noSprite);
+    tabs.innerHTML = ''; [['sprites', `Walking sprites with no class (${un.length})`], ['classes', `Classes with no walking sprite (${uc.length})`]].forEach(([k, l]) => tabs.append(el('button', { textContent: l, className: tab === k ? 'primary' : '', onclick: () => { tab = k; paint(); } })));
+    if (tab === 'sprites') {
+      body.append(el('div', { className: 'summary', textContent: 'Pick a class for each walking sprite. Picking the sprite later in the trainer editor will then fill in the class automatically (and the battle picture).' }));
+      const g = el('div', { className: 'tmgrid', style: 'max-height:none;grid-template-columns:repeat(auto-fill,minmax(96px,1fr))' });
+      un.forEach(f => g.append(el('div', { className: 'tmtile', title: f, onclick: () => pickDialog(`Class for ${f}`, classItems(null).concat([{ id: '__new', label: '＋ New class…', g: '?', thumb: () => el('div', { style: 'height:56px' }) }]), async cls => {
+        if (cls === '__new') { cls = newClass(f); if (!cls) return; }
+        S.trlinks[f] = cls; await saveLinks(); paint(); }, { gender: true }) }, [tmThumb('characters', f, 32, 48, true), el('div', { textContent: f.replace(/^trchar_?/i, '') })])));
+      body.append(g); if (!un.length) body.append(el('div', { textContent: '✔ Every walking sprite has a class.' }));
+    } else {
+      body.append(el('div', { className: 'summary', textContent: 'Pick the walking sprite for each trainer class. Choosing the class in the trainer editor will then fill in the sprite too.' }));
+      const g = el('div', { className: 'tmgrid', style: 'max-height:none;grid-template-columns:repeat(auto-fill,minmax(96px,1fr))' });
+      uc.forEach(k => g.append(el('div', { className: 'tmtile', title: k, onclick: () => pickDialog(`Walking sprite for ${k}`, spriteItems(null), async f => { S.trlinks[f] = k; await saveLinks(); paint(); }, { gender: true }) },
+        [tmThumb('trainers', 'trainer' + pad3(classSpriteId(S.pbs.TTYPES[k])), 56, 56, false), el('div', { textContent: S.pbs.TTYPES[k].name || k }), el('div', { textContent: k, style: 'color:var(--dim)' })])));
+      body.append(g); if (!uc.length) body.append(el('div', { textContent: '✔ Every class has a walking sprite.' }));
+    }
+  };
+  const tabs = el('div', { className: 'field' });
+  bx.append(el('div', { className: 'field' }, [el('b', { textContent: '⚙ Class ↔ sprite wiring' }), el('span', { style: 'flex:1' }), el('button', { textContent: 'Close', onclick: close })]), tabs, body);
+  bg.append(bx); document.body.append(bg); paint();
+}
+function newClass(sprite) {
+  const base = prompt('Make a new trainer class for ' + sprite + '.\nWhich existing class should it copy (battle picture, prize money, music)? Type its key, e.g. YOUNGSTER:', 'YOUNGSTER');
+  if (!base || !S.pbs.TTYPES[base.toUpperCase()]) { if (base) status('No class called ' + base + '.', 'err'); return null; }
+  const b = S.pbs.TTYPES[base.toUpperCase()];
+  let key = (prompt('Key for the new class (capital letters, no spaces):', sprite.replace(/^trchar_?/i, '').replace(/[^A-Za-z0-9]/g, '').toUpperCase()) || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!key) return null; if (S.pbs.TTYPES[key]) { status('That class already exists.', 'err'); return null; }
+  const name = prompt('Name shown in battle (e.g. “Youngster”):', b.name || key); if (!name) return null;
+  const ids = Object.values(S.pbs.TTYPES).map(v => v.id).filter(i => i < 900);
+  S.pbs.TTYPES[key] = Object.assign({}, b, { id: Math.max(...ids) + 1, name, sprite: classSpriteId(b) }); S.pbsDirty = true; touch(); return key;
+}
+
 // ------------------------------------------------------------------ test button
 async function testHere() {
   const m = curMap(); if (!m) return;
@@ -903,10 +1169,11 @@ async function testHere() {
 
 // ------------------------------------------------------------------ wiring
 function renderAll() { renderMap(); renderEvent(); updateButtons(); }
-$('#btnOpen').onclick = openFolder; $('#btnSave').onclick = saveMap; $('#btnRevert').onclick = revertMap; $('#btnTest').onclick = testHere; $('#btnTrainer').onclick = tmStart;
+$('#btnOpen').onclick = openFolder; $('#btnSave').onclick = saveMap; $('#btnRevert').onclick = revertMap; $('#btnTest').onclick = testHere; $('#btnTrainer').onclick = tmStart; $('#btnWiring').onclick = openWiring;
 $('#mapSearch').oninput = renderList;
 $('#textSearch').onkeydown = e => { if (e.key === 'Enter') searchAll(e.target.value); };
-document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); saveMap(); } });
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); saveMap(); }
+  else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v' && S.trClip && S.cell && !/INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '')) { e.preventDefault(); pasteTrainer(S.cell.x, S.cell.y); } });
 window.addEventListener('beforeunload', e => { if (Object.values(S.maps).some(m => m.dirty)) { e.preventDefault(); e.returnValue = ''; } });
 { const g = lsGet('gameUrl', ''); $('#gameUrl').value = (g && !g.includes('JBA Pokemon HTML')) ? g : 'index.html'; } $('#tVars').value = lsGet('tVars', ''); $('#tSw').value = lsGet('tSw', '');
 (async () => {

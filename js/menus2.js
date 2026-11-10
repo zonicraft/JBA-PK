@@ -5,13 +5,25 @@
 
 // ------------------------------------------------------------ item effects
 const HEAL_HP = { POTION: 20, SUPERPOTION: 60, HYPERPOTION: 120, MAXPOTION: 9999, FULLRESTORE: 9999, ORANBERRY: 10, SITRUSBERRY: 30, FRESHWATER: 30, SODAPOP: 50, LEMONADE: 70, MOOMOOMILK: 100, ENERGYPOWDER: 50, ENERGYROOT: 200 };
-const CURE = { ANTIDOTE: ['PSN'], PARLYZHEAL: ['PAR'], AWAKENING: ['SLP'], BURNHEAL: ['BRN'], ICEHEAL: ['FRZ'], FULLHEAL: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], FULLRESTORE: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], LAVACOOKIE: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], OLDGATEAU: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], CASTELIACONE: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], LUMBERRY: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'] };
+const CURE = { ANTIDOTE: ['PSN'], PARLYZHEAL: ['PAR'], AWAKENING: ['SLP'], BURNHEAL: ['BRN'], ICEHEAL: ['FRZ'], PARALYZEHEAL: ['PAR'], FULLHEAL: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], FULLRESTORE: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], LAVACOOKIE: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], OLDGATEAU: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], CASTELIACONE: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'], LUMBERRY: ['PSN', 'PAR', 'SLP', 'BRN', 'FRZ'] };
+const VITAMIN = { HPUP: [0, 'HP'], PROTEIN: [1, 'Attack'], IRON: [2, 'Defense'], CARBOS: [3, 'Speed'], CALCIUM: [4, 'Sp. Atk'], ZINC: [5, 'Sp. Def'] };   // index into p.evs / p.stats
+const BATTLE_ITEMS = { XATTACK: [1, 'Attack'], XDEFENSE: [2, 'Defense'], XSPEED: [3, 'Speed'], XSPATK: [4, 'Sp. Atk'], XSPDEF: [5, 'Sp. Def'], XACCURACY: [6, 'accuracy'], DIREHIT: 0, GUARDSPEC: 0, POKEDOLL: 0 };
 const REVIVE = { REVIVE: 0.5, MAXREVIVE: 1, REVIVALHERB: 1 };
-function isMedicine(k) { return k in HEAL_HP || k in CURE || k in REVIVE || k === 'RARECANDY' || /^(ETHER|MAXETHER|ELIXIR|MAXELIXIR)$/.test(k); }
+function isMedicine(k) { return k in VITAMIN || k === 'PPUP' || k === 'PPMAX' || k in HEAL_HP || k in CURE || k in REVIVE || k === 'RARECANDY' || /^(ETHER|MAXETHER|ELIXIR|MAXELIXIR)$/.test(k); }
 function consume(k, n = 1) { G.items[k] = (G.items[k] || 0) - n; if (G.items[k] <= 0) delete G.items[k]; }
 // Applies to a party member. Returns false if it would have no effect.
 function* useItemOn(key, p, S) {
   const name = pokeName(p);
+  { const ti = itemInfo(key); if (ti.pocket === 4 && ti.move && D.MV[ti.move]) {   // TM / TR: teach the move (compatibility is by type)
+    const mid = ti.move, mn = D.MV[mid].name;
+    if (p.moves.some(m => m.id === mid)) { yield* uiMessage(name + ' already knows ' + mn + '.'); return false; }
+    if (D.MV[mid].type !== 'NORMAL' && !pokeTypes(p).includes(D.MV[mid].type)) { yield* uiMessage(name + ' can\'t learn ' + mn + '.'); return false; }   // TM rule: the move\'s type must match one of the Pokémon\'s types (Normal moves are open to all)
+    yield* uiMessage('Booted up ' + ti.name + '. It contained ' + mn + '.');
+    yield* learnMoveField(p, mid);
+    if (!p.moves.some(m => m.id === mid)) return false;
+    if (/^TR/.test(key)) consume(key);   // TRs are single-use, TMs are reusable
+    return true;
+  } }
   if (key in REVIVE) {
     if (p.hp > 0) { yield* uiMessage('It won\'t have any effect.'); return false; }
     p.hp = Math.max(1, Math.floor(p.maxhp * REVIVE[key])); p.status = null; consume(key); sfx('item');
@@ -23,6 +35,21 @@ function* useItemOn(key, p, S) {
     yield* uiMessage(name + ' grew to Lv. ' + p.lvl + '!'); return true;
   }
   if (p.hp <= 0) { yield* uiMessage('It won\'t have any effect.'); return false; }
+  if (key in VITAMIN) {   // +10 EVs, capped at 100 per stat by vitamins
+    const [si, sn] = VITAMIN[key];
+    if (p.evs[si] >= 100) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    p.evs[si] = Math.min(100, p.evs[si] + 10); refreshStats(p); consume(key); sfx('item');
+    yield* uiMessage(name + '\'s ' + sn + ' rose.'); return true;
+  }
+  if (key === 'PPUP' || key === 'PPMAX') {   // choose a move: +1 (or +3) PP Up level, each adds 20% of the base PP
+    const labels = p.moves.map(m => D.MV[m.id].name + '  ' + m.pp + '/' + maxPP(m)).concat(['Cancel']);
+    const c = yield* choiceWindow(labels, { x: 150, y: 90 });
+    if (c < 0 || c >= p.moves.length) return false;
+    const m = p.moves[c], mn = D.MV[m.id].name;
+    if ((m.ppup || 0) >= 3 || D.MV[m.id].pp < 5) { yield* uiMessage('It won\'t have any effect.'); return false; }
+    const before = maxPP(m); m.ppup = key === 'PPMAX' ? 3 : (m.ppup || 0) + 1; m.pp += maxPP(m) - before;
+    consume(key); sfx('item'); yield* uiMessage(mn + '\'s maximum PP rose.'); return true;
+  }
   if (key === 'SUMMERSTONE' || key === 'CASUALSTONE') {
     const to = stoneTarget(key, p.sym);
     if (!to) { yield* uiMessage('It won\'t have any effect.'); return false; }
@@ -104,11 +131,11 @@ function* bagScreen(o = {}) {
       if (o.mode === 'give') { if (it.pocket === 8) { yield* uiMessage("The " + it.name + " can't be held."); continue; } return key; }
       if (o.mode === 'party') { if (isMedicine(key)) return key; yield* uiMessage('It can\'t be used on a Pokémon.'); continue; }
       if (o.mode === 'battle') {
-        if (isMedicine(key) || it.pocket === 3) return key;
+        if ((isMedicine(key) && !(key in VITAMIN) && key !== 'PPUP' && key !== 'PPMAX') || it.pocket === 3 || key in BATTLE_ITEMS) return key;
         yield* uiMessage('It can\'t be used in battle.'); continue;
       }
       // field menu
-      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
+      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS || (it.pocket === 4 && it.move)) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
       const c = yield* choiceWindow(opts, { y: SH - 96 - opts.length * 32 - 32, x: SW - 150 });
       const choice = c < 0 ? 'CANCEL' : opts[c];
       if (choice === 'USE') {
@@ -126,7 +153,7 @@ function* bagScreen(o = {}) {
         if (key === 'PORTABLETELEPORTER') { CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; });   // everything before Cinnabar was visited by the time Einsteves hands it over
           yield* townMapScreen({ teleport: true, player: true }); if (G.teleReq) return null; continue; }
         if (key === 'BICYCLE') { if (G.biking) { G.biking = false; G.bikeMsg = G.name + ' got off the Skateboard.'; } else if (bikeAllowed()) { G.biking = true; G.bikeMsg = G.name + ' got on the Skateboard.'; } else G.bikeMsg = 'You can\'t use the Skateboard here.'; return null; }
-        if (isMedicine(key) || key === 'SUMMERSTONE' || key === 'CASUALSTONE') {
+        if (isMedicine(key) || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || (it.pocket === 4 && it.move)) {
           const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i) => useItemOn(key, p) });
           S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
         }

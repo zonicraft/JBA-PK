@@ -7,7 +7,7 @@ function dexOwned(sym) { return ownedSpecies(sym); }
 function dexSeen(sym) { return !!(G.seen && G.seen[sym]) || ownedSpecies(sym); }
 function dexMarkSeen(sym) { if (!sym) return; G.seen = G.seen || {}; G.seen[sym] = true; }
 // species that are not obtainable: kept out of the Pokédex list and its counts
-const DEX_HIDDEN = ['BUFFEDDAWEI'];
+const DEX_HIDDEN = ['BUFFEDDAWEI', 'JORGE', 'GOKU'];
 function dexHidden(k) { return DEX_HIDDEN.includes(k) || !!(D.SP[k] && D.SP[k].megaOf); }
 function dexIsComplete() { for (const k in D.SP) { if (dexHidden(k)) continue; if (!dexOwned(k)) return false; } return true; }
 function dexCounts() { let s = 0, o = 0; for (const k in D.SP) { if (DEX_HIDDEN.includes(k)) continue; if (dexOwned(k)) { o++; s++; } else if (dexSeen(k)) s++; } return [s, o]; }

@@ -113,7 +113,8 @@
           <label class="f">Move sprite down (sprite px)<input type="number" id="nudgeY" value="1" min="-20" max="20" step="1"></label>
         </div>
         <label class="lock" style="margin-top:8px"><input type="checkbox" id="standFirst" checked> Standing frame first (stand, step, stand, step)</label>
-        <div class="hint" style="margin-top:6px">Rows: South, West, East, North. Columns: the frames of the animation (walk = 4). Characters are centered horizontally and rest on the bottom of each cell.</div>
+        <label class="lock" style="margin-top:6px"><input type="checkbox" id="revOrder"> Reverse frame order (fishing: rod down first, like the reference sheet)</label>
+        <div class="hint" style="margin-top:6px">Rows: South, West, East, North. Columns: the frames of the animation (walk = 4). Characters are centered horizontally and rest on the bottom of each cell. Choosing Fish switches to 96×80 cells (the whole 40×40 frame at 2×) so the rod is never cut off.</div>
         <div class="na" id="clipMsg"></div>
       </div>
       <div id="multiOpts" hidden>
@@ -521,7 +522,18 @@ function buildAnimControls(){
   const ga=$("#gridAnim"); ga.innerHTML="";
   ANIMS.forEach(a=>{ const o=document.createElement("option"); o.value=a.id; o.textContent=pretty(a.id); ga.appendChild(o); });
   ga.value="walk";
-  ["gridAnim","gridScale","cellW","cellH","standFirst","nudgeY"].forEach(id=>{ $("#"+id).oninput=drawSheet; $("#"+id).onchange=drawSheet; });
+  ["gridAnim","gridScale","cellW","cellH","standFirst","revOrder","nudgeY"].forEach(id=>{ $("#"+id).oninput=drawSheet; $("#"+id).onchange=drawSheet; });
+  // Fishing frames carry a long rod that reaches the edges of the 40x40 frame, so they get their own defaults:
+  // the full frame at 2x in a 96x80 cell (anchored at the frame's bottom edge), listed in the reference order.
+  const applyGridDefaults=()=>{
+    const fish=$("#gridAnim").value==="fish";
+    $("#gridScale").value="2";
+    $("#cellW").value=fish?96:32; $("#cellH").value=fish?80:48;
+    $("#nudgeY").value=fish?-3:1;
+    $("#revOrder").checked=fish;
+    drawSheet();
+  };
+  $("#gridAnim").oninput=applyGridDefaults; $("#gridAnim").onchange=applyGridDefaults;
   $("#expFormat").onchange=()=>{ const g=isGrid(); $("#gridOpts").hidden=!g; $("#multiOpts").hidden=g; drawSheet(); };
 }
 const isGrid=()=>$("#expFormat").value==="grid";
@@ -535,6 +547,7 @@ function gridParams(){
   let seq=seqOf(anim);
   // walk/run/cycle play as step, stand, step, stand; swapping the pairs gives stand, step, stand, step
   if($("#standFirst").checked && anim.pong && seq.length===4) seq=[seq[1],seq[0],seq[3],seq[2]];
+  if($("#revOrder").checked) seq=seq.slice().reverse();
   return {anim, ps, cw, ch, dirs: anim.southOnly?["S"]:DIRS, seq};
 }
 function buildGrid(){
