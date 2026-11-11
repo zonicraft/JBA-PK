@@ -391,6 +391,7 @@ function* seviiFerryUI(cur) {
     if (c >= 0 && c < dests.length) G.ferryReq = { to: dests[c] };
   })());
 }
+const MART_TIERS = {"8":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","MAXPOTION","FULLRESTORE","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","REPEL","SUPERREPEL","MAXREPEL"],"7":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","MAXPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","REPEL","SUPERREPEL","MAXREPEL"],"6":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","REPEL","SUPERREPEL"],"5":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","REPEL","SUPERREPEL"],"4":["POKEBALL","GREATBALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","REPEL"],"3":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","REPEL"],"2":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE"],"1":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE"]};   // stock unlocked per badge count (copied from the Celadon department store)
 function* worldScript(it, s) {
   let m;
   if (s === 'pbSeviiFerry') {
@@ -560,6 +561,11 @@ function* worldScript(it, s) {
   if (s.startsWith('pbPokemonMart(')) {
     const list = [...s.matchAll(/:(\w+)/g)].map(x => x[1]);
     if (list.includes('POTION') && badgeCount() >= 2) list.push('SUMMERSTONE', 'CASUALSTONE', 'EVERSTONE');   // general marts stock the stones (and the Everstone) after the 2nd badge
+    if (list.includes('POKEBALL') && list.includes('POTION') && badgeCount() >= 1) {   // regular marts (not the TM / special shops) also stock everything the badges unlock, same tiers as the Celadon department store
+      const tier = MART_TIERS[Math.min(8, badgeCount())] || [];
+      for (const k of tier) if (!list.includes(k)) list.push(k);
+      const ord = MART_TIERS[8].concat(['POKEDOLL']); list.sort((a, b) => (ord.indexOf(a) < 0 ? 99 : ord.indexOf(a)) - (ord.indexOf(b) < 0 ? 99 : ord.indexOf(b)));
+    }
     G.uiGen = martScreen(list); yield; return true;
   }
   return false;
