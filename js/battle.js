@@ -709,7 +709,7 @@ function* runTrainerBattle(script) {
   if (tr && tr.me) { savedParty = G.party; G.party = tr.me.map(([sym, lvl]) => mkPoke(sym, lvl, { ot: G.name })); }   // story fights where the player fights with a fixed team (e.g. Jorge himself)
   const B = mkBattle({ kind: 'trainer', foeParty, trainer: { name: __(rival), money: tt.money, sprite: tt.noSprite ? '' : 'trainer' + String(tt.sprite != null ? tt.sprite : tt.id).padStart(3, '0') }, bg: bgFor(G.mapId), endText, bgm: TRAINER_BGM[name] || TRAINER_CLASS_BGM[type] });
   if (tr && tr.scripted) B.scripted = true;
-  if (tr && tr.softLose) B.softLose = true;   // losing does not black out: the event goes on (and may retry)
+  if (tr && tr.softLose || /,\s*true\s*\)\s*$/.test(script)) B.softLose = true;   // losing does not black out: the event goes on (and may retry)
   try { yield* runBattle(B); } finally { if (savedParty) G.party = savedParty; }
 }
 function* runWildBattle(sym, lvl, bgm) {

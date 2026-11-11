@@ -112,6 +112,22 @@ function playME(name) {
   a.onended = () => { if (G.me && G.me.a === a) { G.me = null; applyVolumes(); } };
   a.play().catch(() => { if (G.me && G.me.a === a) { G.me = null; applyVolumes(); } });
 }
+// pause everything when the game is not on screen (app sent to background / tab hidden / window minimised), resume when it comes back
+let _bgAud = null;
+function suspendAudio() {
+  if (_bgAud) return;
+  _bgAud = { bgm: G.bgm && !G.bgm.a.paused ? G.bgm.a : null, me: G.me && !G.me.a.paused ? G.me.a : null };
+  try { if (_bgAud.bgm) _bgAud.bgm.pause(); if (_bgAud.me) _bgAud.me.pause(); } catch (e) { }
+  try { if (actx && actx.state === 'running') actx.suspend(); } catch (e) { }
+}
+function resumeAudio() {
+  if (!_bgAud) return; const b = _bgAud; _bgAud = null;
+  try { if (b.bgm && G.bgm && G.bgm.a === b.bgm) b.bgm.play().catch(() => { }); if (b.me && G.me && G.me.a === b.me) b.me.play().catch(() => { }); } catch (e) { }
+  try { if (actx && actx.state === 'suspended') actx.resume(); } catch (e) { }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) suspendAudio(); else resumeAudio(); });
+window.addEventListener('pagehide', suspendAudio);
+window.addEventListener('pageshow', resumeAudio);
 // cries: just three files by gender (0 male, 1 female, 2 genderless)
 const CRY_FILES = ['male', 'female', 'genderless'];
 function cryGender(sp) { const g = sp && sp.gender; return g === 'Genderless' ? 2 : g === 'AlwaysFemale' ? 1 : 0; }
