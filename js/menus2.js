@@ -328,7 +328,7 @@ function migrateSyms(d) {   // saves made before species were renamed to their c
 }
 function loadSave(d) {
   migrateSyms(d);
-  G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; G.name = d.name; G.starterName = d.starterName; G.money = d.money; G.trainerId = d.trainerId;
+  G.switches = d.switches; G.vars = d.vars; G.selfsw = d.selfsw; G.party = d.party; G.items = d.items; if (d.switches && d.switches[262] && d.items && !(d.items.S23NILOU > 0)) d.items.S23NILOU = 1;   /* the Saffron Gym never handed out its prize (the S23 phone) in older saves: give it back */ G.name = d.name; G.starterName = d.starterName; G.money = d.money; G.trainerId = d.trainerId;
   G.runningShoes = d.runningShoes; G.surfing = !!d.surfing; G.playFrames = d.playFrames; G.temp = {}; G.healPoint = d.healPoint || null; G.daycare = d.daycare ? { mon: d.daycare.mon, t0: G.playFrames - d.daycare.el } : null; G.erasedEv = d.erasedEv || {}; G.berries = d.berries || {}; G.box = d.box || []; G.pc = d.pc || null; G.tradeOut = d.tradeOut || []; G.tradePending = d.tradePending || null; G.tradeSeen = d.tradeSeen || {}; G.tradeLog = d.tradeLog || []; G.seen = d.seen || {}; G.pokedex = !!d.pokedex; G.repel = d.repel || 0; G.repelItem = d.repelItem || null; G.repelEnd = false; G.pcItems = d.pcItems || null; G.owned = d.owned || {}; G.hof = d.hof || [];
   enterMap(d.map, d.x, d.y, d.dir); if (d.bgm) playBGM(d.bgm);
 }
