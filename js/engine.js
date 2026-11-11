@@ -252,7 +252,7 @@ function toggleBike() {   // C key / LB / RB
   if (G.biking) { G.biking = false; return; }
   if (bikeAllowed()) G.biking = true; else G.bikeMsg = 'You can\'t use the Skateboard here.';
 }
-const BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['PRIMOGEMS', 980], ['SAPPHIRE']];   // one gym prize per badge; the old switches still count for the gyms that set them
+const BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['SAPPHIRE'], ['PRIMOGEMS', 980]]   // badge order: Tiagovski, Miss Mushrooms, Nuno Agonia, Wuant, LegendBoy, D4rkFrame, SirKazzio, John Oyohim;   // one gym prize per badge; the old switches still count for the gyms that set them
 function badgeCount() { return BADGE_ITEMS.filter(b => G.items[b[0]] > 0 || (b[1] && getSwitch(b[1]))).length; }
 function getVar(id) { return G.vars[id] || 0; }
 function setVar(id, v) { G.vars[id] = v; G.refresh = true; }

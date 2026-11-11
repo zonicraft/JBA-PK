@@ -14023,7 +14023,7 @@
   "weight": 44,
   "playerY": -7,
   "enemyY": 1,
-  "evo": "ARTORIA,LevelDay,16,ARTORIAALTER,LevelNight,16",
+  "evo": "ARTORIA,Level,16,ARTORIAALTER,Level,16",
   "role": "Special Defensive",
   "series": "Fate"
  },
@@ -36527,7 +36527,7 @@
   "weight": 48,
   "playerY": -7,
   "enemyY": 3,
-  "evo": "ERESHKIGAL,LevelNight,32,ISHTAR,LevelDay,32",
+  "evo": "ERESHKIGAL,Level,32,ISHTAR,Level,32",
   "role": "Special Attacker",
   "series": "Fate"
  },
@@ -39176,7 +39176,7 @@
   "weight": 58,
   "playerY": -7,
   "enemyY": 2,
-  "evo": "SHIKI2,LevelNight,24",
+  "evo": "SHIKI2,Level,24",
   "role": "Speedster",
   "series": "Fate"
  },

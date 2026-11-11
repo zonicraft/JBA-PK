@@ -265,7 +265,7 @@ function checkWild(x, y) {
   const lead = G.party.find(m => m.hp > 0);
   if (G.repel > 0 && lead && lvl < lead.lvl) return;   // Repel: weaker wild Pokémon than the lead Pokémon stay away
   G.wildSteps = 0;
-  G.main = new Interp([[355, 0, ['pbWildBattle(:' + pick[0] + ',' + lvl + ')']], [0, 0, []]], null);
+  G.main = new Interp([[355, 0, ['pbWildBattle(:' + pick[0] + ',' + lvl + ') //random']], [0, 0, []]], null);   // '//random' = a normal grass / cave / water encounter (normal wild music)
 }
 
 // ---- Repel (100 / 200 / 250 steps; blocks wild Pokémon whose level is below the first healthy party member's)
@@ -540,7 +540,7 @@ function* worldScript(it, s) {
   }
   if ((m = s.match(/^pbWildBattle\(:(\w+),(\d+)\)/))) {
     it.evMap = G.mapId;   // a whiteout moves the player to another map, so remember where this event lives
-    yield* runWildBattle(m[1], +m[2], NOT_LEGENDARY.includes(m[1]) ? undefined : 'oras_legendary');   // scripted wild fights = the legendary fights (except the species in NOT_LEGENDARY)
+    yield* runWildBattle(m[1], +m[2], (NOT_LEGENDARY.includes(m[1]) || s.includes('//random')) ? undefined : 'oras_legendary');   // scripted wild fights = the legendary fights (except the species in NOT_LEGENDARY)
     if (G.battleResult === 'lose') yield* blackout();
     else if (G.map && G.map.bgm) playBGM(G.map.bgm);
     return true;
@@ -557,7 +557,7 @@ function* worldScript(it, s) {
   }
   if (s.startsWith('pbPokemonMart(')) {
     const list = [...s.matchAll(/:(\w+)/g)].map(x => x[1]);
-    if (list.includes('POTION') && badgeCount() >= 2) list.push('SUMMERSTONE', 'CASUALSTONE');   // general marts stock the stones after the 2nd badge
+    if (list.includes('POTION') && badgeCount() >= 2) list.push('SUMMERSTONE', 'CASUALSTONE', 'EVERSTONE');   // general marts stock the stones (and the Everstone) after the 2nd badge
     G.uiGen = martScreen(list); yield; return true;
   }
   return false;

@@ -135,7 +135,13 @@ function stoneTarget(key, sym) {
   if (key === 'CASUALSTONE') { const m = /^(.+)SUM(\d*)$/.exec(sym), to = m ? m[1] + m[2] : null; return to && D.SP[to] ? to : null; }
   return null;
 }
+function evoOptions(p) {      // every Level evolution the Pokémon qualifies for (more than one = the player chooses, e.g. Rin -> Ereshkigal / Ishtar)
+  const e = (D.SP[p.sym].evo || '').split(',').map(x => x.trim()), out = [];
+  for (let i = 0; i + 2 < e.length; i += 3) if (e[i + 1] === 'Level' && D.SP[e[i]] && p.lvl >= parseInt(e[i + 2], 10)) out.push(e[i]);
+  return out;
+}
 function evoTarget(p) {
+  if (p.item === 'EVERSTONE') return null;   // an Everstone stops the holder from evolving
   const e = (D.SP[p.sym].evo || '').split(',').map(x => x.trim()); if (e.length < 3) return null;
   for (let i = 0; i + 2 < e.length; i += 3) if (e[i + 1] === 'Level' && D.SP[e[i]] && p.lvl >= parseInt(e[i + 2], 10)) return e[i];
   return null;

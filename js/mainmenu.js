@@ -198,11 +198,13 @@ const MM_CSS = `
 .mm-btn small,.mm-cont .tag,.mm-cont .meta,.s-last,.s-time,.s-loc,.slot small,.set-row small,.cgrp,.mm-head p,.mm-foot,.dlg p,.toast,#mainMenu input,#mainMenu .seg button{font-family:PkmnEms,"Segoe UI",system-ui,sans-serif!important}
 #mainMenu,#mainMenu *{font-family:PkmnEms,"Segoe UI",system-ui,sans-serif!important;font-weight:400!important}
 #mainMenu small,#mainMenu .meta,#mainMenu p,#mainMenu .s-last{letter-spacing:.02em;font-size:15px}
+/* short screens (phones held sideways): shrink the menu panels so everything fits; --mmz is set from the window height */
+#mainMenu .mm-stack,#mainMenu .v-slots,#mainMenu .v-settings,#mainMenu .v-controls{zoom:var(--mmz,1)}
 `;
 
 function mmEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 // same eight badge items as the trainer card (engine.js BADGE_ITEMS): an item in the bag, or its switch
-const MM_BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['PRIMOGEMS', 980], ['SAPPHIRE']];
+const MM_BADGE_ITEMS = [['PAYSAFECARD'], ['ONLYFANSCARD'], ['S23NILOU'], ['MIXTAPE', 263], ['SURVIVALKNIFE', 212], ['FIREEXTINGUISHER'], ['SAPPHIRE'], ['PRIMOGEMS', 980]]   // badge order: Tiagovski, Miss Mushrooms, Nuno Agonia, Wuant, LegendBoy, D4rkFrame, SirKazzio, John Oyohim;
 function mmBadges(save) { return MM_BADGE_ITEMS.filter(b => (save.items && save.items[b[0]] > 0) || (b[1] && save.switches && save.switches[b[1]])).length; }
 
 // reads one slot: { n, empty } | { n, broken } | { n, save }
@@ -225,6 +227,8 @@ class MainMenu {
     if (!document.getElementById('mmStyle')) { const st = document.createElement('style'); st.id = 'mmStyle'; st.textContent = MM_CSS; document.head.appendChild(st); }
     const old = document.getElementById('mainMenu'); if (old) old.remove();
     const root = this.root = document.createElement('div'); root.id = 'mainMenu'; root.dataset.view = 'home';
+    const fitMenu = () => { root.style.setProperty('--mmz', String(Math.max(0.5, Math.min(1, innerHeight / 820)))); };
+    if (this._fit) removeEventListener('resize', this._fit); this._fit = fitMenu; addEventListener('resize', fitMenu); fitMenu();
     const sparks = Array.from({ length: 14 }, (_, i) => '<i class="mm-spark" style="left:' + ((i * 47) % 100) + '%;animation-duration:' + (9 + (i * 5) % 11) + 's;animation-delay:-' + ((i * 3) % 13) + 's;width:' + (4 + i % 4) + 'px;height:' + (4 + i % 4) + 'px"></i>').join('');
     const cl = (ks, d) => '<div class="cl"><span class="ks">' + ks.map(k => '<b>' + k + '</b>').join('') + '</span><span>' + d + '</span></div>';
     const ctl = (extra = '') => '<div class="mm-ctl" data-f data-act="toggle" data-k="touch" data-adj="touch" ' + extra + '><span class="ic">' + MM_ICON.pad + '</span><span class="tx">On-screen controller<small>Touch buttons for phones and tablets</small></span><span class="mm-sw" data-sw="touch"></span></div>';

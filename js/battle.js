@@ -651,18 +651,28 @@ function* runBattle(B) {
 }
 function* evolveScene(list) {
   for (const p of list) {
-    const to = p.forceEvo || evoTarget(p); if (!to) continue;
-    const oldKey = sprKey(D.SP[p.sym]), newKey = sprKey(D.SP[to]);
+    let to = p.forceEvo || evoTarget(p); if (!to) continue;
+    const opts = p.forceEvo ? [] : evoOptions(p);      // two or more possible forms: the player picks one
+    let oldKey = sprKey(D.SP[p.sym]), newKey = sprKey(D.SP[to]);
     for (let w = 0; w < 120 && !(img('battlers', oldKey) && img('battlers', newKey)); w++) yield;   // sprites missing from the manifest load lazily: wait for them
     let oldIm = img('battlers', oldKey), newIm = img('battlers', newKey) || oldIm;
     const S = { k: 0, im: oldIm, white: 0 };
     const draw = () => {
       ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH);
       const im = S.im; if (im) { ctx.drawImage(im, SW / 2 - 96, 20, 192, 192); if (S.white > 0) { ctx.globalAlpha = S.white; ctx.drawImage(tintCanvas(im), SW / 2 - 96, 20, 192, 192); ctx.globalAlpha = 1; } }
-      pic('battle/overlay_message', 0, SH - 96); drawUiMsg();
+      pic('battle/overlay_message', 0, SH - 96); drawUiMsg(); drawPopup();
     };
     yield* withDraw(draw, (function* () {
       const oldName = pokeName(p);
+      if (opts.length > 1) {
+        yield* uiMessage(__('{0} can evolve into different forms! Which one?', oldName), { noWait: true });
+        const ci = yield* choiceWindow([...opts.map(k => D.SP[k].name), __('Cancel')]);
+        G.uiPopup = null; G.uiMsg = null;
+        if (ci < 0 || ci >= opts.length) { yield* uiMessage(__('Huh? {0} stopped evolving!', oldName)); return; }
+        to = opts[ci]; newKey = sprKey(D.SP[to]);
+        for (let w = 0; w < 120 && !img('battlers', newKey); w++) yield;
+        newIm = img('battlers', newKey) || oldIm;
+      }
       yield* uiMessage(__('What? {0} is evolving!', oldName));
       let cancelled = false;
       for (let f = 0; f < 180; f++) {

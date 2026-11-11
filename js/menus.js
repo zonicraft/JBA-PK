@@ -53,7 +53,8 @@ function partyNav(S, k) {
 }
 // mode: 'menu' | 'choose' | 'battle' | 'item'
 function* partyScreen(o = {}) {
-  const S = { party: G.party, idx: o.start || 0, text: o.text || 'Choose a Pokémon.', swap: -1, mode: o.mode || 'menu' };
+  const S = { party: G.party, idx: o.start != null ? o.start : (o.mode === 'item' ? Math.max(0, Math.min(G.lastItemIdx || 0, G.party.length - 1)) : 0),   // using an item starts on the Pokémon the last item was used on
+    text: o.text || 'Choose a Pokémon.', swap: -1, mode: o.mode || 'menu' };
   const draw = () => { drawPartyScreen(S); drawPopup(); drawUiMsg(); };
   return yield* withDraw(draw, (function* () {
     while (true) {
@@ -73,7 +74,7 @@ function* partyScreen(o = {}) {
       }
       sfx('ok');
       if (S.mode === 'choose') { if (o.valid && !o.valid(p)) { sfx('buzzer'); continue; } return S.idx; }
-      if (S.mode === 'item') { const r = yield* o.use(p, S.idx, S); if (r) return S.idx; S.text = 'Choose a Pokémon.'; continue; }
+      if (S.mode === 'item') { G.lastItemIdx = S.idx; const r = yield* o.use(p, S.idx, S); if (r) return S.idx; S.text = 'Choose a Pokémon.'; continue; }
       if (S.mode === 'battle') {
         const c = yield* choiceWindow([__('SWITCH IN'), __('SUMMARY'), __('CANCEL')], { y: SH - 96 - 3 * 32 - 32 });
         if (c === 0) {

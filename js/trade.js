@@ -94,10 +94,9 @@ function trUnpack(d) {      // validates everything; returns a fresh Pokémon ob
   if (!trTxt(d.o, 16) || !d.o || !trInt(d.oi, 0, 4294967295) || !trTxt(d.me, 40)) return 'bad trainer data';
   if (d.ni !== null && !(trTxt(d.ni, 14) && d.ni.length)) return 'bad nickname';
   if (!Array.isArray(d.m) || d.m.length < 1 || d.m.length > 4) return 'bad moves';
-  const known = new Set(trFamilyMoves(d.s));
   for (const q of d.m) {
     if (!Array.isArray(q) || q.length !== 3 || !trTxt(q[0], 40) || !D.MV[q[0]] || !trInt(q[2], 0, 3) || !trInt(q[1], 0, 99)) return 'bad moves';
-    if (!known.has(q[0]) && !(D.IT && Object.values(D.IT).some(t => t && t.move === q[0]))) return 'bad moves';   // level-up moves or TM/HM moves only
+    // (no check on where the move came from: forms like the Summer stones swap the species, so any move that exists in the game is accepted)
   }
   if (new Set(d.m.map(q => q[0])).size !== d.m.length) return 'bad moves';
   const p = {
