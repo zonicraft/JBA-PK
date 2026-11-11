@@ -6,6 +6,9 @@
 //  opened or a new game is started in an empty slot (see titleScreen() at the bottom).
 //  Settings are written to localStorage ('jba_settings') through saveSettings(), like the in-game Options.
 // ===================================================================
+const MM_RELEASES_API = 'https://api.github.com/repos/zonicraft/JBA-PK/releases/latest';   // the "Check for updates" button looks at the newest GitHub release
+const MM_VERSION = () => (typeof GAME_VERSION !== 'undefined' ? String(GAME_VERSION) : '');   // js/version.js, written by dist-tools/set-version.js / prepare-www.js
+function mmNewer(a, b) { const p = s => String(s).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0); const x = p(a), y = p(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; }
 const MM_BADGE_SWITCHES = [260, 261, 262, 263, 212, 980], MM_BADGE_PIPS = 8;
 const MM_SVG = (d, extra = '') => '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + extra + '</svg>';
 const MM_ICON = {
@@ -200,6 +203,11 @@ const MM_CSS = `
 #mainMenu small,#mainMenu .meta,#mainMenu p,#mainMenu .s-last{letter-spacing:.02em;font-size:15px}
 /* short screens (phones held sideways): shrink the menu panels so everything fits; --mmz is set from the window height */
 #mainMenu .mm-stack,#mainMenu .v-slots,#mainMenu .v-settings,#mainMenu .v-controls{zoom:var(--mmz,1)}
+/* landscape layout is left-aligned and only .mm-stack is zoomed: give the logo and footer the stack's on-screen width so they share its centre */
+@media (min-aspect-ratio:5/4){#mainMenu .v-home .mm-logo,#mainMenu .v-home .mm-foot{width:calc(min(440px,100%)*var(--mmz,1))}}
+/* build version, bottom right of the main menu */
+.mm-ver{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));z-index:2;display:none;color:var(--mut);font-size:15px;letter-spacing:.04em;opacity:.85;text-shadow:2px 2px 0 #383838;pointer-events:none;white-space:nowrap}
+#mainMenu[data-view=home] .mm-ver{display:block}
 `;
 
 function mmEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -254,6 +262,7 @@ class MainMenu {
       '<div class="set-row" data-f data-adj="bars" data-act="toggle" data-k="bars"><span class="lbl">Side bars<small>Backdrop image around the game screen</small></span><span class="seg"><button data-act="set" data-k="bars" data-v="1">Image</button><button data-act="set" data-k="bars" data-v="0">Black</button></span></div>' +
       '<div class="set-row" data-f data-adj="lang" data-act="lang"><span class="lbl">Language</span><span class="seg"><button data-act="lang" data-v="-1">◀</button><button class="on" data-langname data-act="lang" data-v="1"></button><button data-act="lang" data-v="1">▶</button></span></div>' +
       '<div class="set-row" data-f data-act="fs"><span class="lbl">Fullscreen</span><span class="mm-mini">' + MM_ICON.full + ' Toggle</span></div>' +
+      '<div class="set-row" data-f data-act="update"><span class="lbl">Updates<small data-upd>Optional. Looks for a newer release on GitHub (needs internet).</small></span><span class="mm-mini" data-updbtn>Check</span></div>' +
       '</div></section>' +
       // controls
       '<section class="mm-v v-controls"><div class="mm-head" style="width:min(760px,100%)"><button class="mm-round" data-f data-act="back" aria-label="Back">' + MM_ICON.back + '</button><div><h2>Controls</h2><p>How to play with each kind of input.</p></div></div>' +
@@ -266,7 +275,7 @@ class MainMenu {
       '<div class="cgrp"><h3>' + MM_ICON.pad + 'Touch screen</h3>' +
         cl(['Stick'], 'Move (left side of the screen)') + cl(['A'], 'Confirm, talk, interact') + cl(['B'], 'Cancel (hold to run)') + cl(['X'], 'Open the menu · Mega Evolution in battle') + cl(['LB', 'RB'], 'Skateboard') + cl(['Y'], 'Fullscreen') + '</div>' +
       '</div></section>' +
-      '<div class="mm-dlg"></div><div class="mm-toast"></div>';
+      '<div class="mm-ver" data-ver></div><div class="mm-dlg"></div><div class="mm-toast"></div>';
     document.body.appendChild(root);
     this.bind(); this.sync(); this.go('home');
     try { playBGM('frlg_title', 0.6); } catch (e) { }   // if the browser blocks autoplay, the engine starts it on the first click / key press
@@ -382,11 +391,17 @@ class MainMenu {
       case 'controls': sfx('ok'); this.go('controls'); break;
       case 'back': this.goBack(); break;
       case 'fs': sfx('ok'); toggleFullscreen(); break;
+      case 'update': this.checkUpdate(); break;
       case 'toggle': this.adjust(d.k, 0); break;
       case 'cycle': this.adjust('speed', 1); break;
       case 'lang': this.adjust('lang', d.v ? +d.v : 1); break;
       case 'set': this.setSetting(d.k, +d.v); break;
-      case 'export': { const r = exportSaveFile(+d.n); sfx(r ? 'ok' : 'buzzer'); this.toast(r === null ? 'Nothing to export.' : r === false ? 'That save is damaged and could not be exported.' : __('Exported {0}', r)); break; }
+      case 'export': { const r = exportSaveFile(+d.n);
+        if (r && typeof r.then === 'function') {   // Android app: saved by the native plugin, so the answer comes a moment later
+          r.then(o => { sfx('ok'); this.toast(__('Saved {0} in your {1} folder', o.name, o.where)); }, e => { sfx('buzzer'); this.toast(/not implemented|not available/i.test(String((e && e.message) || e)) ? 'Update the app to export saves.' : 'Could not save the file: ' + String((e && e.message) || e).replace(/^Could not save the file: /, '')); });
+          break;
+        }
+        sfx(r ? 'ok' : 'buzzer'); this.toast(r === null ? 'Nothing to export.' : r === false ? 'That save is damaged and could not be exported.' : __('Exported {0}', r)); break; }
       case 'import': sfx('ok'); this.importInto(+d.n); break;
       case 'delete': sfx('ok'); this.confirmDelete(+d.n); break;
       case 'dlg-yes': this.closeDlg(true); break;
@@ -413,6 +428,7 @@ class MainMenu {
     r.querySelectorAll('.seg [data-k]').forEach(b => b.classList.toggle('on', +b.dataset.v === +SET[b.dataset.k]));
     r.querySelectorAll('[data-langname]').forEach(b => { b.textContent = I18N.name(I18N.cur); });
     r.querySelectorAll('[data-sw="touch"]').forEach(s => s.classList.toggle('on', !!SET.touch));
+    r.querySelectorAll('[data-ver]').forEach(e => { const v = MM_VERSION(); e.textContent = v ? 'v' + v : ''; });
   }
 
   // ------------------------------------------------------------ slot tools
@@ -439,6 +455,78 @@ class MainMenu {
   closeDlg(yes) {
     const d = this.dlg; this.dlg = null; const el = this.root.querySelector('.mm-dlg'); el.classList.remove('open'); el.innerHTML = '';
     this.setFocus(this.dlgPrev && this.dlgPrev.isConnected ? this.dlgPrev : null); if (yes && d && d.onYes) d.onYes();
+  }
+  // ---- Settings > Updates. Optional and manual: nothing here runs unless the player presses it, and nothing is installed unless they
+  // confirm the dialog. Offline (or any error) only shows a message and play goes on; the installed game is never touched before the confirm.
+  updSay(t, btn) {
+    this.root.querySelectorAll('[data-upd]').forEach(e => { e.textContent = t; });
+    if (btn) this.root.querySelectorAll('[data-updbtn]').forEach(e => { e.textContent = btn; });
+  }
+  async checkUpdate() {
+    if (this.updBusy) return;
+    sfx('ok');
+    if (this.updRel) return this.askUpdate();   // a newer release was already found: ask again
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return this.updSay("You're offline. You can keep playing; check again when you're online.", 'Check');
+    this.updBusy = true; this.updSay('Checking…', '…');
+    let to = 0;
+    try {
+      const ctl = typeof AbortController !== 'undefined' ? new AbortController() : null; to = setTimeout(() => { if (ctl) ctl.abort(); }, 8000);
+      const r = await fetch(MM_RELEASES_API, { cache: 'no-store', headers: { Accept: 'application/vnd.github+json' }, signal: ctl ? ctl.signal : undefined });
+      if (!r.ok) throw new Error('http ' + r.status);
+      const rel = await r.json(), tag = String(rel.tag_name || '').replace(/^v/i, '');
+      if (!tag) throw new Error('no tag');
+      if (MM_VERSION() && mmNewer(tag, MM_VERSION())) { this.updRel = rel; rel._tag = tag; this.updBusy = false; clearTimeout(to); this.updSay('Version ' + tag + ' is available (you have ' + MM_VERSION() + ').', 'Update'); return this.askUpdate(); }
+      this.updSay('You have the latest version' + (MM_VERSION() ? ' (' + MM_VERSION() + ')' : '') + '.', 'Check');
+    } catch (e) { this.updSay("Couldn't reach GitHub. You can keep playing; try again later.", 'Check'); }
+    clearTimeout(to); this.updBusy = false;
+  }
+  // which file to download on this device: the .apk in the Android app, the setup / portable .exe in the Windows app; anything else opens the release page
+  async updTarget(rel) {
+    const find = re => (rel.assets || []).find(a => re.test(a.name || '') && a.browser_download_url);
+    const cap = window.Capacitor;
+    if (cap && typeof cap.getPlatform === 'function' && cap.getPlatform() === 'android') { const a = find(/\.apk$/i); if (a) return { kind: 'android', asset: a }; }
+    else if (window.jbaUpdater) {
+      try { const inf = await window.jbaUpdater.info(); if (inf && inf.packaged && inf.platform === 'win32') { const a = find(inf.portable ? /-portable\.exe$/i : /-setup\.exe$/i); if (a) return { kind: 'win', asset: a, portable: !!inf.portable }; } } catch (e) { }
+    }
+    return { kind: 'page' };
+  }
+  async askUpdate() {
+    const rel = this.updRel; if (!rel || this.dlg) return;
+    const t = await this.updTarget(rel), mb = t.asset && t.asset.size ? Math.round(t.asset.size / 1048576) : 0;
+    this.confirm(t.kind === 'page'
+      ? { title: __('Update to {0}?', rel._tag), text: __('Open the download page for version {0}.', rel._tag), yes: __('Open') }
+      : { title: __('Update to {0}?', rel._tag), text: __('Download {0} and install it now. Your saves are not touched.', mb ? mb + ' MB' : 'the update') + (t.kind === 'win' ? ' ' + (t.portable ? __('The game will close and the new version will start.') : __('The game will close and the installer will open.')) : ''), yes: __('Update') },
+      () => this.startUpdate(t));
+  }
+  async startUpdate(t) {
+    const rel = this.updRel; if (!rel || this.updBusy) return;
+    const page = () => { this.updSay('Opening the download page…', 'Update'); try { window.open(rel.html_url, '_blank', 'noopener'); } catch (e) { } };
+    if (t.kind === 'page') return page();
+    this.updBusy = true; this.updSay('Starting…', '…');
+    try {
+      if (t.kind === 'android') {
+        const U = jbaPlugin('Updater');
+        if (!(await U.canInstall()).allowed) {   // Android asks the player to allow installs from this app, once
+          this.updSay('Allow "Install unknown apps" for JBA Pokemon on the screen that opens, come back, and press Update again.', 'Update');
+          await U.openInstallSettings(); this.updBusy = false; return;
+        }
+        let h = null;   // the percentage is a nicety: if listening is not possible, the download still runs
+        try { h = await U.addListener('progress', p => this.updSay(p && p.percent >= 0 ? 'Downloading… ' + p.percent + '%' : 'Downloading…', '…')); } catch (e) { }
+        this.updSay('Downloading…', '…');
+        try { await U.download({ url: t.asset.browser_download_url }); } finally { try { if (h && h.remove) h.remove(); } catch (e) { } }
+        this.updSay('Downloaded. Tap Install on the screen that opens.', 'Update');
+        await U.install();
+      } else {   // win
+        window.jbaUpdater.onProgress(p => this.updSay(p >= 0 ? 'Downloading… ' + p + '%' : 'Downloading…', '…'));
+        await window.jbaUpdater.install(t.asset.browser_download_url);
+        this.updSay('Starting the new version…', '…');
+      }
+    } catch (e) {
+      const msg = String((e && e.message) || e || '');
+      if (/not implemented|not available/i.test(msg)) return (this.updBusy = false, page());   // an app built before the updater existed: use the release page
+      this.updSay('The update failed (' + msg.replace(/^Error invoking remote method '[^']*': (Error: )?/, '') + '). Press Update to try again.', 'Update');
+    }
+    this.updBusy = false;
   }
   toast(msg) {
     const t = this.root.querySelector('.mm-toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(this.toastT); this.toastT = setTimeout(() => t.classList.remove('show'), 3200);

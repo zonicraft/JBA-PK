@@ -613,6 +613,13 @@ function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseM
 // ------------------------------------------------------------ Export / import save files (main menu)
 // Export: downloads the current save as a .json file.  Import: reads such a file back into this browser's save slot.
 const SAVE_FILE_FORMAT = 'jba-pokemon-save';
+// Android app: the page only gets Capacitor's bare bridge, where plugins live on Capacitor.Plugins (registerPlugin exists only when Capacitor's own JS is bundled).
+function jbaPlugin(name) {
+  const c = window.Capacitor; let p = null;
+  if (c) { try { if (typeof c.registerPlugin === 'function') p = c.registerPlugin(name); } catch (e) { } if (!p && c.Plugins) p = c.Plugins[name]; }
+  if (!p) throw new Error('"' + name + '" plugin is not available');
+  return p;
+}
 function exportSaveFile(n = curSlot()) {
   let raw = null; try { raw = localStorage.getItem(slotKey(n)); } catch (e) { }
   if (!raw) return null;
@@ -620,6 +627,10 @@ function exportSaveFile(n = curSlot()) {
   const pack = { format: SAVE_FILE_FORMAT, version: 1, exported: new Date().toISOString(), save: d };
   const nm = String(d.name || 'save').replace(/[^\w-]+/g, '') || 'save', day = new Date().toISOString().slice(0, 10);
   const name = 'JBA-Pokemon-' + nm + '-slot' + n + '-' + day + '.json';
+  const cap = window.Capacitor;
+  if (cap && typeof cap.getPlatform === 'function' && cap.getPlatform() === 'android') {   // the Android app's WebView cannot download files: a small native plugin puts the .json in Downloads. Returns a Promise.
+    try { return jbaPlugin('SaveFile').save({ name, text: JSON.stringify(pack) }).then(r => ({ name, where: (r && r.where) || 'Downloads' })); } catch (e) { return Promise.reject(e); }
+  }
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(pack)], { type: 'application/json' })); a.download = name;
   a.style.display = 'none'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
   return name;

@@ -11,6 +11,12 @@ check the mansion and quest to buy it maybe scrap
 check dialogue
 
 playtest of the game :)
+on mobile the title is not properly centered like the options on the main menu
+add the version of the build to the main menu bottom right corner
+update button that integrates with git?
+check how to get into the biodomes there are 3 pokemons that are biodome exclusive so they have to be acessable
 
+
+remove the ss anne maps
 usage de tms podia ser melhor
 ha alguma coisa que impessa o player de apanhar o cut antes do wuant?
