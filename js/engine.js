@@ -537,6 +537,7 @@ function checkAction() {   // an empty event under the player (placeholder page)
   const p = G.player; const [dx, dy] = dirVec[p.dir];
   for (const e of eventAt(p.x, p.y, e => e.page.trigger === 0 && e.through && e.page.list && e.page.list.length > 1)) { if (startEvent(e)) return true; }
   for (const e of eventAt(p.x + dx, p.y + dy, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }
+  for (const e of eventAt(p.x + dx, p.y + dy, e => e.page.trigger === 2 && /^Trainer\(/i.test(e.name || '') && e.page.list && e.page.list.length > 1)) { if (startEvent(e)) { faceTalker(e); return true; } }   // a trainer that is looking away never spotted the player: talking to them starts the battle
   if (typeof isCounter === 'function' && isCounter(p.x + dx, p.y + dy))        // counter: talk across it
     for (const e of eventAt(p.x + dx * 2, p.y + dy * 2, e => e.page.trigger === 0)) { if (startEvent(e)) { faceTalker(e); return true; } }
   if (typeof wallMapCheck === 'function' && wallMapCheck(p.x + dx, p.y + dy)) return true;

@@ -229,6 +229,7 @@ function terrainTagAt(x, y) {
 }
 // counters: terrain tag 1, or - the interior tilesets (3, 25) carry no terrain tags in this project - any fully blocked tile indoors
 function isCounter(x, y) {
+  if (G.mapId === 278 && y === 3 && x >= 2 && x <= 8) return true;   // One Island Poké Center counter (tileset 4 is not an interior tileset here)
   if (G.mapId === 185 && y === 3 && x >= 4 && x <= 6) return true;   // the arcade's service counter (the employee stands behind it)
   if (G.mapId === 318 && ((x === 1 && y >= 6 && y <= 7) || (x >= 11 && x <= 13 && y === 11))) return true;   // Indigo Plateau lobby: the Mart clerks and the Nurse stand behind their counters
   if (terrainTagAt(x, y) === 1) return true;
@@ -394,7 +395,7 @@ function* worldScript(it, s) {
   let m;
   if (s === 'pbSeviiFerry') {
     const cur = SEV_MAP_ISLAND[G.mapId] || 0;
-    if (!(G.items && G.items.SEVIIPASS > 0)) { yield* showMessage(__('Welcome to the Seagallop Ferry Service!\nOur ferries only carry passengers who hold an \\c[1]Island Pass\\c[0].')); return true; }
+    if (!(G.items && G.items.SEVIIPASS > 0) && !G.switches.sev1) { yield* showMessage(__('Welcome to the Seagallop Ferry Service!\nOur ferries only carry passengers who hold an \\c[1]Island Pass\\c[0].')); return true; }
     G.uiGen = seviiFerryUI(cur); yield;
     const r = G.ferryReq; G.ferryReq = null; if (!r) return true;
     const [mid, x, y, d] = SEV_LANDING[r.to];
@@ -436,6 +437,7 @@ function* worldScript(it, s) {
   }
   if (s.startsWith('pbSEPlay(')) return true;
   if (s.startsWith('pbWait(')) { let n = +s.match(/\d+/)[0]; while (n-- > 0) yield; return true; }
+  if ((m = s.match(/^pbSetHealPoint\((\d+),(\d+),(\d+),(\d+)\)$/))) { G.healPoint = { map: +m[1], x: +m[2], y: +m[3], dir: +m[4] }; return true; }   // fixed respawn spot (e.g. in front of a Poké Center nurse)
   if (s === 'Kernel.pbSetPokemonCenter') { const p = G.player; G.healPoint = { map: G.mapId, x: p.x, y: p.y, dir: p.dir }; return true; }
   if (s.includes('for i in 1..')) {            // Poké Center ball-by-ball healing animation
     const n = Math.max(1, G.party.length);

@@ -11,11 +11,16 @@ check the mansion and quest to buy it maybe scrap
 check dialogue
 
 playtest of the game :)
-on mobile the title is not properly centered like the options on the main menu
-add the version of the build to the main menu bottom right corner
-update button that integrates with git?
-check how to get into the biodomes there are 3 pokemons that are biodome exclusive so they have to be acessable
-
+Test what happens when wipeout after healong on the hq
+trainer nanami and ren on the hq doesnt have the correct pokemon
+is it possible to be softlocked if  i dont pick up the mihoyo card?
+buffed dawei doesnt have the right in wolrd sprite
+make so feromonas on the hq office gives a master ball
+check if i can try to defeat a trainer again if i wipe out to them
+cant interact with trainers that arent facing me to start the battle
+remove the lock on cerulean cave
+the nurse on the one island is not accessible throgh the counter
+major bug, if the player has been to the one island and teleports back they get softlocked
 
 remove the ss anne maps
 usage de tms podia ser melhor

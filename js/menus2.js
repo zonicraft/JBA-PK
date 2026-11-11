@@ -365,7 +365,7 @@ function* townMapScreen(o = {}) {
   if (!o.teleport && !o.view && G.items && G.items.PORTABLETELEPORTER > 0) { o = Object.assign({}, o, { teleport: true, player: true, regular: true }); CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; }); }   // owning the Portable Teleporter turns the regular map into the teleporter   // o.teleport: the cheat version, pick a city and confirm to teleport there
   // Sevii Islands: three extra map pages (regions 1-3), shown when the player owns the Island Pass (or is standing on one of the islands)
   const sev = window.SEVPOS && SEVPOS[G.mapId];
-  const hasPass = !!(G.items && G.items.SEVIIPASS > 0) || !!sev, hereReg = sev ? sev[0] : 0;
+  const hasPass = !!(G.items && G.items.SEVIIPASS > 0) || !!sev || !!(G.switches && G.switches.sev1), hereReg = sev ? sev[0] : 0;
   const here = sev ? [sev[1], sev[2]] : (window.MAPPOS && MAPPOS[G.mapId]) || TMAP_HOME[mapNameOf(G.mapId)] || [13, 13]; let reg = hereReg, cx = here[0], cy = here[1];
   const ptName = (x, y) => {
     if (reg > 0) { const ps = (window.SEVPTS && SEVPTS[reg]) || []; let b = null, bd = 99; for (const q of ps) { const d = Math.abs(q[0] - x) + Math.abs(q[1] - y); if (d < bd) { bd = d; b = q; } } return b && bd <= 1 ? b[2] + (b[3] ? ' - ' + b[3] : '') : ''; }
