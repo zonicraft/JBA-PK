@@ -10,11 +10,14 @@ const MM_RELEASES_API = 'https://api.github.com/repos/zonicraft/JBA-PK/releases/
 const MM_VERSION = () => (typeof GAME_VERSION !== 'undefined' ? String(GAME_VERSION) : '');   // js/version.js, written by dist-tools/set-version.js / prepare-www.js
 function mmNewer(a, b) { const p = s => String(s).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0); const x = p(a), y = p(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; }
 const MM_BADGE_SWITCHES = [260, 261, 262, 263, 212, 980], MM_BADGE_PIPS = 8;
+// The Android app is always fullscreen (system bars hidden), so its menu has no fullscreen buttons.
+function mmNative() { const c = window.Capacitor; if (!c) return false; try { if (typeof c.isNativePlatform === 'function') return !!c.isNativePlatform(); } catch (e) { } return true; }
 const MM_SVG = (d, extra = '') => '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + extra + '</svg>';
 const MM_ICON = {
   play: MM_SVG('<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>'),
   back: MM_SVG('<path d="M15 5l-7 7 7 7"/>'),
   gear: MM_SVG('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),
+  dex: MM_SVG('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5.2M15.3 12h5.2"/><circle cx="12" cy="12" r="2.6"/>'),
   down: MM_SVG('<path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>'),
   up: MM_SVG('<path d="M12 16V5m0 0l-4 4m4-4l4 4M5 20h14"/>'),
   trash: MM_SVG('<path d="M5 7h14M10 7V4.5h4V7M7 7l1 13h8l1-13"/>'),
@@ -31,6 +34,9 @@ const MM_CSS = `
   user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;transition:opacity .45s ease,transform .45s ease}
 #mainMenu.leaving{opacity:0;transform:scale(1.04);pointer-events:none}
 #mainMenu,#mainMenu *{box-sizing:border-box}
+#mmQuit{--ink:#f4f6ff;--mut:#9aa6c8;--acc:#ffcb3d;--danger:#ff5d73;--line:rgba(255,255,255,.14);position:fixed;inset:0;z-index:40;color:var(--ink);font:500 16px/1.35 "Segoe UI",system-ui,sans-serif;user-select:none;-webkit-user-select:none}
+#mmQuit,#mmQuit *{box-sizing:border-box}
+:where(#mmQuit) button{font:inherit;color:inherit;cursor:pointer}
 :where(#mainMenu) button{font:inherit;color:inherit;cursor:pointer}
 :where(#mainMenu) svg{display:block}
 /* background: city photo + shade + the character cut-out (assets/ui/menu_bg.jpg, menu_char.png) */
@@ -52,7 +58,7 @@ const MM_CSS = `
 @keyframes mmL{from{opacity:0;transform:translateX(-90px)}to{opacity:1;transform:none}}
 @keyframes mmR{from{opacity:0;transform:translateX(90px)}to{opacity:1;transform:none}}
 #mainMenu[data-view=home] .mm-stack>*{animation:mmL .6s cubic-bezier(.2,.8,.2,1) backwards}
-#mainMenu[data-view=home] .mm-stack>:nth-child(2){animation-delay:.07s}#mainMenu[data-view=home] .mm-stack>:nth-child(3){animation-delay:.14s}#mainMenu[data-view=home] .mm-stack>:nth-child(4){animation-delay:.21s}
+#mainMenu[data-view=home] .mm-stack>:nth-child(2){animation-delay:.07s}#mainMenu[data-view=home] .mm-stack>:nth-child(3){animation-delay:.14s}#mainMenu[data-view=home] .mm-stack>:nth-child(4){animation-delay:.21s}#mainMenu[data-view=home] .mm-stack>:nth-child(5){animation-delay:.28s}
 #mainMenu[data-view=home] .mm-char{animation:mmR .8s cubic-bezier(.2,.8,.2,1) backwards}
 .mm-v{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;overflow-x:hidden;overflow-y:auto;padding:max(22px,env(safe-area-inset-top)) 16px max(22px,env(safe-area-inset-bottom));animation:mmin .38s ease both}
 @keyframes mmin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -242,12 +248,13 @@ class MainMenu {
     const ctl = (extra = '') => '<div class="mm-ctl" data-f data-act="toggle" data-k="touch" data-adj="touch" ' + extra + '><span class="ic">' + MM_ICON.pad + '</span><span class="tx">On-screen controller<small>Touch buttons for phones and tablets</small></span><span class="mm-sw" data-sw="touch"></span></div>';
     root.innerHTML =
       '<div class="mm-bg"><div class="mm-photo"></div><div class="mm-shade"></div><img class="mm-char" src="assets/ui/menu_char.png" alt="" draggable="false">' + sparks + '</div>' +
-      '<button class="mm-round mm-fs" data-act="fs" title="Fullscreen" aria-label="Fullscreen">' + MM_ICON.full + '</button>' +
+      (mmNative() ? '' : '<button class="mm-round mm-fs" data-act="fs" title="Fullscreen" aria-label="Fullscreen">' + MM_ICON.full + '</button>') +
       // home
       '<section class="mm-v v-home"><div class="mm-mid"><div class="mm-logo"><img class="mm-logo-img" src="assets/ui/menu_logo.png" alt="Pokémon JBA Version" draggable="false"></div>' +
       '<div class="mm-stack"><div class="home-cont"></div>' +
       '<button class="mm-btn" data-f data-act="play" data-main><span class="ic">' + MM_ICON.play + '</span><span>Save files<small>Open a save or start a new adventure</small></span></button>' +
       '<button class="mm-btn" data-f data-act="settings"><span class="ic">' + MM_ICON.gear + '</span><span>Settings<small>Volume, speed, display</small></span></button>' +
+      '<button class="mm-btn" data-f data-act="dex"><span class="ic">' + MM_ICON.dex + '</span><span>Pokédex<small>Every Pokémon, where to find it, and your progress</small></span></button>' +
       '<button class="mm-btn" data-f data-act="controls"><span class="ic">' + MM_ICON.pad + '</span><span>Controls<small>Keyboard, controller and touch screen</small></span></button></div>' +
       '<div class="mm-foot">Unofficial, non-commercial fan project. Pokémon is owned by Nintendo, Game Freak and The Pokémon Company.</div></div></section>' +
       // slots
@@ -261,7 +268,7 @@ class MainMenu {
       '<div class="set-row" data-f data-adj="speed" data-act="cycle" data-k="speed"><span class="lbl">Game speed</span><span class="seg">' + (typeof SPEEDS !== 'undefined' ? SPEEDS : [1, 1.5, 2, 3]).map(v => '<button data-act="set" data-k="speed" data-v="' + v + '">' + v + 'x</button>').join('') + '</span></div>' +
       '<div class="set-row" data-f data-adj="bars" data-act="toggle" data-k="bars"><span class="lbl">Side bars<small>Backdrop image around the game screen</small></span><span class="seg"><button data-act="set" data-k="bars" data-v="1">Image</button><button data-act="set" data-k="bars" data-v="0">Black</button></span></div>' +
       '<div class="set-row" data-f data-adj="lang" data-act="lang"><span class="lbl">Language</span><span class="seg"><button data-act="lang" data-v="-1">◀</button><button class="on" data-langname data-act="lang" data-v="1"></button><button data-act="lang" data-v="1">▶</button></span></div>' +
-      '<div class="set-row" data-f data-act="fs"><span class="lbl">Fullscreen</span><span class="mm-mini">' + MM_ICON.full + ' Toggle</span></div>' +
+      (mmNative() ? '' : '<div class="set-row" data-f data-act="fs"><span class="lbl">Fullscreen</span><span class="mm-mini">' + MM_ICON.full + ' Toggle</span></div>') +
       '<div class="set-row" data-f data-act="update"><span class="lbl">Updates<small data-upd>Optional. Looks for a newer release on GitHub (needs internet).</small></span><span class="mm-mini" data-updbtn>Check</span></div>' +
       '</div></section>' +
       // controls
@@ -381,6 +388,16 @@ class MainMenu {
   }
 
   // ------------------------------------------------------------ actions
+  // Pokédex guide (POKEDEX.html). It reads the last save from the same browser storage, so it works next to the running game.
+  //   Browser: opens in a new tab.  Windows app: a new window (dist-tools/desktop/main.js).
+  //   Android app: on the second screen when the device has one (AYN Thor...), otherwise on top of the game (dist-tools/android-src/DexPlugin.java).
+  openDex() {
+    sfx('ok');
+    try { jbaPlugin('Dex').open({}).then(r => { if (r && r.info) this.toast('Pokédex: ' + r.how + ' · ' + r.info); }, () => this.toast('The Pokédex could not be opened.')); return; } catch (e) { }
+    const w = window.open('POKEDEX.html', 'jba_pokedex');
+    if (!w) return this.toast('Allow pop-ups for this page to open the Pokédex.');
+    try { w.focus(); } catch (e) { }
+  }
   act(el) {
     const d = el.dataset, a = d.act;
     switch (a) {
@@ -388,6 +405,7 @@ class MainMenu {
       case 'new': sfx('ok'); this.choose({ type: 'new', slot: +d.n }); break;
       case 'play': sfx('ok'); this.go('slots', '.slot-main'); { const l = this.focusables(); const pick = l.find(e => e.dataset.n == this.lastSlot() && e.classList.contains('slot-main')) || l.find(e => e.dataset.act === 'new') || l[0]; this.setFocus(pick || null); } break;
       case 'settings': sfx('ok'); this.go('settings'); break;
+      case 'dex': this.openDex(); break;
       case 'controls': sfx('ok'); this.go('controls'); break;
       case 'back': this.goBack(); break;
       case 'fs': sfx('ok'); toggleFullscreen(); break;
@@ -534,9 +552,13 @@ class MainMenu {
 }
 
 // ------------------------------------------------------------ Title screen entry point (replaces the old canvas title screen)
+// Android with a second screen: the Pokédex opens there by itself once per app start (nothing happens on single-screen devices).
+let MM_DEX_AUTO = false;
+function mmAutoDex() { if (MM_DEX_AUTO) return; MM_DEX_AUTO = true; try { jbaPlugin('Dex').autoOpen({}).catch(() => { }); } catch (e) { } }
 function* titleScreen() {
   stopME(); stopBGM(); G.fade = 0;
   const mm = new MainMenu();
+  mmAutoDex();
   G.inMainMenu = true; applyTouch();   // hides the on-screen controller while the menu is open
   const res = yield* withDraw(() => { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, SW, SH); }, (function* () {
     G.loadImgs = ['assets/ui/loading_full.png', 'assets/ui/loading_empty.png'].map(u => { const im = new Image(); im.src = u; return im; });   // the loading bar's pokeballs

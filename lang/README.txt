@@ -39,3 +39,8 @@ it rewrites en.js and adds the new entries (empty) to every language file, keepi
 
 Testing: open the game with  index.html?i18n=debug  and, in the browser console (F12), type  I18N.missing()
 to list the texts that were shown on screen without a translation.
+
+The Pokedex (POKEDEX.html)
+  It follows the language chosen in the game (Options > Language) and reads the same lang/<code>.js file for Pokemon, move,
+  ability, type and place names. The texts that only the Pokedex has (filters, headings, notes) are in lang/dex_<code>.js:
+  copy lang/dex_pt.js to dex_fr.js, change LANG_DEX.pt to LANG_DEX.fr and translate the right-hand side.

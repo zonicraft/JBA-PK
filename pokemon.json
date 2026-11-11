@@ -101711,5 +101711,51 @@
   "evo": "",
   "series": "???",
   "legendary": true
+ },
+ "MEGANITOCRIS": {
+  "internalName": "MEGANITOCRIS",
+  "dexNumber": 894,
+  "name": "Mega Nitocris",
+  "types": [
+   "GHOST",
+   "PSYCHIC"
+  ],
+  "baseStats": {
+   "HP": 71,
+   "Attack": 36,
+   "Defense": 84,
+   "Speed": 88,
+   "SpAtk": 146,
+   "SpDef": 101
+  },
+  "gender": "AlwaysFemale",
+  "growthRate": "Parabolic",
+  "baseExp": 190,
+  "catchRate": 3,
+  "baseHappiness": 50,
+  "evYield": {
+   "HP": 0,
+   "Attack": 0,
+   "Defense": 0,
+   "Speed": 0,
+   "SpAtk": 3,
+   "SpDef": 0
+  },
+  "abilities": [
+   "INSOMNIA",
+   "CURSEDBODY"
+  ],
+  "hiddenAbility": "OWNTEMPO",
+  "kind": "Awakened Pharaoh",
+  "dex": "Nitocris awakened by the Anubis Stone, the last Pharaoh unveiled at full power. From Fate. A Special Attacker Pokémon.",
+  "height": 1.6,
+  "weight": 48,
+  "playerY": -7,
+  "enemyY": 2,
+  "evo": "",
+  "role": "Special Attacker",
+  "series": "Fate",
+  "sprite":"275_1",
+  "megaOf": "NITOCRIS"
  }
 }

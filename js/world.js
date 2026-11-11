@@ -173,6 +173,7 @@ function isWaterAt(x, y) {
   return false;
 }
 // a walkable bridge plank / platform drawn above water: stepping onto it from the boat means getting off the boat
+const ARCH_OVER_WATER = new Set([4260, 4261, 4262, 4268, 4269, 4270, 4276, 4277, 4278]);
 function bridgeAt(x, y) {
   const ww = worldAt(x, y); if (!ww) return false;
   const m = ww.m, ts = m.ts;
@@ -184,6 +185,7 @@ function bridgeAt(x, y) {
     const tid = m.data[ww.x + ww.y * m.w + z * m.w * m.h]; if (!tid) continue;
     const pas = ts.passages[tid] || 0;
     if (pas & 0x10) continue;
+    if (ARCH_OVER_WATER.has(tid)) return false;   // the Indigo Plateau gate arch: it spans the channel, the boat sails straight under it
     return z > 0 && tid >= 384 && (pas & 0x0f) !== 0x0f;
   }
   return false;
@@ -197,6 +199,7 @@ function solidOverWater(x, y) {
     if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return false; }
     const pas = ts.passages[tid] || 0;
     if (pas & 0x10) continue;
+    if (tid >= 384 && ts.tags && [5, 6, 7].includes(ts.tags[tid])) return false;   // a regular-tileset pond tile that itself carries a water tag: it IS the water, not a rock on it
     if ((pas & 0x0f) === 0x0f) return true;
     if ((ts.priorities[tid] || 0) === 0) return false;
   }
@@ -562,9 +565,9 @@ function* worldScript(it, s) {
     const list = [...s.matchAll(/:(\w+)/g)].map(x => x[1]);
     if (list.includes('POTION') && badgeCount() >= 2) list.push('SUMMERSTONE', 'CASUALSTONE', 'EVERSTONE');   // general marts stock the stones (and the Everstone) after the 2nd badge
     if (list.includes('POKEBALL') && list.includes('POTION') && badgeCount() >= 1) {   // regular marts (not the TM / special shops) also stock everything the badges unlock, same tiers as the Celadon department store
-      const tier = MART_TIERS[Math.min(8, badgeCount())] || [];
+      const tier = (MART_TIERS[Math.min(8, badgeCount())] || []).concat(badgeCount() >= 7 ? ['MAXREVIVE'] : []);   // Max Revive from the 7th badge
       for (const k of tier) if (!list.includes(k)) list.push(k);
-      const ord = MART_TIERS[8].concat(['POKEDOLL']); list.sort((a, b) => (ord.indexOf(a) < 0 ? 99 : ord.indexOf(a)) - (ord.indexOf(b) < 0 ? 99 : ord.indexOf(b)));
+      const ord = MART_TIERS[8].concat(['MAXREVIVE', 'POKEDOLL']); list.sort((a, b) => (ord.indexOf(a) < 0 ? 99 : ord.indexOf(a)) - (ord.indexOf(b) < 0 ? 99 : ord.indexOf(b)));
     }
     G.uiGen = martScreen(list); yield; return true;
   }

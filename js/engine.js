@@ -140,8 +140,47 @@ const KEYMAP = {
 };
 const keys = { held: {}, pressed: {} };
 keys.kb = {};
-function toggleFullscreen() { try { if (document.fullscreenElement) document.exitFullscreen(); else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } catch (err) { } }
+function toggleFullscreen() { const cap = window.Capacitor; if (cap && (typeof cap.isNativePlatform !== 'function' || cap.isNativePlatform())) return;   /* the Android app is always fullscreen: Y does nothing there */
+  try { if (document.fullscreenElement) document.exitFullscreen(); else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); } catch (err) { } }
+// Select / Shift+Esc: asks first (same look as the main menu's dialogs), the game is paused meanwhile. Yes = reload = main menu.
+function backToTitle() {
+  if (!G.started || G.inMainMenu || G.quitAsk || G._toTitle) return;
+  if (!document.getElementById('mmStyle') && typeof MM_CSS !== 'undefined') { const st = document.createElement('style'); st.id = 'mmStyle'; st.textContent = MM_CSS; document.head.appendChild(st); }
+  G.quitAsk = true;
+  const tt = (typeof __ === 'function') ? __ : (x => x);
+  const el = document.createElement('div'); el.id = 'mmQuit'; el.className = 'mm-dlg open';
+  el.innerHTML = '<div class="dlg" role="dialog"><h3>' + tt('Main menu') + '</h3><p>' + tt('Return to the main menu?\nUnsaved progress will be lost.').replace(/\n/g, '<br>') + '</p><div class="row"><button data-f data-v="0">' + tt('Cancel') + '</button><button data-f data-v="1" class="danger">' + tt('Main menu') + '</button></div></div>';
+  document.body.appendChild(el);
+  const btns = Array.from(el.querySelectorAll('button')); let idx = 0, raf = 0;
+  const setIdx = i => { idx = (i + btns.length) % btns.length; btns.forEach((b, j) => b.classList.toggle('focus', j === idx)); };
+  const close = yes => {
+    cancelAnimationFrame(raf); window.removeEventListener('keydown', onKey, true); el.remove();
+    keys.pressed = {}; keys.held = {}; keys.kb = {}; PAD.prev = {}; G.quitAsk = false; try { canvas.focus(); } catch (e) { }
+    if (yes) { G._toTitle = true; location.reload(); }
+  };
+  const onKey = e => {
+    e.preventDefault(); e.stopImmediatePropagation(); if (e.repeat) return;
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { setIdx(idx - 1); try { sfx('cursor'); } catch (x) { } }
+    else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'Tab') { setIdx(idx + 1); try { sfx('cursor'); } catch (x) { } }
+    else if (e.key === 'Enter' || e.key === ' ' || e.key === 'z' || e.key === 'Z') close(idx === 1);
+    else if (e.key === 'Escape' || e.key === 'x' || e.key === 'X') close(false);
+  };
+  window.addEventListener('keydown', onKey, true);
+  btns.forEach((b, j) => { b.addEventListener('mouseenter', () => setIdx(j)); b.addEventListener('click', () => close(j === 1)); });
+  el.addEventListener('pointerdown', e => e.stopPropagation());
+  setIdx(0);
+  let prev = null;   // controller, polled here because the game loop is paused
+  const poll = () => {
+    let gp = null; try { for (const g of (navigator.getGamepads ? navigator.getGamepads() : [])) if (g && g.connected) { gp = g; break; } } catch (e) { }
+    const b = i => !!(gp && gp.buttons[i] && gp.buttons[i].pressed), ax = gp ? (gp.axes[0] || 0) : 0;
+    const n = { l: b(14) || ax < -0.5, r: b(15) || ax > 0.5, ok: b(0), no: b(1), sel: b(8) };
+    if (prev) { if (n.l && !prev.l) setIdx(idx - 1); if (n.r && !prev.r) setIdx(idx + 1); if (n.ok && !prev.ok) return close(idx === 1); if ((n.no && !prev.no) || (n.sel && !prev.sel)) return close(false); }
+    prev = n; raf = requestAnimationFrame(poll);
+  };
+  raf = requestAnimationFrame(poll);
+}
 window.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && e.shiftKey) { e.preventDefault(); backToTitle(); return; }
   const k = KEYMAP[e.key]; if (!k) return;
   if (G.modal) return;
   e.preventDefault(); keys.kb[k] = true; G.padOn = false; G.touchIn = false;   // last input source: keyboard
@@ -149,6 +188,13 @@ window.addEventListener('keydown', e => {
   keys.held[k] = true;
   if (k === 'back') keys.held.run = true;
 });
+// left mouse click = Enter / confirm (advance text), only in-game and only on the game screen
+window.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse' || e.button !== 0 || G.modal || G.inMainMenu || !G.started) return;
+  const t = e.target; if (!t || !(t.tagName === 'CANVAS' || t === document.body || t === document.documentElement)) return;
+  G.padOn = false; G.touchIn = false; if (!keys.held.ok) keys.pressed.ok = true; keys.held.ok = true;
+});
+window.addEventListener('pointerup', e => { if (e.pointerType === 'mouse' && e.button === 0 && !keys.kb.ok && !(PAD.prev && PAD.prev.ok)) keys.held.ok = false; });
 window.addEventListener('keyup', e => {
   const k = KEYMAP[e.key]; if (!k) return;
   keys.kb[k] = false; keys.held[k] = false; if (k === 'back') keys.held.run = false;
@@ -162,7 +208,8 @@ function pollPad() {
   if (gp) {
     const b = i => !!(gp.buttons[i] && gp.buttons[i].pressed), ax = gp.axes[0] || 0, ay = gp.axes[1] || 0;
     now.up = b(12) || ay < -0.5; now.down = b(13) || ay > 0.5; now.left = b(14) || ax < -0.5; now.right = b(15) || ax > 0.5;
-    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9) || b(8); now.run = b(1); now.bike = b(4) || b(5); now.mega = b(2); if (gp.buttons.some(x => x && x.pressed) || Math.abs(ax) > 0.5 || Math.abs(ay) > 0.5) { G.padOn = true; G.touchIn = false; }   // only counts as the active input once the pad is actually used   // LB / RB: Skateboard
+    now.ok = b(0); now.back = b(1); now.menu = b(2) || b(9); now.run = b(1); now.bike = b(4) || b(5); now.mega = b(2); if (gp.buttons.some(x => x && x.pressed) || Math.abs(ax) > 0.5 || Math.abs(ay) > 0.5) { G.padOn = true; G.touchIn = false; }   // only counts as the active input once the pad is actually used   // LB / RB: Skateboard
+    const sb = b(8); if (sb && !PAD.selDown) backToTitle(); PAD.selDown = sb;
     const yb = b(3); if (yb && !PAD.yDown) toggleFullscreen(); PAD.yDown = yb;
   }
   for (const k of ['up', 'down', 'left', 'right', 'ok', 'back', 'menu', 'run', 'bike', 'mega']) {
@@ -1150,7 +1197,7 @@ function render() {
 let last = 0, acc = 0;
 function loop(ts) {
   if (!last) last = ts; const gap = ts - last; acc += Math.min(200, ts - last); last = ts; const t0 = performance.now();
-  if (!G.manual) { const step = 1000 / (FPS * SET.speed); let n = 0; while (acc >= step && n++ < 40) { update(); acc -= step; } if (acc > step) acc = 0; render(); }
+  if (!G.manual) { const step = 1000 / (FPS * SET.speed); let n = 0; if (G.quitAsk) acc = 0; while (acc >= step && n++ < 40) { update(); acc -= step; } if (acc > step) acc = 0; render(); }
   requestAnimationFrame(loop);
 }
 G.tick = function (n = 1) { for (let i = 0; i < n; i++) update(); render(); };
