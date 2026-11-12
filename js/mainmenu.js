@@ -275,7 +275,7 @@ class MainMenu {
       '<section class="mm-v v-controls"><div class="mm-head" style="width:min(760px,100%)"><button class="mm-round" data-f data-act="back" aria-label="Back">' + MM_ICON.back + '</button><div><h2>Controls</h2><p>How to play with each kind of input.</p></div></div>' +
       '<div class="mm-cpanel">' + ctl() +
       '<div class="cgrp"><h3>' + MM_ICON.pad + 'Keyboard &amp; mouse</h3>' +
-        cl(['↑ ↓ ← →', 'W A S D'], 'Move') + cl(['Z', 'Enter', 'Space'], 'Confirm, talk, interact') + cl(['X'], 'Cancel (hold to run, once you have the sneakers)') + cl(['Shift'], 'Run') +
+        cl(['↑ ↓ ← →', 'W A S D'], 'Move') + cl(['Z', 'Enter', 'Space'], 'Confirm, talk, interact') + cl(['X'], 'Cancel (hold to run, once you have the sneakers)') + cl(['Shift'], 'Sprint') +
         cl(['Esc', 'M', 'Tab'], 'Open the menu, or go back') + cl(['C'], 'Skateboard · Mega Evolution in battle') + cl(['Mouse'], 'Click through the menus. In the game, click the on-screen controller buttons.') + '</div>' +
       '<div class="cgrp"><h3>' + MM_ICON.pad + 'Controller</h3>' +
         cl(['D-pad', 'Left stick'], 'Move') + cl(['A'], 'Confirm, talk, interact') + cl(['B'], 'Cancel (hold to run)') + cl(['X', 'Start', 'Select'], 'Open the menu · X is also Mega Evolution in battle') + cl(['LB', 'RB'], 'Skateboard') + cl(['Y'], 'Fullscreen') + '</div>' +

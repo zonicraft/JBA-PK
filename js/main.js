@@ -66,3 +66,19 @@ window.T = {
   skip(max = 4000) { let n = 0; while (n++ < max && (G.main || G.msg || G.frozen || G.trans || G.player.forcing || G.battle) && !G.choice && !G.modal) { if (G.msg && G.msg.done || G.battle) keys.pressed.ok = true; G.tick(1); } return n; },
 };
 
+
+// ---- Discord Rich Presence (Windows build only: the Electron wrapper exposes window.jbaPresence; in a browser this does nothing)
+(function discordPresence() {
+  if (!window.jbaPresence) return;
+  const started = Date.now(); let last = '';
+  function activity() {
+    if (G.inMainMenu || !G.started) return { details: 'In the main menu', startedAt: started };
+    const B = G.battle;
+    const details = B ? (B.kind === 'trainer' ? 'In a trainer battle' : 'In a wild battle') : 'Exploring ' + mapNameOf(G.mapId);
+    const badges = badgeCount(), dex = Object.keys(G.owned || {}).length;
+    return { details, state: (G.name || 'Player') + ' \u00b7 ' + badges + (badges === 1 ? ' badge' : ' badges') + ' \u00b7 Dex ' + dex, startedAt: started, largeText: 'JBA Pokemon' };
+  }
+  setInterval(() => {
+    try { const a = activity(), k = JSON.stringify(a); if (k !== last) { last = k; window.jbaPresence.set(a).catch(() => { }); } } catch (e) { }
+  }, 5000);
+})();

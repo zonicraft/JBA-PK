@@ -161,50 +161,48 @@ function edgeConnection() {
 // ---- wild encounters (data/pbs.js ENCOUNTERS: Land/Cave 12 slots, Water 5 slots, rods uniform)
 const ENC = {   // per-map overrides; empty now: every table, including the 5% / 10% special spots (Kanna, Kyouka, Megumin, Senko), lives in ENCOUNTERS (data/pbs.js)
 };
-// water you can fish in: terrain tags 5-7, or any water autotile (the sea / pond / fountain tiles of a tileset carry no tag in some places)
-function isWaterAt(x, y) {
-  const w = worldAt(x, y); if (!w) return false;
-  if ([5, 6, 7].includes(terrainTagAt(x, y))) return true;
-  const m = w.m, names = m.ts.autotiles || [], lx = w.x, ly = w.y;
-  for (let z = 0; z < 3; z++) {
-    const tid = m.data[lx + ly * m.w + z * m.w * m.h];
-    if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return true; }
+// ---- one resolver for every cell (RPG Maker / Essentials rule): layers are read TOP-DOWN and the first layer that decides wins, so a cell is never "water and ground" at once.
+//   water    : a water autotile / water-tagged tile decides (tiles above it that are overhead - pass-through, priority > 0: arches, rails, lily pads - don't count)
+//   ground   : a walkable ground-level tile (priority 0, no blocking: planks, decks) or a bridge / non-water terrain tag decides
+//   solid    : a fully blocked tile (rocks, pillars) decides
+//   bits     : direction bits of partial blockers above the water (rock lips: passage 8 = blocks "up") - they stop the boat only in those directions
+const WATER_NAME = /sea|water|pond|lake|river|ocean|fountain/i, WATER_DECO = new Set([804, 805]), ARCH_OVER_WATER = new Set();
+function cellWater(m, ts, i, z0) {          // is there water on layers z0..0 of cell i
+  const N = m.w * m.h, names = ts.autotiles || [];
+  for (let z = z0; z >= 0; z--) {
+    const tid = m.data[i + z * N]; if (!tid) continue;
+    if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (WATER_NAME.test(nm) && !/fall/i.test(nm)) return true; }
+    else if (tid >= 384 && ts.tags && ts.tags[tid] >= 5 && ts.tags[tid] <= 7) return true;
   }
   return false;
 }
-// a walkable bridge plank / platform drawn above water: stepping onto it from the boat means getting off the boat
-const ARCH_OVER_WATER = new Set([4260, 4261, 4262, 4268, 4269, 4270, 4276, 4277, 4278]);
-function bridgeAt(x, y) {
-  const ww = worldAt(x, y); if (!ww) return false;
-  const m = ww.m, ts = m.ts;
-  for (let z = 0; z < 3; z++) {
-    const tid = m.data[ww.x + ww.y * m.w + z * m.w * m.h];
-    if (tid >= 384 && ts.tags && ts.tags[tid] === 13) return true;   // tileset terrain tag 13 = bridge planks
-  }
-  for (let z = 2; z >= 0; z--) {                                      // otherwise: the top solid-or-not tile decides whether you could walk here on foot
-    const tid = m.data[ww.x + ww.y * m.w + z * m.w * m.h]; if (!tid) continue;
-    const pas = ts.passages[tid] || 0;
-    if (pas & 0x10) continue;
-    if (ARCH_OVER_WATER.has(tid)) return false;   // the Indigo Plateau gate arch: it spans the channel, the boat sails straight under it
-    return z > 0 && tid >= 384 && (pas & 0x0f) !== 0x0f;
-  }
-  return false;
-}
-// a solid tile (rock, pillar...) drawn on top of the water: the boat can't sail through it
-function solidOverWater(x, y) {
-  const w = worldAt(x, y); if (!w) return false;
-  const m = w.m, ts = m.ts, names = ts.autotiles || [];
+function cellInfo(x, y) {
+  const w = worldAt(x, y); if (!w) return { k: 'none', bits: 0 };
+  const m = w.m, ts = m.ts, names = ts.autotiles || [], N = m.w * m.h, i = w.x + w.y * m.w;
+  let bits = 0, current = false;
+  for (let z = 0; z < 3; z++) { const t = m.data[i + z * N]; if (t >= 48 && t < 384 && /current/i.test(names[Math.floor(t / 48) - 1] || '')) current = true; }
   for (let z = 2; z >= 0; z--) {
-    const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue;
-    if (tid >= 48 && tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (/sea|water|pond|lake|river|ocean|fountain/i.test(nm) && !/fall/i.test(nm)) return false; }
-    const pas = ts.passages[tid] || 0;
-    if (pas & 0x10) continue;
-    if (tid >= 384 && ts.tags && [5, 6, 7].includes(ts.tags[tid])) return false;   // a regular-tileset pond tile that itself carries a water tag: it IS the water, not a rock on it
-    if ((pas & 0x0f) === 0x0f) return true;
-    if ((ts.priorities[tid] || 0) === 0) return false;
+    const tid = m.data[i + z * N]; if (!tid) continue;
+    const pas = (ts.passages && ts.passages[tid]) || 0, pri = (ts.priorities && ts.priorities[tid]) || 0, tag = (ts.tags && ts.tags[tid]) || 0, p4 = pas & 0x0f;
+    if (pas & 0x10) continue;                                                        // star: always drawn above the player, no effect
+    if (tid < 384) { const nm = names[Math.floor(tid / 48) - 1] || ''; if (WATER_NAME.test(nm) && !/fall/i.test(nm)) return { k: 'water', bits }; }
+    if (tag >= 5 && tag <= 7) return { k: 'water', bits };
+    if (tag === 13) { if (p4 === 0x0f) continue; return { k: 'ground', wb: cellWater(m, ts, i, z - 1), bits }; }   // bridge planks (a fully blocked tag-13 tile is a pond's shore edge: skip it)
+    if (tag > 0) return { k: p4 === 0x0f ? 'solid' : 'ground', wb: cellWater(m, ts, i, z - 1), bits };               // rock / grass / ledge ... : not water
+    if (p4 === 0x0f) return { k: 'solid', wb: cellWater(m, ts, i, z - 1), bits };
+    if (p4 !== 0) { bits |= p4; continue; }                                         // partial blocker (rock lip): remember its directions, look for the water below
+    if (pri === 0 && !current) return { k: 'ground', wb: cellWater(m, ts, i, z - 1), bits };   // ground-level walkable tile decides (current water keeps its foam / edge overlays transparent)
   }
-  return false;
+  return { k: 'none', bits };
 }
+// water you can fish in / sail on
+function isWaterAt(x, y) { return cellInfo(x, y).k === 'water'; }
+// a walkable plank / deck drawn over water: stepping onto it from the boat means getting off the boat
+function bridgeAt(x, y) { const c = cellInfo(x, y); return c.k === 'ground' && !!c.wb; }
+// a solid tile (rock, pillar...) drawn on top of the water: the boat can't sail through it
+function solidOverWater(x, y) { const c = cellInfo(x, y); return c.k === 'solid' && !!c.wb; }
+// surfing passability of a water cell: only partial blockers (rock lips) above the water stop the boat, and only in their own directions
+function waterPass(x, y, d) { const c = cellInfo(x, y); return c.k === 'water' && !(c.bits & ({ 2: 1, 4: 2, 6: 4, 8: 8 }[d] || 0)); }
 // Seafoam water currents: only the boat can enter them, and once on one it carries the player along (see the update loop)
 // the currents of B2F-B4F calm down once the boulders have been dropped into the holes above (those boulders set these switches)
 const CURRENT_STOP = { 260: [102, 104], 262: [102, 104], 261: [107, 108], 263: [107, 108] };
@@ -241,7 +239,7 @@ function isCounter(x, y) {
   for (let z = 2; z >= 0; z--) { const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue; const pv = m.ts.passages[tid] || 0; if (pv & 0x10) continue; return (pv & 0x0f) === 0x0f; }
   return false;
 }
-const LAND_W = [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1];   // Essentials land slot weights
+const LAND_W = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];   // all 12 land / cave slots equally likely (Essentials default was [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1])
 function wildTable(mapId) {
   if (ENC[mapId]) return ENC[mapId];
   const e = window.ENCOUNTERS && ENCOUNTERS[mapId]; if (!e) return null;
@@ -249,7 +247,7 @@ function wildTable(mapId) {
   const dens = (e.dens && e.dens[kind === 'Land' ? 0 : 1]) || 25;
   return { chance: dens / 250, kind, land: e[kind].map((s, i) => [s[0], s[1], s[2], e.equal ? 1 : (LAND_W[i] || 1)]) };   // e.equal: every slot equally likely (the Kyouka / Megumin / Kanna / Senko areas)
 }
-const WATER_W = [60, 30, 5, 4, 1];
+const WATER_W = [1, 1, 1, 1, 1];   // all 5 water slots equally likely, as the Pokédex states (Essentials default was [60, 30, 5, 4, 1])
 function checkWild(x, y) {
   let enc = wildTable(G.mapId);
   if (G.surfing) {                                              // sailing: the Water table, only over water
@@ -329,14 +327,14 @@ function ledgeJump(p, d) {
   if (!m || !(dx || dy)) return false;
   const nx = p.x + dx, ny = p.y + dy, lx = nx + dx, ly = ny + dy;
   if (lx < 0 || ly < 0 || lx >= m.w || ly >= m.h) return false;
-  if (terrainTagAt(nx, ny) !== 1 || ![1, 6].includes(m.tsId)) return false;   // outdoor + cave (Tanoby Key) tilesets
-  if (dx && m.tsId !== 1 && m.tsId !== 6) return false;                              // cave ledges are down-only (the Dotted Hole, tileset 6, also has a sideways wall)
-  // sideways hops only over vertical ledge walls (the tile above or below is a ledge too)
-  if (dx && terrainTagAt(nx, ny - 1) !== 1 && terrainTagAt(nx, ny + 1) !== 1) return false;
-  // ...and each vertical wall only one way: you hop towards the side where the cliff face is drawn: tiles 1205/1206/1214 left to right, tiles 1202/1203/1210 right to left
+  if (terrainTagAt(nx, ny) !== 1 || ![1, 6, 27].includes(m.tsId)) return false;   // outdoor + cave tilesets (6 = Tanoby Key / Alola Biodome caves, 27 = Mt. Silver caves)
+  // sideways hops only over the vertical wall tiles, and each wall only one way: you hop towards the side where the cliff face is drawn
+  // (no neighbour check: the ends of a wall are often drawn with a plain corner tile that carries no ledge tag)
   if (dx) {
     let ids = []; for (let z = 0; z < 3; z++) ids.push(m.data[nx + ny * m.w + z * m.w * m.h]);
-    const R = [1205, 1206, 1214, 1285, 1286, 1294], Lf = [1202, 1203, 1210, 1282, 1283, 1290].concat(m.tsId === 6 ? [1161] : []);   // second set: the grey Mt. Ember cliff variant
+    let R = [1205, 1206, 1214, 1285, 1286, 1294], Lf = [1202, 1203, 1210, 1282, 1283, 1290];   // outdoor: 1205/1206/1214 hop left to right, 1202/1203/1210 right to left (second tiles: grey variant)
+    if (m.tsId === 6) { R = R.concat([1603, 1604, 1612, 590, 591, 599]); Lf = Lf.concat([1161, 1600, 1601, 1608, 587, 588, 595]); }   // cave walls (1161 = the grey Mt. Ember cliff variant)
+    if (m.tsId === 27) { R = [590, 591, 599]; Lf = [587, 588, 595]; }
     if (dx > 0 ? !ids.some(t => R.includes(t)) : !ids.some(t => Lf.includes(t))) return false;
   }
   if (!p.passableTile(lx, ly, { 2: 8, 4: 6, 6: 4 }[d])) return false;
@@ -394,7 +392,7 @@ function* seviiFerryUI(cur) {
     if (c >= 0 && c < dests.length) G.ferryReq = { to: dests[c] };
   })());
 }
-const MART_TIERS = {"8":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","MAXPOTION","FULLRESTORE","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","REPEL","SUPERREPEL","MAXREPEL"],"7":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","MAXPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","REPEL","SUPERREPEL","MAXREPEL"],"6":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","REPEL","SUPERREPEL"],"5":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","REPEL","SUPERREPEL"],"4":["POKEBALL","GREATBALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","REPEL"],"3":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","REPEL"],"2":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE"],"1":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE"]};   // stock unlocked per badge count (copied from the Celadon department store)
+const MART_TIERS = {"8":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","MAXPOTION","FULLRESTORE","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","ETHER","MAXETHER","REPEL","SUPERREPEL","MAXREPEL"],"7":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","MAXPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","ETHER","MAXETHER","REPEL","SUPERREPEL","MAXREPEL"],"6":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","FULLHEAL","REVIVE","ETHER","MAXETHER","REPEL","SUPERREPEL"],"5":["POKEBALL","GREATBALL","ULTRABALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","ETHER","MAXETHER","REPEL","SUPERREPEL"],"4":["POKEBALL","GREATBALL","POTION","SUPERPOTION","HYPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","ETHER","REPEL"],"3":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","ETHER","REPEL"],"2":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE","ETHER"],"1":["POKEBALL","GREATBALL","POTION","SUPERPOTION","ANTIDOTE","BURNHEAL","ICEHEAL","AWAKENING","PARALYZEHEAL","REVIVE"]};   // stock unlocked per badge count (copied from the Celadon department store)
 function* worldScript(it, s) {
   let m;
   if (s === 'pbSeviiFerry') {
@@ -561,6 +559,7 @@ function* worldScript(it, s) {
     }
     return true;
   }
+  if (s === 'pbTMShop()' || s === 'pbTMShop') { G.uiGen = tmShop(); yield; return true; }
   if (s.startsWith('pbPokemonMart(')) {
     const list = [...s.matchAll(/:(\w+)/g)].map(x => x[1]);
     if (list.includes('POTION') && badgeCount() >= 2) list.push('SUMMERSTONE', 'CASUALSTONE', 'EVERSTONE');   // general marts stock the stones (and the Everstone) after the 2nd badge
@@ -600,12 +599,14 @@ function drawMart(S) {
     if (i === S.idx) { const cu = UI('bag/cursor'); if (cu) ctx.drawImage(cu, 0, 0, 282, 68, 194, y - 18, 262, 68); }
     if (i === pk.length) { txt(__('CANCEL'), 212, y + 6, { size: 24 }); continue; }
     const k = pk[i];
+    if (k === '@SEARCH') { txt('\u2315 ' + __('SEARCH...'), 212, y + 6, { size: 22 }); continue; }
     txt(itemLabel(k), 212, y + 6, { size: 22 });
     txt('$' + (S.mode === 'buy' ? martPrice(k) : Math.floor((itemInfo(k).price || 0) / 2)), 440, y + 6, { align: 'right', size: 22 });
   }
   if (S.scroll + rows < pk.length + 1) { const da = UI('downarrow'); if (da) ctx.drawImage(da, (Math.floor(G.frame / 4) % 8) * 28, 0, 28, 40, 440, 258, 28, 40); }
   const cur = S.idx < pk.length ? pk[S.idx] : null;
-  if (cur) {
+  if (cur === '@SEARCH') wrap(__('Type a TM number or a move name to filter the list.'), 400, 22).slice(0, 3).forEach((l, i) => txt(l, 84, 288 + i * 26, { col: COL.light, size: 22 }));
+  else if (cur) {
     drawItemIcon(cur, 24, SH - 72);
     wrap(itemInfo(cur).desc, 400, 22).slice(0, 3).forEach((l, i) => txt(l, 84, 288 + i * 26, { col: COL.light, size: 22 }));
     if (S.mode === 'sell') txt(__('In bag: ×{0}', (G.items[cur] || 0)), 24, 72, { size: 20 });
@@ -615,8 +616,23 @@ function drawMart(S) {
     txt('×' + S.qty.n, 258, 148, { size: 26 }); txt('$' + S.qty.total, 462, 148, { align: 'right', size: 26 });
   }
 }
-function* martScreen(items) {
+// TM shop: every TM in the game, listed in full; the first row, SEARCH..., filters it by the TM number or (part of) the move's name
+function* tmShop() {
+  const all = Object.keys(D.IT).filter(k => /^TM\d+$/.test(k) && D.IT[k].move && D.MV[D.IT[k].move] && !(G.items[k] > 0)).sort((a, b) => +a.slice(2) - +b.slice(2));   // TMs you already own are not for sale
+  if (!all.length) { yield* uiMessage(__('You already own every TM!')); return; }
+  const norm = t => t.toLowerCase().replace(/[\s-]+/g, ' ');
+  const filter = (q0, cur) => {
+    const q = norm(q0), num = /^(?:tm\s*)?(\d{1,3})$/.exec(q);
+    if (num) { const key = 'TM' + String(+num[1]).padStart(2, '0'); return cur.filter(k => k === key); }
+    return cur.filter(k => norm(D.MV[D.IT[k].move].name).includes(q) || norm(tr(D.MV[D.IT[k].move].name)).includes(q));
+  };
+  yield* martScreen(all, { search: true, once: true, filter });
+}
+
+function* martScreen(items, opts) {       // opts.search + opts.filter(query) -> keys: a first "SEARCH..." row that filters the list by typed text
   const S = { mode: 'buy', list: items, idx: 0, scroll: 0, qty: null };
+  const withSearch = l => (opts && opts.search ? ['@SEARCH'].concat(l) : l);
+  S.list = withSearch(items);
   const draw = () => { if (S.shown) drawMart(S); drawPopup(); drawUiMsg(); };
   return yield* withDraw(draw, (function* () {
     const pickQty = function* (max, unit) {
@@ -642,17 +658,24 @@ function* martScreen(items) {
         if (!ok()) continue;
         if (S.idx === n) { sfx('back'); break; }
         const k = S.list[S.idx]; sfx('ok');
+        if (k === '@SEARCH') {
+          const q = ((yield* promptName('TM number or move name?', '', 24)) || '').trim();
+          const hits = q ? opts.filter(q, items) : items;
+          if (!hits.length) { yield* uiMessage(__('No TM found for "{0}".', q)); continue; }
+          S.list = withSearch(hits); S.idx = 1 < S.list.length ? 1 : 0; S.scroll = 0; continue;
+        }
         if (S.mode === 'buy') {
           const price = martPrice(k);
           if (price > G.money) { yield* uiMessage(__('You don\'t have enough money.')); continue; }
           const have = G.items[k] || 0; const max = Math.max(1, Math.min(99 - have, Math.floor(G.money / price)));
           if (have >= 99) { yield* uiMessage(__('You can\'t carry any more.')); continue; }
-          const q = yield* pickQty(max, price); if (!q) continue;
+          const q = opts && opts.once ? 1 : yield* pickQty(max, price); if (!q) continue;
           yield* uiMessage(__('{0}, and you want {1}. That will be ${2}. OK?', itemName(k), q, (q * price)), { noWait: true });
           const yes = yield* yesNo(); G.uiMsg = null;
           if (!yes) continue;
           G.money -= q * price; G.items[k] = have + q; playSE('ItemGet');
           yield* uiMessage(__('Here you are! Thank you!'));
+          if (opts && opts.once) { items = items.filter(x => x !== k); S.list = S.list.filter(x => x !== k); S.idx = Math.min(S.idx, S.list.length); }   // owned TMs leave the list
         } else {
           const unit = Math.floor((itemInfo(k).price || 0) / 2), have = G.items[k] || 0;
           const q = yield* pickQty(have, unit); if (!q) continue;
@@ -672,7 +695,7 @@ function* martScreen(items) {
       const c = yield* choiceWindow([__('BUY'), __('SELL'), __('QUIT')], { x: 6, y: 6 });
       G.uiMsg = null;
       if (c < 0 || c === 2) break;
-      if (c === 0) { S.mode = 'buy'; S.list = items; yield* browse(); }
+      if (c === 0) { S.mode = 'buy'; S.list = withSearch(items); yield* browse(); }
       else {
         S.mode = 'sell'; S.list = Object.keys(G.items).filter(k => G.items[k] > 0 && itemInfo(k).pocket !== 8 && (itemInfo(k).price || 0) > 0);
         if (!S.list.length) { yield* uiMessage(__('You don\'t have anything I can buy.')); continue; }

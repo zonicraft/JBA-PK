@@ -10,8 +10,35 @@ check the mansion and quest to buy it maybe scrap
 
 check dialogue
 
-check if theres a good way to farm money
+add a way to change the font of the game
 
+most dialogue uses Jorge and Gardete instead of the special names defined by the player
+
+check how the wild encounter rates work, because im getting the same few in a row
+some ledges dont work for example map 350 ledges right left and on mt silver and alola biodome also dont work
+not all moves have tms on the dept store
+icefall cave map is not implemented but there are pokemon with wild encounters there, remove them and chech of those pokemon also appear somewhere else
+ethers are missing from the shop
+superrod dialogue is not localized
+water tiles with other things overlayed are counting as solid and as water, so the boat stops and the player gets on foot
+on route 10 is possible to exit the boat into a mountain on the bottom of the water portion
+the ae86 barriers should disappear after the legendary enconter
+lavander town cannot be reached w the teleporter
+on the right fuschia exit has the wrong switch for the geso block
+some water tiles on route 6 are not interactable, from down
+on the pokedex, when seeing the pokemon on a route, add an icon to say if that pokemon is caught already
+pokemon named run has her name translated
+master ball dialogue is not localized
+remove the lock on the rocket warehouse door
+nuno stays on the uchikido lab even after the event is done
+
+discord rich presence
+
+on the html pokedex on each pokemon also show the elements that are strong and weak against them, strong against: / weak against:
+
+autosave feature after every fight
+
+hp bar on the summary is not corrtly placed
 music on nunos battle is low in volume
 seafoam island puzzle is badly implemented
 remove the ss anne maps

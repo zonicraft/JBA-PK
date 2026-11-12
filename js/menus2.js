@@ -353,7 +353,12 @@ function* saveGame() {
 function drawSaveInfo() {
   skinBox('skin_choice_1', 0, 0, 290, 160);
   const rows = [['Player', G.name], ['Badges', String(badgeCount())], ['Time', fmtTime(G.playFrames)], ['Location', tr(mapNameOf(G.mapId))]];
-  rows.forEach(([a, b], i) => { txt(a, 22, 18 + i * 34, { size: 22 }); txt(b, 270, 18 + i * 34, { size: 22, align: 'right', col: COL.blue }); });
+  rows.forEach(([a, b], i) => {
+    txt(a, 22, 18 + i * 34, { size: 22 });
+    const room = 270 - (22 + txtW(a, 22) + 14);                         // what is left of the row after its label: a long map name is cut with "..." instead of overlapping the label
+    let v = String(b); if (txtW(v, 22) > room) { while (v.length > 1 && txtW(v + '...', 22) > room) v = v.slice(0, -1); v = v.trimEnd() + '...'; }
+    txt(v, 270, 18 + i * 34, { size: 22, align: 'right', col: COL.blue });
+  });
 }
 
 // ------------------------------------------------------------ Town map (PBS/townmap.txt)
@@ -454,6 +459,22 @@ function* cheatGivePokemon() {
   if (G.party.length < 6) { G.party.push(mon); sfx('item'); yield* uiMessage(__('Got {0} (Lv. {1})! Added to your party.', pokeName(mon), lvl)); }
   else { pcAdd(mon); sfx('item'); yield* uiMessage(__('{0} (Lv. {1}) was sent to the PC because your party is full.', pokeName(mon), lvl)); }
 }
+function* cheatWildEncounter() {      // search a species (default: Run), pick a level, close the menus and fight it as a wild Pokémon
+  const q = yield* promptName('Wild Pokémon? (name)', 'Run', 20);
+  const key = (q || '').trim().toLowerCase(); if (!key) return;
+  const all = Object.keys(D.SP).filter(k => D.SP[k] && D.SP[k].name);
+  let hits = all.filter(k => D.SP[k].name.toLowerCase() === key || k.toLowerCase() === key);
+  if (!hits.length) hits = all.filter(k => D.SP[k].name.toLowerCase().startsWith(key));
+  if (!hits.length) hits = all.filter(k => D.SP[k].name.toLowerCase().includes(key));
+  if (!hits.length) { yield* uiMessage(__('No Pokémon found for "{0}".', q)); return; }
+  if (hits.length > 1) {
+    const shown = hits.slice(0, 8), labels = shown.map(k => D.SP[k].name).concat(['CANCEL']);
+    const c = yield* choiceWindow(labels, { x: 8, y: 8, w: 330, idx: 0 });
+    if (c < 0 || c >= shown.length) return; hits = [shown[c]];
+  }
+  const lv = yield* promptName(__('Level? (1-{0})', MAXLEVEL), '5', 3);
+  G.wildReq = { sym: hits[0], lvl: Math.max(1, Math.min(MAXLEVEL, parseInt(lv, 10) || 5)) };
+}
 function* cheatFillPC() {
   // one of every species (no Megas) into the PC, skipping ones already stored; also completes the Pokédex
   pcInit(); G.owned = G.owned || {};
@@ -513,7 +534,7 @@ function* cheatGiveItem() {            // type (part of) an item name, pick from
 // Teleport cheat: [label, map id, x, y] where (x, y) is the tile just below the city's Poké Center door (Pallet: below the player's house door).
 const CHEAT_CITIES = [
   ['PALLET TOWN', 2, 12, 8], ['VIRIDIAN CITY', 7, 26, 27], ['PEWTER CITY', 87, 21, 31], ['CERULEAN CITY', 100, 22, 20],
-  ['SAFFRON CITY', 234, 24, 40], ['VERMILION CITY', 122, 20, 7], ['CELADON CITY', 171, 48, 16], ['FUCHSIA CITY', 202, 25, 33],
+  ['SAFFRON CITY', 234, 24, 40], ['VERMILION CITY', 122, 20, 7], ['LAVENDER TOWN', 151, 6, 6], ['CELADON CITY', 171, 48, 16], ['FUCHSIA CITY', 202, 25, 33],
   ['CINNABAR ISLAND', 264, 20, 12],
   ['INDIGO PLATEAU', 317, 13, 7],
 ];
@@ -534,7 +555,7 @@ function* cheatTeleport() {   // opens the town map; picking a city + confirming
 function cheatsEnabled() { try { return /[?&#]cheats=(1|true|on)\b/i.test(location.href); } catch (e) { return false; } }
 function* cheatsMenu() {
   if (!cheatsEnabled()) return;
-  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'TELEPORT TO CITY', 'GIVE ITEM', 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'), 'FILL PC WITH ALL', 'TELEPORT TO MAP ID', 'CANCEL'];
+  const labels = ['LEVEL UP POKéMON', 'GIVE POKéMON', 'GIVE MOVE', 'OPEN PC', '+$10000', 'HEAL PARTY', 'TELEPORT TO CITY', 'GIVE ITEM', 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'), 'FILL PC WITH ALL', 'TELEPORT TO MAP ID', 'WILD ENCOUNTER', 'CANCEL'];
   const CANCEL = labels.length - 1;
   let idx = 0;
   while (true) {
@@ -564,6 +585,7 @@ function* cheatsMenu() {
     else if (r === 7) { yield* cheatGiveItem(); }
     else if (r === 9) { yield* cheatFillPC(); }
     else if (r === 10) { yield* cheatTeleportXY(); if (G.teleReq) return; }
+    else if (r === 11) { yield* cheatWildEncounter(); if (G.wildReq) return; }
     else if (r === 8) { G.noclip = !G.noclip; labels[8] = 'NOCLIP: ' + (G.noclip ? 'ON' : 'OFF'); sfx('ok'); }
   }
 }
@@ -600,7 +622,7 @@ function* pauseMenu() {
       if (act === 'dex') yield* pokedexScreen();
       else if (act === 'party') yield* partyScreen({ mode: 'menu' });
       else if (act === 'bag') { yield* bagScreen({ mode: 'field' }); if (G.fishReq || G.teleReq) return; }
-      else if (act === 'cheats') { yield* cheatsMenu(); if (G.teleReq) return; }
+      else if (act === 'cheats') { yield* cheatsMenu(); if (G.teleReq || G.wildReq) return; }
       else if (act === 'map') { yield* townMapScreen(); if (G.teleReq) return; }
       else if (act === 'card') yield* trainerCard();
       else if (act === 'options') yield* optionsScreen();
@@ -608,7 +630,7 @@ function* pauseMenu() {
     }
   })());
 }
-function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; if (G.teleReq) { const t = G.teleReq; G.teleReq = null; G.main = new Interp([[201, 0, [0, t.map, t.x, t.y, 2, 0]], [0, 0, []]], null); } else if (G.fishReq) { const rod = G.fishReq; G.fishReq = null; G.main = new Interp([[355, 0, [rod === 'Boat' ? 'pbSurfStart' : 'pbFish("' + rod + '")']], [0, 0, []]], null); } })()); }
+function openPause() { G.pauseOpen = true; startUI((function* () { yield* pauseMenu(); G.pauseOpen = false; if (G.teleReq) { const t = G.teleReq; G.teleReq = null; G.main = new Interp([[201, 0, [0, t.map, t.x, t.y, 2, 0]], [0, 0, []]], null); } else if (G.wildReq) { const w = G.wildReq; G.wildReq = null; G.main = new Interp([[355, 0, ['pbWildBattle(:' + w.sym + ',' + w.lvl + ') //random']], [0, 0, []]], null); } else if (G.fishReq) { const rod = G.fishReq; G.fishReq = null; G.main = new Interp([[355, 0, [rod === 'Boat' ? 'pbSurfStart' : 'pbFish("' + rod + '")']], [0, 0, []]], null); } })()); }
 
 // ------------------------------------------------------------ Export / import save files (main menu)
 // Export: downloads the current save as a .json file.  Import: reads such a file back into this browser's save slot.

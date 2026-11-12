@@ -372,8 +372,8 @@ class Chr {
     if (this.isPlayer && !G.surfing && typeof currentBlocks === 'function' && currentBlocks(nx, ny)) return false;   // water currents need the boat
     if (this.isPlayer && G.surfing && typeof currentDirAt === 'function' && currentDirAt(nx, ny) && !currentDirAt(this.x, this.y)) { G.tooFast = true; return false; }   // the boat can't enter a running current
     const sf = ((this.isPlayer && G.surfing) || this.swims()) && typeof isWaterAt === 'function';      // surfing: water counts as floor
-    if (!(sf && isWaterAt(this.x, this.y) && !solidOverWater(this.x, this.y)) && !this.passableTile(this.x, this.y, d)) return false;
-    if (!(sf && isWaterAt(nx, ny) && !solidOverWater(nx, ny)) && !this.passableTile(nx, ny, opp[d])) return false;
+    if (sf && isWaterAt(this.x, this.y) && !solidOverWater(this.x, this.y)) { if (!waterPass(this.x, this.y, d)) return false; } else if (!this.passableTile(this.x, this.y, d)) return false;
+    if (sf && isWaterAt(nx, ny) && !solidOverWater(nx, ny)) { if (!waterPass(nx, ny, opp[d])) return false; } else if (!this.passableTile(nx, ny, opp[d])) return false;
     for (const e of G.chars) {
       if (e === this || e.through || e.erased) continue;
       if (e.x !== nx || e.y !== ny) continue;
