@@ -26,6 +26,7 @@ const MM_ICON = {
   pad: MM_SVG('<rect x="2.5" y="7.5" width="19" height="10" rx="5"/><path d="M8 10.5v4M6 12.5h4"/>', '<circle cx="15.5" cy="11.5" r=".9" fill="currentColor"/><circle cx="18" cy="13.5" r=".9" fill="currentColor"/>'),
   pin: MM_SVG('<path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 10-13 0C5.5 15.4 12 21 12 21z"/><circle cx="12" cy="10" r="2.2"/>'),
   clock: MM_SVG('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+  cloud: MM_SVG('<path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 9.5 4.2 4.2 0 0117.5 18z"/>'),
   warn: MM_SVG('<path d="M12 4l9 16H3z"/><path d="M12 10v4.5M12 17.5v.01"/>'),
 };
 const MM_CSS = `
@@ -62,7 +63,7 @@ const MM_CSS = `
 #mainMenu[data-view=home] .mm-char{animation:mmR .8s cubic-bezier(.2,.8,.2,1) backwards}
 .mm-v{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;overflow-x:hidden;overflow-y:auto;padding:max(22px,env(safe-area-inset-top)) 16px max(22px,env(safe-area-inset-bottom));animation:mmin .38s ease both}
 @keyframes mmin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-#mainMenu[data-view=home] .v-home,#mainMenu[data-view=slots] .v-slots,#mainMenu[data-view=settings] .v-settings,#mainMenu[data-view=controls] .v-controls{display:flex}
+#mainMenu[data-view=home] .v-home,#mainMenu[data-view=slots] .v-slots,#mainMenu[data-view=settings] .v-settings,#mainMenu[data-view=controls] .v-controls,#mainMenu[data-view=cloud] .v-cloud{display:flex}
 .mm-mid{margin:auto 0;width:100%;display:flex;flex-direction:column;align-items:center}
 /* logo */
 .mm-logo{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;width:min(440px,100%);container-type:inline-size}
@@ -123,6 +124,25 @@ const MM_CSS = `
 .slot.empty b{color:var(--ink);letter-spacing:.14em;text-transform:uppercase;font-size:16px}
 .slot.empty .s-tools{bottom:8px}
 .slot.broken .s-name{color:var(--danger)}
+/* cloud saves */
+.cld-panel{width:min(900px,100%);display:flex;flex-direction:column;gap:12px}
+.cld-acct{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-radius:22px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:14px 18px}
+.cld-acct .ic{font-size:30px;color:var(--acc2)}.cld-acct .tx{flex:1;min-width:180px}.cld-acct .tx b{display:block}.cld-acct .tx small{color:var(--mut);font-size:13px}
+.cld-btn{padding:10px 18px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.08);font-weight:700}
+.cld-btn.pri{background:var(--acc);color:#1a1300;border-color:transparent}
+.cld-btn:disabled{opacity:.5;pointer-events:none}
+.cld-row{display:grid;grid-template-columns:70px 1fr 1fr auto;gap:12px;align-items:center;border-radius:20px;border:1px solid var(--line);background:var(--glass);padding:10px 14px}
+.cld-n{font-size:12px;letter-spacing:.14em;color:var(--mut);font-weight:800}
+.cld-c small{display:block;color:var(--mut);font-size:11px;letter-spacing:.12em;text-transform:uppercase}.cld-c b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cld-c span{display:block;color:var(--mut);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cld-c.none b{color:var(--mut);font-weight:500}
+.cld-b{display:flex;gap:6px}
+.tool[disabled]{opacity:.28;pointer-events:none}
+@media (max-width:640px){.cld-row{grid-template-columns:1fr 1fr;}.cld-n{grid-column:1/-1}.cld-b{grid-column:1/-1;justify-content:flex-end}}
+/* dialog with text fields */
+.dlg label{display:block;margin:10px 0 0;font-size:13px;color:var(--mut)}
+.dlg input.mm-in{display:block;width:100%;margin:4px 0 0;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--ink);font:inherit;font-size:14px;user-select:text;-webkit-user-select:text}
+.dlg input.mm-in:focus{outline:2px solid var(--acc);outline-offset:1px}
+.dlg p+label{margin-top:4px}.dlg .row{margin-top:16px}
 /* controls */
 .mm-cpanel{width:min(760px,100%);display:flex;flex-direction:column;gap:14px}
 .cgrp{border-radius:22px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:16px 20px}
@@ -208,7 +228,7 @@ const MM_CSS = `
 #mainMenu,#mainMenu *{font-family:PkmnEms,"Segoe UI",system-ui,sans-serif!important;font-weight:400!important}
 #mainMenu small,#mainMenu .meta,#mainMenu p,#mainMenu .s-last{letter-spacing:.02em;font-size:15px}
 /* short screens (phones held sideways): shrink the menu panels so everything fits; --mmz is set from the window height */
-#mainMenu .mm-stack,#mainMenu .v-slots,#mainMenu .v-settings,#mainMenu .v-controls{zoom:var(--mmz,1)}
+#mainMenu .mm-stack,#mainMenu .v-slots,#mainMenu .v-settings,#mainMenu .v-controls,#mainMenu .v-cloud{zoom:var(--mmz,1)}
 /* landscape layout is left-aligned and only .mm-stack is zoomed: give the logo and footer the stack's on-screen width so they share its centre */
 @media (min-aspect-ratio:5/4){#mainMenu .v-home .mm-logo,#mainMenu .v-home .mm-foot{width:calc(min(440px,100%)*var(--mmz,1))}}
 /* build version, bottom right of the main menu */
@@ -231,6 +251,8 @@ function mmSlot(n) {
   return { n, save: d };
 }
 function mmAllSlots() { const a = []; for (let n = 1; n <= SAVE_SLOTS; n++) a.push(mmSlot(n)); return a; }
+// the signed-in Google account is shown masked (parazoni@gmail.com -> p*****i@gmail.com), so screenshots and streams do not leak it
+function mmMaskEmail(e) { e = String(e || ''); const at = e.lastIndexOf('@'); if (at < 1) return ''; const u = e.slice(0, at); return (u.length > 1 ? u[0] + '*****' + u[u.length - 1] : u + '*****') + e.slice(at); }
 function mmDate(t) { if (!t) return ''; try { return new Date(t).toLocaleString([], { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
 
 class MainMenu {
@@ -255,11 +277,14 @@ class MainMenu {
       '<button class="mm-btn" data-f data-act="play" data-main><span class="ic">' + MM_ICON.play + '</span><span>Save files<small>Open a save or start a new adventure</small></span></button>' +
       '<button class="mm-btn" data-f data-act="settings"><span class="ic">' + MM_ICON.gear + '</span><span>Settings<small>Volume, speed, display</small></span></button>' +
       '<button class="mm-btn" data-f data-act="dex"><span class="ic">' + MM_ICON.dex + '</span><span>Pokédex<small>Every Pokémon, where to find it, and your progress</small></span></button>' +
+      '<button class="mm-btn" data-f data-act="cloud" data-cloudbtn><span class="ic">' + MM_ICON.cloud + '</span><span>Cloud saves<small>Back up and restore your saves with Google Drive</small></span></button>' +
       '<button class="mm-btn" data-f data-act="controls"><span class="ic">' + MM_ICON.pad + '</span><span>Controls<small>Keyboard, controller and touch screen</small></span></button></div>' +
       '<div class="mm-foot">Unofficial, non-commercial fan project. Pokémon is owned by Nintendo, Game Freak and The Pokémon Company.</div></div></section>' +
       // slots
       '<section class="mm-v v-slots"><div class="mm-head"><button class="mm-round" data-f data-act="back" aria-label="Back">' + MM_ICON.back + '</button><div><h2>Choose your save file</h2><p>Open a file to continue, or pick an empty slot to start a new game.</p></div></div>' +
       '<div class="mm-slots"></div></section>' +
+      // cloud saves
+      '<section class="mm-v v-cloud"><div class="mm-head" style="width:min(900px,100%)"><button class="mm-round" data-f data-act="back" aria-label="Back">' + MM_ICON.back + '</button><div><h2>Cloud saves</h2><p>Upload your saves to your own Google Drive and download them on any device.</p></div></div><div class="cld-panel"></div></section>' +
       // settings
       '<section class="mm-v v-settings"><div class="mm-head" style="width:min(640px,100%)"><button class="mm-round" data-f data-act="back" aria-label="Back">' + MM_ICON.back + '</button><div><h2>Settings</h2><p>Saved automatically in this browser.</p></div></div>' +
       '<div class="mm-panel">' +
@@ -283,6 +308,8 @@ class MainMenu {
         cl(['Stick'], 'Move (left side of the screen)') + cl(['A'], 'Confirm, talk, interact') + cl(['B'], 'Cancel (hold to run)') + cl(['X'], 'Open the menu · Mega Evolution in battle') + cl(['LB', 'RB'], 'Skateboard') + cl(['Y'], 'Fullscreen') + '</div>' +
       '</div></section>' +
       '<div class="mm-ver" data-ver></div><div class="mm-dlg"></div><div class="mm-toast"></div>';
+    // Cloud saves are for the Windows and Android apps. In the browser they only show when js/cloud-config.js sets showInBrowser: true.
+    { const m = CLOUD.mode(); if (!(m === 'desktop' || (m === 'web' && window.CLOUD_CFG && CLOUD_CFG.showInBrowser))) { const cb = root.querySelector('[data-cloudbtn]'); if (cb) cb.remove(); } }
     document.body.appendChild(root);
     this.bind(); this.sync(); this.go('home');
     try { playBGM('frlg_title', 0.6); } catch (e) { }   // if the browser blocks autoplay, the engine starts it on the first click / key press
@@ -301,6 +328,7 @@ class MainMenu {
     this.prevView = this.view; this.view = view; this.root.dataset.view = view;
     if (view === 'slots') this.renderSlots();
     if (view === 'home') this.renderHomeContinue();
+    if (view === 'cloud') this.renderCloud();
     this.sync();
     const list = this.focusables(); let f = focusSel && list.find(el => el.matches(focusSel));
     if (!f) f = view === 'home' ? (list.find(el => el.dataset.act === 'continue') || list.find(el => el.hasAttribute('data-main'))) : view === 'settings' ? (list.find(el => el.classList.contains('set-row')) || list[0]) : list[0];
@@ -384,7 +412,7 @@ class MainMenu {
   }
   goBack() {
     if (this.dlg) { this.closeDlg(false); sfx('back'); return; }
-    if (this.view === 'slots' || this.view === 'settings' || this.view === 'controls') { sfx('back'); this.go('home', '[data-act="' + (this.view === 'slots' ? 'play' : this.view) + '"]'); }
+    if (this.view === 'slots' || this.view === 'settings' || this.view === 'controls' || this.view === 'cloud') { sfx('back'); this.go('home', '[data-act="' + (this.view === 'slots' ? 'play' : this.view) + '"]'); }
   }
 
   // ------------------------------------------------------------ actions
@@ -401,12 +429,21 @@ class MainMenu {
   act(el) {
     const d = el.dataset, a = d.act;
     switch (a) {
-      case 'continue': case 'open': { const s = mmSlot(+d.n); if (!s.save) return this.toast('That save could not be read.'); sfx('ok'); this.choose({ type: 'load', slot: s.n, save: s.save }); break; }
+      case 'continue': case 'open': { const s = mmSlot(+d.n); if (!s.save) return this.toast('That save could not be read.'); sfx('ok'); this.openSlot(s); break; }
       case 'new': sfx('ok'); this.choose({ type: 'new', slot: +d.n }); break;
       case 'play': sfx('ok'); this.go('slots', '.slot-main'); { const l = this.focusables(); const pick = l.find(e => e.dataset.n == this.lastSlot() && e.classList.contains('slot-main')) || l.find(e => e.dataset.act === 'new') || l[0]; this.setFocus(pick || null); } break;
       case 'settings': sfx('ok'); this.go('settings'); break;
       case 'dex': this.openDex(); break;
       case 'controls': sfx('ok'); this.go('controls'); break;
+      case 'cloud': sfx('ok'); this.go('cloud'); break;
+      case 'cl-in': this.clSignIn(); break;
+      case 'cl-auto': CLOUD.setAuto(!CLOUD.autoOn()); sfx('ok'); this.clKeep = null; this.toast(CLOUD.autoOn() ? __('Automatic upload is ON.') : __('Automatic upload is OFF.')); this.renderCloud(); break;
+      case 'cl-cfg': this.clCfg(); break;
+      case 'cl-retry': this.renderCloud(); break;
+      case 'cl-out': this.clSignOut(); break;
+      case 'cl-up': this.clUp(+d.n); break;
+      case 'cl-down': this.clDown(+d.n); break;
+      case 'cl-del': this.clDel(+d.n); break;
       case 'back': this.goBack(); break;
       case 'fs': sfx('ok'); toggleFullscreen(); break;
       case 'update': this.checkUpdate(); break;
@@ -422,7 +459,7 @@ class MainMenu {
         sfx(r ? 'ok' : 'buzzer'); this.toast(r === null ? 'Nothing to export.' : r === false ? 'That save is damaged and could not be exported.' : __('Exported {0}', r)); break; }
       case 'import': sfx('ok'); this.importInto(+d.n); break;
       case 'delete': sfx('ok'); this.confirmDelete(+d.n); break;
-      case 'dlg-yes': this.closeDlg(true); break;
+      case 'dlg-yes': if (this.dlg && this.dlg.collect) this.dlg.vals = this.dlg.collect(); this.closeDlg(true); break;
       case 'dlg-no': sfx('back'); this.closeDlg(false); break;
     }
   }
@@ -449,6 +486,141 @@ class MainMenu {
     r.querySelectorAll('[data-ver]').forEach(e => { const v = MM_VERSION(); e.textContent = v ? 'v' + v : ''; });
   }
 
+
+  // ------------------------------------------------------------ cloud saves (Google Drive, see js/cloud.js)
+  clHead(icon, title, sub, btn) {
+    return '<div class="cld-acct"><span class="ic">' + MM_ICON.cloud + '</span><div class="tx"><b>' + mmEsc(title) + '</b><small>' + mmEsc(sub) + '</small></div>' + (btn || '') + '</div>';
+  }
+  async renderCloud() {
+    const box = this.root.querySelector('.cld-panel'); if (!box) return;
+    const tk = this.clTk = (this.clTk || 0) + 1, live = () => tk === this.clTk && this.view === 'cloud';
+    const mode = CLOUD.mode();
+    if (mode === 'none') { box.innerHTML = this.clHead('', __('Not available here'), /^https?:$/.test(location.protocol) ? __('Cloud saves work in the browser version (on a web address) and in the Windows app.') : __('You opened the game as a file. Open it from a web address (e.g. http://localhost:8000) to use cloud saves.')); return; }
+    if (!(await CLOUD.configured())) { if (live()) { box.innerHTML = this.clHead('', __('Not set up yet'), __('The game needs the Client ID of a Google app first. See CLOUD_SETUP.md.'), '<button class="cld-btn pri" data-f data-act="cl-cfg">' + mmEsc(__('Set up')) + '</button>'); this.setFocus(box.querySelector('[data-act="cl-cfg"]')); } return; }
+    const st = await CLOUD.status(); if (!live()) return;
+    if (!st.signedIn) {
+      box.innerHTML = this.clHead('', __('Not signed in'), __('Sign in with Google. The game can only see its own hidden folder, never your other files.'), '<button class="cld-btn pri" data-f data-act="cl-in">' + mmEsc(__('Sign in with Google')) + '</button>');
+      this.setFocus(box.querySelector('[data-act="cl-in"]')); return;
+    }
+    box.innerHTML = this.clHead('', mmMaskEmail(st.email) || __('Signed in'), __('Loading your cloud saves…'), '<button class="cld-btn" data-f data-act="cl-out">' + mmEsc(__('Sign out')) + '</button>');
+    let files; try { files = await CLOUD.list(); } catch (e) {
+      if (!live()) return;
+      if (e.code === 'auth') { box.innerHTML = this.clHead('', __('Not signed in'), e.message, '<button class="cld-btn pri" data-f data-act="cl-in">' + mmEsc(__('Sign in with Google')) + '</button>'); this.setFocus(box.querySelector('[data-act="cl-in"]')); return; }
+      box.innerHTML = this.clHead('', mmMaskEmail(st.email) || __('Signed in'), e.message, '<button class="cld-btn" data-f data-act="cl-retry">' + mmEsc(__('Retry')) + '</button><button class="cld-btn" data-f data-act="cl-out">' + mmEsc(__('Sign out')) + '</button>'); return;
+    }
+    if (!live()) return;
+    this.cl = { files };
+    const rows = mmAllSlots().map(s => {
+      const n = s.n, c = files[n], sv = s.save;
+      const loc = sv ? '<div class="cld-c"><small>' + mmEsc(__('This device')) + '</small><b>' + mmEsc(sv.name) + '</b><span>' + mmEsc(mapNameOf(sv.map) + ' · ' + fmtTime(sv.playFrames || 0) + ' · ' + mmBadges(sv) + '★ · ' + mmDate(sv.t)) + '</span></div>' : '<div class="cld-c none"><small>' + mmEsc(__('This device')) + '</small><b>' + mmEsc(s.broken ? __('Damaged') : __('Empty')) + '</b></div>';
+      const cl = c ? '<div class="cld-c"><small>' + mmEsc(__('Google Drive')) + '</small><b>' + mmEsc(c.name) + '</b><span>' + mmEsc(mapNameOf(c.m) + ' · ' + fmtTime(c.pf) + ' · ' + c.b + '★ · ' + mmDate(c.t)) + '</span></div>' : '<div class="cld-c none"><small>' + mmEsc(__('Google Drive')) + '</small><b>' + mmEsc(__('Nothing uploaded')) + '</b></div>';
+      const bt = (act, ic, ok, tt, cls) => '<button class="tool' + (cls ? ' ' + cls : '') + '"' + (ok ? ' data-f data-act="' + act + '" data-n="' + n + '"' : ' disabled') + ' title="' + mmEsc(tt) + '" aria-label="' + mmEsc(tt + ' ' + n) + '">' + ic + '</button>';
+      return '<div class="cld-row"><div class="cld-n">SLOT ' + n + '</div>' + loc + cl + '<div class="cld-b">' + bt('cl-up', MM_ICON.up, !!sv, __('Upload to Google Drive')) + bt('cl-down', MM_ICON.down, !!c, __('Download from Google Drive')) + bt('cl-del', MM_ICON.trash, !!c, __('Delete the cloud copy'), 'danger') + '</div></div>';
+    }).join('');
+    box.innerHTML = this.clHead('', mmMaskEmail(st.email) || __('Signed in'), __('Upload ↑ sends this device\'s save to Drive. Download ↓ replaces the save on this device.'), '<button class="cld-btn" data-f data-act="cl-out">' + mmEsc(__('Sign out')) + '</button>') + this.clAutoCard() + rows;
+    const keep = this.clKeep; this.clKeep = null;
+    this.setFocus((keep && box.querySelector('[data-act="' + keep.a + '"][data-n="' + keep.n + '"]')) || box.querySelector('[data-act="cl-up"]:not([disabled])') || box.querySelector('[data-f]'));
+  }
+  clErr(e) { sfx('buzzer'); this.toast(e && e.message ? e.message : __('Something went wrong.')); if (e && e.code === 'auth') this.renderCloud(); }
+  // dialog with text fields: o = { title, text, yes, fields: [{ k, label, value, ph }] }; onOk gets { k: value }.
+  // G.modal stops the game's own key handling while typing; Enter saves, Escape cancels.
+  askFields(o, onOk) {
+    this.dlgPrev = this.focused;
+    this.dlg = { onYes: onOk, modal: true, collect: () => { const v = {}; this.root.querySelectorAll('.mm-dlg input.mm-in').forEach(i => { v[i.dataset.k] = i.value; }); return v; } };
+    G.modal = true;
+    const el = this.root.querySelector('.mm-dlg');
+    el.innerHTML = '<div class="dlg" role="dialog"><h3>' + mmEsc(o.title) + '</h3><p>' + mmEsc(o.text || '') + '</p>' + o.fields.map(f => '<label>' + mmEsc(f.label) + '<input class="mm-in" data-k="' + f.k + '" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + mmEsc(f.ph || '') + '" value="' + mmEsc(f.value || '') + '"></label>').join('') + '<div class="row"><button data-f data-act="dlg-no">' + mmEsc(__('Cancel')) + '</button><button data-f data-act="dlg-yes">' + mmEsc(o.yes || 'OK') + '</button></div></div>';
+    el.classList.add('open');
+    el.querySelectorAll('input.mm-in').forEach(i => i.addEventListener('keydown', e => {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); el.querySelector('[data-act="dlg-yes"]').click(); } else if (e.key === 'Escape') { e.preventDefault(); el.querySelector('[data-act="dlg-no"]').click(); }
+    }));
+    const first = el.querySelector('input.mm-in'); if (first) { first.focus(); first.select(); }
+  }
+  async clCfg() {
+    const cur = await CLOUD.getConfig();
+    this.askFields({
+      title: __('Google app settings'),
+      text: cur.secret ? __('Paste the Client ID and Client secret of your Google "Desktop app" OAuth client. See CLOUD_SETUP.md.') : __('Paste the Client ID of your Google "Web application" OAuth client. See CLOUD_SETUP.md.'),
+      yes: __('Save'),
+      fields: [{ k: 'id', label: __('Client ID'), value: cur.clientId, ph: '123456-abc.apps.googleusercontent.com' }].concat(cur.secret ? [{ k: 'secret', label: __('Client secret (leave empty to keep the current one)'), value: '', ph: 'GOCSPX-…' }] : [])
+    }, async v => {
+      const id = String((v && v.id) || '').trim();
+      if (id && !/\.apps\.googleusercontent\.com$/i.test(id)) { sfx('buzzer'); return this.toast(__('That does not look like a Google Client ID (it ends in .apps.googleusercontent.com).')); }
+      try { await CLOUD.setConfig(id, String((v && v.secret) || '').trim()); sfx('save'); this.toast(id ? __('Saved.') : __('Cleared.')); } catch (e) { return this.clErr(e); }
+      if (this.view === 'cloud') this.renderCloud();
+    });
+  }
+  // Opening a save: when a Google account is signed in (and the phone/PC is online), look for a newer copy on Drive first.
+  // Never blocks for long (4 s) and never opens a sign-in window; any problem just opens the local save.
+  async openSlot(s) {
+    if (this.opening) return; this.opening = true;
+    const play = sv => { this.opening = false; this.choose({ type: 'load', slot: s.n, save: sv || s.save }); };
+    let c = null, slow = setTimeout(() => this.toast(__('Checking Google Drive…')), 700);
+    try {
+      if (await CLOUD.canQuiet()) {
+        const files = await Promise.race([CLOUD.list(), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 4000))]);
+        const f = files[s.n]; if (f && f.t > (s.save.t || 0) + 1000) c = f;
+      }
+    } catch (e) { c = null; }
+    clearTimeout(slow);
+    if (!c) return play();
+    this.confirm({ title: __('A newer save is on Google Drive'), text: __('Slot {0} on Google Drive is newer than the one on this device ({1} vs {2}). Download it before playing?', s.n, mmDate(c.t), mmDate(s.save.t)), yes: __('Download newer save'), no: __("Play this device's save") },
+      async () => {
+        try {
+          this.toast(__('Downloading…'));
+          const data = JSON.parse(await CLOUD.download(c.id)); if (!validSaveData(data)) throw new Error(__('The cloud copy is damaged.'));
+          localStorage.setItem(slotKey(s.n), JSON.stringify(data)); migrateSyms(data); play(data);
+        } catch (e) { this.toast(e && e.message ? e.message : __('Something went wrong.')); play(); }
+      }, () => play());
+  }
+  clAutoCard() {
+    const on = CLOUD.autoOn(), la = CLOUD.lastAuto();
+    const sub = !la ? __('Saves made in the game are sent to Google Drive by themselves.') : la.ok ? __('Last automatic upload: {0}', mmDate(la.t)) : __('Last automatic upload failed: {0}', la.msg || '?');
+    return '<div class="cld-acct"><span class="ic">' + MM_ICON.up + '</span><div class="tx"><b>' + mmEsc(__('Upload automatically')) + '</b><small>' + mmEsc(sub) + '</small></div><button class="cld-btn' + (on ? ' pri' : '') + '" data-f data-act="cl-auto">' + mmEsc(on ? __('ON') : __('OFF')) + '</button></div>';
+  }
+  async clSignIn() {
+    if (this.clBusy) return; this.clBusy = true; this.toast(__('Opening Google sign-in…'));
+    try { await CLOUD.signIn(); sfx('ok'); } catch (e) { this.clErr(e); } finally { this.clBusy = false; }
+    if (this.view === 'cloud') this.renderCloud();
+  }
+  async clSignOut() { try { await CLOUD.signOut(); } catch (e) { } sfx('back'); this.toast(__('Signed out.')); this.renderCloud(); }
+  clSummary(sv) { return { name: sv.name, t: sv.t, pf: sv.playFrames || 0, b: mmBadges(sv), m: sv.map }; }
+  clUp(n) {
+    if (this.clBusy) return; const s = mmSlot(n); if (!s.save) return this.toast(__('Nothing to upload in this slot.'));
+    const c = this.cl && this.cl.files[n];
+    const go = async () => {
+      this.clBusy = true; this.toast(__('Uploading…'));
+      try { const raw = localStorage.getItem(slotKey(n)); await CLOUD.upload(n, raw, this.clSummary(s.save), c && c.id); sfx('save'); this.toast(__('Slot {0} uploaded.', n)); }
+      catch (e) { this.clErr(e); } finally { this.clBusy = false; }
+      this.clKeep = { a: 'cl-up', n }; if (this.view === 'cloud') this.renderCloud();
+    };
+    if (c) { const newer = c.t > (s.save.t || 0); this.confirm({ title: __('Replace the cloud copy?'), text: newer ? __('The copy on Google Drive is NEWER than the one on this device. Uploading replaces it.') : __('This replaces the copy of slot {0} on Google Drive.', n), yes: __('Upload'), danger: newer }, go); } else go();
+  }
+  clDown(n) {
+    if (this.clBusy) return; const c = this.cl && this.cl.files[n]; if (!c) return;
+    const s = mmSlot(n);
+    const go = async () => {
+      this.clBusy = true; this.toast(__('Downloading…'));
+      try {
+        const txt = await CLOUD.download(c.id); let data = null; try { data = JSON.parse(txt); } catch (e) { }
+        if (!validSaveData(data)) throw new Error(__('The cloud copy is damaged.'));
+        try { localStorage.setItem(slotKey(n), JSON.stringify(data)); } catch (e) { throw new Error(__('The save could not be stored in this browser.')); }
+        sfx('save'); this.toast(__("{0}'s save downloaded into slot {1}.", data.name, n));
+      } catch (e) { this.clErr(e); } finally { this.clBusy = false; }
+      this.clKeep = { a: 'cl-down', n }; if (this.view === 'cloud') this.renderCloud();
+    };
+    if (s.save || s.broken) { const newer = s.save && (s.save.t || 0) > c.t; this.confirm({ title: __('Replace slot {0} on this device?', n), text: newer ? __('The save on THIS DEVICE is newer than the cloud copy. Downloading replaces it.') : __('Downloading replaces the save in slot {0} on this device.', n), yes: __('Download'), danger: !!newer }, go); } else go();
+  }
+  clDel(n) {
+    if (this.clBusy) return; const c = this.cl && this.cl.files[n]; if (!c) return;
+    this.confirm({ title: __('Delete the cloud copy?'), text: __('Deletes slot {0} from Google Drive for good. The save on this device stays.', n), yes: __('Delete'), danger: true }, async () => {
+      this.clBusy = true;
+      try { await CLOUD.remove(c.id); sfx('back'); this.toast(__('Cloud copy of slot {0} deleted.', n)); } catch (e) { this.clErr(e); } finally { this.clBusy = false; }
+      this.clKeep = { a: 'cl-up', n }; if (this.view === 'cloud') this.renderCloud();
+    });
+  }
+
   // ------------------------------------------------------------ slot tools
   async importInto(n) {
     const text = await pickSaveFile(); if (text === null || this.done) return;
@@ -464,15 +636,15 @@ class MainMenu {
       sfx('back'); this.renderSlots(); this.setFocus(this.root.querySelector('.slot-main[data-n="' + n + '"]')); this.toast(__('Slot {0} deleted.', n));
     });
   }
-  confirm(o, onYes) {
-    this.dlgPrev = this.focused; this.dlg = { onYes };
+  confirm(o, onYes, onNo) {
+    this.dlgPrev = this.focused; this.dlg = { onYes, onNo };
     const el = this.root.querySelector('.mm-dlg');
-    el.innerHTML = '<div class="dlg" role="dialog"><h3>' + (o.danger ? MM_ICON.warn : '') + mmEsc(o.title) + '</h3><p>' + mmEsc(o.text) + '</p><div class="row"><button data-f data-act="dlg-no">Cancel</button><button data-f data-act="dlg-yes"' + (o.danger ? ' class="danger"' : '') + '>' + mmEsc(o.yes || 'OK') + '</button></div></div>';
+    el.innerHTML = '<div class="dlg" role="dialog"><h3>' + (o.danger ? MM_ICON.warn : '') + mmEsc(o.title) + '</h3><p>' + mmEsc(o.text) + '</p><div class="row"><button data-f data-act="dlg-no">' + mmEsc(o.no || 'Cancel') + '</button><button data-f data-act="dlg-yes"' + (o.danger ? ' class="danger"' : '') + '>' + mmEsc(o.yes || 'OK') + '</button></div></div>';
     el.classList.add('open'); this.setFocus(el.querySelector('[data-act="dlg-no"]'));
   }
   closeDlg(yes) {
-    const d = this.dlg; this.dlg = null; const el = this.root.querySelector('.mm-dlg'); el.classList.remove('open'); el.innerHTML = '';
-    this.setFocus(this.dlgPrev && this.dlgPrev.isConnected ? this.dlgPrev : null); if (yes && d && d.onYes) d.onYes();
+    const d = this.dlg; this.dlg = null; if (d && d.modal) G.modal = false; const el = this.root.querySelector('.mm-dlg'); el.classList.remove('open'); el.innerHTML = '';
+    this.setFocus(this.dlgPrev && this.dlgPrev.isConnected ? this.dlgPrev : null); if (yes && d && d.onYes) d.onYes(d.vals); else if (!yes && d && d.onNo) d.onNo();
   }
   // ---- Settings > Updates. Optional and manual: nothing here runs unless the player presses it, and nothing is installed unless they
   // confirm the dialog. Offline (or any error) only shows a message and play goes on; the installed game is never touched before the confirm.
