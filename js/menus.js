@@ -153,7 +153,7 @@ function drawSummary(S) {
     const names = ['HP', 'Attack', 'Defense', 'Sp. Atk', 'Sp. Def', 'Speed'], idxs = [0, 1, 2, 4, 5, 3];
     const nat = NATURES[p.nature];
     L('HP', 248, 75, { size: 22 }); Dk(p.hp + '/' + p.maxhp, 462, 75, { align: 'right', size: 22 });
-    if (UI('summary/overlay_hp')) { const w = Math.round(96 * p.hp / p.maxhp); ctx.drawImage(UI('summary/overlay_hp'), 0, hpColorRow(p.hp, p.maxhp) * 6, w, 6, 360, 104, w, 6); }
+    if (UI('summary/overlay_hp')) { const w = Math.round(96 * p.hp / p.maxhp); ctx.drawImage(UI('summary/overlay_hp'), 0, hpColorRow(p.hp, p.maxhp) * 6, w, 6, 360, 110, w, 6); }
     for (let i = 1; i < 6; i++) {
       const si = idxs[i]; const col = nat[1] === si ? '#e8605c' : nat[2] === si ? '#5890f0' : '#f8f8f8';
       L(names[i], 248, 114 + (i - 1) * 32 + 4 - 0, { base: col, size: 22 }); Dk(String(p.stats[si]), 456, 114 + (i - 1) * 32 + 4, { align: 'right', size: 22 });

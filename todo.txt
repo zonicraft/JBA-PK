@@ -16,11 +16,4 @@ most dialogue uses Jorge and Gardete instead of the special names defined by the
 
 autosave feature after every fight
 
-theres 1 trainer on the nuno agonia gym that has overleveled pokemon
-do the trainers in the dojo have battle music?
-hp bar on the summary is not corrtly placed
-music on nunos battle is low in volume
-seafoam island puzzle is badly implemented
-remove the ss anne maps
 usage de tms podia ser melhor
-ha alguma coisa que impessa o player de apanhar o cut antes do wuant?

@@ -46,7 +46,7 @@ async function loadAssets() {
   const worker = async () => { while (k < list.length) { await loadImage(list[k++]); G.loadDone++; } };
   await Promise.all(Array.from({ length: 24 }, worker));
 }
-const symOf = s => (window.D && D.SP[s]) ? s : ((window.PH && window.PH[s]) || s);   // PBS placeholder species names -> current character keys
+const symOf = s => (typeof D !== 'undefined' && D.SP && D.SP[s]) ? s : ((window.PH && window.PH[s]) || s);   /* D is a top-level const (js/pokemon.js), so window.D does not exist: the old check was always false and RAIKOU (a real character) was swapped for MEDBSUM */   // PBS placeholder species names -> current character keys
 const img = (dir, name) => {
   const f = 'assets/' + dir + '/' + name + '.png';
   if (IMGS[f]) return IMGS[f];
@@ -592,14 +592,15 @@ function checkAction() {   // an empty event under the player (placeholder page)
     if (!G.surfing) { G.main = new Interp([[101, 0, ['The current is too fast!']], [0, 0, []]], null); return true; }
     return false;
   }
+  if (typeof waterUseOk === 'function' && !waterUseOk() && !G.surfing && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy)) return false;   // Routes 17 / 18: no boat, no fishing
   if (typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {
     if (G.surfing) return false;                                                       // on the boat: nothing to ask
     if ((G.items && G.items.BOAT > 0) || getSwitch(153)) { G.main = new Interp([[355, 0, ['pbSurfAsk']], [0, 0, []]], null); return true; }   // boat lent: fish or navigate?
   }
-  if (G.items && G.items.OLDROD && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {
+  if (typeof ownedRods === 'function' && ownedRods().length && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {
     G.main = new Interp([[355, 0, ['pbFishAsk']], [0, 0, []]], null); return true;
   }
-  if (G.items && !G.items.OLDROD && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {   // water, but no rod yet
+  if (G.items && !(typeof ownedRods === 'function' && ownedRods().length) && typeof isWaterAt === 'function' && isWaterAt(p.x + dx, p.y + dy) && !G.main) {   // water, but no rod yet
     G.main = new Interp([[101, 0, ['The water is calm.']], [0, 0, []]], null); return true;
   }
   return false;

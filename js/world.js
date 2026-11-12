@@ -191,6 +191,7 @@ function cellInfo(x, y) {
     if (tag > 0) return { k: p4 === 0x0f ? 'solid' : 'ground', wb: cellWater(m, ts, i, z - 1), bits };               // rock / grass / ledge ... : not water
     if (p4 === 0x0f) return { k: 'solid', wb: cellWater(m, ts, i, z - 1), bits };
     if (p4 !== 0) { bits |= p4; continue; }                                         // partial blocker (rock lip): remember its directions, look for the water below
+    if (z > 0 && tid >= 480 && tid < 500 && m.id >= 257 && m.id <= 263 && cellWater(m, ts, i, z - 1)) continue;   // Seafoam: ripple / shore-edge decoration drawn over the water is not ground
     if (pri === 0 && !current) return { k: 'ground', wb: cellWater(m, ts, i, z - 1), bits };   // ground-level walkable tile decides (current water keeps its foam / edge overlays transparent)
   }
   return { k: 'none', bits };
@@ -204,11 +205,8 @@ function solidOverWater(x, y) { const c = cellInfo(x, y); return c.k === 'solid'
 // surfing passability of a water cell: only partial blockers (rock lips) above the water stop the boat, and only in their own directions
 function waterPass(x, y, d) { const c = cellInfo(x, y); return c.k === 'water' && !(c.bits & ({ 2: 1, 4: 2, 6: 4, 8: 8 }[d] || 0)); }
 // Seafoam water currents: only the boat can enter them, and once on one it carries the player along (see the update loop)
-// the currents of B2F-B4F calm down once the boulders have been dropped into the holes above (those boulders set these switches)
-const CURRENT_STOP = { 260: [102, 104], 262: [102, 104], 261: [107, 108], 263: [107, 108] };
-function currentsRunning() { const s = CURRENT_STOP[G.mapId]; return !(s && s.every(sw => getSwitch(sw))); }
 function currentInfo(x, y) {
-  const w = worldAt(x, y); if (!w || w.m !== G.map || !currentsRunning()) return null;
+  const w = worldAt(x, y); if (!w || w.m !== G.map) return null;
   const m = w.m, names = m.ts.autotiles || []; let dir = 0, bridge = false;
   for (let z = 0; z < 3; z++) {
     const tid = m.data[w.x + w.y * m.w + z * m.w * m.h]; if (!tid) continue;
@@ -217,6 +215,12 @@ function currentInfo(x, y) {
   }
   return dir ? { dir, bridge } : null;
 }
+// Routes 17 and 18 (Cycling Road): no boat and no fishing there
+const NO_WATER_USE = new Set([198, 199, 200, 201]);
+function waterUseOk() { return !NO_WATER_USE.has(G.mapId); }
+// the fishing rods in the bag, weakest first: [item key, encounter table]
+const RODS = [['OLDROD', 'OldRod'], ['GOODROD', 'GoodRod'], ['SUPERROD', 'SuperRod']];
+function ownedRods() { return RODS.filter(r => G.items && G.items[r[0]] > 0); }
 function currentDirAt(x, y) { const c = currentInfo(x, y); return c ? c.dir : 0; }
 function currentBlocks(x, y) { const c = currentInfo(x, y); return !!c && !c.bridge; }
 function terrainTagAt(x, y) {
@@ -502,15 +506,17 @@ function* worldScript(it, s) {
   }
   if (s === 'pbBerryPlant') { yield* berryPlantScript(it); return true; }
   if (s === 'pbSurfAsk') {                   // action button on water once the boat has been lent
-    const rod = G.items && G.items.OLDROD, opts = rod ? ['Navigate', 'Fish', 'Cancel'] : ['Navigate', 'Cancel'];
+    if (!waterUseOk()) return true;
+    const rod = ownedRods().length > 0, opts = rod ? ['Navigate', 'Fish', 'Cancel'] : ['Navigate', 'Cancel'];
     yield* showMessage(rod ? __('The water is calm.\nNavigate or fish?') : __('The water is calm.\nDo you want to navigate?'), { noWait: true });
     const c = opts[yield* showChoices(opts, opts.length)];
-    if (c === 'Fish') return yield* worldScript(it, 'pbFish("OldRod")');
+    if (c === 'Fish') return yield* worldScript(it, 'pbFishAsk');
     if (c === 'Navigate') return yield* worldScript(it, 'pbSurfStart');
     return true;
   }
   if (s === 'pbSurfStart') {                 // board the boat and sail one tile out
     const pl = G.player, [fx, fy] = dirVec[pl.dir];
+    if (!waterUseOk()) { yield* showMessage(__('You can\'t use the boat here.')); return true; }
     if (G.surfing) { yield* showMessage(__('You are already on the boat.')); return true; }
     if (!isWaterAt(pl.x + fx, pl.y + fy)) { yield* showMessage(__('There\'s no water to sail on here.')); return true; }
     G.biking = false; G.surfing = true; pl.speed = 4; pl.sheetOverride = 'base_surf';
@@ -518,13 +524,23 @@ function* worldScript(it, s) {
     return true;
   }
   if (s === 'pbFishAsk') {                   // action button on water with a rod in the bag
-    yield* showMessage(__('The water is calm.\nWant to fish here?'), { noWait: true });
-    const i = yield* showChoices([__('Yes'), __('No')], 2);
-    if (i === 0) return yield* worldScript(it, 'pbFish("OldRod")');
+    if (!waterUseOk()) return true;
+    const rods = ownedRods(); if (!rods.length) return true;
+    if (rods.length === 1) {                 // one rod: just ask
+      yield* showMessage(__('The water is calm.\nWant to fish here?'), { noWait: true });
+      const i = yield* showChoices([__('Yes'), __('No')], 2);
+      if (i === 0) return yield* worldScript(it, 'pbFish("' + rods[0][1] + '")');
+      return true;
+    }
+    yield* showMessage(__('The water is calm.\nWhich rod do you want to use?'), { noWait: true });      // several rods: pick one
+    const labels = rods.map(r => itemName(r[0])).concat(['Cancel']);
+    const c = yield* showChoices(labels, labels.length);
+    if (c < rods.length) return yield* worldScript(it, 'pbFish("' + rods[c][1] + '")');
     return true;
   }
   if ((m = s.match(/^pbFish\("(\w+)"\)/))) {          // field use of a fishing rod: needs water in front of the player
     const pl = G.player, [fx, fy] = dirVec[pl.dir]; const wx = pl.x + fx, wy = pl.y + fy;
+    if (!waterUseOk()) { yield* showMessage(__('You can\'t fish here.')); return true; }
     if (!isWaterAt(wx, wy)) { yield* showMessage(__('There\'s no water to fish in here.')); return true; }
     if (G.surfing) { yield* showMessage(__('You can\'t fish from the boat.')); return true; }
     const e = window.ENCOUNTERS && ENCOUNTERS[G.mapId], tbl = e && ((e[m[1]] && e[m[1]].length ? e[m[1]] : null) || (e.Water && e.Water.length ? e.Water : null));

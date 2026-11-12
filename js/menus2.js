@@ -135,7 +135,7 @@ function* bagScreen(o = {}) {
         yield* uiMessage(__('It can\'t be used in battle.')); continue;
       }
       // field menu
-      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS || (it.pocket === 4 && it.move)) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
+      const opts = []; if (isMedicine(key) || key === 'POKEGEAR' || key === 'OLDROD' || key === 'GOODROD' || key === 'SUPERROD' || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || key === 'BOAT' || key === 'PORTABLETELEPORTER' || key === 'BICYCLE' || key in REPEL_STEPS || (it.pocket === 4 && it.move)) opts.push('USE'); if (it.pocket !== 8) opts.push('GIVE'); opts.push('TOSS', 'CANCEL');
       const c = yield* choiceWindow(opts, { y: SH - 96 - opts.length * 32 - 32, x: SW - 150 });
       const choice = c < 0 ? 'CANCEL' : opts[c];
       if (choice === 'USE') {
@@ -148,7 +148,7 @@ function* bagScreen(o = {}) {
           }
           continue;
         }
-        if (key === 'OLDROD') { G.fishReq = 'OldRod'; return null; }
+        if (key === 'OLDROD' || key === 'GOODROD' || key === 'SUPERROD') { G.fishReq = { OLDROD: 'OldRod', GOODROD: 'GoodRod', SUPERROD: 'SuperRod' }[key]; return null; }
         if (key === 'BOAT') { G.fishReq = 'Boat'; return null; }
         if (key === 'PORTABLETELEPORTER') { CHEAT_CITIES.forEach(c => { if (c[1] !== 264) G.switches['city' + c[1]] = true; });   // everything before Cinnabar was visited by the time Einsteves hands it over
           yield* townMapScreen({ teleport: true, player: true }); if (G.teleReq) return null; continue; }
