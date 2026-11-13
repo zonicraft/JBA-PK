@@ -104,13 +104,17 @@ function itemInfo(key) {
 (function genTMs() {
   const have = new Set(), nums = new Set();
   for (const k in D.IT) { const it = D.IT[k]; if (it && it.pocket === 4 && it.move) have.add(it.move); const m = /^TM(\d+)$/.exec(k); if (m) nums.add(+m[1]); }
-  const rest = Object.keys(D.MV).filter(k => !have.has(k) && k !== 'STRUGGLE' && D.MV[k].name).sort((a, b) => D.MV[a].id - D.MV[b].id);
+  const byId = (a, b) => D.MV[a].id - D.MV[b].id;
+  const rest = Object.keys(D.MV).filter(k => !have.has(k) && k !== 'STRUGGLE' && D.MV[k].name).sort(byId);
+  // the shipped TR items (TR00-TR99) are replaced by TMs: their moves get a TM too. They are numbered AFTER the ones above so the TM numbers already in saves keep their moves.
+  const trMoves = Object.keys(D.IT).filter(k => /^TR\d+$/.test(k) && D.IT[k].move && D.MV[D.IT[k].move]).map(k => D.IT[k].move).filter(m => D.MV[m].name && !rest.includes(m)).sort(byId);
   let n = 41, i = 0;
-  for (const mk of rest) {
+  for (const mk of rest.concat(trMoves)) {
     while (nums.has(n)) n = n === 41 ? 100 : n + 1;
     const key = 'TM' + String(n).padStart(2, '0'); nums.add(n);
     D.IT[key] = { id: 2000 + n, name: key, plural: key + 's', pocket: 4, price: 30000, desc: D.MV[mk].desc || '', field: 3, battle: 0, special: 0, move: mk, generated: true };
   }
+  for (const k of Object.keys(D.IT)) if (/^TR\d+$/.test(k)) delete D.IT[k];   // no TR items any more
 })();
 itemName = k => itemInfo(k).name;
 function itemLabel(k) { const it = itemInfo(k), mv = it.move && D.MV[it.move]; return mv ? it.name + ' ' + mv.name : it.name; }
