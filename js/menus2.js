@@ -328,7 +328,7 @@ function readSave(n = curSlot()) { try { return JSON.parse(localStorage.getItem(
 function writeSave() {
   const p = G.player;
   const data = {
-    v: 1, t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
+    v: 1, gv: (typeof GAME_VERSION !== 'undefined' ? String(GAME_VERSION) : null), t: Date.now(), switches: G.switches, vars: G.vars, selfsw: G.selfsw, party: G.party, items: G.items, name: G.name, starterName: G.starterName, money: G.money, trainerId: G.trainerId,
     runningShoes: !!G.runningShoes, surfing: !!G.surfing, playFrames: G.playFrames, healPoint: G.healPoint || null, erasedEv: G.erasedEv || {}, berries: G.berries || {}, box: G.box || [], pc: G.pc || null, tradeOut: G.tradeOut || [], tradePending: G.tradePending || null, tradeSeen: G.tradeSeen || {}, tradeLog: G.tradeLog || [], seen: G.seen || {}, pokedex: !!G.pokedex, repel: G.repel || 0, repelItem: G.repelItem || null, pcItems: G.pcItems || null, daycare: G.daycare ? { mon: G.daycare.mon, el: G.playFrames - G.daycare.t0 } : null, owned: G.owned || {}, hof: G.hof || [], map: G.mapId, x: p.x, y: p.y, dir: p.dir, mapName: G.mapName || '', bgm: G.bgm ? G.bgm.name : null,
   };
   try { localStorage.setItem(slotKey(curSlot()), JSON.stringify(data)); try { localStorage.setItem(LAST_SLOT_KEY, String(curSlot())); } catch (e) { } try { if (typeof CLOUD !== 'undefined') CLOUD.autoUpload(curSlot()); } catch (e) { } return true; } catch (e) { return false; }

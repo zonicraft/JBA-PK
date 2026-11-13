@@ -15,13 +15,3 @@ add a way to change the font of the game
 most dialogue uses Jorge and Gardete instead of the special names defined by the player
 
 autosave feature after every fight
-
-usage de tms podia ser melhor
-
-misogi is as gender neutral
-
-if the player loses against dawei the checkpoint starts when the player gets on the floor he doesnt get teleported to the correct tile
-
-held items need to go down 8px on the summary page
-
-ether doesnt give the choice of which move to add PP

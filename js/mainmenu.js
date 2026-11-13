@@ -8,6 +8,7 @@
 // ===================================================================
 const MM_RELEASES_API = 'https://api.github.com/repos/zonicraft/JBA-PK/releases/latest';   // the "Check for updates" button looks at the newest GitHub release
 const MM_VERSION = () => (typeof GAME_VERSION !== 'undefined' ? String(GAME_VERSION) : '');   // js/version.js, written by dist-tools/set-version.js / prepare-www.js
+function mmSaveTooNew(sv) { const cur = MM_VERSION(); return !!(cur && sv && sv.gv && mmNewer(sv.gv, cur)); }   // a save made by a newer game than the one installed (saves without a version are old ones and always open)
 function mmNewer(a, b) { const p = s => String(s).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0); const x = p(a), y = p(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; }
 const MM_BADGE_SWITCHES = [260, 261, 262, 263, 212, 980], MM_BADGE_PIPS = 8;
 // The Android app is always fullscreen (system bars hidden), so its menu has no fullscreen buttons.
@@ -462,6 +463,7 @@ class MainMenu {
       case 'delete': sfx('ok'); this.confirmDelete(+d.n); break;
       case 'dlg-yes': if (this.dlg && this.dlg.collect) this.dlg.vals = this.dlg.collect(); this.closeDlg(true); break;
       case 'dlg-no': sfx('back'); this.closeDlg(false); break;
+      case 'dlg-cancel': sfx('back'); if (this.dlg) this.dlg.onNo = this.dlg.onCancel || null; this.closeDlg(false); break;
     }
   }
   choose(r) { if (this.done) return; this.done = true; this.result = r; }
@@ -555,7 +557,9 @@ class MainMenu {
   // Opening a save: when a Google account is signed in (and the phone/PC is online), look for a newer copy on Drive first.
   // Never blocks for long (4 s) and never opens a sign-in window; any problem just opens the local save.
   async openSlot(s) {
-    if (this.opening) return; this.opening = true;
+    if (this.opening) return;
+    if (mmSaveTooNew(s.save)) return this.tooNewDlg(s.n, s.save);
+    this.opening = true;
     const play = sv => { this.opening = false; this.choose({ type: 'load', slot: s.n, save: sv || s.save }); };
     let c = null, slow = setTimeout(() => this.toast(__('Checking Google Drive…')), 700);
     try {
@@ -566,14 +570,19 @@ class MainMenu {
     } catch (e) { c = null; }
     clearTimeout(slow);
     if (!c) return play();
-    this.confirm({ title: __('A newer save is on Google Drive'), text: __('Slot {0} on Google Drive is newer than the one on this device ({1} vs {2}). Download it before playing?', s.n, mmDate(c.t), mmDate(s.save.t)), yes: __('Download newer save'), no: __("Play this device's save") },
+    this.confirm({ title: __('A newer save is on Google Drive'), text: __('Slot {0} on Google Drive is newer than the one on this device ({1} vs {2}). Download it before playing?', s.n, mmDate(c.t), mmDate(s.save.t)), yes: __('Download newer save'), no: __("Play this device's save"), cancel: __('Cancel') },
       async () => {
         try {
           this.toast(__('Downloading…'));
           const data = JSON.parse(await CLOUD.download(c.id)); if (!validSaveData(data)) throw new Error(__('The cloud copy is damaged.'));
+          if (mmSaveTooNew(data)) { this.opening = false; return this.tooNewDlg(s.n, data); }   // the cloud copy was made by a newer game: do not store or open it
           localStorage.setItem(slotKey(s.n), JSON.stringify(data)); migrateSyms(data); play(data);
         } catch (e) { this.toast(e && e.message ? e.message : __('Something went wrong.')); play(); }
-      }, () => play());
+      }, () => play(), () => { this.opening = false; });   // Cancel: do not open anything
+  }
+  tooNewDlg(n, sv) {
+    sfx('buzzer');
+    this.confirm({ title: __('This save needs a newer version'), text: __('Slot {0} was saved with version {1}, but the installed game is version {2}. Update the game to open it.', n, sv.gv, MM_VERSION()), yes: __('OK'), no: __('Close') }, null, null);
   }
   clAutoCard() {
     const on = CLOUD.autoOn(), la = CLOUD.lastAuto();
@@ -606,6 +615,7 @@ class MainMenu {
       try {
         const txt = await CLOUD.download(c.id); let data = null; try { data = JSON.parse(txt); } catch (e) { }
         if (!validSaveData(data)) throw new Error(__('The cloud copy is damaged.'));
+        if (mmSaveTooNew(data)) throw new Error(__('This save was made with version {0}, but the installed game is version {1}. Update the game to use it.', data.gv, MM_VERSION()));   // made by a newer game: not stored
         try { localStorage.setItem(slotKey(n), JSON.stringify(data)); } catch (e) { throw new Error(__('The save could not be stored in this browser.')); }
         sfx('save'); this.toast(__("{0}'s save downloaded into slot {1}.", data.name, n));
       } catch (e) { this.clErr(e); } finally { this.clBusy = false; }
@@ -627,6 +637,7 @@ class MainMenu {
     const text = await pickSaveFile(); if (text === null || this.done) return;
     let data = null; try { const j = JSON.parse(text); data = j && j.save ? j.save : j; } catch (e) { }
     if (!validSaveData(data)) { sfx('buzzer'); return this.toast("That file isn't a valid JBA Pokémon save."); }
+    if (mmSaveTooNew(data)) { sfx('buzzer'); return this.toast(__('This save was made with version {0}, but the installed game is version {1}. Update the game to use it.', data.gv, MM_VERSION())); }
     const put = () => { try { localStorage.setItem(slotKey(n), JSON.stringify(data)); } catch (e) { return this.toast('The save could not be stored in this browser.'); } sfx('save'); this.renderSlots(); this.setFocus(this.root.querySelector('.slot-main[data-n="' + n + '"]')); this.toast(__("{0}'s save imported into slot {1}.", data.name, n)); };
     if (hasSave(n)) this.confirm({ title: __('Replace slot {0}?', n), text: __('This slot already holds a save. Importing replaces it.'), yes: __('Replace'), danger: true }, put); else put();
   }
@@ -637,10 +648,10 @@ class MainMenu {
       sfx('back'); this.renderSlots(); this.setFocus(this.root.querySelector('.slot-main[data-n="' + n + '"]')); this.toast(__('Slot {0} deleted.', n));
     });
   }
-  confirm(o, onYes, onNo) {
-    this.dlgPrev = this.focused; this.dlg = { onYes, onNo };
+  confirm(o, onYes, onNo, onCancel) {
+    this.dlgPrev = this.focused; this.dlg = { onYes, onNo, onCancel };
     const el = this.root.querySelector('.mm-dlg');
-    el.innerHTML = '<div class="dlg" role="dialog"><h3>' + (o.danger ? MM_ICON.warn : '') + mmEsc(o.title) + '</h3><p>' + mmEsc(o.text) + '</p><div class="row"><button data-f data-act="dlg-no">' + mmEsc(o.no || 'Cancel') + '</button><button data-f data-act="dlg-yes"' + (o.danger ? ' class="danger"' : '') + '>' + mmEsc(o.yes || 'OK') + '</button></div></div>';
+    el.innerHTML = '<div class="dlg" role="dialog"><h3>' + (o.danger ? MM_ICON.warn : '') + mmEsc(o.title) + '</h3><p>' + mmEsc(o.text) + '</p><div class="row">' + (o.cancel ? '<button data-f data-act="dlg-cancel">' + mmEsc(o.cancel) + '</button>' : '') + '<button data-f data-act="dlg-no">' + mmEsc(o.no || 'Cancel') + '</button><button data-f data-act="dlg-yes"' + (o.danger ? ' class="danger"' : '') + '>' + mmEsc(o.yes || 'OK') + '</button></div></div>';
     el.classList.add('open'); this.setFocus(el.querySelector('[data-act="dlg-no"]'));
   }
   closeDlg(yes) {
