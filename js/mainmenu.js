@@ -42,6 +42,7 @@ const MM_CSS = `
 :where(#mainMenu) svg{display:block}
 /* background: city photo + shade + the character cut-out (assets/ui/menu_bg.jpg, menu_char.png) */
 .mm-bg{position:absolute;inset:0;overflow:hidden;background:#0a0f1f}
+.mm-v{scrollbar-width:none;-ms-overflow-style:none}.mm-v::-webkit-scrollbar{display:none;width:0;height:0}   /* the screens still scroll (wheel / touch / keys), the bar is just not drawn */
 .mm-photo{position:absolute;inset:-3%;background:#0a0f1f url(assets/ui/menu_bg.jpg) center 62%/cover no-repeat;animation:mmzoom 40s ease-in-out infinite alternate}
 @keyframes mmzoom{to{transform:scale(1.07) translateX(-1.2%)}}
 .mm-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,10,24,.86) 0,rgba(6,10,24,.55) 42%,rgba(6,10,24,.08) 100%),linear-gradient(0deg,rgba(6,10,24,.55) 0,transparent 35%);transition:background .5s ease}

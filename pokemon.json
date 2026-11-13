@@ -79665,7 +79665,7 @@
    "SpAtk": 76,
    "SpDef": 52
   },
-  "gender": "Genderless",
+  "gender": "AlwaysFemale",
   "growthRate": "Slow",
   "baseExp": 45,
   "catchRate": 103,

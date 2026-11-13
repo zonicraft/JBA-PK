@@ -24,10 +24,14 @@ function drawPanel(p, i, sel, o) {
   if (!faint) {
     pic('party/overlay_lv', x + 25, y + 66); txt(p.lvl, x + 47, y + 65, { col: COL.light, shadow: '#383838', size: 22 });
   }
-  // HP
+  // HP (or, when a TM is being used, whether this Pokémon can learn it)
+  const tg = o.tag ? o.tag(p) : null;
+  if (tg) txt(tg[0], x + 224, y + 54, { col: tg[1] || COL.light, shadow: '#383838', size: 24, align: 'right' });
+  else {
   pic(faint ? 'party/overlay_hp_back_faint' : swap ? 'party/overlay_hp_back_swap' : 'party/overlay_hp_back', x + 96, y + 50);
   if (p.hp > 0) drawHpFill('party/overlay_hp', 8, x + 128, y + 53, 96, p.hp, p.maxhp, 8);
   txt(p.hp + '/ ' + p.maxhp, x + 224, y + 66, { col: COL.light, shadow: '#383838', size: 22, align: 'right' });
+  }
   if (p.item) { const mi = img('icons', 'item' + String(itemInfo(p.item).icon || itemInfo(p.item).id || 0).padStart(3, '0')); if (mi) ctx.drawImage(mi, 0, 0, mi.width, mi.height, x + 53, y + 41, 25, 25); else pic('party/icon_item', x + 58, y + 46); }
   if (faint) ctx.drawImage(UI('statuses'), 0, 5 * 16, 44, 16, x + 20, y + 68, 44, 16);
   else if (p.status) drawStatus(p.status, x + 20, y + 68);
@@ -54,7 +58,7 @@ function partyNav(S, k) {
 // mode: 'menu' | 'choose' | 'battle' | 'item'
 function* partyScreen(o = {}) {
   const S = { party: G.party, idx: o.start != null ? o.start : (o.mode === 'item' ? Math.max(0, Math.min(G.lastItemIdx || 0, G.party.length - 1)) : 0),   // using an item starts on the Pokémon the last item was used on
-    text: o.text || 'Choose a Pokémon.', swap: -1, mode: o.mode || 'menu' };
+    text: o.text || 'Choose a Pokémon.', swap: -1, mode: o.mode || 'menu', tag: o.tag || null };
   const draw = () => { drawPartyScreen(S); drawPopup(); drawUiMsg(); };
   return yield* withDraw(draw, (function* () {
     while (true) {
@@ -127,7 +131,7 @@ function drawSummary(S) {
   const ball = UI('summary/icon_ball_' + String(p.ball).padStart(2, '0')); if (ball) ctx.drawImage(ball, 14, 60);
   // sprite
   const im = img('battlers', sprKey(sp)); if (im) drawFitted(im, 6, 130, 196, 154, String(sp.id));
-  if (p.item) { drawItemIcon(p.item, 8, 290 - 4); Dk(itemName(p.item), 66, 324, { size: 22 }); } else Dk('None', 66, 324, { size: 22 });
+  if (p.item) { drawItemIcon(p.item, 8, 290 + 4); Dk(itemName(p.item), 66, 324 + 8, { size: 22 }); } else Dk('None', 66, 324 + 8, { size: 22 });
   if (p.status) drawStatus(p.status, 4, 116);
   if (p.hp <= 0) ctx.drawImage(UI('statuses'), 0, 5 * 16, 44, 16, 4, 116, 44, 16);
   const rows = (labels, x, y0, step = 32) => labels.forEach((l, i) => L(l, x, y0 + i * step));

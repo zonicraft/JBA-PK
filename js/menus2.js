@@ -12,12 +12,19 @@ const REVIVE = { REVIVE: 0.5, MAXREVIVE: 1, REVIVALHERB: 1 };
 function isMedicine(k) { return k in VITAMIN || k === 'PPUP' || k === 'PPMAX' || k in HEAL_HP || k in CURE || k in REVIVE || k === 'RARECANDY' || /^(ETHER|MAXETHER|ELIXIR|MAXELIXIR)$/.test(k); }
 function consume(k, n = 1) { G.items[k] = (G.items[k] || 0) - n; if (G.items[k] <= 0) delete G.items[k]; }
 // Applies to a party member. Returns false if it would have no effect.
+// TM / TR rule: the move's type must match one of the Pokémon's types (Normal moves are open to all)
+function tmCanLearn(p, mid) { return D.MV[mid].type === 'NORMAL' || pokeTypes(p).includes(D.MV[mid].type); }
+// the label shown on each party panel while a TM is being used
+function tmTag(p, mid) {
+  if (p.moves.some(m => m.id === mid)) return [__('LEARNED'), '#a8a8a8'];
+  return tmCanLearn(p, mid) ? [__('ABLE'), '#a8e8a8'] : [__('NOT ABLE'), '#f8a0a0'];
+}
 function* useItemOn(key, p, S) {
   const name = pokeName(p);
   { const ti = itemInfo(key); if (ti.pocket === 4 && ti.move && D.MV[ti.move]) {   // TM / TR: teach the move (compatibility is by type)
     const mid = ti.move, mn = D.MV[mid].name;
     if (p.moves.some(m => m.id === mid)) { yield* uiMessage(__('{0} already knows {1}.', name, mn)); return false; }
-    if (D.MV[mid].type !== 'NORMAL' && !pokeTypes(p).includes(D.MV[mid].type)) { yield* uiMessage(__('{0} can\'t learn {1}.', name, mn)); return false; }   // TM rule: the move\'s type must match one of the Pokémon\'s types (Normal moves are open to all)
+    if (!tmCanLearn(p, mid)) { yield* uiMessage(__('{0} can\'t learn {1}.', name, mn)); return false; }   // TM rule: the move\'s type must match one of the Pokémon\'s types (Normal moves are open to all)
     yield* uiMessage(__('Booted up {0}. It contained {1}.', ti.name, mn));
     yield* learnMoveField(p, mid);
     if (!p.moves.some(m => m.id === mid)) return false;
@@ -69,7 +76,12 @@ function* useItemOn(key, p, S) {
     p.status = null; p.sleep = 0; if (!did) sfx('item'); yield* uiMessage(__('{0} was cured.', name)); did = true;
   }
   if (/^(ETHER|MAXETHER)$/.test(key)) {
-    const m = p.moves.find(mv => mv.pp < maxPP(mv)); if (m) { m.pp = Math.min(maxPP(m), m.pp + (key === 'ETHER' ? 10 : 99)); yield* uiMessage(__('PP was restored.')); did = true; }
+    const labels = p.moves.map(m => D.MV[m.id].name + '  ' + m.pp + '/' + maxPP(m)).concat(['Cancel']);
+    const c = yield* choiceWindow(labels, { x: 150, y: 90 });   // choose which move gets the PP
+    if (c < 0 || c >= p.moves.length) return false;
+    const m = p.moves[c];
+    if (m.pp >= maxPP(m)) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
+    m.pp = Math.min(maxPP(m), m.pp + (key === 'ETHER' ? 10 : 99)); sfx('item'); yield* uiMessage(__('{0}\'s PP was restored.', D.MV[m.id].name)); did = true;
   }
   if (!did) { yield* uiMessage(__('It won\'t have any effect.')); return false; }
   consume(key); return true;
@@ -154,7 +166,8 @@ function* bagScreen(o = {}) {
           yield* townMapScreen({ teleport: true, player: true }); if (G.teleReq) return null; continue; }
         if (key === 'BICYCLE') { if (G.biking) { G.biking = false; G.bikeMsg = __('{0} got off the Skateboard.', G.name); } else if (bikeAllowed()) { G.biking = true; G.bikeMsg = __('{0} got on the Skateboard.', G.name); } else G.bikeMsg = 'You can\'t use the Skateboard here.'; return null; }
         if (isMedicine(key) || key === 'SUMMERSTONE' || key === 'CASUALSTONE' || (it.pocket === 4 && it.move)) {
-          const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i) => useItemOn(key, p) });
+          const tmv = (it.pocket === 4 && it.move && D.MV[it.move]) ? it.move : null;
+          const r = yield* partyScreen({ mode: 'item', text: 'Use on which Pokémon?', use: (p, i) => useItemOn(key, p), tag: tmv ? (p => tmTag(p, tmv)) : null });
           S.pockets = bagPockets(); if (S.idx > S.pockets[S.pocket].length) S.idx = S.pockets[S.pocket].length;
         }
       } else if (choice === 'GIVE') {

@@ -558,6 +558,7 @@ function* worldScript(it, s) {
     if (G.battleResult === 'lose') yield* blackout(); else if (G.map && G.map.bgm) playBGM(G.map.bgm);
     return true;
   }
+  if (s === 'pbBlackout') { it.evMap = G.mapId; yield* blackout(); return true; }   // console / test: behave as if the whole party fainted
   if ((m = s.match(/^pbWildBattle\(:(\w+),(\d+)\)/))) {
     it.evMap = G.mapId;   // a whiteout moves the player to another map, so remember where this event lives
     yield* runWildBattle(m[1], +m[2], (NOT_LEGENDARY.includes(m[1]) || s.includes('//random')) ? undefined : 'oras_legendary');   // scripted wild fights = the legendary fights (except the species in NOT_LEGENDARY)
