@@ -16,6 +16,6 @@ most dialogue uses Jorge and Gardete instead of the special names defined by the
 
 autosave feature after every fight
 
-oberon doesnt have his evolution
+seafoam islands might still be bugged
 
-theres a mt silver route with grass an water but no encounters
+test the auto update on linux

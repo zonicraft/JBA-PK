@@ -278,7 +278,7 @@ function* hallOfFameViewer() {
 
 // ------------------------------------------------------------ Options
 function* optionsScreen() {
-  const S = { idx: 0, touch: SET.touch };   // S.touch = pending value: turning controls OFF only takes effect on Close
+  const S = { idx: 0, touch: SET.touch };   // S.touch = pending value: turning controls OFF only takes effect when leaving the screen (Close or X), so the buttons stay usable until then
   const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Side Bars', 'bars'], ['On-Screen Controls', 'touch'], ['Language', 'lang'], ['Close', null]];
   const draw = () => {
     pic('loadbg', 0, 0); skinBox('skin_choice_1', 24, 24, SW - 48, 340);
@@ -313,7 +313,7 @@ function* optionsScreen() {
       if (ok() && items[S.idx][1] === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
       if (ok() && items[S.idx][1] === 'touch') { S.touch = S.touch ? 0 : 1; if (S.touch) { SET.touch = 1; applyTouch(); } sfx('cursor'); }
       if (ok() && S.idx === items.length - 1) { SET.touch = S.touch; applyTouch(); sfx('back'); saveSettings(); return; }   // Close: apply the choice
-      if (back()) { sfx('back'); SET.touch = SET.touch ? 1 : 0; saveSettings(); return; }   // X: a pending 'Off' is discarded
+      if (back()) { sfx('back'); SET.touch = S.touch; applyTouch(); saveSettings(); return; }   // X: leaves like Close, so the choice (On or Off) is kept
     }
   })());
 }

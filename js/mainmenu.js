@@ -12,11 +12,14 @@ function mmSaveTooNew(sv) { const cur = MM_VERSION(); return !!(cur && sv && sv.
 function mmNewer(a, b) { const p = s => String(s).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0); const x = p(a), y = p(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; }
 const MM_BADGE_SWITCHES = [260, 261, 262, 263, 212, 980], MM_BADGE_PIPS = 8;
 // The Android app is always fullscreen (system bars hidden), so its menu has no fullscreen buttons.
+// the Exit button exists where the app can close itself: the Windows / Linux app and the Android app (not in a browser tab)
+function mmCanExit() { if (window.jbaApp) return true; const c = window.Capacitor; try { return !!(mmNative() && c && typeof c.getPlatform === 'function' && c.getPlatform() === 'android'); } catch (e) { return false; } }
 function mmNative() { const c = window.Capacitor; if (!c) return false; try { if (typeof c.isNativePlatform === 'function') return !!c.isNativePlatform(); } catch (e) { } return true; }
 const MM_SVG = (d, extra = '') => '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + extra + '</svg>';
 const MM_ICON = {
   play: MM_SVG('<path d="M8 5.5v13l11-6.5z" fill="currentColor"/>'),
   back: MM_SVG('<path d="M15 5l-7 7 7 7"/>'),
+  exit: MM_SVG('<path d="M12 3v8M6.5 6.8a8 8 0 1 0 11 0"/>'),
   gear: MM_SVG('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),
   dex: MM_SVG('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5.2M15.3 12h5.2"/><circle cx="12" cy="12" r="2.6"/>'),
   down: MM_SVG('<path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/>'),
@@ -280,7 +283,8 @@ class MainMenu {
       '<button class="mm-btn" data-f data-act="settings"><span class="ic">' + MM_ICON.gear + '</span><span>Settings<small>Volume, speed, display</small></span></button>' +
       '<button class="mm-btn" data-f data-act="dex"><span class="ic">' + MM_ICON.dex + '</span><span>Pokédex<small>Every Pokémon, where to find it, and your progress</small></span></button>' +
       '<button class="mm-btn" data-f data-act="cloud" data-cloudbtn><span class="ic">' + MM_ICON.cloud + '</span><span>Cloud saves<small>Back up and restore your saves with Google Drive</small></span></button>' +
-      '<button class="mm-btn" data-f data-act="controls"><span class="ic">' + MM_ICON.pad + '</span><span>Controls<small>Keyboard, controller and touch screen</small></span></button></div>' +
+      '<button class="mm-btn" data-f data-act="controls"><span class="ic">' + MM_ICON.pad + '</span><span>Controls<small>Keyboard, controller and touch screen</small></span></button>' +
+      (mmCanExit() ? '<button class="mm-btn" data-f data-act="exit"><span class="ic">' + MM_ICON.exit + '</span><span>Exit<small>Close the game</small></span></button>' : '') + '</div>' +
       '<div class="mm-foot">Unofficial, non-commercial fan project. Pokémon is owned by Nintendo, Game Freak and The Pokémon Company.</div></div></section>' +
       // slots
       '<section class="mm-v v-slots"><div class="mm-head"><button class="mm-round" data-f data-act="back" aria-label="Back">' + MM_ICON.back + '</button><div><h2>Choose your save file</h2><p>Open a file to continue, or pick an empty slot to start a new game.</p></div></div>' +
@@ -448,6 +452,7 @@ class MainMenu {
       case 'cl-del': this.clDel(+d.n); break;
       case 'back': this.goBack(); break;
       case 'fs': sfx('ok'); toggleFullscreen(); break;
+      case 'exit': sfx('ok'); this.confirm({ title: __('Exit the game?'), text: __('The game will close.'), yes: __('Exit') }, () => this.exitGame()); break;
       case 'update': this.checkUpdate(); break;
       case 'toggle': this.adjust(d.k, 0); break;
       case 'cycle': this.adjust('speed', 1); break;
@@ -683,12 +688,16 @@ class MainMenu {
     clearTimeout(to); this.updBusy = false;
   }
   // which file to download on this device: the .apk in the Android app, the setup / portable .exe in the Windows app; anything else opens the release page
+  exitGame() {
+    const fail = () => this.toast(__('Could not close the game. Close it from your device instead.'));
+    try { if (window.jbaApp) { window.jbaApp.quit().catch(fail); return; } jbaPlugin('Updater').exit().catch(fail); } catch (e) { fail(); }
+  }
   async updTarget(rel) {
     const find = re => (rel.assets || []).find(a => re.test(a.name || '') && a.browser_download_url);
     const cap = window.Capacitor;
     if (cap && typeof cap.getPlatform === 'function' && cap.getPlatform() === 'android') { const a = find(/\.apk$/i); if (a) return { kind: 'android', asset: a }; }
     else if (window.jbaUpdater) {
-      try { const inf = await window.jbaUpdater.info(); if (inf && inf.packaged && inf.platform === 'win32') { const a = find(inf.portable ? /-portable\.exe$/i : /-setup\.exe$/i); if (a) return { kind: 'win', asset: a, portable: !!inf.portable }; } } catch (e) { }
+      try { const inf = await window.jbaUpdater.info(); if (inf && inf.packaged && inf.platform === 'win32') { const a = find(inf.portable ? /-portable\.exe$/i : /-setup\.exe$/i); if (a) return { kind: 'win', asset: a, portable: !!inf.portable }; } else if (inf && inf.packaged && inf.platform === 'linux' && inf.canSelfUpdate) { const a = find(/-linux-x86_64\.tar\.gz$/i); if (a) return { kind: 'linux', asset: a }; } } catch (e) { }
     }
     return { kind: 'page' };
   }
@@ -697,7 +706,7 @@ class MainMenu {
     const t = await this.updTarget(rel), mb = t.asset && t.asset.size ? Math.round(t.asset.size / 1048576) : 0;
     this.confirm(t.kind === 'page'
       ? { title: __('Update to {0}?', rel._tag), text: __('Open the download page for version {0}.', rel._tag), yes: __('Open') }
-      : { title: __('Update to {0}?', rel._tag), text: __('Download {0} and install it now. Your saves are not touched.', mb ? mb + ' MB' : 'the update') + (t.kind === 'win' ? ' ' + (t.portable ? __('The game will close and the new version will start.') : __('The game will close and the installer will open.')) : ''), yes: __('Update') },
+      : { title: __('Update to {0}?', rel._tag), text: __('Download {0} and install it now. Your saves are not touched.', mb ? mb + ' MB' : 'the update') + (t.kind === 'win' ? ' ' + (t.portable ? __('The game will close and the new version will start.') : __('The game will close and the installer will open.')) : t.kind === 'linux' ? ' ' + __('The game will close and restart.') : ''), yes: __('Update') },
       () => this.startUpdate(t));
   }
   async startUpdate(t) {
@@ -719,7 +728,7 @@ class MainMenu {
         this.updSay('Downloaded. Tap Install on the screen that opens.', 'Update');
         await U.install();
       } else {   // win
-        window.jbaUpdater.onProgress(p => this.updSay(p >= 0 ? 'Downloading… ' + p + '%' : 'Downloading…', '…'));
+        window.jbaUpdater.onProgress(p => this.updSay(p === -2 ? 'Installing…' : p >= 0 ? 'Downloading… ' + p + '%' : 'Downloading…', '…'));
         await window.jbaUpdater.install(t.asset.browser_download_url);
         this.updSay('Starting the new version…', '…');
       }
