@@ -15,3 +15,7 @@ add a way to change the font of the game
 most dialogue uses Jorge and Gardete instead of the special names defined by the player
 
 autosave feature after every fight
+
+oberon doesnt have his evolution
+
+theres a mt silver route with grass an water but no encounters
