@@ -297,6 +297,7 @@ class MainMenu {
       '<div class="set-row" data-f data-adj="music"><span class="lbl">Music volume</span><span class="ctl"><input type="range" min="0" max="20" step="1" data-range="music"><output data-out="music"></output></span></div>' +
       '<div class="set-row" data-f data-adj="sfx"><span class="lbl">Sound effects</span><span class="ctl"><input type="range" min="0" max="20" step="1" data-range="sfx"><output data-out="sfx"></output></span></div>' +
       '<div class="set-row" data-f data-adj="speed" data-act="cycle" data-k="speed"><span class="lbl">Game speed</span><span class="seg">' + (typeof SPEEDS !== 'undefined' ? SPEEDS : [1, 1.5, 2, 3]).map(v => '<button data-act="set" data-k="speed" data-v="' + v + '">' + v + 'x</button>').join('') + '</span></div>' +
+      '<div class="set-row" data-f data-adj="text" data-act="cycle" data-k="text"><span class="lbl">Text speed</span><span class="seg">' + (typeof TEXTSPEEDS !== 'undefined' ? TEXTSPEEDS : [0.5, 1, 1.5, 2]).map(v => '<button data-act="set" data-k="textx" data-v="' + v + '">' + v + 'x</button>').join('') + '</span></div>' +
       '<div class="set-row" data-f data-adj="bars" data-act="toggle" data-k="bars"><span class="lbl">Side bars<small>Backdrop image around the game screen</small></span><span class="seg"><button data-act="set" data-k="bars" data-v="1">Image</button><button data-act="set" data-k="bars" data-v="0">Black</button></span></div>' +
       '<div class="set-row" data-f data-adj="lang" data-act="lang"><span class="lbl">Language</span><span class="seg"><button data-act="lang" data-v="-1">◀</button><button class="on" data-langname data-act="lang" data-v="1"></button><button data-act="lang" data-v="1">▶</button></span></div>' +
       (mmNative() ? '' : '<div class="set-row" data-f data-act="fs"><span class="lbl">Fullscreen</span><span class="mm-mini">' + MM_ICON.full + ' Toggle</span></div>') +
@@ -455,7 +456,7 @@ class MainMenu {
       case 'exit': sfx('ok'); this.confirm({ title: __('Exit the game?'), text: __('The game will close.'), yes: __('Exit') }, () => this.exitGame()); break;
       case 'update': this.checkUpdate(); break;
       case 'toggle': this.adjust(d.k, 0); break;
-      case 'cycle': this.adjust('speed', 1); break;
+      case 'cycle': this.adjust(d.k || 'speed', 1); break;
       case 'lang': this.adjust('lang', d.v ? +d.v : 1); break;
       case 'set': this.setSetting(d.k, +d.v); break;
       case 'export': { const r = exportSaveFile(+d.n);
@@ -476,6 +477,7 @@ class MainMenu {
   adjust(k, dir) {
     if (k === 'music' || k === 'sfx') { this.setVol(k, Math.max(0, Math.min(20, Math.round(SET[k] * 20) + dir)) / 20); if (k === 'sfx') sfx('cursor'); }
     else if (k === 'speed') { const sp = typeof SPEEDS !== 'undefined' ? SPEEDS : [1, 1.5, 2, 3]; const i = sp.indexOf(SET.speed); this.setSetting('speed', sp[Math.max(0, Math.min(sp.length - 1, dir ? i + dir : (i + 1) % sp.length))]); }
+    else if (k === 'text') { const ts = typeof TEXTSPEEDS !== 'undefined' ? TEXTSPEEDS : [0.5, 1, 1.5, 2]; let i = ts.indexOf(SET.textx); if (i < 0) i = 1; this.setSetting('textx', ts[Math.max(0, Math.min(ts.length - 1, dir ? i + dir : (i + 1) % ts.length))]); }
     else if (k === 'bars' || k === 'touch') this.setSetting(k, SET[k] ? 0 : 1);
     else if (k === 'lang') { I18N.next(dir || 1); sfx('cursor'); this.sync(); this.renderHomeContinue(); }
   }

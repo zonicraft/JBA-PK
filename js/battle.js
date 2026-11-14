@@ -53,10 +53,10 @@ function* bmsg(text, o = {}) {
   const pages = []; for (let i = 0; i < lines.length; i += 2) pages.push(lines.slice(i, i + 2));
   for (let pi = 0; pi < pages.length; pi++) {
     const m = B.msg = { lines: pages[pi], shown: 0, total: pages[pi].join('').length, done: false, wait: false };
-    while (m.shown < m.total) { m.shown += 2; yield; if (pressed('ok')) m.shown = m.total; }
+    while (m.shown < m.total) { m.shown += textStep(); yield; if (pressed('ok')) m.shown = m.total; }
     m.done = true;
     if (o.pause || pi < pages.length - 1) { m.wait = true; yield; while (!pressed('ok')) yield; sfx('ok'); m.wait = false; }
-    else if (o.hold !== 0) { let n = o.hold === undefined ? 26 : o.hold; while (n-- > 0) { yield; if (pressed('ok')) break; } }
+    else if (o.hold !== 0) { let n = textHold(o.hold === undefined ? 26 : o.hold); while (n-- > 0) { yield; if (pressed('ok')) break; } }
   }
 }
 function* bwait(n) { while (n-- > 0) yield; }

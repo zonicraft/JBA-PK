@@ -279,21 +279,22 @@ function* hallOfFameViewer() {
 // ------------------------------------------------------------ Options
 function* optionsScreen() {
   const S = { idx: 0, touch: SET.touch };   // S.touch = pending value: turning controls OFF only takes effect when leaving the screen (Close or X), so the buttons stay usable until then
-  const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Side Bars', 'bars'], ['On-Screen Controls', 'touch'], ['Language', 'lang'], ['Close', null]];
+  const items = [['Music Volume', 'music'], ['Sound Effects', 'sfx'], ['Game Speed', 'speed'], ['Text Speed', 'text'], ['Side Bars', 'bars'], ['On-Screen Controls', 'touch'], ['Language', 'lang'], ['Close', null]];
   const draw = () => {
-    pic('loadbg', 0, 0); skinBox('skin_choice_1', 24, 24, SW - 48, 340);
-    txt(__('OPTIONS'), 52, 38, { size: 28 });
+    pic('loadbg', 0, 0); skinBox('skin_choice_1', 24, 16, SW - 48, 368);
+    txt(__('OPTIONS'), 52, 30, { size: 28 });
     items.forEach(([l, k], i) => {
-      const y = 80 + i * 36; txt(l, 70, y, { size: 26 }); if (i === S.idx) pic('selarrow', 46, y - 2);
+      const y = 70 + i * 36; txt(l, 70, y, { size: 26 }); if (i === S.idx) pic('selarrow', 46, y - 2);
       if (k === 'music' || k === 'sfx') {
         ctx.fillStyle = '#b8c0c8'; ctx.fillRect(280, y + 6, 130, 14); ctx.fillStyle = '#3a78d8'; ctx.fillRect(280, y + 6, 130 * SET[k], 14);
         ctx.strokeStyle = '#485058'; ctx.strokeRect(280.5, y + 6.5, 129, 13); txt(Math.round(SET[k] * 100) + '%', 420, y, { size: 22 });
       } else if (k === 'speed') txt('◀ ' + SET.speed + 'x ▶', 280, y, { size: 26 });
+      else if (k === 'text') txt('◀ ' + SET.textx + 'x ▶', 280, y, { size: 26 });
       else if (k === 'bars') txt('◀ ' + (SET.bars ? __('Image') : __('Black')) + ' ▶', 280, y, { size: 26 });
       else if (k === 'touch') txt('◀ ' + (S.touch ? __('On') : __('Off')) + ' ▶', 280, y, { size: 26 });
       else if (k === 'lang') txt('◀ ' + I18N.name(I18N.cur) + ' ▶', 280, y, { size: 26 });
     });
-    txt(__('Left/Right: change   X: back'), 52, 334, { size: 20, col: COL.dark });
+    txt(__('Left/Right: change   X: back'), 52, 340, { size: 20, col: COL.dark });
   };
   return yield* withDraw(draw, (function* () {
     while (true) {
@@ -306,6 +307,7 @@ function* optionsScreen() {
         if (k === 'music') { SET.music = Math.max(0, Math.min(1, Math.round((SET.music + dl * 0.05) * 20) / 20)); applyVolumes(); }
         else if (k === 'sfx') { SET.sfx = Math.max(0, Math.min(1, Math.round((SET.sfx + dl * 0.05) * 20) / 20)); sfx('cursor'); }
         else if (k === 'speed') { let i = SPEEDS.indexOf(SET.speed); i = Math.max(0, Math.min(SPEEDS.length - 1, i + dl)); SET.speed = SPEEDS[i]; sfx('cursor'); }
+        else if (k === 'text') { let i = TEXTSPEEDS.indexOf(SET.textx); if (i < 0) i = 1; i = Math.max(0, Math.min(TEXTSPEEDS.length - 1, i + dl)); SET.textx = TEXTSPEEDS[i]; sfx('cursor'); }
         else if (k === 'bars') { SET.bars = SET.bars ? 0 : 1; applyBars(); sfx('cursor'); }
         else if (k === 'touch') { S.touch = S.touch ? 0 : 1; if (S.touch) { SET.touch = 1; applyTouch(); } sfx('cursor'); }
         else if (k === 'lang') { I18N.next(dl); sfx('cursor'); }

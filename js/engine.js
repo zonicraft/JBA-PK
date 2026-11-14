@@ -55,7 +55,7 @@ const img = (dir, name) => {
 };
 
 // ------------------------------------------------------------ audio
-const SET = { music: 0.7, sfx: 0.7, speed: 1, bars: 1, touch: (('ontouchstart' in window) || navigator.maxTouchPoints > 0) ? 1 : 0 };
+const SET = { music: 0.7, sfx: 0.7, speed: 1, textx: 1, bars: 1, touch: (('ontouchstart' in window) || navigator.maxTouchPoints > 0) ? 1 : 0 };
 try { const o = JSON.parse(localStorage.getItem('jba_settings') || '{}'); for (const k in SET) if (typeof o[k] === 'number') SET[k] = o[k]; } catch (e) { }
 // The backdrop is applied from an Image() so its URL is resolved exactly like every other asset (a CSS url() set from script was requested
 // from the site root on GitHub Pages, which 404'd and left the background black).
@@ -666,7 +666,7 @@ function* showMessage(raw, opts = {}) {
   if (!pages.length) pages.push([[]]);
   for (let pi = 0; pi < pages.length; pi++) {
     const m = G.msg = { lines: pages[pi], face: hasFace ? P.face : null, shown: 0, total: pages[pi].reduce((a, l) => a + l.length, 0), done: false, center: P.center, sign: P.sign, last: pi === pages.length - 1 };
-    while (m.shown < m.total) { m.shown += 2; if (pressed('ok')) { m.shown = m.total; keys.pressed.ok = false; } yield; }
+    while (m.shown < m.total) { m.shown += textStep(); if (pressed('ok')) { m.shown = m.total; keys.pressed.ok = false; } yield; }
     m.shown = m.total; m.done = true;
     if (opts.noWait && m.last) return;
     yield; keys.pressed.ok = false;
@@ -1033,6 +1033,12 @@ function update() {
 
 // ------------------------------------------------------------ options menu
 const SPEEDS = [1, 1.5, 2, 3];
+const TEXTSPEEDS = [0.5, 1, 1.5, 2];   // text speed multiplier; independent of the game speed
+// how many characters one game update reveals: the game speed runs more updates per second, so divide it back out
+function textStep() { return 2 * (SET.textx || 1) / (SET.speed || 1); }
+// how many game updates a finished line stays on screen: `base` is the old length at text speed 1x and game speed 1x, so it follows the Text speed and ignores the game speed
+const HOLD_MUL = 2.5;   // battle lines stay up this much longer than the old fixed delay (still skipped by OK)
+function textHold(base) { return Math.max(1, Math.round(base * HOLD_MUL * (SET.speed || 1) / (SET.textx || 1))); }
 function openMenu() { G.menu = { idx: 0 }; sfx('ok'); }
 function closeMenu() { G.menu = null; saveSettings(); keys.pressed = {}; G.lock = G.lock || {}; for (const k of ['ok', 'up', 'down', 'left', 'right']) if (keys.held[k]) G.lock[k] = true; }
 function updateMenu() {

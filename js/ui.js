@@ -94,7 +94,7 @@ function* uiMessage(text, opts = {}) {
   const pages = []; for (let i = 0; i < lines.length; i += 2) pages.push(lines.slice(i, i + 2));
   for (let pi = 0; pi < pages.length; pi++) {
     const m = G.uiMsg = { lines: pages[pi], shown: 0, total: pages[pi].join('').length, wait: opts.noWait && pi === pages.length - 1 ? false : true, done: false };
-    while (m.shown < m.total) { m.shown += 2; if (pressed('ok')) m.shown = m.total; yield; }
+    while (m.shown < m.total) { m.shown += textStep(); if (pressed('ok')) m.shown = m.total; yield; }
     m.done = true;
     if (opts.noWait && pi === pages.length - 1) return;
     keys.pressed.ok = false; yield;
